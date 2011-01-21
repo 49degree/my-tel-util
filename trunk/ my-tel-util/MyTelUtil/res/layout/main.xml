@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@drawable/login_bg">
+	<AbsoluteLayout android:layout_weight="0"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<TextView  android:text="号码："
+			android:layout_width="50px" android:layout_height="30px"
+			android:layout_y="25px" android:layout_x="5px" android:textColor="@color/title"/>		
+		<EditText android:id="@+id/text_tel_num" android:text="066295105105" android:background="@android:drawable/editbox_background"
+			android:layout_width="150px" android:layout_height="30px"
+			android:layout_y="20px" android:layout_x="55px" />
+		<Button android:id="@+id/button_call" android:layout_x="210px"
+			android:layout_y="20px" android:layout_width="50px"
+			android:layout_height="30px" android:text="拨  号" android:background="@drawable/query_btn_style" />
+		<Button android:id="@+id/button_cancel" android:layout_x="265px"
+			android:layout_y="20px" android:layout_width="50px"
+			android:layout_height="30px" android:text="挂  机" android:background="@drawable/query_btn_style" />
+	</AbsoluteLayout>
+</LinearLayout>

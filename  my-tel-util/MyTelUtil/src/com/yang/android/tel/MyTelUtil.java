@@ -1,7 +1,8 @@
 package com.yang.android.tel;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
-
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -28,25 +30,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.internal.telephony.ITelephony;
+
 public class MyTelUtil extends Activity {
 	public static String TAG = "MyTelUtil";
-	public static int CALL_REQUEST_CODE = 1234;
-	public static int operateCode = 0;
-	EditText view = null;
-	
+
 	MyTelServices myTelServices = null;
-	
+
+	/**
+	 * 获取services绑定对象
+	 */
     private ServiceConnection sc = new ServiceConnection(){
         public void onServiceConnected(ComponentName name, IBinder binder) {
         	myTelServices = ((MyTelServices.MyServiceBinder)binder).getServices();
-        	myTelServices.play();
+			EditText view = (EditText) findViewById(R.id.text_tel_num); //获取的号码
+			String phoneNum = view.getText().toString();
+        	myTelServices.startCall(phoneNum);
         	Toast.makeText(getApplicationContext(), "android service connected", Toast.LENGTH_LONG).show();
         }
         public void onServiceDisconnected(ComponentName name) {
+        	myTelServices = null;
             Toast.makeText(getApplicationContext(), "android service disconnected", Toast.LENGTH_LONG).show();
         }
     };
 
+    /**
+     * 增加菜单项
+     */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
@@ -58,6 +68,9 @@ public class MyTelUtil extends Activity {
 		return true;
 	}
 
+	/**
+	 * 处理菜单按钮事件
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
@@ -91,75 +104,53 @@ public class MyTelUtil extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
 		Button btnDial = (Button) findViewById(R.id.button_call); // 启动Dialer程序Button变量
 		btnDial.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				view = (EditText) findViewById(R.id.text_tel_num); // 文本编辑变量，用于接收视图EditText获取的号码
+				Log.d(TAG, "onClick btnDial:");
+				EditText view = (EditText) findViewById(R.id.text_tel_num); //获取的号码
 				String phoneNum = view.getText().toString();
-
-				TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-				tm.getCallState();
-				tm.listen(new TeleListener(),
-						PhoneStateListener.LISTEN_CALL_STATE);
-
-				if (PhoneNumberUtils.isGlobalPhoneNumber(phoneNum)) {// isGlobalPhoneNumber方法用来检验输入的串是否是有效的号码
-					operateCode = 0;
-					tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-					tm.getCallState();
-					tm.listen(new TeleListener(),
-							PhoneStateListener.LISTEN_CALL_STATE);
-
+				if (PhoneNumberUtils.isGlobalPhoneNumber(phoneNum)) {//方法用来检验输入的串是否是有效的号码
+					bindService(new Intent(MyTelUtil.this, MyTelServices.class), sc, Service.BIND_AUTO_CREATE);
+					if(myTelServices!=null){
+						myTelServices.startCall(phoneNum);
+					}
 				} else {
-					// 无效的号码，提示用户输入错误
+					if(myTelServices!=null){
+						myTelServices.endCall(); 
+					}
 					Toast.makeText(MyTelUtil.this, "号码不正确，请重新输入",
-							Toast.LENGTH_LONG).show();
+							Toast.LENGTH_LONG).show();// 无效的号码，提示用户输入错误
 				}
 			}
 		});
 
-		Button btnCancel = (Button) findViewById(R.id.button_cancel); // 启动Dialer程序Button变量
+		Button btnCancel = (Button) findViewById(R.id.button_cancel); // 取消Dialer程序Button变量
 		btnCancel.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				Intent queryIntent = new Intent("MyTelUtil");
-				startActivity(queryIntent);
-				TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-				operateCode = 1;
+			public void onClick(View v)  {
+				Log.d(TAG, "onClick btnCancel:");
+				if(myTelServices!=null){
+					myTelServices.endCall();
+				}
 			}
 		});
 
 	}
 
-	// 拨号
-	private void dialer(String tel) {
-//		Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tel));
-//		this.startActivityForResult(intent, CALL_REQUEST_CODE);
-		Intent queryIntent = new Intent("com.yang.android.tel.MyTelUtil");
-		startActivity(queryIntent);
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Log.d(TAG, "onActivityResult:" + resultCode);
-		if (requestCode == MyTelUtil.CALL_REQUEST_CODE
-				&& resultCode == RESULT_OK) {
-			// Fill the list view with the strings the recognizer thought it
-			// could have heard
-
-		}
-	}
 
 	// 监听键盘事件
 	// @Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			operateCode = 1;
+			
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("确定要退出吗?");
 			builder.setTitle("提示");
 			builder.setPositiveButton("确认",
 					new android.content.DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
+							myTelServices.endCall();
 							finish();// 退出程序
 						}
 					});
@@ -175,37 +166,6 @@ public class MyTelUtil extends Activity {
 		return false;
 	}
 
-	class TeleListener extends PhoneStateListener {
-		@Override
-		public void onCallStateChanged(int state, String incomingNumber) {
-			super.onCallStateChanged(state, incomingNumber);
-			switch (state) {
-			case TelephonyManager.CALL_STATE_IDLE: {
-				Log.e(TAG, "CALL_STATE_IDLE");
-				String phoneNum = view.getText().toString();
-				Log.d(TAG, "onClick:" + phoneNum);
-				if (operateCode == 0) {
-					dialer(phoneNum);
-				}
-
-				// view.append("CALL_STATE_IDLE " + " ");
-				break;
-			}
-			case TelephonyManager.CALL_STATE_OFFHOOK: {
-				Log.e(TAG, "CALL_STATE_OFFHOOK");
-				// view.append("CALL_STATE_OFFHOOK" + " ");
-				break;
-			}
-			case TelephonyManager.CALL_STATE_RINGING: {
-				Log.e(TAG, "CALL_STATE_RINGING");
-				// view.append("CALL_STATE_RINGING" + " ");
-				break;
-			}
-			default:
-				break;
-			}
-		}
-	}
 
 	public static boolean isIntentAvailable(Context context, Intent intent ) {
 		final PackageManager packageManager = context.getPackageManager();

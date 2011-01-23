@@ -135,33 +135,47 @@ public class MyTelUtil extends Activity {
 				}
 			}
 		});
+		
+		Button btnExit = (Button) findViewById(R.id.button_exit); // 取消Dialer程序Button变量
+		btnExit.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v)  {
+				Log.d(TAG, "onClick btnExit:");
+				exitMethod();
+			}
+		});		
 
 	}
 
 
+	
+	
+	private void exitMethod(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("确定要退出吗?");
+		builder.setTitle("提示");
+		builder.setPositiveButton("确认",
+				new android.content.DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						if(myTelServices!=null){
+							myTelServices.endCall();
+						}
+						finish();// 退出程序
+					}
+				});
+
+		builder.setNegativeButton("取消",
+				new android.content.DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				});
+		builder.create().show();
+	}
 	// 监听键盘事件
 	// @Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("确定要退出吗?");
-			builder.setTitle("提示");
-			builder.setPositiveButton("确认",
-					new android.content.DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							myTelServices.endCall();
-							finish();// 退出程序
-						}
-					});
-
-			builder.setNegativeButton("取消",
-					new android.content.DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-
-						}
-					});
-			builder.create().show();
+			exitMethod();
 		}
 		return false;
 	}

@@ -4,8 +4,6 @@ package com.yang.android.tel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.android.internal.telephony.ITelephony;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -15,10 +13,36 @@ import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.EditText;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
-public class MyTelServices extends Service {
+import com.android.internal.telephony.ITelephony;
+
+public class MyTelServices extends Service implements KeyEvent.Callback{
+
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+    	Log.e(TAG,"onKeyDown keyCode:"+keyCode);
+    	return true;
+    }
+
+
+    public boolean onKeyLongPress(int keyCode, KeyEvent event){
+    	Log.e(TAG,"onKeyLongPress keyCode:"+keyCode);
+    	return true;
+    }
+
+    public boolean onKeyUp(int keyCode, KeyEvent event){
+    	Log.e(TAG,"onKeyUp keyCode:"+keyCode);
+    return true;	
+    }
+
+
+    public boolean onKeyMultiple(int keyCode, int count, KeyEvent event){
+    	Log.e(TAG," onKeyMultiple keyCode:"+keyCode);
+    	return true;
+    }
+	
+	
 	private static final String TAG = "MyService";
 	private MediaPlayer player = null;
 	private ITelephony iTelephony = null;
@@ -129,6 +153,7 @@ public class MyTelServices extends Service {
 	private void dialer(String tel) {
 		Log.e(TAG, "dialer");
 		try{
+			
 			iTelephony.endCall();
 			iTelephony.call(tel);
 		}catch(Exception e){
@@ -142,32 +167,7 @@ public class MyTelServices extends Service {
 	private void getITelephony() {
 		TelephonyManager tManager = (TelephonyManager) this
 				.getSystemService(Context.TELEPHONY_SERVICE);
-		// ³õÊ¼»¯iTelephony
-		Class<TelephonyManager> c = TelephonyManager.class;
-		Method getITelephonyMethod = null;
-		try {
-			getITelephonyMethod = c.getDeclaredMethod("getITelephony",(Class[]) null);
-			getITelephonyMethod.setAccessible(true);
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			iTelephony = (ITelephony) getITelephonyMethod.invoke(tManager, (Object[]) null);
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		iTelephony = Util.getIPhone(tManager);
 	}
 	/**
 	 * ×´Ì¬¼àÌýÆ÷
@@ -178,6 +178,13 @@ public class MyTelServices extends Service {
 		@Override
 		public void onCallStateChanged(int state, String incomingNumber) {
 			super.onCallStateChanged(state, incomingNumber);
+			try{
+
+				Log.e(TAG, "CALL_STATE:"+iTelephony.getCallState()+":"+state);
+			}catch(Exception e){
+				
+			}
+				
 			switch (state) {
 			case TelephonyManager.CALL_STATE_IDLE: {
 				Log.e(TAG, "CALL_STATE_IDLE");
@@ -190,7 +197,11 @@ public class MyTelServices extends Service {
 				
 				Log.e(TAG, "CALL_STATE_OFFHOOK");
 				Log.e(TAG, "CALL_STATE_OFFHOOK  iTelephony:"+iTelephony);
-//				startPlay();
+				startPlay();
+				
+				
+				
+				
 //				if(iTelephony!=null){
 //					Log.e(TAG, "CALL_STATE_OFFHOOK  iTelephony");
 //					try{
@@ -210,7 +221,13 @@ public class MyTelServices extends Service {
 				break;
 			}
 		}
-	}	
+	}
+	
+	
+//	public class IncomingCallListener extends PhoneStateListener {
+//		private CallStateObserver mCallStateListener = null;
+//		private ITelephony mPhone;
+//	}
 }
 
 

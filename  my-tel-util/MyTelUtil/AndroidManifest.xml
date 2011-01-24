@@ -10,7 +10,18 @@
 			</intent-filter>
 		</activity>
 		<service android:enabled="true" android:name=".MyTelServices"></service>
+		<receiver android:name=".RefuseReceiver">  
+             <intent-filter>
+                  <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+                  <action android:name="android.intent.action.PHONE_STATE"/> 
+                  <action android:name="android.provider.Telephony.SMS_RECEIVED" />          
+             </intent-filter>
+        </receiver>
+		
 	</application>
 	<uses-permission android:name="android.permission.CALL_PHONE" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-</manifest> 
+	<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+	<uses-permission android:name="android.permission.SEND_SMS"/>
+	<uses-permission android:name="android.permission.RECEIVE_SMS"/>
+</manifest>

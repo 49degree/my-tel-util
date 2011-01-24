@@ -2,6 +2,7 @@ package com.yang.android.tel;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
@@ -43,5 +44,15 @@ public class Util {
 			e.printStackTrace();
 		}
 		return iTelephony ;
+	}
+	
+	public static String mapToString(Map<String,String> params){
+		StringBuffer paramsStr = new StringBuffer("{");
+		for(String key:params.keySet()){
+			paramsStr.append(paramsStr.length()==1?"":",");
+			paramsStr.append("'").append(key).append("':'").append(params.get(key)==null?"":params.get(key).trim()).append("'");
+		}
+		paramsStr.append("}");
+		return paramsStr.toString();
 	}
 }

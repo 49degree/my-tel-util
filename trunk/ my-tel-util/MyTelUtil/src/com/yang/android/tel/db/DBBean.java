@@ -18,10 +18,10 @@ import android.util.Log;
  *
  */
 public final class DBBean {
-	public static List<String> needInitTables = new ArrayList<String>(1);
+	public static Map<String,String> needInitTables = new HashMap<String,String>(1);
 	
 	static{
-		needInitTables.add("com.etelecom.android.iknow.db.DBBean$ProdList");
+		needInitTables.put("RefuseTel","com.yang.android.tel.db.DBBean$RefuseTel");
 	}
 	
 	private DBBean(){
@@ -29,93 +29,21 @@ public final class DBBean {
 	}
 	
 	/**
-	 *查询信息列表对象 
+	 *拒绝来电表 
 	 * @author szluyl
 	 *
 	 */
 	public static final class RefuseTel implements BaseColumns{
 		private RefuseTel(){
 		}
-		public static final String TABLE_NAME ="prod_query_history"; 
-		public static final String REQUEST_URL ="request_url"; 
-		public static final String REQUEST_PARAMS ="request_params"; 
-		public static final String RESPONS_CP ="respons_cp"; 
-		public static final String RESPONS_PS ="respons_ps"; 
-		public static final String RESPONS_STR ="response_str"; 
-//		public static final String RESPONS_NAME ="respons_name"; 
-//		public static final String RESPONS_DTYPE ="respons_dtype"; 
-
-		
+		public static final String TABLE_NAME ="RefuseTelNum"; 
+		public static final String REFUSE_TEL_NUM ="refuse_tel_num"; //电话号码
+		public static final String REFUSE_CALL ="refuse_call"; //是否拒绝来电
+		public static final String REFUSE_MESSAGE ="refuse_message"; //是否拒绝信息
+		public static final String REFUSE_MODI_TIME ="refuse_modi_time"; //修改时间
+		public static final String REFUSE_MEMO ="refuse_memo"; //备注
 		
 		public static final String DEFAULT_SORT_ORDER ="_id asc";
-		
-		//判断当前数据在表中是否存在
-		public static int queryRowNum(SQLiteDatabase sqlDb,String requestUrl,Map<String,String> params,int cp,int ps){
-			int rowNum = 0;
-			
-			Cursor cursor = sqlDb.query(RefuseTel.TABLE_NAME, 
-                    new String[]{"_id"}, 
-                    "request_url=? and respons_cp=? and respons_ps=? and request_params=?", 
-                    new String[]{requestUrl,String.valueOf(cp),String.valueOf(ps),RefuseTel.mapToString(params)}, null, null, null);
-			rowNum = cursor.getCount();
-			cursor.close();
-			return rowNum;
-		}
-		
-		//插入记录到当前表
-		public static void insertIntoTable(SQLiteDatabase sqlDb,String requestUrl,Map<String,String> params,
-				int cp,int ps,String responseStr){
-				ContentValues values = new ContentValues();
-				values.put(RefuseTel.REQUEST_URL, requestUrl);
-				values.put(RefuseTel.REQUEST_PARAMS, RefuseTel.mapToString(params));
-				values.put(RefuseTel.RESPONS_CP, cp);
-				values.put(RefuseTel.RESPONS_PS, ps);
-				values.put(RefuseTel.RESPONS_STR, responseStr);
-				sqlDb.insert(RefuseTel.TABLE_NAME, null, values);
+	}
 
-		}
-		//查询记录
-		public static List<String> queryList(SQLiteDatabase sqlDb,String requestUrl,Map<String,String> params,int cp,int ps){
-			Cursor cursor = sqlDb.query(RefuseTel.TABLE_NAME, 
-                    new String[]{RefuseTel.RESPONS_STR}, 
-                    "request_url=? and respons_cp=? and respons_ps=? and request_params=?", 
-                    new String[]{requestUrl,String.valueOf(cp),String.valueOf(ps),RefuseTel.mapToString(params)}, null, null, null);
-			List<String> prodList = new ArrayList<String>(cursor.getCount());
-			cursor.moveToFirst();
-			while(!cursor.isAfterLast()){
-				prodList.add(cursor.getString(0));
-				cursor.moveToNext();
-			}
-			cursor.close();
-			
-			return prodList;
-		}
-		
-		public static String mapToString(Map<String,String> params){
-			StringBuffer paramsStr = new StringBuffer("{");
-			for(String key:params.keySet()){
-				paramsStr.append(paramsStr.length()==1?"":",");
-				paramsStr.append("'").append(key).append("':'").append(params.get(key)==null?"":params.get(key).trim()).append("'");
-			}
-			paramsStr.append("}");
-			return paramsStr.toString();
-		}
-	}
-	
-	public static void main(String[] args){
-		try{
-			for(String tableName:DBBean.needInitTables){
-				Class newoneClass = Class.forName(tableName);
-				Field[] fs = newoneClass.getFields();
-				for(Field f:fs){
-					System.out.println(f.getGenericType());
-				}
-				
-			}
-		}catch(ClassNotFoundException e){
-			
-		}
-	}
-	
-	
 }

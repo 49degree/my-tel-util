@@ -1,7 +1,5 @@
 package com.yang.android.tel;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import android.app.Activity;
@@ -14,13 +12,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.telephony.PhoneNumberUtils;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -30,7 +24,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.internal.telephony.ITelephony;
+import com.yang.android.tel.db.DBOperator;
+
 
 public class MyTelUtil extends Activity {
 	public static String TAG = "MyTelUtil";

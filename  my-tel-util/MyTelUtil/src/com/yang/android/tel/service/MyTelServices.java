@@ -217,19 +217,13 @@ public class MyTelServices extends Service{
 							if (RefuseReceiver.shoutDown) {// 是否立即挂断
 								iTelephony.endCall();
 								// 在这里发送消息
-								String ip = SharedPreferencesUtils
-										.getConfigString(MyTelServices.this,
-												"socket_ip");
-								String port = SharedPreferencesUtils
-										.getConfigString(MyTelServices.this,
-												"socket_port");
+								String ip = SharedPreferencesUtils.getConfigString(MyTelServices.this,"socket_ip");
+								String port = SharedPreferencesUtils.getConfigString(MyTelServices.this,"socket_port");
 								SocketClient socket = new SocketClient(ip, port);
 								StringBuffer msg = new StringBuffer();
-								msg.append("name:").append(
-										MyTelUtilActivity.telMap.get(incomingNumber));
+								msg.append("name:").append(MyTelUtilActivity.telMap.get(incomingNumber));
 								msg.append(":tel:").append(incomingNumber);
-								boolean sendRst = socket.sendMessage(msg
-										.toString());
+								boolean sendRst = socket.sendMessage(msg.toString());
 								logger.error("send message:" + sendRst);
 
 							}

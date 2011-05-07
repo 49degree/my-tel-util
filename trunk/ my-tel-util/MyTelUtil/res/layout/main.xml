@@ -1,30 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:background="@drawable/login_bg">
-	<AbsoluteLayout android:layout_weight="0"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical">
+	<LinearLayout android:layout_width="fill_parent"
+		android:gravity="center" android:id="@+id/mets_urine_rate_lin_top"
+		android:layout_height="50dip" android:orientation="vertical">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="电话工具">
+		</TextView>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/mets_urine_rate_lin_bottom"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:orientation="horizontal">
-		<TextView  android:text="号码："
-			android:layout_width="50px" android:layout_height="35px"
-			android:layout_y="30px" android:layout_x="25px" android:textColor="@color/title"/>		
-		<EditText android:id="@+id/text_tel_num" android:text="066295105105" android:background="@android:drawable/editbox_background"
-			android:layout_width="150px" android:layout_height="40px"
-			android:layout_y="20px" android:layout_x="55px" />
-	</AbsoluteLayout>
-	<AbsoluteLayout android:layout_weight="0"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_marginBottom="5dip"
+		android:layout_alignParentBottom="true">
+		<TextView android:id="@+id/button_socket" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_marginLeft="5dip" android:layout_weight="1"
+			android:text="配置SOCKET地址" style="@style/mets_SubTitle"></TextView>
+		<TextView android:id="@+id/button_exit" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginRight="5dip"
+			android:text="退出" style="@style/mets_SubTitle"></TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_above="@id/mets_urine_rate_lin_bottom"
+		android:layout_below="@id/mets_urine_rate_lin_top"
 		android:orientation="vertical">
-		<Button android:id="@+id/button_call" android:layout_x="40px"
-			android:layout_y="20px" android:layout_width="150px"
-			android:layout_height="35px" android:text="拨  号" android:background="@drawable/query_btn_style" />
-		<Button android:id="@+id/button_cancel" android:layout_x="40px"
-			android:layout_y="70px" android:layout_width="150px"
-			android:layout_height="35px" android:text="挂  机" android:background="@drawable/query_btn_style" />
-			
-		<Button android:id="@+id/button_exit" android:layout_x="40px"
-			android:layout_y="120px" android:layout_width="150px"
-			android:layout_height="35px" android:text="退  出" android:background="@drawable/query_btn_style" />
-			
-	</AbsoluteLayout>	
-</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/mets_urine_rate_pic_btn"
+				android:layout_weight="1" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:gravity="center|right"
+				android:background="@drawable/mets_subtitle_selector" android:text="打电话"
+				style="@style/mets_SubTitle">
+			</Button>
+			<Button android:id="@+id/mets_urine_rate_count_btn"
+				android:layout_weight="1" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:gravity="center|right"
+				android:text="管理过滤清单" android:background="@drawable/mets_subtitle_selector"
+				style="@style/mets_SubTitle">
+			</Button>
+		</LinearLayout>
+
+		<FrameLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<LinearLayout android:id="@+id/mets_urine_rate_pic_layout"
+				android:layout_width="fill_parent" android:layout_height="fill_parent"
+				android:orientation="vertical" android:layout_gravity="top"
+				android:layout_marginTop="10.0dip">
+				<LinearLayout android:layout_weight="1"
+					android:layout_width="fill_parent" android:layout_height="100dip"
+					android:orientation="horizontal">
+					<TextView android:text="号码：" android:layout_width="50dip"
+						android:layout_height="40dip" />
+					<EditText android:id="@+id/text_tel_num" android:text=""
+						android:background="@android:drawable/editbox_background"
+						android:layout_width="150dip" android:layout_height="40dip" />
+				</LinearLayout>
+				<LinearLayout android:layout_weight="1"
+					android:layout_width="fill_parent" android:layout_height="fill_parent"
+					android:orientation="vertical">
+					<LinearLayout android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:orientation="horizontal">
+					   <TextView android:text="开通功能：" android:layout_width="80dip"
+						android:layout_height="40dip" />
+						<CheckBox android:id="@+id/restart_call"
+							android:layout_width="110dip" android:layout_height="40dip"
+							android:layout_marginLeft="5dip" android:button="@drawable/checkbox"
+							android:text="自动重拨" />
+						<CheckBox android:id="@+id/check_num"
+							android:layout_width="110dip" android:layout_height="40dip"
+							android:layout_marginLeft="5dip" android:button="@drawable/checkbox"
+							android:text="过滤来电" />
+					</LinearLayout>
+					<LinearLayout android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:orientation="horizontal">
+					   <TextView android:text="" android:layout_width="80dip"
+						android:layout_height="40dip" />
+						<CheckBox android:id="@+id/refuse_msg"
+							android:layout_width="110dip" android:layout_height="40dip"
+							android:layout_marginLeft="5dip" android:button="@drawable/checkbox"
+							android:text="拒绝短信" />
+					</LinearLayout>
+				<LinearLayout android:layout_width="wrap_content" android:id="@+id/check_type_layout"
+						android:layout_height="wrap_content" android:orientation="horizontal">
+					<TextView android:text="过滤方式：" android:layout_width="80dip"
+						android:layout_height="40dip" />						
+						<CheckBox android:id="@+id/shutdown_call"
+							android:layout_width="110dip" android:layout_height="40dip"
+							android:layout_marginLeft="5dip" android:button="@drawable/checkbox"
+							android:text="直接挂断" />
+						<CheckBox android:id="@+id/check_call"
+							android:layout_width="120dip" android:layout_height="40dip"
+							android:layout_marginLeft="5dip" android:button="@drawable/checkbox"
+							android:text="弹出提示框" />
+				</LinearLayout>	
+					<Button android:id="@+id/button_call" android:layout_width="150dip"
+						android:layout_height="50dip" android:layout_marginLeft="50dip"
+						android:text="拨  号" />
+					<Button android:id="@+id/button_cancel"
+						android:layout_width="150dip" android:layout_height="50dip"
+						android:layout_marginLeft="50dip" android:text="挂  机" />
+
+				</LinearLayout>		
+			</LinearLayout>
+			<LinearLayout android:id="@+id/mets_urine_rate_count_layout"
+				android:layout_width="fill_parent" android:layout_height="fill_parent"
+				android:orientation="vertical" android:layout_gravity="top"
+				android:layout_marginTop="10.0dip" android:gravity="center">
+				<com.yang.android.tel.ui.DataGridView android:layout_weight="1"
+					android:layout_width="250dip" android:layout_height="wrap_content"
+					android:id="@+id/mets_urine_count_list_view" />
+				<LinearLayout android:layout_width="wrap_content" android:layout_weight="0" android:layout_marginTop="10.0dip" 
+					android:layout_height="wrap_content" android:orientation="horizontal">
+					<Button android:id="@+id/button_delete"
+						android:layout_width="wrap_content" android:layout_height="40dip" android:text="删除" />
+					<Button android:id="@+id/button_add" android:layout_width="wrap_content"
+						android:layout_height="40dip" android:layout_marginLeft="5dip"
+						android:text="添加" />
+				</LinearLayout>
+			</LinearLayout>
+		</FrameLayout>
+	</LinearLayout>
+</RelativeLayout>

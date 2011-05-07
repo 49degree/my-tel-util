@@ -13,14 +13,19 @@ import android.widget.TextView;
 
 import com.yang.android.tel.R;
 import com.yang.android.tel.log.Logger;
+import com.yang.android.tel.network.SocketClient;
 import com.yang.android.tel.receiver.RefuseReceiver;
 import com.yang.android.tel.service.MyTelServices;
+import com.yang.android.tel.utils.SharedPreferencesUtils;
 import com.yang.android.tel.utils.Utils;
 
 public class IncomingCallActivity extends Activity implements OnClickListener {
 	public Logger logger = Logger.getLogger(IncomingCallActivity.class);
 	ImageButton answerButton = null;
 	ImageButton ignoreButton = null;
+	String callNum = null;
+	String callName = null;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,8 +35,8 @@ public class IncomingCallActivity extends Activity implements OnClickListener {
 
 		Intent in = this.getIntent();
 		Bundle ex = in.getExtras();
-		String callNum = ex.getString("callNumber");
-		String callName = ex.getString("callName");
+		callNum = ex.getString("callNumber");
+		callName = ex.getString("callName");
 		((TextView) this.findViewById(R.id.caller_number)).setText(callNum);
 		((TextView) this.findViewById(R.id.caller_name)).setText(callName);
 		
@@ -64,6 +69,16 @@ public class IncomingCallActivity extends Activity implements OnClickListener {
 				TelephonyManager tManager = (TelephonyManager) this
 						.getSystemService(Context.TELEPHONY_SERVICE);
 				Utils.getIPhone(tManager).endCall();
+				// 在这里发送消息
+				String ip = SharedPreferencesUtils.getConfigString(this,"socket_ip");
+				String port = SharedPreferencesUtils.getConfigString(this,"socket_port");
+				SocketClient socket = new SocketClient(ip, port);
+				StringBuffer msg = new StringBuffer();
+				msg.append("name:").append(callName);
+				msg.append(":tel:").append(callNum);
+				boolean sendRst = socket.sendMessage(msg.toString());
+				logger.error("send message:" + sendRst);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

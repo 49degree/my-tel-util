@@ -21,21 +21,20 @@ public class SocketClient{
 	
 	
 	
-	public boolean sendMessage(String value){
-		
-		  BufferedReader in;
-		  Socket socket = null;
-		  PrintWriter out = null;
-		try{
-			logger.error(ip+":"+port+":beging=========================");
-			   socket = new Socket(ip,Integer.parseInt(port));
-			   out = new PrintWriter(socket.getOutputStream(),true);
-			   out.println(value);
-			   out.flush();;
-			   out.close();
-			   socket.close();
-			   logger.error("end=========================");
-		}catch(Exception e){
+	public boolean sendMessage(String value) {
+
+		BufferedReader in = null;
+		Socket socket = null;
+		PrintWriter out = null;
+		try {
+			logger.error(ip + ":" + port + ":beging=========================");
+			socket = new Socket(ip, Integer.parseInt(port));
+			out = new PrintWriter(socket.getOutputStream(), true);
+			out.println(value);
+			out.flush();
+			out.close();
+			logger.error("end=========================");
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		} finally {
@@ -43,7 +42,7 @@ public class SocketClient{
 				socket.close();
 			} catch (Exception e) {
 
-			} 
+			}
 		}
 		return true;
 	}

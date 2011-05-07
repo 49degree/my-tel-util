@@ -1,9 +1,9 @@
 package com.yang.android.tel.db;
 
 import java.lang.reflect.Field;
-
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +70,7 @@ public class DBOperator extends SQLiteOpenHelper {
 	 * 查询COUROR
 	 * @return
 	 */
-	private static Cursor queryCursor(String tableBean,SQLiteDatabase sqlDb,String[] returnColumn,
+	public static Cursor queryCursor(String tableBean,SQLiteDatabase sqlDb,String[] returnColumn,
 			Map<String,String> params) throws ClassNotFoundException,NoSuchFieldException,IllegalAccessException{
 		try{
 			//params转换成可执行查询条件
@@ -158,6 +158,40 @@ public class DBOperator extends SQLiteOpenHelper {
 		return returnList;
 	}
 	
+	/**
+	 * 查询记录到MAP中
+	 * @param tableBean
+	 * @param sqlDb
+	 * @param params
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws NoSuchFieldException
+	 */
+	public static List<Map<String,String>> queryMapList(String tableBean,SQLiteDatabase sqlDb,String[] returnColumn,
+			Map<String,String> params) throws ClassNotFoundException,NoSuchFieldException,IllegalAccessException{
+		 List<Map<String,String>> returnList = new ArrayList<Map<String,String>>();
+		try{
+			Cursor cursor = DBOperator.queryCursor(tableBean, sqlDb, returnColumn, params);
+			cursor.moveToFirst();
+			while(!cursor.isAfterLast()){
+				Map<String,String> columValue = new HashMap<String,String>();
+				for(int i=0;i<cursor.getColumnCount();){
+					columValue.put(returnColumn[i], cursor.getString(i++));
+				}
+				returnList.add(columValue);
+				cursor.moveToNext();
+			}
+			cursor.close();
+		}catch(ClassNotFoundException ce){
+			throw ce;
+		}catch(NoSuchFieldException nfe){
+			throw nfe;
+		}catch(IllegalAccessException ile){
+			throw ile;
+		}
+		
+		return returnList;
+	}	
 	/**
 	 * 插入记录到当前表
 	 * @param sqlDb

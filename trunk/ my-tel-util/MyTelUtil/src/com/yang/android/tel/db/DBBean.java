@@ -37,6 +37,7 @@ public final class DBBean {
 		private RefuseTel(){
 		}
 		public static final String TABLE_NAME ="RefuseTelNum"; 
+		public static final String REFUSE_PEOPLE_NAME ="refuse_people_name"; //姓名
 		public static final String REFUSE_TEL_NUM ="refuse_tel_num"; //电话号码
 		public static final String REFUSE_CALL ="refuse_call"; //是否拒绝来电
 		public static final String REFUSE_MESSAGE ="refuse_message"; //是否拒绝信息

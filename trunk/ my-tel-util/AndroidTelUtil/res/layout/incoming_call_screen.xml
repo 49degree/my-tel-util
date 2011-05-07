@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout android:id="@+id/call_layout"
+	android:background="@color/incoming_background" android:focusable="false"
+	android:layout_width="wrap_content" android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<TextView android:textSize="20.0dip" android:textColor="@color/white"
+		android:id="@+id/incoming_text" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="2.0dip"
+		android:text="语音通话" android:layout_centerHorizontal="true" />
+	<FrameLayout android:id="@+id/caller_photo"
+		android:background="@color/contact_pic_frame" android:padding="2.0dip"
+		android:layout_width="200.0dip" android:layout_height="200.0dip"
+		android:layout_marginTop="10.0dip" android:layout_below="@id/incoming_text"
+		android:layout_centerHorizontal="true" android:foregroundGravity="center" />
+	<TextView android:textSize="27.0dip" android:textColor="#ffffffff"
+		android:gravity="center" android:id="@+id/caller_name"
+		android:focusable="false" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="5.0dip"
+		android:text="陌生人" android:layout_below="@id/caller_photo" />
+	<TextView android:textSize="25.0dip" android:textColor="#ffffffff"
+		android:gravity="center" android:id="@+id/caller_number"
+		android:focusable="false" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginBottom="0.0dip"
+		android:text="陌生人" android:layout_below="@id/caller_name" />
+	<TextView android:textSize="20.0dip" android:textColor="#ffffffff"
+		android:gravity="center" android:id="@+id/caller_number_type"
+		android:focusable="false" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginBottom="5.0dip"
+		android:text="" android:layout_below="@id/caller_number" />
+	<ImageButton android:id="@+id/answer_button"
+		android:background="@drawable/answerbuttonselector"
+		android:layout_width="130.0dip" android:layout_height="wrap_content"
+		android:layout_marginLeft="10.0dip" android:layout_marginBottom="73.0dip"
+		android:src="@drawable/ic_answer" android:layout_below="@+id/caller_number_type"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentBottom="true" />
+	<ImageButton android:id="@+id/ignore_button"
+		android:background="@drawable/ignorebuttonselector"
+		android:layout_width="130.0dip" android:layout_height="wrap_content"
+		android:layout_marginRight="10.0dip" android:layout_marginBottom="73.0dip"
+		android:src="@drawable/ic_ignore" android:layout_below="@+id/caller_number_type"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentBottom="true" />
+</RelativeLayout>

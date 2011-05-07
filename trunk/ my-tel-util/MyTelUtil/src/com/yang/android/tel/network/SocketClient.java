@@ -20,33 +20,39 @@ public class SocketClient{
 	}
 	
 	
-	
-	public boolean sendMessage(String value) {
-
-		BufferedReader in = null;
-		Socket socket = null;
-		PrintWriter out = null;
-		try {
-			logger.error(ip + ":" + port + ":beging=========================");
-			socket = new Socket(ip, Integer.parseInt(port));
-			out = new PrintWriter(socket.getOutputStream(), true);
-			out.println(value);
-			out.flush();
-			out.close();
-			logger.error("end=========================");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			try {
-				socket.close();
-			} catch (Exception e) {
-
+	boolean result = true;
+	public boolean sendMessage(final String value) {
+		
+		new Thread(){
+			public void run(){
+				BufferedReader in = null;
+				Socket socket = null;
+				PrintWriter out = null;
+				try {
+					logger.error(ip + ":" + port + ":beging=========================");
+					socket = new Socket(ip, Integer.parseInt(port));
+					socket.setSoTimeout(30*1000);
+					out = new PrintWriter(socket.getOutputStream(), true);
+					out.println(value);
+					out.flush();
+					out.close();
+					logger.error("end=========================");
+				} catch (Exception e) {
+					e.printStackTrace();
+					result = false;
+				} finally {
+					try {
+						socket.close();
+					} catch (Exception e) {
+					}
+				}
 			}
-		}
-		return true;
+		}.start();
+
+		return result;
 	}
 	
 
+	
 
 }

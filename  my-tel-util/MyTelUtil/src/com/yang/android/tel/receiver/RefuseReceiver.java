@@ -110,8 +110,7 @@ public class RefuseReceiver  extends BroadcastReceiver{
 											// TODO Auto-generated catch block
 											e.printStackTrace();
 										}
-										Intent incomingCall = new Intent(fcontext,
-												ImcomingBlackActivity.class);
+										Intent incomingCall = new Intent(fcontext,ImcomingBlackActivity.class);
 										incomingCall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 										fcontext.startActivity(incomingCall);
 									}
@@ -127,7 +126,7 @@ public class RefuseReceiver  extends BroadcastReceiver{
 										}
 										Intent incomingCall = new Intent(fcontext,
 												IncomingCallActivity.class);
-										incomingCall.putExtra("callName",MyTelUtilActivity.telMap.containsKey(phoneNum));
+										incomingCall.putExtra("callName",MyTelUtilActivity.telMap.get(phoneNum));
 										incomingCall.putExtra("callNumber",phoneNum);
 										incomingCall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 										fcontext.startActivity(incomingCall);

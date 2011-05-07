@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="back_ground">#D3D3D3</color>
+	<color name="title">#00133E</color>
+	<color name="link_color">#00008B</color>
+	<color name="query_push_edit_color">#FFFFFF</color> 
+    <color name="black">#ff000000</color>
+    <color name="contact_pic_frame">#ffd8d8d8</color>
+    <color name="incoming_background">#ff000000</color>
+    <color name="white">#ffffffff</color>	
+</resources>

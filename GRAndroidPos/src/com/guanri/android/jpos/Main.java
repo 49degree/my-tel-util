@@ -28,7 +28,7 @@ public class Main extends Activity {
 	EditText read_info = null;
 	Button send = null;
 	Button open = null;
-	
+	  
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

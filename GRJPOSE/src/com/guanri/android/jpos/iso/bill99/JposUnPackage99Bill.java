@@ -346,7 +346,7 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 */
 	public Object parseFeild34() throws FieldTooLongException, FieldIsNullException{
 		
-		String result = floatASCIItoStr(2);
+		String result = floatbytetoint(2);
 		return (Object)result;
 	}
 	
@@ -510,7 +510,7 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 */
 	public Object parseFeild44() throws FieldTooLongException, FieldIsNullException{
 
-		String result = floatASCIItoStr(15);
+		String result = floatASCIItoStr(2);
 		return (Object)result;
 	}
 	

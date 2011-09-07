@@ -549,7 +549,7 @@ public class JposPackage99Bill extends JposPackageFather{
 		if(acount!=null&&acount.length()>25){
 			throw new FieldTooLongException("Feild44 to long");
 		}
-		byte[] temp = str2ASCII(acount,25);
+		byte[] temp =  floatLengthstr2ASCII(acount,2);
 		try {
 			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
 		} catch (UnsupportedEncodingException e) {

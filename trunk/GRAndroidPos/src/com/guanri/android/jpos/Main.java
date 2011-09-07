@@ -25,7 +25,7 @@ public class Main extends Activity {
 	PosCommandControlImp posCommandControlImp = null;
 	
 	EditText info = null;
-	EditText read_info = null;
+	EditText read_info = null;  
 	Button send = null;
 	Button open = null;
 	  

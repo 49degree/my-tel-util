@@ -62,7 +62,7 @@ public class Main extends Activity {
         			//send.setClickable(false);
         		}
         	}
-        });
+        }); 
         
         
         logger.error("开始了");

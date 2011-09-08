@@ -125,16 +125,16 @@ public class CommandControl {
 	
 	/**
 	 * 发送命令
-	 * @param upCommandParse
+	 * @param sendData
 	 * @return
 	 * @throws IOException
 	 * @throws CommandParseException
 	 */
 
-	private PosMessageBean submit(PosCommandParse upCommandParse) throws IOException,CommandParseException{
+	private PosMessageBean submit(byte[] sendData) throws IOException,CommandParseException{
 		recvAllBufferIndex = 0;
 		try {
-			out.write(upCommandParse.getTransferByte());//发送数据
+			out.write(sendData);//发送数据
 			out.flush(); 
 			
 			while (in!=null&&!stopReceive) {

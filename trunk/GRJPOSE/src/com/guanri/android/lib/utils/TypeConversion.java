@@ -14,20 +14,135 @@ import java.nio.charset.Charset;
  */
 public class TypeConversion {
 	/**
+	 * byte[]转换成short数
+	 * 
+	 * @param data
+	 *            包括short的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return short数
+	 */
+	
+	public static short bytesToShortEx(byte[] data, int offset) {
+		short num = 0;
+		for (int i = offset; i < offset + 2; i++) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+   	
+	/**
+	 * byte[]转换成short数
+	 * 
+	 * @param data
+	 *            包括short的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return short数
+	 */	
+	
+	public static short bytesToShort(byte[] data, int offset) {
+		short num = 0;
+		for (int i = offset + 1; i >offset-1 ; i--) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+	
+	
+	/**
+	 * byte[]转换成int数 高位在前
+	 * 
+	 * @param data
+	 *            包括int的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return int数
+	 */
+	public static int bytesToIntEx(byte[] data, int offset) {
+		int num = 0;
+		for (int i = offset; i < offset + 4; i++) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+	/**
+	 * byte[]转换成int数 低位在前
+	 * 
+	 * @param data
+	 *            包括int的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return int数
+	 */
+	
+	public static int bytesToInt(byte[] data, int offset) {
+		int num = 0;
+		for (int i = offset + 3; i > offset-1; i--) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+
+
+	/**
+	 * byte[]转换成long数 高位在前
+	 * 
+	 * @param data
+	 *            包括long的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return long数
+	 */
+	public static long bytesToLongEX(byte[] data, int offset) {
+		long num = 0;
+		for (int i = offset; i < offset + 8; i++) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+	/**
+	 * byte[]转换成long数 低位在前
+	 * 
+	 * @param data
+	 *            包括long的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return long数
+	 */
+	public static long bytesToLong(byte[] data, int offset) {
+		long num = 0;
+		for (int i = offset+7; i > offset - 1; i--) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+	/**
 	 * short类型转换成byte[] 高位在前
 	 * 
 	 * @param num
 	 *            short数
 	 * @return byte[]
-	 
-	public static byte[] shortToBytes(short num) {
+	 */
+	public static byte[] shortToBytesEx(short num) {
 		byte[] b = new byte[2];
 		for (int i = 0; i < 2; i++) {
 			b[i] = (byte) (num >>> (8-i*8));
 		}  
 		return b;
 	}
-    */
+    
 	/**
 	 * short类型转换成byte[] 低位在前
 	 * 
@@ -51,8 +166,8 @@ public class TypeConversion {
 	 * @param num
 	 *            int数
 	 * @return byte[]
-	 
-	public static byte[] intToBytes(int num) {
+	 */ 
+	public static byte[] intToBytesEx(int num) {
 
 		byte[] b = new byte[4];
 		for (int i = 0; i < 4; i++) {
@@ -60,7 +175,7 @@ public class TypeConversion {
 		}
 		return b;
 	}
-	*/ 
+	
 	/**
 	 * int类型转换成byte[] 低位在前
 	 * 
@@ -79,13 +194,13 @@ public class TypeConversion {
 
 	
 	/**
-	 * long类型转换成byte[]
+	 * long类型转换成byte[] 高位在前
 	 * 
 	 * @param num
 	 *            long数
 	 * @return byte[]
-	 
-	public static byte[] longToBytes(long num) {
+	 */
+	public static byte[] longToBytesEx(long num) {
 		byte[] b = new byte[8];
 		for (int i = 0; i < 8; i++) {
 			b[i] = (byte) (num >>> (56 - i * 8));
@@ -94,7 +209,6 @@ public class TypeConversion {
 		
 		return b;
 	}
-	*/
 	/**
 	 * long类型转换成byte[] 低位在前
 	 * 
@@ -110,119 +224,10 @@ public class TypeConversion {
 		return b;
 	}
 	
-	/**
-	 * byte[]转换成short数
-	 * 
-	 * @param data
-	 *            包括short的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return short数
-	 
+
 	
-	public static short bytesToShort(byte[] data, int offset) {
-		short num = 0;
-		for (int i = offset; i < offset + 2; i++) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
-   */	
-	/**
-	 * byte[]转换成short数
-	 * 
-	 * @param data
-	 *            包括short的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return short数
-	 */	
-	
-	public static short bytesToShort(byte[] data, int offset) {
-		short num = 0;
-		for (int i = offset + 1; i >offset-1 ; i--) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
-	
-	
-	/**
-	 * byte[]转换成int数 高位在前
-	 * 
-	 * @param data
-	 *            包括int的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return int数
-	 
-	public static int bytesToInt(byte[] data, int offset) {
-		int num = 0;
-		for (int i = offset; i < offset + 4; i++) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
-	*/
-	/**
-	 * byte[]转换成int数 低位在前
-	 * 
-	 * @param data
-	 *            包括int的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return int数
-	 */
-	
-	public static int bytesToInt(byte[] data, int offset) {
-		int num = 0;
-		for (int i = offset + 3; i > offset-1; i--) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
 	
 
-
-	/**
-	 * byte[]转换成long数
-	 * 
-	 * @param data
-	 *            包括long的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return long数
-	 
-	public static long bytesToLong(byte[] data, int offset) {
-		long num = 0;
-		for (int i = offset; i < offset + 8; i++) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
-	*/
-	/**
-	 * byte[]转换成long数 低位在前
-	 * 
-	 * @param data
-	 *            包括long的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return long数
-	 */
-	public static long bytesToLong(byte[] data, int offset) {
-		long num = 0;
-		for (int i = offset+7; i > offset - 1; i--) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
 	
 	/**
 	 * byte 转换成无符号整数

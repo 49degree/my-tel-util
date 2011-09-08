@@ -9,11 +9,12 @@ import com.guanri.android.lib.utils.TypeConversion;
  *
  */
 public class JposMessageType99Bill extends JposMessageType{
+	//003B6000090000010008002020010000C00008990000000005000932303130303630313130343131303034353131303031320009303030303031303031
 	
 	// 报文长度
 	private Short pageLength;
 	// ID
-	private String ID ;
+	private byte id ;
 	// 目的地址
 	private String ServerAddress ;
 	// 源地址
@@ -28,14 +29,13 @@ public class JposMessageType99Bill extends JposMessageType{
 		this.pageLength = pageLength;
 	}
 
-	public String getID() {
-		return ID;
-	}
 
-	public void setID(String iD) {
-		ID = iD;
+	public byte getId() {
+		return id;
 	}
-
+	public void setId(byte id) { 
+		this.id = id;
+	}
 	public String getServerAddress() {
 		return ServerAddress;
 	}
@@ -59,25 +59,29 @@ public class JposMessageType99Bill extends JposMessageType{
 	public void setPagever(String pagever) {
 		this.pagever = pagever;
 	}
-
+	
+	
+	public int getMessageTypeLength(){
+		return 11;
+	}
 	@Override
 	public byte[] parseValue() {
 		// 003B60000000900100：003B(长度字节) + 6000000090(TPDU) + 0100(报文版本号) 
 		// TODO Auto-generated method stub
 		
 		byte[] lengthbyte = TypeConversion.shortToBytesEx(getPageLength());
-		byte[] TPDUbyte = TypeConversion.str2bcd(getID() + "" + getServerAddress()+getAddress());
+		byte[] TPDUbyte = TypeConversion.str2bcd(getServerAddress()+getAddress());
 		byte[] pageverbyte = TypeConversion.str2bcd(getPagever());
-		byte[] msgtypebyte = TypeConversion.str2bcd(String.valueOf(getMessageType()));
+		byte[] msgtypebyte = TypeConversion.str2bcd("0"+String.valueOf(getMessageType()));
 		
 		byte[] result = new byte[11];
-		System.arraycopy(result, 0, lengthbyte, 0, 2);
+		System.arraycopy(lengthbyte, 0, result, 0, 2);
+		result[2] = id;
+		System.arraycopy(TPDUbyte, 0, result, 3, 4);
 		
-		System.arraycopy(result, 0, TPDUbyte, 2, 5);
+		System.arraycopy(pageverbyte, 0, result, 7, 2);
 		
-		System.arraycopy(result, 0, pageverbyte, 7, 2);
-		
-		System.arraycopy(result, 0, msgtypebyte, 9, 2);
+		System.arraycopy(msgtypebyte, 0, result, 9, 2);
 		
 		return result;
 		

@@ -7,22 +7,25 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.TreeMap;
 
-
 import com.guanri.android.exception.CommandParseException;
 import com.guanri.android.jpos.bean.PosMessageBean;
+import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefineUnionpay;
+import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
+import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
 import com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay;
 import com.guanri.android.jpos.iso.unionpay.JposPackageUnionPay;
 import com.guanri.android.jpos.pos.data.PosCommandParse;
+import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 import com.guanri.android.lib.utils.Utils;
 
 public class CommandControl {
+	public static Logger logger = Logger.getLogger(CommandControl.class);//日志对象
+	
 	private static CommandControl instance = new CommandControl();
 	private String serverIp = "211.148.7.252";//ip地址
 	private int serverPort = 7001;//端口号
-//	private int connTimeOut;//连接超时时间
-//	private int msgTimeOut;//数据发送超时时间
 	
 	private Socket socket = null;//连接对象
 	private InputStream in = null;//输入流
@@ -89,10 +92,11 @@ public class CommandControl {
 	private byte[] recvbuf = new byte[1024];
 	private int recvAllBufferIndex = 0;
 	private boolean isConnect = false;//是否连接
+
 	/**
-	 * 连接服务器
-	 * @return
-	 * @throws IOException
+	 *  连接服务器
+	 *  connectTimeOut;//连接超时时间
+	 *  readTimeOut;//数据发送超时时间
 	 */
 	public synchronized boolean connect(int connectTimeOut,int readTimeOut) throws IOException{
 		
@@ -127,7 +131,7 @@ public class CommandControl {
 	 * @throws CommandParseException
 	 */
 
-	private synchronized PosMessageBean submit(PosCommandParse upCommandParse) throws IOException,CommandParseException{
+	private PosMessageBean submit(PosCommandParse upCommandParse) throws IOException,CommandParseException{
 		recvAllBufferIndex = 0;
 		try {
 			out.write(upCommandParse.getTransferByte());//发送数据
@@ -183,7 +187,51 @@ public class CommandControl {
 	
 	
 	public static void main(String[] args){
+		logger.debug(TypeConversion.byteTo0XString(bill99longin()));
+	}
+	
+	
+	/**
+	 * 银联签到方法
+	 * @return 返回签到报文
+	 */
+	public static byte[] bill99longin(){
+		//构造签到所需各域
+		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+		// 域11 流水号
+		sendMap.put(11, "000001");
+		// 域41 终端代码
+		sendMap.put(41, "00000001");
+		// 域42 商户代码
+		sendMap.put(42, "000000000000001");
+		// 域60 自定义域     60.1 交易类型码 00  60.2 批次号  000001 网络管理信息码 001
+		sendMap.put(60, "000000010001");
+		// 域63 自定义域  63.1 操作员代码
+		sendMap.put(63, "001");
 		
+		
+		
+		JposMessageType99Bill messageType = new JposMessageType99Bill();
+		messageType.setPageLength((short)59);
+		messageType.setId((byte)0x60);  
+		messageType.setServerAddress("0000");
+		messageType.setServerAddress("0000");
+		messageType.setAddress("0090");
+		messageType.setPagever("0100");
+		
+//		messageType.setServerAddress("0000");
+//		messageType.setAddress("0000");
+//		messageType.setAppType("60");
+//		messageType.setSoftVer("22");
+//		messageType.setPosstate("0");
+//		messageType.setDisposal("3");
+//		messageType.setPreserving("000000");
+		//设置消息头类型
+		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_POS_CHECK_IN);
+		
+		JposPackage99Bill jposPackageUnionPay = new JposPackage99Bill(sendMap,messageType);
+	 
+		return jposPackageUnionPay.packaged();
 	}
 	
 	/**
@@ -217,6 +265,7 @@ public class CommandControl {
 		
 		JposPackageUnionPay jposPackageUnionPay = new JposPackageUnionPay(sendMap,messageType);
 	 
-		return jposPackageUnionPay.packaged();
+		byte[] ruslt = jposPackageUnionPay.packaged();
+		return ruslt;
 	}
 }

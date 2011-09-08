@@ -70,8 +70,7 @@ public class JposMessageType99Bill extends JposMessageType{
 		byte[] pageverbyte = TypeConversion.str2bcd(getPagever());
 		byte[] msgtypebyte = TypeConversion.str2bcd(String.valueOf(getMessageType()));
 		
-		byte[] result = new byte[
-		                  11];
+		byte[] result = new byte[11];
 		System.arraycopy(result, 0, lengthbyte, 0, 2);
 		
 		System.arraycopy(result, 0, TPDUbyte, 2, 5);

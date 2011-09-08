@@ -14,13 +14,15 @@ import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefineUnionpay;
 import com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay;
 import com.guanri.android.jpos.iso.unionpay.JposPackageUnionPay;
 import com.guanri.android.jpos.pos.data.PosCommandParse;
+import com.guanri.android.lib.utils.TypeConversion;
+import com.guanri.android.lib.utils.Utils;
 
 public class CommandControl {
 	private static CommandControl instance = new CommandControl();
 	private String serverIp = "211.148.7.252";//ip地址
 	private int serverPort = 7001;//端口号
-	private int connTimeOut;//连接超时时间
-	private int msgTimeOut;//数据发送超时时间
+//	private int connTimeOut;//连接超时时间
+//	private int msgTimeOut;//数据发送超时时间
 	
 	private Socket socket = null;//连接对象
 	private InputStream in = null;//输入流
@@ -82,6 +84,40 @@ public class CommandControl {
 			}
 		}
 	}
+	private boolean stopReceive = false;
+	private byte[] recvAllBuffer = new byte[2048];//接收到的数据缓冲区
+	private byte[] recvbuf = new byte[1024];
+	private int recvAllBufferIndex = 0;
+	private boolean isConnect = false;//是否连接
+	/**
+	 * 连接服务器
+	 * @return
+	 * @throws IOException
+	 */
+	public synchronized boolean connect(int connectTimeOut,int readTimeOut) throws IOException{
+		
+		try {
+			if(!isConnect){
+				socket = new Socket();
+				socket.setSoTimeout(readTimeOut);//读取数据超时设置
+				
+				socket.setSendBufferSize(1024);
+				socket.setSoLinger( true, 50 );
+		        //关闭Nagle算法.立即发包   
+		        socket.setTcpNoDelay(true);
+				socket.connect(new InetSocketAddress(serverIp,serverPort), connectTimeOut);//建立连接超时设置
+				out = socket.getOutputStream();
+				in = socket.getInputStream();
+				isConnect = true;
+			}
+		} catch (IOException e) {
+			isConnect = false;
+			throw e;
+		}
+		
+		return isConnect;
+	}
+	
 	
 	/**
 	 * 发送命令
@@ -90,48 +126,37 @@ public class CommandControl {
 	 * @throws IOException
 	 * @throws CommandParseException
 	 */
-	private PosMessageBean submit(PosCommandParse upCommandParse) throws IOException,CommandParseException{
-		byte[] recvAllBuffer = null; // 接收到的数据缓冲区
-		try {
-			socket = new Socket();
-			socket.setSoTimeout(connTimeOut);//读取数据超时设置
-			
-			socket.setSendBufferSize(1024);
-			socket.setSoLinger( true, 50 );
-	        //关闭Nagle算法.立即发包   
-	        socket.setTcpNoDelay(true);
-			socket.connect(new InetSocketAddress(serverIp,serverPort), connTimeOut);//建立连接超时设置
-			out = socket.getOutputStream();
-			in = socket.getInputStream();
 
+	private synchronized PosMessageBean submit(PosCommandParse upCommandParse) throws IOException,CommandParseException{
+		recvAllBufferIndex = 0;
+		try {
 			out.write(upCommandParse.getTransferByte());//发送数据
 			out.flush(); 
 			
-			while (in != null) {// 实际上服务器严格执行一次上传一次下载服务，此处的循环实际没有意义
-				byte[] recvbuf = new byte[2048];
+			while (in!=null&&!stopReceive) {
 				int nReadbyteLength = in.read(recvbuf);// 读取数据
 				if (nReadbyteLength > -1) {
-					// 将读到的数据插入全局数据缓冲区
-					if (recvAllBuffer != null) {
-						byte[] temp = new byte[recvAllBuffer.length + nReadbyteLength];
-						System.arraycopy(recvAllBuffer, 0, temp, 0,recvAllBuffer.length);
-						System.arraycopy(recvbuf, 0, temp,recvAllBuffer.length, nReadbyteLength);
-						recvAllBuffer = temp;
-					} else {
-						recvAllBuffer = new byte[nReadbyteLength];
-						System.arraycopy(recvbuf, 0, recvAllBuffer, 0,nReadbyteLength);
+					// 将读到的数据插入全局数据缓冲区 
+					//填充数据到缓存
+					recvAllBuffer = Utils.insertEnoughLengthBuffer(recvAllBuffer, recvAllBufferIndex, recvbuf, 0, nReadbyteLength, 512);
+					recvAllBufferIndex +=nReadbyteLength;
+					//包前两个字节 是包长度, 高位在前，低位在后 ，判断收到数据是否已经收完
+					if(TypeConversion.bytesToShortEx(recvAllBuffer, 0)<=recvAllBufferIndex){
+						stopReceive = false;
 					}
 				} else {
-					// 关闭连接
-					try {
-						in.close();
-						in = null;
-						out.close();
-						out = null;
-					} catch (Exception ex) {
-
-					}
+					stopReceive = false;
 				}
+			}
+			
+			// 关闭连接
+			try {
+				in.close();
+				in = null;
+				out.close();
+				out = null;
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
 			//解析接收到的数据
 			if(recvAllBuffer != null){ 
@@ -154,59 +179,7 @@ public class CommandControl {
 			socket = null;
 		}		
 	}
-	
-	
-	/**
-	 * 发送数据线程
-	 * @author Administrator
-	 *
-	 */
-	private class SendDataRunalbe extends Thread{
-		byte[] mData = null;
-		public SendDataRunalbe(byte[] data){
-			this.mData = data;
-		}
-		public void run(){
-			if (socket != null && socket.isConnected() && !isInterrupted()&&this.mData!=null) {
-				try {
-					out.write(mData);
-					out.flush();
-				} catch (Exception e) {
-					//在这里通知连接异常
-				}
-			}
-		}
-	}
-	
-	/**
-	 * 接收数据线程
-	 * @author Administrator
-	 *
-	 */
-	private class ReceiveDataRunalbe extends Thread{
-		private boolean stopFlag = false;//停止标志
-		private synchronized void stopTask(){
-			stopFlag = true;
-		}
-		public ReceiveDataRunalbe(){
-		}
-		public void run(){
-			while (socket != null && socket.isConnected() && !isInterrupted()&&!stopFlag) {
-				try {
-					byte[] recvbuf = new byte[1024];
-					int nReadbyte = in.read(recvbuf);
-					
-					
-					
-				} catch (Exception e) {
-					//在这里通知连接异常
-					break;
-				}
-			}
-			
-			
-		}
-	}
+
 	
 	
 	public static void main(String[] args){

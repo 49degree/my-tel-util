@@ -17,8 +17,8 @@ import com.guanri.android.jpos.pos.data.PosCommandParse;
 
 public class CommandControl {
 	private static CommandControl instance = new CommandControl();
-	private String serverIp = null;//ip地址
-	private int serverPort;//端口号
+	private String serverIp = "211.148.7.252";//ip地址
+	private int serverPort = 7001;//端口号
 	private int connTimeOut;//连接超时时间
 	private int msgTimeOut;//数据发送超时时间
 	

@@ -39,8 +39,8 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 			index = index + 9;
 		    byte[] lengthbyte = new byte[2];
 		    byte[] msgtypebyte = new byte[2];
-		    System.arraycopy(data, 0, lengthbyte, 0, 2);
-		    System.arraycopy(data, 9, msgtypebyte, 0, 2);
+		    System.arraycopy(lengthbyte, 0,data , 0, 2);
+		    System.arraycopy(msgtypebyte , 9, data, 0, 2);
 		    
 		    length = TypeConversion.bytesToShortEx(lengthbyte,0);
 		    typestr = fixBcdToInt(2);

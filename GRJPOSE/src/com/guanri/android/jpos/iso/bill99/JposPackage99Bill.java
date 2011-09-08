@@ -920,13 +920,13 @@ public class JposPackage99Bill extends JposPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public byte[] parseFeild64(Object o) throws FieldTooLongException{
-		byte[] macSource = this.getMacSource();
-		macSource = CryptionControl.getInstance().getMac(macSource);//构造消息摘要的原始数据域，
+		byte[] macSource = this.getMacSource();//构造消息摘要的原始数据域，
+		
 		//使用macSource传送给POS终端得到MAC值
 		//后续增加。。。。。
+		macSource = CryptionControl.getInstance().getMac(macSource);//自己先计算MAC
 		
-		
-		return null;
+		return macSource;
 	}
 	
 	

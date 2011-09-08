@@ -8,6 +8,7 @@ import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
 import com.guanri.android.lib.log.Logger;
+import com.guanri.android.lib.utils.TypeConversion;
 
 /**
  * 银联解包类
@@ -33,14 +34,25 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 		index = 0;
 		mMessageType = new JposMessageType99Bill();
 		String typestr = "0";
+		short length = 0;
 		try {
-			typestr = fixBcdToInt(4);
+			index = index + 9;
+		    byte[] lengthbyte = new byte[2];
+		    byte[] msgtypebyte = new byte[2];
+		    System.arraycopy(data, 0, lengthbyte, 0, 2);
+		    System.arraycopy(data, 9, msgtypebyte, 0, 2);
+		    
+		    length = TypeConversion.bytesToShortEx(lengthbyte,0);
+		    typestr = fixBcdToInt(2);
+		    index = index + 2;
+		    
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		int typeint = Integer.valueOf(typestr);
 		logger.debug("解析消息类型:" + typeint);
+		logger.debug("解析消息长度:" + length);
 		mMessageType.setMessageType(Integer.valueOf(typestr));
 		
 	}

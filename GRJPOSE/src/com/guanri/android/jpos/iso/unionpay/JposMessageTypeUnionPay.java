@@ -77,7 +77,12 @@ public class JposMessageTypeUnionPay extends JposMessageType{
 		Preserving = preserving;
 	}
 	
+	
+	public int getMessageTypeLength(){
+		return 21;
+	}
 	/**
+	 * 22
 	 * 组装消息类型
 	 */
 	@Override

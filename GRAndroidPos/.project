@@ -32,9 +32,14 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>AndroidProjectLib_src</name>
+			<type>2</type>
+			<locationURI>_android_AndroidProjectLib_d3b0b05b/src</locationURI>
+		</link>
+		<link>
 			<name>GRJPOS</name>
 			<type>2</type>
-			<location>E:/yang_workgroup/workgroup/GRJPOSE/src</location>
+			<location>F:/eclipse3.5/GRJPOSE/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>

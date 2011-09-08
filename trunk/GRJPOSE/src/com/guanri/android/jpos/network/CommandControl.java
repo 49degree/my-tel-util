@@ -60,7 +60,7 @@ public class CommandControl {
 	 * @return DownCommandParse 
 	 */
 	public synchronized PosMessageBean sendUpCommand(PosCommandParse upCommandParse) throws IOException,CommandParseException{
-		PosMessageBean posMessageBean = this.submit(upCommandParse);
+		PosMessageBean posMessageBean = this.submit(upCommandParse.getTransferByte());
 		return posMessageBean;
 	}
 	
@@ -81,7 +81,7 @@ public class CommandControl {
 		public void run() {
 			try {
 				//通过handler消息机制返回结果
-				PosMessageBean osMessageBean = submit(upCommandParse);
+				PosMessageBean osMessageBean = submit(upCommandParse.getTransferByte());
 			}catch(Exception e){
 				
 			}

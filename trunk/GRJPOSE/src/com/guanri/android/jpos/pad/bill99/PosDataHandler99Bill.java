@@ -1,13 +1,14 @@
-package com.guanri.android.jpos.pad;
+package com.guanri.android.jpos.pad.bill99;
 
 import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.constant.JposConstant;
+import com.guanri.android.jpos.pad.PosDataHandlerImp;
 
-public class ReceiveFromPos {
-	public static ReceiveFromPos instance = null;
-	public static ReceiveFromPos getInstance(){
+public class PosDataHandler99Bill extends PosDataHandlerImp{
+	public static PosDataHandlerImp instance = null;
+	public static PosDataHandlerImp getInstance(){
 		if(instance==null){
-			instance = new ReceiveFromPos(); 
+			instance = new PosDataHandler99Bill(); 
 		}
 		return instance;
 	}

@@ -14,7 +14,7 @@ import java.nio.charset.Charset;
  */
 public class TypeConversion {
 	/**
-	 * byte[]转换成short数
+	 * byte[]转换成short数 高位在前
 	 * 
 	 * @param data
 	 *            包括short的byte[]

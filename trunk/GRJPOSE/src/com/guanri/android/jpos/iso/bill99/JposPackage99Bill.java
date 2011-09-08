@@ -921,7 +921,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild64(Object o) throws FieldTooLongException{
 		byte[] macSource = this.getMacSource();
-		macSource = CryptionControl.getMacBlock(macSource);//构造消息摘要的原始数据域，
+		macSource = CryptionControl.getInstance().getMac(macSource);//构造消息摘要的原始数据域，
 		//使用macSource传送给POS终端得到MAC值
 		//后续增加。。。。。
 		
@@ -950,7 +950,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	 *  那么在其内容前面补入的‘0’字符也需要带入MAC计算数据。 
 	 */
 	protected byte[] getMacSource(){
-		byte[] macSource = new byte[128];
+		byte[] macSource = new byte[256];
 		int index = 0;
 		try{
 			//2  Primary Account Number 

@@ -7,7 +7,8 @@ package com.guanri.android.jpos.iso;
  */
 public abstract class JposMessageType {
 	private int messageType ;
-	private int transactionCode ;      
+	private int transactionCode ; 
+	
 
 	
 	public int getMessageType() {
@@ -29,7 +30,15 @@ public abstract class JposMessageType {
 		this.transactionCode = transactionCode;
 	}
 
-
+	/**
+	 * 构造消息数组
+	 * @return
+	 */
 	public abstract byte[] parseValue();
+	/**
+	 * 返回消息头长度
+	 * @return
+	 */
+	public abstract int getMessageTypeLength();
 	
 }

@@ -187,7 +187,7 @@ public class CommandControl {
 	
 	
 	public static void main(String[] args){
-		logger.debug(TypeConversion.byteTo0XString(bill99longin()));
+		logger.debug(TypeConversion.byte2hex(bill99longin()));
 	}
 	
 	

@@ -76,6 +76,13 @@ public class CryptionControl {
 	
 	public byte[] getMac(byte[] mab){
 		byte[] mak = getMak();
+		
+		if(mab.length%8>0){
+			byte[] temp = new byte[(mab.length/8+1)*8];
+			System.arraycopy(mab, 0, temp, 0, mab.length);
+			mab = temp;
+		}
+		
 		byte[] result = this.encrypto(mab, mak);
 		logger.debug(TypeConversion.byte2hex(result));
 		return result;

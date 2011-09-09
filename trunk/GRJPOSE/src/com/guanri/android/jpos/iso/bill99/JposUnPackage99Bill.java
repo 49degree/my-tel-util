@@ -5,8 +5,8 @@ import java.io.UnsupportedEncodingException;
 import com.guanri.android.exception.FieldIsNullException;
 import com.guanri.android.exception.FieldTooLongException;
 import com.guanri.android.exception.PacketException;
-import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
+import com.guanri.android.jpos.network.ReadFile;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 
@@ -18,7 +18,26 @@ import com.guanri.android.lib.utils.TypeConversion;
 
 public class JposUnPackage99Bill extends JposUnPackageFather{
 
-	Logger logger = Logger.getLogger(JposUnPackage99Bill.class);
+	static Logger logger = Logger.getLogger(JposUnPackage99Bill.class);
+	
+	public static void main(String[] args){
+		
+		byte[] sendData = ReadFile.read("E:\\yang_workgroup\\workgroup\\TestJavaProject\\src\\Req.bin");
+		logger.debug("请求数据:"+TypeConversion.byte2hex(sendData));
+		try{
+			JposUnPackage99Bill jposUnPackage99Bill = new JposUnPackage99Bill(sendData);
+			jposUnPackage99Bill.unPacketed();
+		}catch(PacketException e){
+			e.printStackTrace();
+		}
+		
+		
+
+	}
+	
+	
+	
+	
 
 	JposMessageType99Bill jposMessageType99Bill = new JposMessageType99Bill();
 	public final static String PARSE_METHOD = "parseFeild";
@@ -32,36 +51,19 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 */
 	@Override
 	protected void parseMessageType(){
-		index = 0;
 		mMessageType = new JposMessageType99Bill();
-		String typestr = "0";
-		short length = 0;
-		try {
-			index = index + 9;
-		    byte[] lengthbyte = new byte[2];
-		    byte[] msgtypebyte = new byte[2];
-		    System.arraycopy(lengthbyte, 0,data , 0, 2);
-		    System.arraycopy(msgtypebyte , 9, data, 0, 2);
-		    
-		    length = TypeConversion.bytesToShortEx(lengthbyte,0);
-		    typestr = fixBcdToInt(2);
-		    index = index + 2;
-		    
-		    jposMessageType99Bill.setPageLength(length);
-		    
-		    jposMessageType99Bill.setPagever("0100");
-		    jposMessageType99Bill.setMessageType(Integer.valueOf(typestr));
-		    
-		    
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		int typeint = Integer.valueOf(typestr);
-		logger.debug("解析消息类型:" + typeint);
-		logger.debug("解析消息长度:" + length);
-		mMessageType.setMessageType(Integer.valueOf(typestr));
-		
+		mMessageType.setPageLength(TypeConversion.bytesToShortEx(data,0));
+		index += 2;
+		((JposMessageType99Bill)mMessageType).setId(data[2]);
+		index ++;
+		((JposMessageType99Bill)mMessageType).setServerAddress(TypeConversion.bcd2string(data, index, 2));
+		index += 2;
+		((JposMessageType99Bill)mMessageType).setAddress(TypeConversion.bcd2string(data, index, 2));
+		index += 2;
+		((JposMessageType99Bill)mMessageType).setPagever(TypeConversion.bcd2string(data, index, 2));
+		index += 2;
+		((JposMessageType99Bill)mMessageType).setMessageType(Integer.parseInt(TypeConversion.bcd2string(data, index, 2)));
+		index += 2;
 	}
 	
 	
@@ -584,7 +586,7 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 
 		String result;
 		try {
-			result = asciiToString(3);
+			result = fixBcdToInt(3);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -715,7 +717,7 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public Object parseFeild60() throws FieldTooLongException, FieldIsNullException{
-		String result = floatASCIItoStr(3);
+		String result = floatbytetoint(3);
 		return (Object)result;
 	}
 	
@@ -782,10 +784,11 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public Object parseFeild64() throws FieldTooLongException, FieldIsNullException{
-		
-		return null;
+		String mac = TypeConversion.byte2hex(data, index, 8);
+		return mac;
 	}
 	
+
 	/**
 	 * 解TLV数据
 	 * 目前只处理 24 25 26 字段
@@ -827,5 +830,5 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 		}
 		return null;
 		
-	}
+	}	
 }

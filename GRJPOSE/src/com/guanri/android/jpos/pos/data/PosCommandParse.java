@@ -20,13 +20,6 @@ public class PosCommandParse {
 	private byte[] transferByte;//交互的数据
 	private PosMessageBean posMessageBean;//消息内容对象
 	
-	private String packageHeader = null;//包头
-	private int packageLength = 0;//长度  长度为高在前，低在后
-	private byte[] message = null;//消息内容
-	private byte[] checkData = null;//校验和：从包头到MAC（包含包头和MAC字段）所有数据的异或值
-	
-
-	
 	/**
 	 * 构造函数
 	 * 

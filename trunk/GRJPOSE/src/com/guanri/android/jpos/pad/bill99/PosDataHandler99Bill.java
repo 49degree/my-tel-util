@@ -4,7 +4,7 @@ import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.jpos.pad.PosDataHandlerImp;
 
-public class PosDataHandler99Bill extends PosDataHandlerImp{
+public class PosDataHandler99Bill implements PosDataHandlerImp{
 	public static PosDataHandlerImp instance = null;
 	public static PosDataHandlerImp getInstance(){
 		if(instance==null){

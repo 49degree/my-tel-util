@@ -73,7 +73,7 @@ public class SeriolPortTest {
                     isConnect = true;
                     ReadData readData = new ReadData();
         			Thread readThread = new Thread(readData);
-        			readThread.setDaemon(true);
+        			
         			readThread.start();
         			
 

@@ -785,4 +785,47 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 		
 		return null;
 	}
+	
+	/**
+	 * 解TLV数据
+	 * 目前只处理 24 25 26 字段
+	 * TLV数据格式为  ID(2字节)+ LAN长度(2字节)+DATA数据
+	 * @param data
+	 * @return
+	 */
+	public TLVType parseTLV(byte[] data){
+		TLVType tlvType = new TLVType();
+		int i = 0;
+		while (i<data.length){
+			byte[] idbyte = new byte[2];
+			System.arraycopy(idbyte, 0,data , i, 2);
+			short id = TypeConversion.bytesToShort(idbyte,0);
+			i = i + 2;
+			byte[] lenbyte = new byte[2];
+			System.arraycopy(idbyte, 0,data , i, 2);
+			short len = TypeConversion.bytesToShort(lenbyte,0);
+			i = i + 2;
+			byte[] databyte = new byte[len];
+			System.arraycopy(databyte, 0,data , i, len);
+			i = i + len;
+			switch (id) {
+			case 24:
+				String merchant_name = TypeConversion.bcd2string(databyte);
+				tlvType.setMerchant_name(merchant_name);
+				break;
+			case 25:
+				String tel1 = TypeConversion.bcd2string(databyte);
+				tlvType.setTel1(tel1);
+				break;
+			case 26:
+				String tel2 = TypeConversion.bcd2string(databyte);
+				tlvType.setTel2(tel2);
+				break;
+			default:
+				break;
+			}
+		}
+		return null;
+		
+	}
 }

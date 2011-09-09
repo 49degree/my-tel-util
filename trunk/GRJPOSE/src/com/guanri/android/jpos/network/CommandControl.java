@@ -145,7 +145,7 @@ public class CommandControl {
 					recvAllBuffer = Utils.insertEnoughLengthBuffer(recvAllBuffer, recvAllBufferIndex, recvbuf, 0, nReadbyteLength, 512);
 					recvAllBufferIndex +=nReadbyteLength;
 					//包前两个字节 是包长度, 高位在前，低位在后 ，判断收到数据是否已经收完
-					if(TypeConversion.bytesToShortEx(recvAllBuffer, 0)<=recvAllBufferIndex){
+					if(TypeConversion.bytesToShortEx(recvAllBuffer, 0)<=recvAllBufferIndex-2){
 						stopReceive = false;
 					}
 				} else {

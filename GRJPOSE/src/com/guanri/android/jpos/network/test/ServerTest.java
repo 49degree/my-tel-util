@@ -1,4 +1,4 @@
-package com.guanri.android.jpos.network;
+package com.guanri.android.jpos.network.test;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -14,6 +14,7 @@ import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
 import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
 import com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay;
 import com.guanri.android.jpos.iso.unionpay.JposPackageUnionPay;
+import com.guanri.android.jpos.network.CommandControl;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 

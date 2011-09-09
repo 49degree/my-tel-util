@@ -6,7 +6,7 @@ import com.guanri.android.exception.FieldIsNullException;
 import com.guanri.android.exception.FieldTooLongException;
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
-import com.guanri.android.jpos.network.ReadFile;
+import com.guanri.android.jpos.network.test.ReadFile;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 

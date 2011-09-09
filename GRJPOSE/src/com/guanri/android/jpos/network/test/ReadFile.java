@@ -1,4 +1,4 @@
-package com.guanri.android.jpos.network;
+package com.guanri.android.jpos.network.test;
 import java.io.File;
 import java.io.FileInputStream;
 

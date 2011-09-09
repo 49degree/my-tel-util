@@ -20,6 +20,7 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 
 	Logger logger = Logger.getLogger(JposUnPackage99Bill.class);
 
+	JposMessageType99Bill jposMessageType99Bill = new JposMessageType99Bill();
 	public final static String PARSE_METHOD = "parseFeild";
 	
 	public JposUnPackage99Bill(byte[] data) throws PacketException{
@@ -45,6 +46,12 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 		    length = TypeConversion.bytesToShortEx(lengthbyte,0);
 		    typestr = fixBcdToInt(2);
 		    index = index + 2;
+		    
+		    jposMessageType99Bill.setPageLength(length);
+		    
+		    jposMessageType99Bill.setPagever("0100");
+		    jposMessageType99Bill.setMessageType(Integer.valueOf(typestr));
+		    
 		    
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block

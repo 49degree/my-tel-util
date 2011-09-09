@@ -187,7 +187,19 @@ public class CommandControl {
 	
 	
 	public static void main(String[] args){
-		logger.debug(TypeConversion.byte2hex(bill99longin()));
+		//logger.debug(TypeConversion.byte2hex(bill99longin()));
+		byte[] sendData = queryMoney("1234567890123456789",1,"111111");
+		
+//		try {
+//			CommandControl.getInstance().connect(10000, 10000);
+//			CommandControl.getInstance().submit(sendData);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (CommandParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	
@@ -233,6 +245,81 @@ public class CommandControl {
 	 
 		return jposPackageUnionPay.packaged();
 	}
+	
+	
+	/**
+	 * 余额查询
+	 * @param cardNo 第二磁道数据    主账号=有效期+校验码
+ 	 * @param inputType  输入类型  刷卡0  手输1 
+	 * @param pwdstr 密码字段
+	 * @param MACK MACK签名字段
+	 * @return
+	 */
+	public static byte[] queryMoney(String Trank2,int inputType,String pwdstr){
+		String CardNo = Trank2.substring(0, 19);
+		
+		//构造签到所需各域
+		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+		sendMap.put(2, CardNo);
+		// 域3 处理码
+		sendMap.put(3, "310000");
+		//sendMap.put(4, "000000000100");
+		// 域11 流水号
+		sendMap.put(11, "000001");
+		// 域 12 本地交易时间
+		sendMap.put(12, "1455");
+		// 域13 本地交易日期
+		sendMap.put(13, "0908");
+		// 域14 卡失效期
+		if(inputType==1)
+			sendMap.put(14, "1305");
+		// 域22 POS输入方式   021表示有磁有密，022有磁无密；011无磁有密，012无磁无密。
+		if(inputType ==0){
+			if(pwdstr.equals(""))
+				sendMap.put(22, "022");
+			else
+				sendMap.put(22, "021");
+			}
+		else if(inputType==1)
+			if(pwdstr.equals(""))
+				sendMap.put(22, "012");
+			else
+				sendMap.put(22, "011");
+		// 域24 NII
+		sendMap.put(24,"009");
+		// 域25 服务店条件码
+		sendMap.put(25, "00");
+		// 域35 2磁道数据
+		if(inputType==0){
+			sendMap.put(35, Trank2);
+		}
+		// 域41 终端代码
+		sendMap.put(41, "00000001");
+		// 域42 商户代码
+		sendMap.put(42, "000000000000001");
+		// 域49  货币代码
+		sendMap.put(49, "156");
+		// 域52 个人识别码
+		sendMap.put(52, "888888");
+		// 域60 自定义域     60.1 交易类型码 00  60.2 批次号  000001 网络管理信息码 001
+		sendMap.put(60, "00000001001000001");		
+		sendMap.put(64, "");
+		JposMessageType99Bill messageType = new JposMessageType99Bill();
+		//设置消息头类型
+
+		// 003B60000000900100：003B(长度字节) + 6000000090(TPDU) + 0100(报文版本号)
+		messageType.setPageLength((short)59);
+		messageType.setId((byte)0x60);  
+		messageType.setServerAddress("0000");
+		messageType.setServerAddress("0000");
+		messageType.setAddress("0090");
+		messageType.setPagever("0100");
+		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY);
+		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
+	 
+		return jposPackage99Bill.packaged();
+	}
+	
 	
 	/**
 	 * 银联签到方法

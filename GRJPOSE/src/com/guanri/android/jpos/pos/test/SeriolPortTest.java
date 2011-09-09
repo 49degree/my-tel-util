@@ -117,18 +117,21 @@ public class SeriolPortTest {
 					if(inputStream!=null){
 						while (isConnect&&!isStop) {
 							numBytes = inputStream.read(recvbuf);
-							//填充数据到缓存
-							recvAllBuffer = Utils.insertEnoughLengthBuffer(recvAllBuffer, recvAllBufferIndex, recvbuf, 0, numBytes, 512);
-							recvAllBufferIndex +=numBytes;
-							//包前两个字节 是包长度, 高位在前，低位在后 ，判断收到数据是否已经收完
-							if(TypeConversion.bytesToShortEx(recvAllBuffer, 0)<=recvAllBufferIndex-2){
-								byte[] data = new byte[recvAllBufferIndex];
-								System.arraycopy(recvAllBuffer, 0, data, 0, recvAllBufferIndex);
-								parseData(data);//处理数据
+							if(numBytes>0){
+								logger.debug("read data:"+TypeConversion.byte2hex(recvbuf,0,numBytes));
+								//填充数据到缓存
+								recvAllBuffer = Utils.insertEnoughLengthBuffer(recvAllBuffer, recvAllBufferIndex, recvbuf, 0, numBytes, 512);
+								recvAllBufferIndex +=numBytes;
+								//包前两个字节 是包长度, 高位在前，低位在后 ，判断收到数据是否已经收完
+								if(TypeConversion.bytesToShortEx(recvAllBuffer, 0)<=recvAllBufferIndex-2){
+									byte[] data = new byte[recvAllBufferIndex];
+									System.arraycopy(recvAllBuffer, 0, data, 0, recvAllBufferIndex);
+									parseData(data);//处理数据
+								}
+							}else{
+								Thread.sleep(500);
 							}
 							
-							//System.out.println("read data:"+TypeConversion.byte2hex(readBuffer,0,numBytes));
-							Thread.sleep(200);
 						}
 					}
 					logger.debug("end");

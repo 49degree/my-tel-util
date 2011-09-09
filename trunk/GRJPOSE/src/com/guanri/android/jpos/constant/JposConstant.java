@@ -40,6 +40,9 @@ public class JposConstant {
 		
 		public final static int REQUEST_OP_GOODS_BACKUP = 220;//退货
 		public final static int RESPONSE_OP_GOODS_BACKUP = 230;//退货应答
+		
+		public final static int REQUEST_OP_QUERY_MONEY = 200; // 余额查询
+		public final static int RESPONSE_OP_QUERY_MONEY = 210; // 余额查询应答
 	}
 	
 	/**

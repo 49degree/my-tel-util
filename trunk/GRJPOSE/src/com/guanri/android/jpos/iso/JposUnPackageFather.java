@@ -229,13 +229,13 @@ public abstract class JposUnPackageFather {
 	}
 	
 	
-	public TreeMap<Integer, Object> getmReturnMap() {
+	public TreeMap<Integer, Object> getMReturnMap() {
 		return mReturnMap;
 	}
 
 
 
-	public void setmReturnMap(TreeMap<Integer, Object> mReturnMap) {
+	public void setMReturnMap(TreeMap<Integer, Object> mReturnMap) {
 		this.mReturnMap = mReturnMap;
 	}
 
@@ -253,13 +253,13 @@ public abstract class JposUnPackageFather {
 
 
 
-	public JposMessageType getmMessageType() {
+	public JposMessageType getMMessageType() {
 		return mMessageType;
 	}
 
 
 
-	public void setmMessageType(JposMessageType mMessageType) {
+	public void setMMessageType(JposMessageType mMessageType) {
 		this.mMessageType = mMessageType;
 	}
 }

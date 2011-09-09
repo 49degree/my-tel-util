@@ -6,18 +6,18 @@ package com.guanri.android.jpos.iso;
  *
  */
 public abstract class JposMessageType {
-	private int messageType ;
+	private String messageType ;
 	private int transactionCode ; 
 	
 	// 报文长度
 	private Short pageLength;
 	
-	public int getMessageType() {
+	public String getMessageType() {
 		return messageType;
 	}
 
 
-	public void setMessageType(int messageType) {
+	public void setMessageType(String messageType) {
 		this.messageType = messageType;
 	}
 

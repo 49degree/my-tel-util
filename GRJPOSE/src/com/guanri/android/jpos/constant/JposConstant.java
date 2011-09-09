@@ -43,6 +43,14 @@ public class JposConstant {
 		
 		public final static String REQUEST_OP_QUERY_MONEY = "0200"; // 余额查询
 		public final static String RESPONSE_OP_QUERY_MONEY = "0210"; // 余额查询应答
+		
+		
+		// 域41 终端代码
+		public final static String POSID = "20100601";
+		// 域42 商户代码
+		public final static String CONTACT =  "104110045110012";
+		// 人民币代码
+		public final static String RMBCODE = "156";
 	}
 	
 	/**

@@ -7,11 +7,11 @@ import com.guanri.android.jpos.bean.PosMessageBean;
  * @author Administrator
  *
  */
-public abstract class PosDataHandlerImp {
+public interface PosDataHandlerImp {
 	/**
 	 * 收到POS数据 
 	 * 进行相应的协议解析
 	 * @param posMessageBean 从POS机获取的数据
 	 */
-	public abstract void receiveData(PosMessageBean posMessageBean);
+	public void receiveData(PosMessageBean posMessageBean);
 }

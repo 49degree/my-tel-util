@@ -1,5 +1,6 @@
 package com.guanri.android.jpos.iso.bill99;
 
+import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.lib.utils.TypeConversion;
 
@@ -10,7 +11,19 @@ import com.guanri.android.lib.utils.TypeConversion;
  */
 public class JposMessageType99Bill extends JposMessageType{
 	//003B6000090000010008002020010000C00008990000000005000932303130303630313130343131303034353131303031320009303030303031303031
-	
+	public static JposMessageType99Bill getInstance(){
+		JposMessageType99Bill messageType = new JposMessageType99Bill();
+		//设置消息头类型
+
+		// 003B60000000900100：003B(长度字节) + 6000000090(TPDU) + 0100(报文版本号)
+		messageType.setPageLength((short)59);
+		messageType.setId((byte)0x60);  
+		messageType.setServerAddress("0000");
+		messageType.setServerAddress("0000");
+		messageType.setAddress("0090");
+		messageType.setPagever("0100");
+		return messageType;
+	}
 
 	// ID
 	private byte id ;
@@ -51,7 +64,9 @@ public class JposMessageType99Bill extends JposMessageType{
 		this.pagever = pagever;
 	}
 	
-	
+	/**
+	 * 数据头的长度，包括长度字段
+	 */
 	public int getMessageTypeLength(){
 		return 11;
 	}

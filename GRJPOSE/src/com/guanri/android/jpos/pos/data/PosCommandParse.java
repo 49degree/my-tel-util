@@ -55,6 +55,8 @@ public class PosCommandParse {
 		if(transferByte==null||transferByte.length==0)
 			throw new CommandParseException("input data is null");
 		
+		
+		
 		posMessageBean = new PosMessageBean();
 	}
 	

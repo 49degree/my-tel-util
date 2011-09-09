@@ -47,7 +47,7 @@ public abstract class JposMessageType {
 	 */
 	public abstract byte[] parseValue();
 	/**
-	 * 返回消息头长度
+	 * 数据头的长度，包括长度字段
 	 * @return
 	 */
 	public abstract int getMessageTypeLength();

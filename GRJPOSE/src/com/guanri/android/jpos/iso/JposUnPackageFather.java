@@ -46,14 +46,14 @@ public abstract class JposUnPackageFather {
 		//解析基本位图数据
 		for(int i=1;i<64;i++){
 			if(jposBitMap.getBitmapBaseValue(i)){
-				mReturnMap.put(i, parseBitValue(i));
+				mReturnMap.put(i+1, parseBitValue(i+1));
 			}
 		}
 		//解析扩展位图数据
 		if(jposBitMap.getBitmapBaseValue(0)){
 			for(int i=0;i<64;i++){
 				if(jposBitMap.getBitmapExtendValue(i)){
-					mReturnMap.put(i+64, parseBitValue(i));
+					mReturnMap.put(i+65, parseBitValue(i+65));
 				}
 			}
 		}
@@ -77,7 +77,7 @@ public abstract class JposUnPackageFather {
 			for(int j=0;j<8;j++){
 				if(((bitMap[i]>>(7-j))&0x01)==1){
 					jposBitMap.setBitmapBase(i*8+j);
-					logger.debug("位图数据22："+(i*8+j));
+					//logger.debug("位图数据22："+(i*8+j));
 				}
 			}
 		}
@@ -122,10 +122,11 @@ public abstract class JposUnPackageFather {
 	protected Object parseBitValue(int position,String methodName){
 		//String methodName = PARSE_METHOD+position;//解析相应位数据的方法名称
 		try{
-			
+			logger.debug("位置:"+position);
 			Method method = this.getClass().getMethod(methodName,null);
+			
 			Object value = method.invoke(this, null);
-			logger.debug("测试"+value+":"+position);
+			logger.debug("数据:"+value);
 			return value;
 		}catch(NoSuchMethodException e){
 			e.printStackTrace();
@@ -212,6 +213,7 @@ public abstract class JposUnPackageFather {
 		length = length / 2;
 		//活动数据具体长度
 		int length1 = Integer.valueOf(TypeConversion.bcd2string(data,index,length));
+		logger.debug(index+":"+length1);
 		// 指针移动到数据位
 		index = index + length;
 		// 移动指针

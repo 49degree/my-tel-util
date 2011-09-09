@@ -576,12 +576,7 @@ public class JposPackage99Bill extends JposPackageFather{
 			throw new FieldTooLongException("Feild46 to long");
 		}
 		byte[] temp = floatLengthstr2ASCII(acount,3);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp;
 	}
 	
@@ -604,12 +599,7 @@ public class JposPackage99Bill extends JposPackageFather{
 			throw new FieldTooLongException("Feild48 to long");
 		}
 		byte[] temp = floatLengthstr2ASCII(acount,3);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp;
 	}
 	
@@ -631,13 +621,8 @@ public class JposPackage99Bill extends JposPackageFather{
 		if(acount!=null&&acount.length()>3){
 			throw new FieldTooLongException("Feild49 to long");
 		}
-		byte[] temp = str2ASCII(acount,3);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		byte[] temp = fixLengthStr2cbcd(acount,4,true);
+
 		return temp;
 	}
 	
@@ -822,13 +807,9 @@ public class JposPackage99Bill extends JposPackageFather{
 		if(acount!=null&&acount.length()>30){
 			throw new FieldTooLongException("Feild60 to long");
 		}
-		byte[] temp = floatLengthstr2ASCII(acount,3);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//public byte[] floatLengthStr2cbcd(String s,String length,boolean rightAlign,int lengthBit) {
+		byte[] temp = floatLengthStr2cbcd(acount,acount.length()+"",true,3);
+
 		return temp;
 	}
 	
@@ -925,7 +906,7 @@ public class JposPackage99Bill extends JposPackageFather{
 		//使用macSource传送给POS终端得到MAC值
 		//后续增加。。。。。
 		macSource = CryptionControl.getInstance().getMac(macSource);//自己先计算MAC
-		
+		logger.debug("++++++++++++++++++++++++");
 		return macSource;
 	}
 	

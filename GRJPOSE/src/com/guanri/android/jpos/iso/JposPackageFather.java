@@ -39,61 +39,53 @@ public abstract class JposPackageFather {
 	 * @return
 	 */
 	public byte[] packaged(){
+		int dataLength = 0;//消息数据长度
 		Iterator<Integer> keyIt = mSendMap.keySet().iterator();//遍历数据位
 		ArrayList<byte[]> datas = new ArrayList<byte[]>(mSendMap.size());
-		
+		byte[] bitDataTemp = null;
 		//遍历数据位
 		while(keyIt.hasNext()){
 			Integer key = keyIt.next();
-			this.parseBitMap(key);
-			datas.add(this.parseBitValue(key));
+			parseBitMap(key-1);//构造位图对象
+			bitDataTemp = parseBitValue(key);
+			if(bitDataTemp!=null){// 计算总长度
+				dataLength +=bitDataTemp.length;
+			}
+			datas.add(bitDataTemp);
+			logger.debug(dataLength+":");
 		}
-		int msgTypelength = 11;
 		
-		
+		//解析位图
 		byte[] baseBitmap = mBitMap.parseBitmapBase();
-		
 		logger.debug("位图数据："+TypeConversion.byteTo0XString(baseBitmap, 0, baseBitmap.length));
 		
-		//TypeConversion.byte2hex(b)baseBitmap
+
+		byte[] resultBuffer = new byte[mMessageType.getMessageTypeLength() + baseBitmap.length + dataLength];
+		mMessageType.setPageLength((short)(resultBuffer.length-2));
 		
-		// 获取数据字段的总长度
-		int datalength = 0;
-		for (int i = 0; i < datas.size(); i++) {
-			if(i==12){
-				try {
-					String temp = TypeConversion.asciiToString(datas.get(i));
-					logger.debug("错误域:" + temp);
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			datalength = datalength + datas.get(i).length;
-		}
-		byte[] tempbyte = new byte[datalength];
-		
-		datalength = 0;
-		// 遍历获取每个域的数据
-		for (int i = 0; i < datas.size(); i++) {
-			System.arraycopy(datas.get(i), 0, tempbyte, datalength, datas.get(i).length);
-			datalength = datalength + datas.get(i).length;
-		}
-		
-		
-		mMessageType.setPageLength((short)(datalength-2));
-		byte[] resultbyte = new byte[msgTypelength + baseBitmap.length + tempbyte.length];
+		int resultBufferIndex = 0;
 		// 组装消息类型
 		byte[] msgType = mMessageType.parseValue();
-		
-		System.arraycopy(msgType, 0, resultbyte, 0, msgType.length);
-		
+		logger.debug("msgType："+msgType.length);
+		System.arraycopy(msgType, 0, resultBuffer, resultBufferIndex, msgType.length);
+		resultBufferIndex +=msgType.length;
 		// 组装位图字段
-		System.arraycopy(baseBitmap, 0, resultbyte, msgTypelength, baseBitmap.length);
-		// 组装数据字段
-		System.arraycopy(tempbyte, 0, resultbyte, msgTypelength + baseBitmap.length, tempbyte.length);
+		logger.debug("baseBitmap："+baseBitmap.length);
+		System.arraycopy(baseBitmap, 0, resultBuffer, resultBufferIndex, baseBitmap.length);
+		resultBufferIndex +=baseBitmap.length;
+
+		// 遍历获取每个域的数据
+		for (int i = 0; i < datas.size(); i++) {
+			byte[] temp = datas.get(i); 
+			if(temp!=null){
+				// 组装数据字段
+				//logger.debug(resultBufferIndex+":"+resultBuffer.length+":"+temp.length);
+				System.arraycopy(temp, 0, resultBuffer, resultBufferIndex, temp.length);
+				resultBufferIndex += temp.length;
+			}
+		}
 		
-		return resultbyte;
+		return resultBuffer;
 	}
 	
 	protected abstract byte[] parseBitValue(int position);

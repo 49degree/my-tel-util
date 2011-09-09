@@ -86,7 +86,7 @@ public class Test {
 		
 		JposMessageType99Bill messageType = new JposMessageType99Bill();
 		//设置消息头类型
-		messageType.setMessageType(800);
+		messageType.setMessageType("800");
 		
 		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
 	 
@@ -130,7 +130,7 @@ public class Test {
 		
 		JposMessageType99Bill messageType = new JposMessageType99Bill();
 		//设置消息头类型
-		messageType.setMessageType(800);
+		messageType.setMessageType("800");
 		
 		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
 	 
@@ -170,7 +170,7 @@ public class Test {
 		
 		JposMessageType99Bill messageType = new JposMessageType99Bill();
 		//设置消息头类型
-		messageType.setMessageType(800);
+		messageType.setMessageType("800");
 		
 		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
 	 

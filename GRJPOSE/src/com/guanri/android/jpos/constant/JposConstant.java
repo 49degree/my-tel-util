@@ -19,30 +19,30 @@ public class JposConstant {
 	 *
 	 */
 	public interface MessageTypeDefine99Bill{
-		public final static int REQUEST_POS_CHECK_IN = 800;// 签到
-		public final static int RESPONSE_POS_CHECK_IN = 810;// 签到应答
+		public final static String REQUEST_POS_CHECK_IN = "0800";// 签到
+		public final static String RESPONSE_POS_CHECK_IN = "0810";// 签到应答
 		
-		public final static int REQUEST_POS_CHECK_OUT = 800;//签退？？？？？？？？？？？
-		public final static int REQUEST_POS_CHECK_DATA = 810;//批结算？？？？？？？？？
+		public final static String REQUEST_POS_CHECK_OUT = "0800";//签退？？？？？？？？？？？
+		public final static String REQUEST_POS_CHECK_DATA = "0810";//批结算？？？？？？？？？
 		
-		public final static int REQUEST_POS_CHECK_DATA_DETAIL = 200;//批上送？？？？？？？？？
-		public final static int RESPONSE_POS_CHECK_DATA_DETAIL = 210;//批上送？？？？？？？？？
+		public final static String REQUEST_POS_CHECK_DATA_DETAIL = "0200";//批上送？？？？？？？？？
+		public final static String RESPONSE_POS_CHECK_DATA_DETAIL = "0210";//批上送？？？？？？？？？
 		
 		
-		public final static int REQUEST_OP_PAY_MONEY = 200;//消费请求
-		public final static int RESPONSE_OP_PAY_MONEY = 210;//消费应答
+		public final static String REQUEST_OP_PAY_MONEY = "0200";//消费请求
+		public final static String RESPONSE_OP_PAY_MONEY = "0210";//消费应答
 		
-		public final static int REQUEST_OP_PAY_CANCEL = 200;//消费撤销
-		public final static int RESPONSE_OP_PAY_CANCEL = 210;//消费撤销应答
+		public final static String REQUEST_OP_PAY_CANCEL = "0200";//消费撤销
+		public final static String RESPONSE_OP_PAY_CANCEL = "0210";//消费撤销应答
 		
-		public final static int REQUEST_OP_OPERATE_CANCEL = 400;//冲正
-		public final static int RESPONSE_OP_OPERATE_CANCEL = 410;//冲正应答
+		public final static String REQUEST_OP_OPERATE_CANCEL = "0400";//冲正
+		public final static String RESPONSE_OP_OPERATE_CANCEL = "0410";//冲正应答
 		
-		public final static int REQUEST_OP_GOODS_BACKUP = 220;//退货
-		public final static int RESPONSE_OP_GOODS_BACKUP = 230;//退货应答
+		public final static String REQUEST_OP_GOODS_BACKUP = "0220";//退货
+		public final static String RESPONSE_OP_GOODS_BACKUP = "0230";//退货应答
 		
-		public final static int REQUEST_OP_QUERY_MONEY = 200; // 余额查询
-		public final static int RESPONSE_OP_QUERY_MONEY = 210; // 余额查询应答
+		public final static String REQUEST_OP_QUERY_MONEY = "0200"; // 余额查询
+		public final static String RESPONSE_OP_QUERY_MONEY = "0210"; // 余额查询应答
 	}
 	
 	/**
@@ -51,27 +51,27 @@ public class JposConstant {
 	 *
 	 */
 	public interface MessageTypeDefineUnionpay{
-		public final static int REQUEST_POS_CHECK_IN = 800;// 签到
-		public final static int RESPONSE_POS_CHECK_IN = 810;// 签到应答
+		public final static String REQUEST_POS_CHECK_IN = "800";// 签到
+		public final static String RESPONSE_POS_CHECK_IN = "810";// 签到应答
 		
-		public final static int REQUEST_POS_CHECK_OUT = 800;//签退？？？？？？？？？？？
-		public final static int REQUEST_POS_CHECK_DATA = 810;//批结算？？？？？？？？？
+		public final static String REQUEST_POS_CHECK_OUT = "800";//签退？？？？？？？？？？？
+		public final static String REQUEST_POS_CHECK_DATA = "810";//批结算？？？？？？？？？
 		
-		public final static int REQUEST_POS_CHECK_DATA_DETAIL = 200;//批上送？？？？？？？？？
-		public final static int RESPONSE_POS_CHECK_DATA_DETAIL = 210;//批上送？？？？？？？？？
+		public final static String REQUEST_POS_CHECK_DATA_DETAIL = "200";//批上送？？？？？？？？？
+		public final static String RESPONSE_POS_CHECK_DATA_DETAIL = "210";//批上送？？？？？？？？？
 		
 		
-		public final static int REQUEST_OP_PAY_MONEY = 200;//消费请求
-		public final static int RESPONSE_OP_PAY_MONEY = 210;//消费应答
+		public final static String REQUEST_OP_PAY_MONEY = "200";//消费请求
+		public final static String RESPONSE_OP_PAY_MONEY = "210";//消费应答
 		
-		public final static int REQUEST_OP_PAY_CANCEL = 200;//消费撤销
-		public final static int RESPONSE_OP_PAY_CANCEL = 210;//消费撤销应答
+		public final static String REQUEST_OP_PAY_CANCEL = "200";//消费撤销
+		public final static String RESPONSE_OP_PAY_CANCEL = "210";//消费撤销应答
 		
-		public final static int REQUEST_OP_OPERATE_CANCEL = 400;//冲正
-		public final static int RESPONSE_OP_OPERATE_CANCEL = 410;//冲正应答
+		public final static String REQUEST_OP_OPERATE_CANCEL = "400";//冲正
+		public final static String RESPONSE_OP_OPERATE_CANCEL = "410";//冲正应答
 		
-		public final static int REQUEST_OP_GOODS_BACKUP = 220;//退货
-		public final static int RESPONSE_OP_GOODS_BACKUP = 230;//退货应答
+		public final static String REQUEST_OP_GOODS_BACKUP = "220";//退货
+		public final static String RESPONSE_OP_GOODS_BACKUP = "230";//退货应答
 	}
 	
 	/**

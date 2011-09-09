@@ -35,10 +35,6 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 
 	}
 	
-	
-	
-	
-
 	JposMessageType99Bill jposMessageType99Bill = new JposMessageType99Bill();
 	public final static String PARSE_METHOD = "parseFeild";
 	
@@ -62,7 +58,7 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 		index += 2;
 		((JposMessageType99Bill)mMessageType).setPagever(TypeConversion.bcd2string(data, index, 2));
 		index += 2;
-		((JposMessageType99Bill)mMessageType).setMessageType(Integer.parseInt(TypeConversion.bcd2string(data, index, 2)));
+		((JposMessageType99Bill)mMessageType).setMessageType(TypeConversion.bcd2string(data, index, 2));
 		index += 2;
 	}
 	

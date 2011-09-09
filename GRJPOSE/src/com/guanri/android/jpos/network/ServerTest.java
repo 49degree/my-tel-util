@@ -32,8 +32,8 @@ public class ServerTest {
 			
 			JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
 			bill.unPacketed();
-			TreeMap<Integer, Object>  tree = bill.getmReturnMap();
-			Iterator<Integer> it = bill.getmReturnMap().keySet().iterator();
+			TreeMap<Integer, Object>  tree = bill.getMReturnMap();
+			Iterator<Integer> it = bill.getMReturnMap().keySet().iterator();
 			while(it.hasNext()){
 				int a = it.next();
 				if(a==22||a==24||a==49){

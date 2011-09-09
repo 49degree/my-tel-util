@@ -13,15 +13,6 @@ public class PosMessageBean {
 		
 	}
 
-	public PosMessageBean(int messageType, int endFlag, byte commandCode,
-			byte[] value) {
-		super();
-		this.messageType = messageType;
-		this.endFlag = endFlag;
-		this.commandCode = commandCode;
-		this.value = value;
-	}
-
 	public int getMessageType() {
 		return messageType;
 	}

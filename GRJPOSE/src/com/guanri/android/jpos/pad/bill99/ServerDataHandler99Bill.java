@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import com.guanri.android.exception.CommandParseException;
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.PosMessageBean;
+import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
 import com.guanri.android.jpos.pad.PosDataHandlerImp;
 import com.guanri.android.jpos.pad.ServerDataHandlerImp;
@@ -27,11 +28,9 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		try{
 			JposUnPackage99Bill bill = new JposUnPackage99Bill(mReturnData);
 			bill.unPacketed();
-			TreeMap<Integer, Object>  tree = bill.getmReturnMap();
-			Iterator<Integer> it = bill.getmReturnMap().keySet().iterator();
-			while(it.hasNext()){
-				int bitValue = it.next();
-			}
+			TreeMap<Integer, Object>  treeMap = bill.getMReturnMap();
+			 JposMessageType mMessageType = bill.getMMessageType();
+
 		}catch(PacketException e){
 			
 		}

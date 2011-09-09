@@ -94,6 +94,91 @@ public class Test {
 		
 	}
 	
+	/**
+	 * 签到测试
+	 */
+	public static byte[] login(){
+		//构造签到所需各域
+		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+		sendMap.put(2, "1234567890123456789");
+		// 域3 处理码
+		sendMap.put(3, "990000");
+		//sendMap.put(4, "000000000100");
+		// 域11 流水号
+		sendMap.put(11, "000001");
+		// 域 12 本地交易时间
+		sendMap.put(12, "1455");
+		// 域13 本地交易日期
+		sendMap.put(13, "0908");
+		
+		// 域24 网络信息码
+		sendMap.put(24, "123");
+		// 域41 终端代码
+		sendMap.put(41, "00000001");
+		// 域42 商户代码
+		sendMap.put(42, "000000000000001");
+		sendMap.put(44, "1234");
+		// 域46 附加数据
+		sendMap.put(46, "abc");
+		// 域47 附加数据
+		//sendMap.put(47, "cba");
+		sendMap.put(48, "abcd");
+		sendMap.put(49, "156");
+		sendMap.put(53, "");
+		// 域60 自定义域     60.1 交易类型码 00  60.2 批次号  000001 网络管理信息码 001
+		sendMap.put(60, "00000001001");		
+		
+		JposMessageType99Bill messageType = new JposMessageType99Bill();
+		//设置消息头类型
+		messageType.setMessageType(800);
+		
+		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
+	 
+		return jposPackage99Bill.packaged();
+	}
+	
+	public byte[] queryMoney(){
+		//构造签到所需各域
+		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+		sendMap.put(2, "1234567890123456789");
+		// 域3 处理码
+		sendMap.put(3, "310000");
+		//sendMap.put(4, "000000000100");
+		// 域11 流水号
+		sendMap.put(11, "000001");
+		// 域 12 本地交易时间
+		sendMap.put(12, "1455");
+		// 域13 本地交易日期
+		sendMap.put(13, "0908");
+		
+		// 域24 网络信息码
+		sendMap.put(24, "123");
+		// 域41 终端代码
+		sendMap.put(41, "00000001");
+		// 域42 商户代码
+		sendMap.put(42, "000000000000001");
+		sendMap.put(44, "1234");
+		// 域46 附加数据
+		sendMap.put(46, "abc");
+		// 域47 附加数据
+		//sendMap.put(47, "cba");
+		sendMap.put(48, "abcd");
+		sendMap.put(49, "156");
+		sendMap.put(53, "");
+		// 域60 自定义域     60.1 交易类型码 00  60.2 批次号  000001 网络管理信息码 001
+		sendMap.put(60, "00000001001");		
+		
+		JposMessageType99Bill messageType = new JposMessageType99Bill();
+		//设置消息头类型
+		messageType.setMessageType(800);
+		
+		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
+	 
+		return jposPackage99Bill.packaged();
+		
+	}
+	
+	
 	public void responelogin(){
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		

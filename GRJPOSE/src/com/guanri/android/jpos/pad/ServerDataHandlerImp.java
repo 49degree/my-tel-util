@@ -9,5 +9,5 @@ public interface ServerDataHandlerImp {
 	 * 收到服务器数据数据
 	 * @param mReturnMap 从服务器获取的数据
 	 */
-	public void receiveData(TreeMap<Integer,Object> mReturnMap);
+	public void receiveData(byte[] mReturnData);
 }

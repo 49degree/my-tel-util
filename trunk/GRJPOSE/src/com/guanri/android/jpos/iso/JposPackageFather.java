@@ -48,12 +48,9 @@ public abstract class JposPackageFather {
 			this.parseBitMap(key);
 			datas.add(this.parseBitValue(key));
 		}
-		int msgTypelength = 0;
-		byte[] msgType = mMessageType.parseValue();
-		// 检查消息类型字段是否为空
-		if(msgType!=null){
-			msgTypelength = msgType.length;
-		}
+		int msgTypelength = 11;
+		
+		
 		byte[] baseBitmap = mBitMap.parseBitmapBase();
 		
 		logger.debug("位图数据："+TypeConversion.byteTo0XString(baseBitmap, 0, baseBitmap.length));
@@ -63,6 +60,15 @@ public abstract class JposPackageFather {
 		// 获取数据字段的总长度
 		int datalength = 0;
 		for (int i = 0; i < datas.size(); i++) {
+			if(i==12){
+				try {
+					String temp = TypeConversion.asciiToString(datas.get(i));
+					logger.debug("错误域:" + temp);
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			datalength = datalength + datas.get(i).length;
 		}
 		byte[] tempbyte = new byte[datalength];
@@ -74,11 +80,14 @@ public abstract class JposPackageFather {
 			datalength = datalength + datas.get(i).length;
 		}
 		
+		
+		mMessageType.setPageLength((short)(datalength-2));
 		byte[] resultbyte = new byte[msgTypelength + baseBitmap.length + tempbyte.length];
 		// 组装消息类型
-		if(msgType!=null){
-			System.arraycopy(msgType, 0, resultbyte, 0, msgType.length);
-		}
+		byte[] msgType = mMessageType.parseValue();
+		
+		System.arraycopy(msgType, 0, resultbyte, 0, msgType.length);
+		
 		// 组装位图字段
 		System.arraycopy(baseBitmap, 0, resultbyte, msgTypelength, baseBitmap.length);
 		// 组装数据字段

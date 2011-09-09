@@ -9,7 +9,8 @@ public abstract class JposMessageType {
 	private int messageType ;
 	private int transactionCode ; 
 	
-
+	// 报文长度
+	private Short pageLength;
 	
 	public int getMessageType() {
 		return messageType;
@@ -30,6 +31,16 @@ public abstract class JposMessageType {
 		this.transactionCode = transactionCode;
 	}
 
+	public Short getPageLength() {
+		return pageLength;
+	}
+
+
+	public void setPageLength(Short pageLength) {
+		this.pageLength = pageLength;
+	}
+
+
 	/**
 	 * 构造消息数组
 	 * @return
@@ -40,5 +51,7 @@ public abstract class JposMessageType {
 	 * @return
 	 */
 	public abstract int getMessageTypeLength();
+	
+	
 	
 }

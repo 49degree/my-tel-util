@@ -952,77 +952,85 @@ public class JposPackage99Bill extends JposPackageFather{
 	protected byte[] getMacSource(){
 		byte[] macSource = new byte[256];
 		int index = 0;
-		try{
-			//2  Primary Account Number 
-			Object value = mSendMap.get(2);
-			byte[] temp;
-			try {
+		Object value = null;
+		byte[] temp;
+		try {
+			if(mSendMap.containsKey(2)){
+			    value = mSendMap.get(2);
 				temp = this.parseFeild2(value);
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 1, temp.length-1, 128);
 				index += temp.length-1;
-				
-				//3  Processing Code 
+			}
+
+			if(mSendMap.containsKey(3)){
+			//3  Processing Code 
 				value =  mSendMap.get(3);
 				temp = this.parseFeild3(value);//定长
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 0, temp.length, 128);
 				index += temp.length;
-				
+			}
+			if(mSendMap.containsKey(4)){
 				value =  mSendMap.get(4);
 				temp = this.parseFeild4(value);//定长
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 0, temp.length, 128);
 				index += temp.length;
-				
+			}
+			if(mSendMap.containsKey(11)){
 				value =  mSendMap.get(11);
 				temp = this.parseFeild11(value);//定长
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 0, temp.length, 128);
 				index += temp.length;
-				
+			}
+			if(mSendMap.containsKey(12)){
 				value =  mSendMap.get(12);
 				temp = this.parseFeild12(value);//定长
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 0, temp.length, 128);
 				index += temp.length;
-				
+			}
+			if(mSendMap.containsKey(13)){
 				value =  mSendMap.get(13);
 				temp = this.parseFeild13(value);//定长
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 0, temp.length, 128);
 				index += temp.length;
-				
+			}
+			if(mSendMap.containsKey(49)){
 				value =  mSendMap.get(49);
 				temp = this.parseFeild49(value);//定长
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 0, temp.length, 128);
 				index += temp.length;
-				
+			}
+			if(mSendMap.containsKey(38)){
 				value =  mSendMap.get(38);
 				temp = this.parseFeild38(value);//定长
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 0, temp.length, 128);
 				index += temp.length;
-				
+			}
+			if(mSendMap.containsKey(39)){
 				value =  mSendMap.get(39);
 				temp = this.parseFeild39(value);//定长
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 0, temp.length, 128);
 				index += temp.length;
-				
+			}
+			if(mSendMap.containsKey(41)){
 				value =  mSendMap.get(41);
 				temp = this.parseFeild41(value);//定长
 				macSource = Utils.insertEnoughLengthBuffer(macSource, index, temp, 0, temp.length, 128);
 				index += temp.length;
-			} catch (FieldIsNullException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}//头2为BCD码为长度，去掉
-			
-			
-		}catch(FieldTooLongException fe){
-			return null;
+			}
+		} catch (FieldIsNullException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch(FieldTooLongException e1){
+			e1.fillInStackTrace();
 		}
 		if(index<=0){
 			return null;
 		}
 		//判断是否存满数据
 		if(index<macSource.length){
-			byte[] temp = new byte[index];
-			System.arraycopy(macSource, 0, temp, 0, index);
-			macSource = temp;
+			byte[] resulttemp = new byte[index];
+			System.arraycopy(macSource, 0, resulttemp, 0, index);
+			macSource = resulttemp;
 		}
 		return macSource;
 	}

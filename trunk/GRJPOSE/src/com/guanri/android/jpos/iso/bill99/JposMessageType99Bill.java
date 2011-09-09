@@ -11,8 +11,7 @@ import com.guanri.android.lib.utils.TypeConversion;
 public class JposMessageType99Bill extends JposMessageType{
 	//003B6000090000010008002020010000C00008990000000005000932303130303630313130343131303034353131303031320009303030303031303031
 	
-	// 报文长度
-	private Short pageLength;
+
 	// ID
 	private byte id ;
 	// 目的地址
@@ -21,14 +20,6 @@ public class JposMessageType99Bill extends JposMessageType{
 	private String Address;
 	// 报文版本号
 	private String pagever;
-	
-	public Short getPageLength() {
-		return pageLength;
-	}
-	public void setPageLength(Short pageLength) {
-		this.pageLength = pageLength;
-	}
-
 
 	public byte getId() {
 		return id;

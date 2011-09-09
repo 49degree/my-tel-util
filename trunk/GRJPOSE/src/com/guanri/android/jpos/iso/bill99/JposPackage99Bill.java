@@ -906,7 +906,6 @@ public class JposPackage99Bill extends JposPackageFather{
 		//使用macSource传送给POS终端得到MAC值
 		//后续增加。。。。。
 		macSource = CryptionControl.getInstance().getMac(macSource);//自己先计算MAC
-		logger.debug("++++++++++++++++++++++++");
 		return macSource;
 	}
 	

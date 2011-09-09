@@ -35,51 +35,18 @@ public class CommandControl {
 	}
 	
 	/**
-	 * 在新线程中发送命令，在命令发送立即关闭连接
-	 * 通过UpCommandParse对象中的handler返回信息
-	 * @param upCommandParse
-	 * @return
-	 */
-	public synchronized boolean sendUpCommandInThread(PosCommandParse upCommandParse){
-		CommandControlTask commandControlTask = new CommandControlTask(upCommandParse);
-		commandControlTask.start();
-		return true;
-	}
-	
-	/**
 	 * 在当前线程发送上传命令，在命令发送立即关闭连接
 	 * 但是要自己处理IO异常和连接异常CommandParseException
 	 * @param upCommandParse
 	 * @return DownCommandParse 
 	 */
 	public synchronized PosMessageBean sendUpCommand(PosCommandParse upCommandParse) throws IOException,CommandParseException{
-		PosMessageBean posMessageBean =null;//= this.submit(upCommandParse.getTransferByte());
-		return posMessageBean;
+		byte[] returnData = this.submit(upCommandParse.getTransferByte() );
+		PosCommandParse posCommandParse = new PosCommandParse(returnData);
+		return posCommandParse.getPosMessageBean();
 	}
 	
-	/**
-	 * 与服务器交互线程
-	 * @author Administrator
-	 *
-	 */
-	public class CommandControlTask extends Thread{
-		private PosCommandParse upCommandParse = null;
-		/**
-		 * @roseuid 4DF8330D00DA
-		 */
-		public CommandControlTask(PosCommandParse upCommandParse) {
-			this.upCommandParse = upCommandParse;
-		}
 
-		public void run() {
-			try {
-				//通过handler消息机制返回结果
-				//PosMessageBean osMessageBean = submit(upCommandParse.getTransferByte());
-			}catch(Exception e){
-				
-			}
-		}
-	}
 	private boolean stopReceive = false;
 	private byte[] recvAllBuffer = new byte[2048];//接收到的数据缓冲区
 	private byte[] recvbuf = new byte[1024];
@@ -126,7 +93,7 @@ public class CommandControl {
 	 * @throws CommandParseException
 	 */
 
-	public byte[] submit(byte[] sendData) throws IOException,CommandParseException{
+	public synchronized byte[] submit(byte[] sendData) throws IOException,CommandParseException{
 		recvAllBufferIndex = 0;
 		try {
 			logger.debug("开始发送数据:"+TypeConversion.byte2hex(sendData));

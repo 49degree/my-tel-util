@@ -1,7 +1,12 @@
 package com.guanri.android.jpos.pos.data;
 
+import java.util.Iterator;
+import java.util.TreeMap;
+
 import com.guanri.android.exception.CommandParseException;
+import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.PosMessageBean;
+import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
 import com.guanri.android.lib.log.Logger;
 
 /**
@@ -54,10 +59,20 @@ public class PosCommandParse {
 	private void parseCommandBuffer() throws CommandParseException{
 		if(transferByte==null||transferByte.length==0)
 			throw new CommandParseException("input data is null");
-		
-		
-		
-		posMessageBean = new PosMessageBean();
+		try{
+			JposUnPackage99Bill bill = new JposUnPackage99Bill(transferByte);
+			bill.unPacketed();
+			TreeMap<Integer, Object>  tree = bill.getmReturnMap();
+			Iterator<Integer> it = bill.getmReturnMap().keySet().iterator();
+			while(it.hasNext()){
+				int bitValue = it.next();
+				logger.debug(bitValue+"::::::::::::::::::::::"+tree.get(bitValue));
+
+			}
+			posMessageBean = new PosMessageBean();
+		}catch(PacketException e){
+			throw new CommandParseException("parseCommandBuffer error");
+		}
 	}
 	
 	public byte[] getTransferByte() {

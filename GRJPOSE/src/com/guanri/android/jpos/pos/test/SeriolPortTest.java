@@ -12,6 +12,7 @@ import javax.comm.UnsupportedCommOperationException;
 
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
+import com.guanri.android.lib.utils.Utils;
 
 public class SeriolPortTest {
 	static Logger logger = Logger.getLogger(SeriolPortTest.class);
@@ -31,7 +32,12 @@ public class SeriolPortTest {
 		
 		test.openComm();//打开端口
 		
-		test.sendData(msg);
+		test.sendData(msg);//发送数据
+	}
+	
+	
+	public void parseData(byte[] data){
+		
 	}
 	
 	public void openComm(){
@@ -64,7 +70,7 @@ public class SeriolPortTest {
                     } catch (UnsupportedCommOperationException e) {
                     	e.printStackTrace();
                     }
-                    
+                    isConnect = true;
                     ReadData readData = new ReadData();
         			Thread readThread = new Thread(readData);
         			readThread.setDaemon(true);
@@ -79,16 +85,6 @@ public class SeriolPortTest {
 	
 	public void sendData(byte[] data){
 		try {
-//            for(int i=0;i<20;i++){
-//         	   System.out.println("input :"+i);
-//         	   outputStream.write(data); 
-//         	   try{
-//         		   Thread.sleep(1000);
-//         	   } catch (InterruptedException e) {
-//           			e.printStackTrace();
-//           		}
-//            
-//            }
 			try {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
@@ -104,30 +100,34 @@ public class SeriolPortTest {
 		} catch (IOException e) {
           	e.printStackTrace();
           	
-          }finally{
-          	try{
-              	outputStream.flush();
-              	outputStream.close();
-          	}catch(Exception e){
-          		e.printStackTrace();
-          	}
-          	serialPort.close();
           }
 	}
 	
-	int i = 0;
+	private byte[] recvAllBuffer = new byte[2048];//接收到的数据缓冲区
+	private byte[] recvbuf = new byte[1024];
+	private int recvAllBufferIndex = 0;
+	private boolean isConnect = false;//是否连接
 	public class ReadData implements Runnable{
+		int numBytes = 0;
 		public void run() {
 			try {
 				
 				try {
 					//System.out.println("test:"+inputStream.available());
-					byte[] readBuffer = new byte[1024];
 					if(inputStream!=null){
-						while (!isStop) {
-							logger.debug("test:"+i++);
-							int numBytes = inputStream.read(readBuffer);
-							System.out.println("read data:"+TypeConversion.byte2hex(readBuffer,0,numBytes));
+						while (isConnect&&!isStop) {
+							numBytes = inputStream.read(recvbuf);
+							//填充数据到缓存
+							recvAllBuffer = Utils.insertEnoughLengthBuffer(recvAllBuffer, recvAllBufferIndex, recvbuf, 0, numBytes, 512);
+							recvAllBufferIndex +=numBytes;
+							//包前两个字节 是包长度, 高位在前，低位在后 ，判断收到数据是否已经收完
+							if(TypeConversion.bytesToShortEx(recvAllBuffer, 0)<=recvAllBufferIndex-2){
+								byte[] data = new byte[recvAllBufferIndex];
+								System.arraycopy(recvAllBuffer, 0, data, 0, recvAllBufferIndex);
+								parseData(data);//处理数据
+							}
+							
+							//System.out.println("read data:"+TypeConversion.byte2hex(readBuffer,0,numBytes));
 							Thread.sleep(200);
 						}
 					}

@@ -1,14 +1,18 @@
 package com.guanri.android.jpos.iso.bill99;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.TreeMap;
 
 import com.guanri.android.exception.FieldIsNullException;
 import com.guanri.android.exception.FieldTooLongException;
 import com.guanri.android.exception.PacketException;
+import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
 import com.guanri.android.jpos.network.test.ReadFile;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
+import com.guanri.android.lib.utils.Utils;
 
 /**
  * 银联解包类
@@ -542,9 +546,30 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public Object parseFeild46() throws FieldTooLongException, FieldIsNullException{
-
-		String result = floatASCIItoStr(3);
-		return (Object)result;
+		//TLV数据格式为  ID(2字节)+ LAN长度(2字节)+DATA数据
+		ArrayList<JposSelfFieldLeaf> tlvData = new ArrayList<JposSelfFieldLeaf>();
+		int tlvLength = Integer.parseInt(TypeConversion.bcd2string(data,index,2));
+		index +=2;
+		
+		byte[] tlvBuffer = new byte[tlvLength];
+		System.arraycopy(data, index, tlvBuffer, 0, tlvLength);
+		index +=tlvLength;
+		int tvfIndex = 0;
+		while(tvfIndex<tlvLength-4){
+			try{
+				JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+				leaf.setTag(String.valueOf(TypeConversion.bytesToShortEx(tlvBuffer, tvfIndex)));
+				tvfIndex +=2;
+				leaf.setMaxLength(TypeConversion.bytesToShortEx(tlvBuffer, tvfIndex));
+				tvfIndex +=2;
+				leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,leaf.getMaxLength()));
+				tvfIndex +=leaf.getMaxLength();
+				tlvData.add(leaf);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		return tlvData;
 	}
 	
 	/**
@@ -728,8 +753,48 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public Object parseFeild61() throws FieldTooLongException, FieldIsNullException{
-		String result = floatASCIItoStr(3);
-		return (Object)result;
+		//获取该域的全部数据
+		TreeMap<Integer,JposSelfFieldLeaf> tlvData = new TreeMap<Integer,JposSelfFieldLeaf>();
+		int tlvLength = Integer.parseInt(TypeConversion.bcd2string(data,index,2));//计算数据长度
+		index +=2;
+		byte[] tlvBuffer = new byte[tlvLength];
+		System.arraycopy(data, index, tlvBuffer, 0, tlvLength);//获取数据
+		index +=tlvLength;
+		//解析数据
+		int tvfIndex = 0;
+		int dataIndex = 0;
+		while(tvfIndex<tlvLength-2){
+			try{
+				dataIndex++;
+				JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+				if(dataIndex==1){
+					leaf.setTag("1");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,6));
+					tvfIndex += 6;
+				}else if(dataIndex==2){
+					leaf.setTag("2");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,3));
+					tvfIndex += 3;
+				}else if(dataIndex==3){
+					leaf.setTag("3");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,6));
+					tvfIndex += 6;
+				}else if(dataIndex==4){
+					leaf.setTag("4");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,2));
+					tvfIndex += 2;
+				}else if(dataIndex==5){
+					leaf.setTag("5");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,10));
+					tvfIndex += 10;
+				}
+				tlvData.put(dataIndex, leaf);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		return tlvData;
 	}
 	
 	/**
@@ -743,8 +808,40 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 * @throws FieldTooLongException
 	 */		
 	public Object parseFeild62() throws FieldTooLongException, FieldIsNullException{
-		String result = floatASCIItoStr(2);
-		return (Object)result;
+		//获取该域的全部数据
+		TreeMap<Integer,JposSelfFieldLeaf> tlvData = new TreeMap<Integer,JposSelfFieldLeaf>();
+		int tlvLength = Integer.parseInt(TypeConversion.bcd2string(data,index,1));//计算数据长度
+		index +=1;
+		byte[] tlvBuffer = new byte[tlvLength];
+		System.arraycopy(data, index, tlvBuffer, 0, tlvLength);//获取数据
+		index +=tlvLength;
+		//解析数据
+		int tvfIndex = 0;
+		int dataIndex = 0;
+		while(tvfIndex<tlvLength-2){
+			try{
+				dataIndex++;
+				JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+				if(dataIndex==1){
+					leaf.setTag("1");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,4));
+					tvfIndex += 4;
+				}else if(dataIndex==2){
+					leaf.setTag("2");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,6));
+					tvfIndex += 6;
+				}else if(dataIndex==3){
+					leaf.setTag("3");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,10));
+					tvfIndex += 10;
+				}
+				tlvData.put(dataIndex, leaf);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		return tlvData;
 	}
 	
 
@@ -758,15 +855,44 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public Object parseFeild63() throws FieldTooLongException, FieldIsNullException{
-		String result;
-		try {
-			result = asciiToString(30);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+		//获取该域的全部数据
+		TreeMap<Integer,JposSelfFieldLeaf> tlvData = new TreeMap<Integer,JposSelfFieldLeaf>();
+		int tlvLength = Integer.parseInt(TypeConversion.bcd2string(data,index,1));//计算数据长度
+		index +=1;
+		byte[] tlvBuffer = new byte[tlvLength];
+		System.arraycopy(data, index, tlvBuffer, 0, tlvLength);//获取数据
+		index +=tlvLength;
+		//解析数据
+		int tvfIndex = 0;
+		int dataIndex = 0;
+		while(tvfIndex<tlvLength-2){
+			try{
+				dataIndex++;
+				JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+				if(dataIndex==1){
+					leaf.setTag("1");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,3));
+					tvfIndex += 3;
+				}else if(dataIndex==2){
+					leaf.setTag("2");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,12));
+					tvfIndex += 12;
+				}else if(dataIndex==3){
+					leaf.setTag("3");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,3));
+					tvfIndex += 3;
+				}else if(dataIndex==4){
+					leaf.setTag("4");
+					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,12));
+					tvfIndex += 12;
+				}
+				tlvData.put(dataIndex, leaf);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
-		return (Object)result;
+		
+		return tlvData;
 	}
 	
 	/**

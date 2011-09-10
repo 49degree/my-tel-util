@@ -16,6 +16,12 @@ public class AdditionalAmounts {
 //	4－6金额的货币代码  
 //	7‘D’－借记金额，’C’－贷记金额  
 //	8－19余额数目  
+	public static final String ACCOUNTMONEY = "01";
+	public static final String MONEYUSECAN = "02";
+	public static final String ALLMONEY = "03";
+	public static final String PAYMONEY = "04";
+	public static final String CANWITHDRAWALS = "40";
+	public static final String CANTRANSFER = "56";
 	
 	
 	String code = null;//处理码

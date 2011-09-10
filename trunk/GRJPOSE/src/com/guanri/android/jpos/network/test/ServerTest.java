@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import com.guanri.android.exception.CommandParseException;
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.AdditionalAmounts;
+import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefineUnionpay;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
@@ -16,12 +17,43 @@ import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
 import com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay;
 import com.guanri.android.jpos.iso.unionpay.JposPackageUnionPay;
 import com.guanri.android.jpos.network.CommandControl;
+import com.guanri.android.jpos.pad.ServerDataHandlerFactory;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 
 public class ServerTest {
 	public static Logger logger = Logger.getLogger(ServerTest.class);//日志对象
 	public static void main(String[] args){
+		try{
+			PosMessageBean msgBean = new PosMessageBean();
+			CommandControl.getInstance().connect(10000, 60*000);
+			byte[] reData = CommandControl.getInstance().sendUpCommand(msgBean); 
+			logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(reData));
+			JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
+			bill.unPacketed();
+			
+			TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
+			TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
+			if(amountData.containsKey("02")){
+				AdditionalAmounts am = amountData.get("02");
+				logger.debug(Integer.parseInt(am.getAmount().trim())+":"+am.getAmountType()+":"+am.getBanlanceType());
+			}
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PacketException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+
+	public static void test2(){
 		byte[] sendData = queryMoney();
 		
 
@@ -69,10 +101,9 @@ public class ServerTest {
 			e.printStackTrace();
 		} catch (PacketException e) {
 			e.printStackTrace();
-		}	
+		}
 	}
 	
-
 	public void test(){
 		byte[] sendData = ReadFile.read("E:\\yang_workgroup\\workgroup\\TestJavaProject\\src\\Req.bin");
 		

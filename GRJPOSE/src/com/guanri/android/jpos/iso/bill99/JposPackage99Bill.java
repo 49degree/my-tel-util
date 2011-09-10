@@ -1148,9 +1148,11 @@ public class JposPackage99Bill extends JposPackageFather{
 	
 	
 	public static void main(String[] args){
+		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+		
 		ArrayList<JposSelfFieldLeaf> tlvData = new ArrayList<JposSelfFieldLeaf>();
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
-		leaf.setTag("12");
+		leaf.setTag("0001 ");
 		leaf.setMaxLength(12);
 		leaf.setValue("hello world+");
 		tlvData.add(leaf);
@@ -1160,12 +1162,13 @@ public class JposPackage99Bill extends JposPackageFather{
 		leaf.setValue("hello+");
 		tlvData.add(leaf);
 		
+		sendMap.put(46,tlvData);
 		
-		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+		
 		sendMap.put(2, new String("123456"));
 		//sendMap.put(3, new String("1234"));
 		sendMap.put(13,new String("0905"));
-		sendMap.put(46,tlvData);
+		
 		
 		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
 		leaf = new JposSelfFieldLeaf();

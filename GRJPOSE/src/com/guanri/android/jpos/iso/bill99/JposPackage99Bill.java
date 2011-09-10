@@ -1,12 +1,17 @@
 package com.guanri.android.jpos.iso.bill99;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.TreeMap;
 
 import com.guanri.android.exception.FieldIsNullException;
 import com.guanri.android.exception.FieldTooLongException;
+import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
+import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposPackageFather;
-import com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay;
+import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
 import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
@@ -24,7 +29,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	public final static String PARSE_METHOD = "parseFeild";
 	
 	
-	public JposPackage99Bill(TreeMap<Integer,Object> sendMap,JposMessageType99Bill messageType){
+	public JposPackage99Bill(TreeMap<Integer,Object> sendMap,JposMessageType messageType){
 		super(sendMap,messageType);
 	}
 	
@@ -570,13 +575,29 @@ public class JposPackage99Bill extends JposPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public byte[] parseFeild46(Object o) throws FieldTooLongException{
-		String acount = (String)o;
-		logger.debug("TLV处理域："+acount);
-		if(acount!=null&&acount.length()>255){
-			throw new FieldTooLongException("Feild46 to long");
-		}
-		byte[] temp = floatLengthstr2ASCII(acount,3);
+		//TLV数据格式为  ID(2字节)+ LAN长度(2字节)+DATA数据
+		ArrayList<JposSelfFieldLeaf> data = (ArrayList<JposSelfFieldLeaf>)o;
+		byte[] tlv = new byte[128];
+		int index = 0;
+		for(JposSelfFieldLeaf leaf:data){
+			try{
+				byte[] tlvId = TypeConversion.shortToBytesEx(Short.parseShort(leaf.getTag()));
+				byte[] tlvValue = TypeConversion.stringToAscii(leaf.getValue());
+				byte[] tlvLength = TypeConversion.shortToBytesEx((short)tlvValue.length);
+				tlvId = Utils.insertEnoughLengthBuffer(tlv,index,tlvId , 0, 2, 32);
+				index = index+2;
+				tlvId = Utils.insertEnoughLengthBuffer(tlv , index, tlvLength, 0, 2, 32);
+				index = index+2;
+				tlvId = Utils.insertEnoughLengthBuffer(tlv , index, tlvValue, 0, tlvValue.length, 32);
+				index = index+tlvValue.length;
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 
+		}
+		byte[] temp = new byte[index+2];
+		System.arraycopy(fixLengthStr2cbcd(String.valueOf(index), 3, true), 0, temp, 0, 2);
+		System.arraycopy(tlv, 0, temp, 2, index);
 		return temp;
 	}
 	
@@ -813,6 +834,32 @@ public class JposPackage99Bill extends JposPackageFather{
 		return temp;
 	}
 	
+	
+	/**
+	 * 把数组params的指定长度length复制到数组source，不足的在前面补0
+	 * @param source
+	 * @param params
+	 * @param length
+	 */
+	public void insertFeild(byte[] source,byte[] params,int startIndex,int length){
+		try{
+			if(params.length<length){//补足6位，不足的在前面补“0”
+				byte[] blanck = new byte[length-params.length];
+				for(int i=0;i<length-params.length;i++){
+					System.arraycopy(TypeConversion.stringToAscii("0"), 0, source, startIndex+i, 1);
+				}
+				System.arraycopy(params, 0, source, startIndex+length-params.length, params.length);
+				
+			}else{
+				System.arraycopy(params, 0, source, startIndex, params.length>length?length:params.length);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
 	/**
 	 * 自定义域
 	 * 位图位置 61
@@ -823,20 +870,54 @@ public class JposPackage99Bill extends JposPackageFather{
 	 * @return
 	 * @throws FieldTooLongException
 	 */
-	public byte[] parseFeild61(Object o) throws FieldTooLongException{
-		String acount = (String)o;
-		logger.debug("自定义域："+acount);
-		if(acount!=null&&acount.length()>30){
-			throw new FieldTooLongException("Feild61 to long");
+	public byte[] parseFeild61(Object o){
+		//自定义域由TreeMap对象传递
+		if(o!=null&&o instanceof TreeMap){
+			TreeMap<Integer,JposSelfFieldLeaf> data = (TreeMap<Integer,JposSelfFieldLeaf>)o;
+			byte[] feild = new byte[30];
+			int index = 0;
+			Iterator<Integer> it = data.keySet().iterator();
+			byte[] temp = null;
+			while(it.hasNext()){
+				
+				try {
+					int key = it.next();
+					JposSelfFieldLeaf leaf = data.get(key);
+					
+					temp = TypeConversion.stringToAscii(leaf.getValue());
+					if(key==1){
+						insertFeild(feild,temp,0,6);
+						index += 6;
+					}else if(key==2){
+						insertFeild(feild,temp,6,3);
+						index += 3;
+					}else if(key==3){
+						insertFeild(feild,temp,9,6);
+						index += 6;
+					}else if(key==4){
+						insertFeild(feild,temp,15,2);
+						index += 2;
+					}else if(key==5){
+						insertFeild(feild,temp,17,10);
+						index += 10;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+	
+
+
+			}
+			//返回数据，计算总长度，长度用3位BCD码表示
+			byte[] returnData = new byte[index+2];
+			System.arraycopy(fixLengthStr2cbcd(String.valueOf(index), 3, true), 0, returnData, 0, 2);//长度用3位BCD码表示
+			System.arraycopy(feild, 0, returnData, 2, index);
+			return returnData;
+			
+		}else{
+			return null;
 		}
-		byte[] temp = floatLengthstr2ASCII(acount,3);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return temp; 
 	}
 	
 	/**
@@ -850,19 +931,43 @@ public class JposPackage99Bill extends JposPackageFather{
 	 * @throws FieldTooLongException
 	 */		
 	public byte[] parseFeild62(Object o) throws FieldTooLongException{
-		String acount = (String)o;
-		logger.debug("自定义域："+acount);
-		if(acount!=null&&acount.length()>20){
-			throw new FieldTooLongException("Feild62 to long");
+		//自定义域由TreeMap对象传递
+		if(o!=null&&o instanceof TreeMap){
+			TreeMap<Integer,JposSelfFieldLeaf> data = (TreeMap<Integer,JposSelfFieldLeaf>)o;
+			byte[] feild = new byte[20];
+			int index = 0;
+			Iterator<Integer> it = data.keySet().iterator();
+			byte[] temp = null;
+			while(it.hasNext()){
+				try {
+					int key = it.next();
+					JposSelfFieldLeaf leaf = data.get(key);
+					
+					temp = TypeConversion.stringToAscii(leaf.getValue());
+					if(key==1){
+						insertFeild(feild,temp,0,4);
+						index += 4;
+					}else if(key==2){
+						insertFeild(feild,temp,4,6);
+						index += 6;
+					}else if(key==3){
+						insertFeild(feild,temp,10,10);
+						index += 10;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}
+			//返回数据，计算总长度，长度用3位BCD码表示
+			byte[] returnData = new byte[index+1];
+			System.arraycopy(fixLengthStr2cbcd(String.valueOf(index), 2, true), 0, returnData, 0, 1);//长度用3位BCD码表示
+			System.arraycopy(feild, 0, returnData, 1, index);
+			return returnData;
+			
+		}else{
+			return null;
 		}
-		byte[] temp =  floatLengthstr2ASCII(acount,2);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return temp;
 	}
 	
 	/**
@@ -870,24 +975,50 @@ public class JposPackage99Bill extends JposPackageFather{
 	 * 格式: 定长 
 	 * 类型: ANS30 30个字节的ASCII
 	 * 描述: 自定义域
+	 * 此自定域在本规范中用于在 POS 结帐报文，用于定义 POS 本批交易的总计数据。
+	 * 正向交易笔数(3位) + 正向交易总金额(12位) + 逆向总笔数(3位) + 逆向交易总金额(12位) 
 	 * @param o
 	 * @return
 	 * @throws FieldTooLongException
 	 */
 	public byte[] parseFeild63(Object o) throws FieldTooLongException{
-		String acount = (String)o;
-		logger.debug("自定义域："+acount);
-		if(acount!=null&&acount.length()>30){
-			throw new FieldTooLongException("Feild63 to long");
+		//自定义域由TreeMap对象传递
+		if(o!=null&&o instanceof TreeMap){
+			TreeMap<Integer,JposSelfFieldLeaf> data = (TreeMap<Integer,JposSelfFieldLeaf>)o;
+			byte[] feild = new byte[31];
+			System.arraycopy(fixLengthStr2cbcd("30", 2, true), 0, feild, 0, 1);//长度用3位BCD码表示
+			int index = 0;
+			Iterator<Integer> it = data.keySet().iterator();
+			byte[] temp = null;
+			while(it.hasNext()){
+				try {
+					int key = it.next();
+					JposSelfFieldLeaf leaf = data.get(key);
+					
+					temp = TypeConversion.stringToAscii(leaf.getValue());
+					if(key==1){
+						insertFeild(feild,temp,1,3);
+						index += 3;
+					}else if(key==2){
+						insertFeild(feild,temp,4,12);
+						index += 12;
+					}else if(key==3){
+						insertFeild(feild,temp,16,3);
+						index += 3;
+					}else if(key==4){
+						insertFeild(feild,temp,19,12);
+						index += 12;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}
+			return feild;
+			
+		}else{
+			return null;
 		}
-		byte[] temp = str2ASCII(acount,30);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return temp;
 	}
 	
 	/**
@@ -1017,13 +1148,82 @@ public class JposPackage99Bill extends JposPackageFather{
 	
 	
 	public static void main(String[] args){
+		ArrayList<JposSelfFieldLeaf> tlvData = new ArrayList<JposSelfFieldLeaf>();
+		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+		leaf.setTag("12");
+		leaf.setMaxLength(12);
+		leaf.setValue("hello world+");
+		tlvData.add(leaf);
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("2");
+		leaf.setMaxLength(6);
+		leaf.setValue("hello+");
+		tlvData.add(leaf);
+		
+		
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		sendMap.put(2, new String("123456"));
 		//sendMap.put(3, new String("1234"));
 		sendMap.put(13,new String("0905"));
-		JposPackageFather jposPackage99Bill = new JposPackage99Bill(sendMap,new JposMessageType99Bill());
+		sendMap.put(46,tlvData);
 		
-		jposPackage99Bill.packaged();
+		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("1");
+		leaf.setValue("12345111");
+		data1.put(1,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("2");
+		leaf.setValue("12");
+		data1.put(2,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("3");
+		leaf.setValue("12345qqqqq");
+		tlvData.add(leaf);
+		data1.put(3,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("4");
+		leaf.setValue("12345qq");
+		tlvData.add(leaf);
+		data1.put(4,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("5");
+		leaf.setValue("12345qqqqq");
+		tlvData.add(leaf);
+		//data1.put(5,leaf);
+		
+		
+		sendMap.put(63,data1);
+		
+		JposMessageType99Bill messageType = JposMessageType99Bill.getInstance();
+		//设置消息类型
+		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY);
+		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
+		byte[] data = jposPackage99Bill.packaged();
+		try{
+			JposUnPackage99Bill jposUnPackage99Bill = new JposUnPackage99Bill(data);
+			jposUnPackage99Bill.unPacketed();
+			List<JposSelfFieldLeaf> data46 = (List<JposSelfFieldLeaf>)jposUnPackage99Bill.getMReturnMap().get(46);
+			System.out.println(data46.get(0).getTag()+":"+data46.get(0).getMaxLength()+":"+data46.get(0).getValue());
+			System.out.println(data46.get(1).getTag()+":"+data46.get(1).getMaxLength()+":"+data46.get(1).getValue());
+			
+			TreeMap<Integer ,JposSelfFieldLeaf> data61 = (TreeMap<Integer ,JposSelfFieldLeaf>)jposUnPackage99Bill.getMReturnMap().get(63);
+//			System.out.println(data61.get(5).getTag()+":"+data61.get(5).getMaxLength()+":"+data61.get(5).getValue());
+			System.out.println(data61.get(4).getTag()+":"+data61.get(4).getMaxLength()+":"+data61.get(4).getValue());
+
+			System.out.println(data61.get(3).getTag()+":"+data61.get(3).getMaxLength()+":"+data61.get(3).getValue());
+			System.out.println(data61.get(2).getTag()+":"+data61.get(2).getMaxLength()+":"+data61.get(2).getValue());
+			System.out.println(data61.get(1).getTag()+":"+data61.get(1).getMaxLength()+":"+data61.get(1).getValue());
+				
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		
 		
 	}
 }

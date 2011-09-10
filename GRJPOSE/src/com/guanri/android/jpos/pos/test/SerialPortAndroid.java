@@ -27,7 +27,42 @@ public class SerialPortAndroid{
 	 */
 	private FileDescriptor mFd;
 	
-	
+	public SerialPortAndroid() throws SecurityException, IOException {
+		this.device = "/dev/ttyUSB0";
+		this.bountRate = 9600;
+		
+		if ( (device.length() == 0) || (bountRate == -1)) {
+			throw new InvalidParameterException();
+		}
+
+		/* Open the serial port */
+		File file = new File(device);
+		/* Check access permission */
+		if (!file.canRead() || !file.canWrite()) {
+			try {
+				/* Missing read/write permission, trying to chmod the file */
+				Process su;
+				su = Runtime.getRuntime().exec("/system/bin/su");
+				String cmd = "chmod 666 " + file.getAbsolutePath() + "\n"
+						+ "exit\n";
+				su.getOutputStream().write(cmd.getBytes());
+				if ((su.waitFor() != 0) || !file.canRead()
+						|| !file.canWrite()) {
+					throw new SecurityException();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new SecurityException();
+			}
+		}
+
+		mFd = open(file.getAbsolutePath(), bountRate);
+		if (mFd == null) {
+			throw new IOException();
+		}
+		mInputStream = new FileInputStream(mFd);
+		mOutputStream = new FileOutputStream(mFd);
+	}
 	
 	/**
 	 * 发送数据到串口设备，同一时间只能有一个线程调用
@@ -54,42 +89,7 @@ public class SerialPortAndroid{
 
 
 	
-	public SerialPortAndroid(String device, int baudRate) throws SecurityException, IOException {
-		this.device = device;
-		this.bountRate = baudRate;
-		
-		if ( (device.length() == 0) || (baudRate == -1)) {
-			throw new InvalidParameterException();
-		}
 
-		/* Open the serial port */
-		File file = new File(device);
-		/* Check access permission */
-		if (!file.canRead() || !file.canWrite()) {
-			try {
-				/* Missing read/write permission, trying to chmod the file */
-				Process su;
-				su = Runtime.getRuntime().exec("/system/bin/su");
-				String cmd = "chmod 666 " + file.getAbsolutePath() + "\n"
-						+ "exit\n";
-				su.getOutputStream().write(cmd.getBytes());
-				if ((su.waitFor() != 0) || !file.canRead()
-						|| !file.canWrite()) {
-					throw new SecurityException();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new SecurityException();
-			}
-		}
-
-		mFd = open(file.getAbsolutePath(), baudRate);
-		if (mFd == null) {
-			throw new IOException();
-		}
-		mInputStream = new FileInputStream(mFd);
-		mOutputStream = new FileOutputStream(mFd);
-	}
 
 	// Getters and setters
 	public InputStream getInputStream() {

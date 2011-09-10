@@ -7,12 +7,12 @@ import java.util.TreeMap;
 import com.guanri.android.exception.FieldIsNullException;
 import com.guanri.android.exception.FieldTooLongException;
 import com.guanri.android.exception.PacketException;
+import com.guanri.android.jpos.bean.AdditionalAmounts;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
 import com.guanri.android.jpos.network.test.ReadFile;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
-import com.guanri.android.lib.utils.Utils;
 
 /**
  * 银联解包类
@@ -665,8 +665,34 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public Object parseFeild54() throws FieldTooLongException, FieldIsNullException{
-		String result = floatASCIItoStr(3);
-		return (Object)result;
+		//String result = floatASCIItoStr(3);
+		TreeMap<String,AdditionalAmounts> amountData = new TreeMap<String,AdditionalAmounts>();
+		int amountLength = Integer.parseInt(TypeConversion.bcd2string(data,index,2));//计算数据长度
+		index +=2;
+		if(amountLength>0){
+			byte[] amountBuffer = new byte[amountLength];
+			System.arraycopy(data, index, amountBuffer, 0, amountLength);//获取数据
+			index +=amountLength;
+			int amountNum = amountLength/20;
+			AdditionalAmounts amount = null;
+			for(int i=0;i<amountNum;i++){
+				amount = new AdditionalAmounts();
+				try{
+					amount.setCode(TypeConversion.asciiToString(amountBuffer,i*20,2));
+					amount.setAmountType(TypeConversion.asciiToString(amountBuffer,i*20+2,2));
+					amount.setHuobiCode(TypeConversion.asciiToString(amountBuffer,i*20+4,3));
+					amount.setBanlanceType(TypeConversion.asciiToString(amountBuffer,i*20+7,1));
+					amount.setAmount(TypeConversion.asciiToString(amountBuffer,i*20+8,12));
+					amountData.put(amount.getAmountType(), amount);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+			}
+			
+			
+		}
+		return amountData;
 	}
 	
 	/**

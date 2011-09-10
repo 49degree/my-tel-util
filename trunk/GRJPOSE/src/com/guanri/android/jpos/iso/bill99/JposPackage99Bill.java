@@ -57,7 +57,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild2(Object o) throws FieldTooLongException, FieldIsNullException{ 
 		String acount = (String)o;
-		logger.debug("账号："+acount);
+		//logger.debug("账号："+acount);
 		if(acount!=null&&acount.length()>19){
 			throw new FieldTooLongException("Feild2 to long");
 		}else if(acount == null) {
@@ -65,7 +65,7 @@ public class JposPackage99Bill extends JposPackageFather{
 		}
 		byte[] temp = floatLengthStr2cbcd(acount,String.valueOf(acount.length()), true,2);
 		
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;//最长19位数字，要用20位BCD码
 	}
 	
@@ -85,13 +85,13 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild3(Object o) throws FieldTooLongException{ 
 		String acount = (String)o;
-		logger.debug("处理码："+acount);
+		//logger.debug("处理码："+acount);
 		if(acount!=null&&acount.length()>6){
 			throw new FieldTooLongException("Feild3 to long");
 		}
 		
 		byte[] temp = fixLengthStr2cbcd(acount,6, true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		
 		return temp;
 	}
@@ -113,12 +113,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild4(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("交易金额："+acount);
+		//logger.debug("交易金额："+acount);
 		if(acount!=null&&acount.length()>12){
 			throw new FieldTooLongException("Feild4 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,12, true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp; 
 	}
 	
@@ -134,12 +134,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild11(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("POS流水号："+acount);
+		//logger.debug("POS流水号："+acount);
 		if(acount!=null&&acount.length()>6){
 			throw new FieldTooLongException("Feild11 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,6, true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -155,12 +155,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild12(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("本地交易时间："+acount);
+		//logger.debug("本地交易时间："+acount);
 		if(acount!=null&&acount.length()>6){
 			throw new FieldTooLongException("Feild12 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,6, true); 
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -176,12 +176,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild13(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("本地交易日期："+acount);
+		//logger.debug("本地交易日期："+acount);
 		if(acount!=null&&acount.length()>4){
 			throw new FieldTooLongException("Feild13 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,4, true); 
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -196,12 +196,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild14(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("卡有限期："+acount);
+		//logger.debug("卡有限期："+acount);
 		if(acount!=null&&acount.length()>4){
 			throw new FieldTooLongException("Feild14 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,4, true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -217,18 +217,13 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild19(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("分期期数："+acount);
+		//logger.debug("分期期数："+acount);
 		if(acount!=null&&acount.length()>2){
 			throw new FieldTooLongException("Feild19 to long");
 		}
 		byte[] temp = floatLengthstr2ASCII(acount,2);
 		
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp;
 	}
 	
@@ -244,12 +239,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild20(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("分期返回金额："+acount);
+		//logger.debug("分期返回金额："+acount);
 		if(acount!=null&&acount.length()>20){
 			throw new FieldTooLongException("Feild20 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,20, true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -266,12 +261,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild22(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("POS输入方式："+acount);
+		//logger.debug("POS输入方式："+acount);
 		if(acount!=null&&acount.length()>3){
 			throw new FieldTooLongException("Feild22 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,3, true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -287,12 +282,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild23(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("卡序列号："+acount);
+		//logger.debug("卡序列号："+acount);
 		if(acount!=null&&acount.length()>3){
 			throw new FieldTooLongException("Feild23 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,3, true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -309,12 +304,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild24(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("NII："+acount);
+		//logger.debug("NII："+acount);
 		if(acount!=null&&acount.length()>3){
 			throw new FieldTooLongException("Feild24 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,3, true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	/**
@@ -333,12 +328,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild25(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("服务点条件码："+acount);
+		//logger.debug("服务点条件码："+acount);
 		if(acount!=null&&acount.length()>2){
 			throw new FieldTooLongException("Feild25 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,2, true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp; 
 	}
 	
@@ -356,12 +351,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild34(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("扩展主账号："+acount);
+		//logger.debug("扩展主账号："+acount);
 		if(acount!=null&&acount.length()>28){
 			throw new FieldTooLongException("Feild34 to long");
 		}
 		byte[] temp = floatLengthStr2cbcd(acount,String.valueOf(acount.length()), true,2);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -379,12 +374,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild35(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("二磁道数据："+acount);
+		//logger.debug("二磁道数据："+acount);
 		if(acount!=null&&acount.length()>37){
 			throw new FieldTooLongException("Feild35 to long");
 		}
 		byte[] temp = floatLengthStr2cbcd(acount,String.valueOf(acount.length()), true,2); 
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -401,12 +396,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild36(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("三磁道数据："+acount);
+		//logger.debug("三磁道数据："+acount);
 		if(acount!=null&&acount.length()>104){
 			throw new FieldTooLongException("Feild36 to long");
 		}
 		byte[] temp = floatLengthStr2cbcd(acount,String.valueOf(acount.length()), true,3);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -422,17 +417,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild37(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("参考号："+acount);
+		//logger.debug("参考号："+acount);
 		if(acount!=null&&acount.length()>12){
 			throw new FieldTooLongException("Feild37 to long");
 		}
 		byte[] temp = str2ASCII(acount,12);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp; 
 	}
 	
@@ -448,17 +438,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild38(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("授权码："+acount);
+		//logger.debug("授权码："+acount);
 		if(acount!=null&&acount.length()>6){
 			throw new FieldTooLongException("Feild38 to long");
 		}
 		byte[] temp = str2ASCII(acount,6);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp;
 	}
 	
@@ -474,17 +459,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild39(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("响应码："+acount);
+		//logger.debug("响应码："+acount);
 		if(acount!=null&&acount.length()>2){
 			throw new FieldTooLongException("Feild39 to long");
 		}
 		byte[] temp = str2ASCII(acount,2);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp; 
 	}
 	/**
@@ -500,17 +480,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild41(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("终端号："+acount);
+		//logger.debug("终端号："+acount);
 		if(acount!=null&&acount.length()>8){
 			throw new FieldTooLongException("Feild41 to long");
 		}
 		byte[] temp = str2ASCII(acount,8);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp;
 	}
 	
@@ -523,17 +498,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild42(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("商户号："+acount);
+		//logger.debug("商户号："+acount);
 		if(acount!=null&&acount.length()>15){
 			throw new FieldTooLongException("Feild42 to long");
 		}
 		byte[] temp = str2ASCII(acount,15);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp;
 	}
 	
@@ -550,17 +520,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild44(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("附加响应数据："+acount);
+		//logger.debug("附加响应数据："+acount);
 		if(acount!=null&&acount.length()>25){
 			throw new FieldTooLongException("Feild44 to long");
 		}
 		byte[] temp =  floatLengthstr2ASCII(acount,2);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp;
 	}
 	
@@ -581,7 +546,7 @@ public class JposPackage99Bill extends JposPackageFather{
 		int index = 0;
 		for(JposSelfFieldLeaf leaf:data){
 			try{
-				byte[] tlvId = TypeConversion.shortToBytesEx(Short.parseShort(leaf.getTag()));
+				byte[] tlvId = TypeConversion.shortToBytesEx(Short.parseShort(leaf.getTag().trim()));
 				byte[] tlvValue = TypeConversion.stringToAscii(leaf.getValue());
 				byte[] tlvLength = TypeConversion.shortToBytesEx((short)tlvValue.length);
 				tlvId = Utils.insertEnoughLengthBuffer(tlv,index,tlvId , 0, 2, 32);
@@ -615,7 +580,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild48(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("附加数据："+acount);
+		//logger.debug("附加数据："+acount);
 		if(acount!=null&&acount.length()>322){
 			throw new FieldTooLongException("Feild48 to long");
 		}
@@ -638,7 +603,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild49(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("货币代码："+acount);
+		//logger.debug("货币代码："+acount);
 		if(acount!=null&&acount.length()>3){
 			throw new FieldTooLongException("Feild49 to long");
 		}
@@ -675,17 +640,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild53(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("结算商户号："+acount);
+		//logger.debug("结算商户号："+acount);
 		if(acount!=null&&acount.length()>15){
 			throw new FieldTooLongException("Feild53 to long");
 		}
 		byte[] temp = str2ASCII(acount,15);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return temp;
 	}
 	
@@ -701,17 +661,11 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild54(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("Additional Amounts："+acount);
+		//logger.debug("Additional Amounts："+acount);
 		if(acount!=null&&acount.length()>20){
 			throw new FieldTooLongException("Feild54 to long");
 		}
 		byte[] temp = floatLengthstr2ASCII(acount,3);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return temp;
 	}
 	
@@ -727,17 +681,11 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild55(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("IC CARD TRANSACTION DATA："+acount);
+		//logger.debug("IC CARD TRANSACTION DATA："+acount);
 		if(acount!=null&&acount.length()>255){
 			throw new FieldTooLongException("Feild55 to long");
 		}
 		byte[] temp = floatLengthstr2ASCII(acount,3);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return temp;
 	}
 	
@@ -752,17 +700,11 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild56(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug(" TC-结果："+acount);
+		//logger.debug(" TC-结果："+acount);
 		if(acount!=null&&acount.length()>255){
 			throw new FieldTooLongException("Feild56 to long");
 		}
 		byte[] temp = floatLengthstr2ASCII(acount,3);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return temp;
 	}
 	
@@ -777,17 +719,11 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild57(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("Reserved："+acount);
+		//logger.debug("Reserved："+acount);
 		if(acount!=null&&acount.length()>255){
 			throw new FieldTooLongException("Feild57 to long");
 		}
 		byte[] temp = floatLengthstr2ASCII(acount,3);
-		try {
-			logger.debug("结果："+temp.length+":"+TypeConversion.asciiToString(temp));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return temp;
 	}
 	
@@ -803,12 +739,12 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild59(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("汇率信息："+acount);
+		//logger.debug("汇率信息："+acount);
 		if(acount!=null&&acount.length()>24){
 			throw new FieldTooLongException("Feild59 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,24,true);
-		logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
+		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}
 	
@@ -824,7 +760,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild60(Object o) throws FieldTooLongException{
 		String acount = (String)o;
-		logger.debug("订单号："+acount);
+		//logger.debug("订单号："+acount);
 		if(acount!=null&&acount.length()>30){
 			throw new FieldTooLongException("Feild60 to long");
 		}
@@ -1036,7 +972,8 @@ public class JposPackage99Bill extends JposPackageFather{
 		
 		//使用macSource传送给POS终端得到MAC值
 		//后续增加。。。。。
-		macSource = CryptionControl.getInstance().getMac(macSource);//自己先计算MAC
+		String makSource = (String)mSendMap.get(11)+(String)mSendMap.get(13)+(String)mSendMap.get(12)+(String)mSendMap.get(41);
+		macSource = CryptionControl.getInstance().getMac(macSource,makSource);//自己先计算MAC
 		return macSource;
 	}
 	
@@ -1143,6 +1080,7 @@ public class JposPackage99Bill extends JposPackageFather{
 			System.arraycopy(macSource, 0, resulttemp, 0, index);
 			macSource = resulttemp;
 		}
+		logger.debug("MAB:"+TypeConversion.byte2hex(macSource));
 		return macSource;
 	}
 	

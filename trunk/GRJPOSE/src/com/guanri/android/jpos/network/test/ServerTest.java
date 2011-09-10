@@ -6,9 +6,10 @@ import java.util.TreeMap;
 
 import com.guanri.android.exception.CommandParseException;
 import com.guanri.android.exception.PacketException;
-import com.guanri.android.jpos.bean.PosMessageBean;
+import com.guanri.android.jpos.bean.AdditionalAmounts;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefineUnionpay;
+import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
 import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
 import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
 import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
@@ -22,26 +23,43 @@ public class ServerTest {
 	public static Logger logger = Logger.getLogger(ServerTest.class);//日志对象
 	public static void main(String[] args){
 		byte[] sendData = queryMoney();
-		logger.debug("请求数据:"+TypeConversion.byte2hex(sendData));
+		
+
 		try {
-			
-//			JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(tree,(JposMessageType99Bill)bill.getmMessageType());
-//			sendData = jposPackage99Bill.packaged();
-			
+			logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(sendData));
 			CommandControl.getInstance().connect(10000, 60*000);
 			byte[] reData = CommandControl.getInstance().submit(sendData); 
 			
 			JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
 			bill.unPacketed();
-			TreeMap<Integer, Object>  tree = bill.getMReturnMap();
+			TreeMap<Integer, Object> tree = bill.getMReturnMap();
 			Iterator<Integer> it = bill.getMReturnMap().keySet().iterator();
 			while(it.hasNext()){
 				int a = it.next();
-				if(a==22||a==24||a==49){
-					//tree.put(a, ((String)tree.get(a)).substring(1));
-					logger.debug(a+"::::::::::::::::::::::"+tree.get(a));
+				
+				if(a==61){
+					TreeMap<Integer,JposSelfFieldLeaf> amountData = (TreeMap<Integer,JposSelfFieldLeaf>)tree.get(a);
+					
+					Iterator<Integer> it2 = amountData.keySet().iterator();
+					byte[] temp = null;
+					while(it2.hasNext()){
+						JposSelfFieldLeaf  am = amountData.get(it2.next());
+						logger.debug("JposSelfFieldLeaf:"+am.getTag()+":"+am.getValue());
+					}
+					
 				}
-
+				
+				if(a==54){
+					TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)tree.get(a);
+					
+					Iterator<String> it2 = amountData.keySet().iterator();
+					byte[] temp = null;
+					while(it2.hasNext()){
+						AdditionalAmounts  am = amountData.get(it2.next());
+						logger.debug("金额:"+am.getAmountType()+":"+am.getAmount()+":"+am.getBanlanceType());
+					}
+					
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -55,6 +73,97 @@ public class ServerTest {
 	}
 	
 
+	public void test(){
+		byte[] sendData = ReadFile.read("E:\\yang_workgroup\\workgroup\\TestJavaProject\\src\\Req.bin");
+		
+
+		try {
+			JposUnPackage99Bill bill = new JposUnPackage99Bill(sendData);
+			bill.unPacketed();
+			
+			TreeMap<Integer, Object> tree = bill.getMReturnMap();
+			Iterator<Integer> it = bill.getMReturnMap().keySet().iterator();
+			while(it.hasNext()){
+				int a = it.next();
+				if(a==22||a==24||a==49){
+					tree.put(a, ((String)tree.get(a)).substring(1));
+					logger.debug(a+"::::::::::::::::::::::"+tree.get(a));
+				}
+				if(a==61){
+					TreeMap<Integer,JposSelfFieldLeaf> amountData = (TreeMap<Integer,JposSelfFieldLeaf>)tree.get(a);
+					
+					Iterator<Integer> it2 = amountData.keySet().iterator();
+					byte[] temp = null;
+					while(it2.hasNext()){
+						JposSelfFieldLeaf  am = amountData.get(it2.next());
+						logger.debug("JposSelfFieldLeaf:"+am.getTag()+":"+am.getValue());
+					}
+					
+				}
+				
+				if(a==54){
+					TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)tree.get(a);
+					
+					Iterator<String> it2 = amountData.keySet().iterator();
+					byte[] temp = null;
+					while(it2.hasNext()){
+						AdditionalAmounts  am = amountData.get(it2.next());
+						logger.debug("金额:"+am.getAmountType()+":"+am.getAmount()+":"+am.getBanlanceType());
+					}
+					
+				}
+			}
+			JposMessageType99Bill messageType = JposMessageType99Bill.getInstance();
+			//设置消息类型
+			messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY);
+			JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(bill.getMReturnMap(),bill.getMMessageType());
+			jposPackage99Bill.packaged();
+				
+			logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(sendData));
+			CommandControl.getInstance().connect(10000, 60*000);
+			byte[] reData = CommandControl.getInstance().submit(sendData); 
+			
+			bill = new JposUnPackage99Bill(reData);
+			bill.unPacketed();
+			tree = bill.getMReturnMap();
+			it = bill.getMReturnMap().keySet().iterator();
+			while(it.hasNext()){
+				int a = it.next();
+				
+				if(a==61){
+					TreeMap<Integer,JposSelfFieldLeaf> amountData = (TreeMap<Integer,JposSelfFieldLeaf>)tree.get(a);
+					
+					Iterator<Integer> it2 = amountData.keySet().iterator();
+					byte[] temp = null;
+					while(it2.hasNext()){
+						JposSelfFieldLeaf  am = amountData.get(it2.next());
+						logger.debug("JposSelfFieldLeaf:"+am.getTag()+":"+am.getValue());
+					}
+					
+				}
+				
+				if(a==54){
+					TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)tree.get(a);
+					
+					Iterator<String> it2 = amountData.keySet().iterator();
+					byte[] temp = null;
+					while(it2.hasNext()){
+						AdditionalAmounts  am = amountData.get(it2.next());
+						logger.debug("金额:"+am.getAmountType()+":"+am.getAmount()+":"+am.getBanlanceType());
+					}
+					
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PacketException e) {
+			e.printStackTrace();
+		}			
+	}
 	
 	
 	/**
@@ -72,11 +181,11 @@ public class ServerTest {
 		// 域3 处理码
 		sendMap.put(3, "310000");
 		// 域11 流水号
-		sendMap.put(11, "011100");
+		sendMap.put(11, "011089");
 		// 域 12 本地交易时间
-		sendMap.put(12, "115139");
+		sendMap.put(12, "102945");
 		// 域13 本地交易日期
-		sendMap.put(13, "0908");
+		sendMap.put(13, "0909");
 		sendMap.put(22, "022");
 				
 		// 域24 NII
@@ -95,7 +204,36 @@ public class ServerTest {
 		//sendMap.put(52, "888888");
 		// 域60 自定义域     60.1 交易类型码 00  60.2 批次号  000001 网络管理信息码 001
 		//sendMap.put(60, "00000001001000001");
-		sendMap.put(61, "000000001123553");
+		//000000001123553E0建设银
+		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
+		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+		leaf.setTag("1");
+		leaf.setValue("000000");
+		data1.put(1,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("2");
+		leaf.setValue("001");
+		data1.put(2,leaf);
+		
+
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("3");
+		leaf.setValue("123542");
+		data1.put(3,leaf);	
+		
+//		leaf = new JposSelfFieldLeaf();
+//		leaf.setTag("4");
+//		leaf.setValue("E0");
+//		data1.put(4,leaf);
+//		
+//		leaf = new JposSelfFieldLeaf();
+//		leaf.setTag("5");
+//		leaf.setValue("建设银");
+//		data1.put(5,leaf);		
+		
+		sendMap.put(61, data1);
 		
 		sendMap.put(64, null);
 		

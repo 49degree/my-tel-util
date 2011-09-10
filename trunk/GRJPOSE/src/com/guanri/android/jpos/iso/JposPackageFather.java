@@ -52,7 +52,6 @@ public abstract class JposPackageFather {
 				dataLength +=bitDataTemp.length;
 			}
 			datas.add(bitDataTemp);
-			logger.debug(dataLength+":");
 		}
 		
 		//解析位图
@@ -212,7 +211,6 @@ public abstract class JposPackageFather {
 		if (s.length() % 2 != 0) {
 			s = "0" + s;//补足偶数的是否都放在左边？？？？？？？？
 		}
-		logger.debug("BCD码："+s);
 		return TypeConversion.str2bcd(s);
 	}	
 	/**
@@ -227,7 +225,7 @@ public abstract class JposPackageFather {
 				s = rightAlign?"0" + s:s+"0";
 			}
 		}
-		logger.debug("BCD码："+s);
+	
 		return TypeConversion.str2bcd(s);
 	}		
 }

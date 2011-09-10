@@ -36,11 +36,11 @@ public class CryptionControl {
 
 
 	
-	public byte[] getMak(){
-//		终端号：00000001 
-//		流水号：000128 
-//		交易日期时间：0308170653 (不包括年份) 	
-		String msg = "000000010001280308170653";
+	public byte[] getMak(String msg){
+//		终端号：20100601 
+//		流水号：000022 
+//		交易日期时间：0910220859 (不包括年份) 	
+		//String msg = "201006010000220910220859";
 		char[] msgs = msg.toCharArray();
 		StringBuffer msg2 = new StringBuffer();
 		for(char msgsarg:msgs)
@@ -51,7 +51,10 @@ public class CryptionControl {
 		
 		byte[] result = {(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF};
 		
-		
+//		byte[] source = TypeConversion.hexStringToByte("FFFFFFFFFFFFFFFF323031303036303130303030323230393130323230383539");
+//		int blockNum = source.length % 8>0?(source.length/8+1):source.length/8;
+//		byte[] result = new byte[8];
+//		System.arraycopy(source, 0, result, 0, 8);
 		
 		for (int i = 0; i < blockNum; i++) {
 			byte[] checkBlock = new byte[8];
@@ -69,27 +72,51 @@ public class CryptionControl {
 		
 		result = encrypto(result,rootKey);
 		
-		logger.debug(TypeConversion.byte2hex(result));
+		logger.debug("MAK:"+TypeConversion.byte2hex(result));
 		
 		return result;
 	}
 	
-	public byte[] getMac(byte[] mab){
-		byte[] mak = getMak();
+	public byte[] getMac(byte[] mab,String makSource){
+		byte[] mak = getMak(makSource);
 		
 		if(mab.length%8>0){
 			byte[] temp = new byte[(mab.length/8+1)*8];
 			System.arraycopy(mab, 0, temp, 0, mab.length);
 			mab = temp;
 		}
+		logger.debug("getMac:"+TypeConversion.byte2hex(mab));
 		
-		byte[] result = this.encrypto(mab, mak);
+		byte[] result = this.getDynamicMAC(mab, mak);
 		logger.debug(TypeConversion.byte2hex(result));
+		
+		
 		return result;
 	}
 
 	
-	
+	/**
+	 * 构造消息摘要
+	 * @return String
+	 * @roseuid 4DF71E7A02AF
+	 */
+	public byte[] getDynamicMAC(byte[] text,byte[] password) {
+		// 构造消息摘要
+		int blockNum = text.length / 8;
+		byte[] checkBlock = new byte[8];
+
+		System.arraycopy(text, 0, checkBlock, 0, 8);
+		byte[] result = encrypto(checkBlock,password);
+
+		for (int i = 1; i < blockNum; i++) {
+			System.arraycopy(text, i * 8, checkBlock, 0, 8);
+			for (int j = 0; j < 8; j++) {
+				result[j] = (byte) (result[j] ^ checkBlock[j]);
+			}
+			result = encrypto(result,password);
+		}
+		return result;
+	}	
 	/**
 	 * DES加密过程
 	 * @param datasource
@@ -147,6 +174,10 @@ public class CryptionControl {
 	}
 	
 	public static void main(String[] args){
-		CryptionControl.instance.getMak();
+		logger.debug(TypeConversion.byte2hex(
+				CryptionControl.instance.getMac(
+						TypeConversion.hexStringToByte("5264102500120211310000000022220859091001563230313030363031"),"201006010000220910220859")));
+		
+		//CryptionControl.instance.getMak();
 	}
 }

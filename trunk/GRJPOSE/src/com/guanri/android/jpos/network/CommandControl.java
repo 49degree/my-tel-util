@@ -74,6 +74,7 @@ public class CommandControl {
 				out = socket.getOutputStream();
 				in = socket.getInputStream();
 				isConnect = true;
+				stopReceive = false;
 				logger.debug("连接完成");
 			}
 		} catch (IOException e) {
@@ -142,6 +143,7 @@ public class CommandControl {
 		}catch(NullPointerException ne){
 			throw new CommandParseException("下载数据解析错误");
 		}finally {
+			isConnect = false;
 			try {
 				socket.close();
 			} catch (Exception ex) {

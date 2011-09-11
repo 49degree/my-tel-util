@@ -41,7 +41,7 @@ public class ServerTest {
 			jpos.setMac(mac);
 			
 			for(int i=0;i<1;i++){
-				CommandControl.getInstance().connect(10000, 1000);
+				CommandControl.getInstance().connect(10000, 10000);
 				byte[] reData = CommandControl.getInstance().sendUpCommand(serverParseData);
 				logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(reData));
 				JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);

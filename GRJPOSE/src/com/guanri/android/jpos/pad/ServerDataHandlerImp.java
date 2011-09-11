@@ -8,7 +8,7 @@ import com.guanri.android.jpos.iso.JposPackageFather;
  * @author Administrator
  *
  */
-public interface ServerDataHandlerImp {
+public interface ServerDataHandlerImp { 
 	/**
 	 * 收到POS上送服务器数据 
 	 * 进行相应的协议解析 构造传送到服务器的数据

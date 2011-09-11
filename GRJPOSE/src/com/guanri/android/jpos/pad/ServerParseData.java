@@ -1,11 +1,7 @@
 package com.guanri.android.jpos.pad;
 
 import com.guanri.android.jpos.bean.PosMessageBean;
-import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.iso.JposPackageFather;
-import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
-import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
-import com.guanri.android.jpos.pad.ServerDataHandlerFactory;
 /**
  * 用于POS数据交换
  * @author Administrator
@@ -18,7 +14,6 @@ public class ServerParseData {
 	
 	public ServerParseData(PosMessageBean posMessageBean){
 		jposPackage = ServerDataHandlerFactory.geServerDataHandler().receivePosData(posMessageBean);
-		
 	}
 	
 	/**

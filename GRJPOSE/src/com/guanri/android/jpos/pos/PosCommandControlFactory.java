@@ -14,6 +14,6 @@ public class PosCommandControlFactory {
 	public static PosCommandControlImp getPosCommandControl(){
 		//FSKPortPosCommandControl.getInstance();//返回FSK通信的实例
 		
-		return PosCommandControlSerialPort.getInstance();//返回串口通信的实例
+		return PosCommandControlSerialPortBak.getInstance();//返回串口通信的实例
 	}
 }

@@ -26,18 +26,24 @@ public class ServerTest {
 	public static void main(String[] args){
 		try{
 			PosMessageBean msgBean = new PosMessageBean();
-			CommandControl.getInstance().connect(10000, 60*000);
-			byte[] reData = CommandControl.getInstance().sendUpCommand(msgBean); 
-			logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(reData));
-			JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
-			bill.unPacketed();
 			
-			TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
-			TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
-			if(amountData.containsKey("02")){
-				AdditionalAmounts am = amountData.get("02");
-				logger.debug(Integer.parseInt(am.getAmount().trim())+":"+am.getAmountType()+":"+am.getBanlanceType());
+			
+			
+			for(int i=0;i<1;i++){
+				CommandControl.getInstance().connect(10000, 500);
+				byte[] reData = CommandControl.getInstance().sendUpCommand(msgBean); 
+				logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(reData));
+				JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
+				bill.unPacketed();
+				
+				TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
+				TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
+				if(amountData.containsKey("02")){
+					AdditionalAmounts am = amountData.get("02");
+					logger.debug(Integer.parseInt(am.getAmount().trim())+":"+am.getAmountType()+":"+am.getBanlanceType());
+				}
 			}
+
 			
 			
 		} catch (IOException e) {

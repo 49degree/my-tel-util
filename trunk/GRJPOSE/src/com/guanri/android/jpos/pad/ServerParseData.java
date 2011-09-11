@@ -6,7 +6,11 @@ import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
 import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
 import com.guanri.android.jpos.pad.ServerDataHandlerFactory;
-
+/**
+ * 用于POS数据交换
+ * @author Administrator
+ *
+ */
 public class ServerParseData {
 	protected PosMessageBean posMessageBean=null;
 	protected byte[] mac = null;

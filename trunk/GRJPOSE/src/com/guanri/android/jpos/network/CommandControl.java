@@ -8,7 +8,7 @@ import java.net.Socket;
 
 import com.guanri.android.exception.CommandParseException;
 import com.guanri.android.jpos.pad.ServerDataHandlerFactory;
-import com.guanri.android.jpos.pad.ServerParseData;
+import com.guanri.android.jpos.pad.ServerUpDataParse;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 import com.guanri.android.lib.utils.Utils;
@@ -41,7 +41,7 @@ public class CommandControl {
 	 * @param upCommandParse
 	 * @return DownCommandParse 
 	 */
-	public synchronized byte[] sendUpCommand(ServerParseData serverParseData) throws IOException,CommandParseException{
+	public synchronized byte[] sendUpCommand(ServerUpDataParse serverParseData) throws IOException,CommandParseException{
 		byte[] sendData = serverParseData.getBeSendData();
 		byte[] returnData = this.submit(sendData);
 		return returnData;

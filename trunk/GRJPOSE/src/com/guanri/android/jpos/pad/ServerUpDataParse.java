@@ -7,12 +7,12 @@ import com.guanri.android.jpos.iso.JposPackageFather;
  * @author Administrator
  *
  */
-public class ServerParseData {
+public class ServerUpDataParse {
 	protected PosMessageBean posMessageBean=null;
 	protected byte[] mac = null;
 	protected JposPackageFather jposPackage = null;
 	
-	public ServerParseData(PosMessageBean posMessageBean){
+	public ServerUpDataParse(PosMessageBean posMessageBean){
 		jposPackage = ServerDataHandlerFactory.geServerDataHandler().receivePosData(posMessageBean);
 	}
 	

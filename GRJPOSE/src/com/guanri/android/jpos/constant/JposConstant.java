@@ -51,6 +51,9 @@ public class JposConstant {
 		public final static String CONTACT =  "104110045110012";
 		// 人民币代码
 		public final static String RMBCODE = "156";
+		
+		// 网络信息代码
+		public final static String NETMSGCODE = "001";
 	}
 	
 	/**

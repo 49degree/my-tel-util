@@ -787,6 +787,14 @@ public class JposPackageUnionPay extends JposPackageFather{
 		return null;
 	}
 	
+	
+	/**
+	 * 计算消息摘要需要的源数据
+	 */
+	protected byte[] getMacSource(){
+		return null;
+	}
+	
 	public static void main(String[] args) {
 		Date date = new Date();
 		System.out.println(date.getHours()+""+date.getMinutes()+date.getSeconds());

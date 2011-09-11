@@ -2,12 +2,11 @@ package com.guanri.android.jpos.pad.bill99;
 
 import java.util.TreeMap;
 
-import com.guanri.android.exception.FieldIsNullException;
-import com.guanri.android.exception.FieldTooLongException;
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.iso.JposMessageType;
+import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
 import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
 import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
@@ -15,8 +14,6 @@ import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
 import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.jpos.pad.ServerDataHandlerFactory;
 import com.guanri.android.jpos.pad.ServerDataHandlerImp;
-import com.guanri.android.lib.utils.TypeConversion;
-import com.guanri.android.lib.utils.Utils;
 
 public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	public static ServerDataHandler99Bill instance = null;
@@ -27,46 +24,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		return instance;
 	}
 	
-	/**
-	 * POS请求构造MAC数据block 
-	 * @param posMessageBean 从POS机获取的数据
-	 */
-	public byte[] getPosMacBlock(PosMessageBean posMessageBean){
-		
-		//以下为模拟数据
-		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
-		//根据POS得到的数据构造sendMap对象
-		sendMap.put(2, "5264102500120211");
-		// 域3 处理码
-		sendMap.put(3, "310000");
-		// 域11 流水号
-		sendMap.put(11, "011089");
-		// 域 12 本地交易时间
-		sendMap.put(12, "102945");
-		// 域13 本地交易日期
-		sendMap.put(13, "0909");
-		sendMap.put(22, "022");
-				
-		// 域24 NII
-		sendMap.put(24,"009");
-		// 域25 服务店条件码
-		sendMap.put(25, "00");
-		// 域35 2磁道数据
-		sendMap.put(35, "5264102500120211=1508201");
-		// 域41 终端代码
-		sendMap.put(41, "20100601");
-		// 域42 商户代码
-		sendMap.put(42, "104110045110012");
-		// 域49  货币代码
-		sendMap.put(49, "156");
-		//设置消息类型
-		JposMessageType99Bill messageType = JposMessageType99Bill.getInstance();
-		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY);
 
-		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
-		
-		return jposPackage99Bill.packagMacBlock();
-	}
 	
 	
 	/**
@@ -75,7 +33,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * @param posMessageBean 从POS机获取的数据
 	 */
 	@Override
-	public byte[] receivePosData(PosMessageBean posMessageBean){
+	public JposPackageFather receivePosData(PosMessageBean posMessageBean){
 		
 		
 		return createQueryBalance(posMessageBean);
@@ -100,7 +58,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * 构造查询余额数据
 	 * @param posMessageBean 从POS获取的数据
 	 */
-	public byte[] createQueryBalance(PosMessageBean posMessageBean){
+	public JposPackageFather createQueryBalance(PosMessageBean posMessageBean){
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		//根据POS得到的数据构造sendMap对象
 		sendMap.put(2, "5264102500120211");
@@ -145,15 +103,17 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(61, data1);//原交易信息域
 		
 		//得到模拟数据的mac值
-		byte[] mab = ServerDataHandlerFactory.geServerDataHandler().getPosMacBlock(null);
-		String makSource = (String)sendMap.get(11)+(String)sendMap.get(13)+(String)sendMap.get(12)+(String)sendMap.get(41);
-		byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
-		sendMap.put(64, mac);
+//		byte[] mab = ServerDataHandlerFactory.geServerDataHandler().getPosMacBlock(null);
+//		String makSource = (String)sendMap.get(11)+(String)sendMap.get(13)+(String)sendMap.get(12)+(String)sendMap.get(41);
+//		byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
+//		sendMap.put(64, mac);
 		
 		//设置消息类型
 		JposMessageType99Bill messageType = JposMessageType99Bill.getInstance();
 		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY);
-		return parseSubmitData(sendMap,messageType);
+		
+		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
+		return jposPackage99Bill;
 	}
 	
 	/**

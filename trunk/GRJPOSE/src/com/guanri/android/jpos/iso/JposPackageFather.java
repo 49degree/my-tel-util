@@ -40,6 +40,24 @@ public abstract class JposPackageFather {
 	public byte[] packagMacBlock(){
 		return getMacSource();
 	}
+	
+	/**
+	 * 设置MAC值
+	 * @param mac
+	 * @return
+	 */
+	public boolean setMac(byte[] mac){
+		mSendMap.put(64, mac);
+		return true;
+	}
+	/**
+	 * 获取位数据对象
+	 * @param key
+	 * @return
+	 */
+	public Object getSendMapValue(Integer key){
+		return mSendMap.get(key);
+	}
 	/**
 	 * 计算消息摘要需要的源数据
 	 */

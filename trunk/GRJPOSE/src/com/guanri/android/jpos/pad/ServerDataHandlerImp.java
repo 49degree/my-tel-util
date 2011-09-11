@@ -1,6 +1,7 @@
 package com.guanri.android.jpos.pad;
 
 import com.guanri.android.jpos.bean.PosMessageBean;
+import com.guanri.android.jpos.iso.JposPackageFather;
 
 /**
  * 从POS接收数据
@@ -13,11 +14,6 @@ public interface ServerDataHandlerImp {
 	 * 进行相应的协议解析 构造传送到服务器的数据
 	 * @param posMessageBean 从POS机获取的数据
 	 */
-	public byte[] receivePosData(PosMessageBean posMessageBean);
+	public JposPackageFather receivePosData(PosMessageBean posMessageBean);
 	
-	/**
-	 * POS请求构造MAC数据block 
-	 * @param posMessageBean 从POS机获取的数据
-	 */
-	public byte[] getPosMacBlock(PosMessageBean posMessageBean);
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<Button 
+		android:id="@+id/btn_query"
+		android:text="余额查询"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"/>
+	<Button
+		android:id="@+id/btn_login"
+		android:text="签到"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"/>
+	<Button	
+		android:id="@+id/btn_sale"
+		android:text="消费"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"/>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<TextView android:text="结果"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"/>
+	<EditText
+		android:id="@+id/edt_log"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"/>
+	</LinearLayout>
+</LinearLayout>

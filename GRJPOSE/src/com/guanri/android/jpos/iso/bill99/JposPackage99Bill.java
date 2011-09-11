@@ -968,6 +968,8 @@ public class JposPackage99Bill extends JposPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public byte[] parseFeild64(Object o) throws FieldTooLongException{
+		logger.debug("parseFeild64:"+TypeConversion.byte2hex((byte[])o));
+		
 		return (byte[])o;
 	}
 	
@@ -1089,7 +1091,7 @@ public class JposPackage99Bill extends JposPackageFather{
 		leaf.setValue("hello world+");
 		tlvData.add(leaf);
 		leaf = new JposSelfFieldLeaf();
-		leaf.setTag("2");
+		leaf.setTag("0002");
 		leaf.setMaxLength(6);
 		leaf.setValue("hello+");
 		tlvData.add(leaf);
@@ -1113,22 +1115,7 @@ public class JposPackage99Bill extends JposPackageFather{
 		leaf.setValue("12");
 		data1.put(2,leaf);
 		
-		leaf = new JposSelfFieldLeaf();
-		leaf.setTag("3");
-		leaf.setValue("12345qqqqq");
-		tlvData.add(leaf);
-		data1.put(3,leaf);
-		
-		leaf = new JposSelfFieldLeaf();
-		leaf.setTag("4");
-		leaf.setValue("12345qq");
-		tlvData.add(leaf);
-		data1.put(4,leaf);
-		
-		leaf = new JposSelfFieldLeaf();
-		leaf.setTag("5");
-		leaf.setValue("12345qqqqq");
-		tlvData.add(leaf);
+	
 		//data1.put(5,leaf);
 		
 		

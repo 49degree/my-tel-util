@@ -10,6 +10,7 @@ import com.guanri.android.jpos.bean.AdditionalAmounts;
 import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefineUnionpay;
+import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
 import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
 import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
@@ -17,7 +18,8 @@ import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
 import com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay;
 import com.guanri.android.jpos.iso.unionpay.JposPackageUnionPay;
 import com.guanri.android.jpos.network.CommandControl;
-import com.guanri.android.jpos.pad.ServerDataHandlerFactory;
+import com.guanri.android.jpos.network.CryptionControl;
+import com.guanri.android.jpos.pad.ServerParseData;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 
@@ -26,12 +28,21 @@ public class ServerTest {
 	public static void main(String[] args){
 		try{
 			PosMessageBean msgBean = new PosMessageBean();
-			
-			
+			//构造数据发送对象
+			ServerParseData serverParseData = new ServerParseData(msgBean);
+			byte[] mab = serverParseData.getMab();//构造MAC BLOCK
+			//获取数据包对象
+			JposPackageFather jpos = serverParseData.getJposPackage();
+			//构造MAK BLOCK
+			String makSource = (String)(jpos.getSendMapValue(11))+(String)(jpos.getSendMapValue(13))+
+					(String)(jpos.getSendMapValue(12))+(String)(jpos.getSendMapValue(41));
+			//获取MAC
+			byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
+			jpos.setMac(mac);
 			
 			for(int i=0;i<1;i++){
-				CommandControl.getInstance().connect(10000, 500);
-				byte[] reData = CommandControl.getInstance().sendUpCommand(msgBean); 
+				CommandControl.getInstance().connect(10000, 1000);
+				byte[] reData = CommandControl.getInstance().sendUpCommand(serverParseData);
 				logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(reData));
 				JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
 				bill.unPacketed();

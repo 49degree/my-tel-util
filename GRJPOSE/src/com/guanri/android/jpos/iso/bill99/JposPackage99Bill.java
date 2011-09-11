@@ -546,7 +546,7 @@ public class JposPackage99Bill extends JposPackageFather{
 		int index = 0;
 		for(JposSelfFieldLeaf leaf:data){
 			try{
-				byte[] tlvId = TypeConversion.shortToBytesEx(Short.parseShort(leaf.getTag().trim()));
+				byte[] tlvId = TypeConversion.hexStringToByte(leaf.getTag().trim());
 				byte[] tlvValue = TypeConversion.stringToAscii(leaf.getValue());
 				byte[] tlvLength = TypeConversion.shortToBytesEx((short)tlvValue.length);
 				tlvId = Utils.insertEnoughLengthBuffer(tlv,index,tlvId , 0, 2, 32);
@@ -958,7 +958,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	}
 	
 	/**
-	 * 未实现
+	 * 由外部传入
 	 * 消息鉴定码
 	 * 位图位置: 64
 	 * 格式 定长
@@ -968,13 +968,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public byte[] parseFeild64(Object o) throws FieldTooLongException{
-		byte[] macSource = this.getMacSource();//构造消息摘要的原始数据域，
-		
-		//使用macSource传送给POS终端得到MAC值
-		//后续增加。。。。。
-		String makSource = (String)mSendMap.get(11)+(String)mSendMap.get(13)+(String)mSendMap.get(12)+(String)mSendMap.get(41);
-		macSource = CryptionControl.getInstance().getMac(macSource,makSource);//自己先计算MAC
-		return macSource;
+		return (byte[])o;
 	}
 	
 	

@@ -35,6 +35,16 @@ public abstract class JposPackageFather {
 	}
 	
 	/**
+	 * POS请求构造MAC数据block
+	 */
+	public byte[] packagMacBlock(){
+		return getMacSource();
+	}
+	/**
+	 * 计算消息摘要需要的源数据
+	 */
+	protected abstract byte[] getMacSource();
+	/**
 	 * 对数据打包
 	 * @return
 	 */

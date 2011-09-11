@@ -558,7 +558,7 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 		while(tvfIndex<tlvLength-4){
 			try{
 				JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
-				leaf.setTag(String.valueOf(TypeConversion.bytesToShortEx(tlvBuffer, tvfIndex)));
+				leaf.setTag(TypeConversion.byte2hex(tlvBuffer, tvfIndex, 2));
 				tvfIndex +=2;
 				leaf.setMaxLength(TypeConversion.bytesToShortEx(tlvBuffer, tvfIndex));
 				tvfIndex +=2;

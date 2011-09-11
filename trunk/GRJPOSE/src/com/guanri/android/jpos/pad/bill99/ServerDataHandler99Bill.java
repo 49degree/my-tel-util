@@ -36,23 +36,29 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	public JposPackageFather receivePosData(PosMessageBean posMessageBean){
 		
 		
-		return createQueryBalance(posMessageBean);
+		//return createQueryBalance(posMessageBean);
 		
 		//return createLogin99(posMessageBean);
+		
+		// 消费
+		String Trank2 = "5264102500120211=1301123";
+		String Trank3 = "";
+		String CardNo = "5264102500120211";
+		String pwdstr = "";
+		String cardPeriod = "1301";
+		int money = 10000;
+		String datestr = "0910";
+		String timestr = "175422";
+		String orderNo = "000001";
+		String userNo = "001";
+		String billNo = "010001";
+		return  createSale(Trank2, Trank3, CardNo, pwdstr, cardPeriod, money, 
+				datestr, timestr, orderNo, userNo, billNo);
 	}
 	
 	
 	
-	/**
-	 * 解析数据包
-	 * @param sendMap
-	 * @param messageType
-	 * @return
-	 */
-	public byte[] parseSubmitData(TreeMap<Integer,Object> sendMap,JposMessageType99Bill messageType){
-		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
-		return jposPackage99Bill.packaged();
-	}
+
 	
 	/**
 	 * 构造查询余额数据
@@ -121,7 +127,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * @param posMessageBean
 	 * @return
 	 */
-	public byte[] createLogin99(PosMessageBean posMessageBean){
+	public JposPackageFather createLogin99(PosMessageBean posMessageBean){
 		
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		sendMap.put(3, "990000");
@@ -164,112 +170,107 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//设置消息头类型
 		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_POS_CHECK_IN);
 		
-		JposPackage99Bill jposPackageUnionPay = new JposPackage99Bill(sendMap,messageType);
+		JposPackage99Bill jposPackage = new JposPackage99Bill(sendMap,messageType);
 	 
-		return parseSubmitData(sendMap,messageType);
+		return jposPackage;
 		
 		
 	}
 	
-	
 	/**
-	 * 解析查询余额数据，构造发送到POS的数据
-	 * @param posMessageBean 原始POS数据
-	 * @param serverData 服务器返回数据
+	 * 消费
+	 * @param Trank2 第二磁道
+	 * @param Trank3 第三磁道
+	 * @param CardNo 卡号, 主账号
+	 * @param pwdstr 密码
+	 * @param CardPeriod 卡有效期
+ 	 * @param money 金额
 	 * @return
 	 */
-	public byte[] parseQueryBalance(PosMessageBean posMessageBean,byte[] serverData){
-		try{
-			JposUnPackage99Bill bill = new JposUnPackage99Bill(serverData);
-			bill.unPacketed();
-			TreeMap<Integer, Object>  treeMap = bill.getMReturnMap();
-			JposMessageType mMessageType = bill.getMMessageType();
-
-			//根据服务器得到的数据构造返回POS的数据
-			//.....................
-			
-			
-		}catch(PacketException e){
-			
+	public JposPackageFather createSale(String Trank2,String Trank3,String CardNo,String pwdstr,
+			String cardPeriod,int money,String datestr,String timestr,String orderNo,
+			String userNo,String billNo){
+		//String CardNo = Trank.substring(0, 19);
+		//判断POS输入类型
+		String inputtype;
+		if(Trank2.equals("")){
+			if(pwdstr.equals(""))
+				inputtype = "012";
+			else
+				inputtype = "011";
+		}else{
+			if(pwdstr.equals(""))
+				inputtype = "021";
+			else
+				inputtype = "022";
 		}
-		return null;
-	}
-	
-	/**
-	 * 构造签到数据
-	 * @param posCommandParse 从POS获取的数据
-	 */
-	public byte[] createCheckIn(PosMessageBean posMessageBean){
+		//构造签到所需各域
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
-		//根据POS得到的数据构造sendMap对象
-		//.....................
+		sendMap.put(2, CardNo);
+		sendMap.put(3, "000000");
+		sendMap.put(4, "000000095439");
+		sendMap.put(11, "011005");
+		sendMap.put(12, timestr);
+		sendMap.put(13, datestr);
+		// 域14 卡有效期
+		if(inputtype.equals("011")||inputtype.equals("012"))
+			sendMap.put(14, cardPeriod);
+		sendMap.put(22, "022");
+		sendMap.put(24, "009");
+		sendMap.put(25, "14");
+		//if(!Trank2.equals(""))
+			sendMap.put(35, "5264102500120211=1508201");
+		//if(!Trank3.equals(""))
+		//	sendMap.put(36,Trank3);
+		// 域41 终端代码
+		sendMap.put(41, MessageTypeDefine99Bill.POSID);
+		// 域42 商户代码
+		sendMap.put(42, MessageTypeDefine99Bill.CONTACT);
+		// 域49  货币代码
+		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
+		// 自定义域 60 将来用于存放保单号
 		
 		
-		JposMessageType99Bill messageType = JposMessageType99Bill.getInstance();
-		//设置消息类型
-		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY);
-		return parseSubmitData(sendMap,messageType);
+		//sendMap.put(60, "");
+		// 处理61 域
+		
+		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
+		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("1");
+		leaf.setValue(orderNo);
+		data1.put(1,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("2");
+		leaf.setValue(userNo);
+		data1.put(2,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("3");
+		leaf.setValue(billNo);
+		data1.put(3,leaf);
+		
+		sendMap.put(61, "000000001123460");	
+		
+		sendMap.put(64, "");
+		
+		JposMessageType99Bill messageType = new JposMessageType99Bill();
+		//设置消息头类型
+
+		// 003B60000000900100：003B(长度字节) + 6000000090(TPDU) + 0100(报文版本号)
+		messageType.setPageLength((short)59);
+		messageType.setId((byte)0x60);  
+		messageType.setServerAddress("0000");
+		messageType.setServerAddress("0000");
+		messageType.setAddress("0090");
+		messageType.setPagever("0100");
+		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_PAY_MONEY);
+		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
+	 
+		return jposPackage99Bill;
+		
 	}
 	
-	/**
-	 * 解析签到数据，构造发送到POS的数据
-	 * @param posMessageBean 原始POS数据
-	 * @param serverData 服务器返回数据
-	 * @return
-	 */
-	public byte[] parseCheckIn(PosMessageBean posMessageBean,byte[] serverData){
-		try{
-			JposUnPackage99Bill bill = new JposUnPackage99Bill(serverData);
-			bill.unPacketed();
-			TreeMap<Integer, Object>  treeMap = bill.getMReturnMap();
-			JposMessageType mMessageType = bill.getMMessageType();
-
-			//根据服务器得到的数据构造返回POS的数据
-			//.....................
-			
-			
-		}catch(PacketException e){
-			
-		}
-		return null;
-	}	
-	
-	/**
-	 * 构造消费数据
-	 * @param posCommandParse 从POS获取的数据
-	 */
-	public byte[] createPay(PosMessageBean posMessageBean){
-		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
-		//根据POS得到的数据构造sendMap对象
-		//.....................
 		
-		
-		JposMessageType99Bill messageType = JposMessageType99Bill.getInstance();
-		//设置消息类型
-		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY);
-		return parseSubmitData(sendMap,messageType);
-	}
-	
-	/**
-	 * 解析消费数据，构造发送到POS的数据
-	 * @param posMessageBean 原始POS数据
-	 * @param serverData 服务器返回数据
-	 * @return
-	 */
-	public byte[] parsePay(PosMessageBean posMessageBean,byte[] serverData){
-		try{
-			JposUnPackage99Bill bill = new JposUnPackage99Bill(serverData);
-			bill.unPacketed();
-			TreeMap<Integer, Object>  treeMap = bill.getMReturnMap();
-			JposMessageType mMessageType = bill.getMMessageType();
-
-			//根据服务器得到的数据构造返回POS的数据
-			//.....................
-			
-			
-		}catch(PacketException e){
-			
-		}
-		return null;
-	}		
 }

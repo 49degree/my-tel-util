@@ -5,14 +5,12 @@ import java.util.TreeMap;
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
-import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
+import com.guanri.android.jpos.iso.JposUnPackageFather;
 import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
 import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
 import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
-import com.guanri.android.jpos.network.CryptionControl;
-import com.guanri.android.jpos.pad.ServerDataHandlerFactory;
 import com.guanri.android.jpos.pad.ServerDataHandlerImp;
 
 public class ServerDataHandler99Bill implements ServerDataHandlerImp{
@@ -25,7 +23,21 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	}
 	
 
-	
+	/**
+	 * 收到服务器下发数据 
+	 * 进行相应的协议服务器的数据
+	 * @param posMessageBean 从POS机获取的数据
+	 */
+	public JposUnPackageFather receiveServerData(byte[] receiveData) throws PacketException{
+		//解析数据
+		try{
+			JposUnPackage99Bill jposUnPackage = new JposUnPackage99Bill(receiveData);
+			return jposUnPackage;
+		}catch(PacketException e){
+			//返回失败信息
+			throw e;
+		}
+	}
 	
 	/**
 	 * 收到POS数据 ，上送服务器

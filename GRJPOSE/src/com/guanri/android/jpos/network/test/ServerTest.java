@@ -19,7 +19,7 @@ import com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay;
 import com.guanri.android.jpos.iso.unionpay.JposPackageUnionPay;
 import com.guanri.android.jpos.network.CommandControl;
 import com.guanri.android.jpos.network.CryptionControl;
-import com.guanri.android.jpos.pad.ServerParseData;
+import com.guanri.android.jpos.pad.ServerUpDataParse;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 
@@ -29,7 +29,7 @@ public class ServerTest {
 		try{
 			PosMessageBean msgBean = new PosMessageBean();
 			//构造数据发送对象
-			ServerParseData serverParseData = new ServerParseData(msgBean);
+			ServerUpDataParse serverParseData = new ServerUpDataParse(msgBean);
 			byte[] mab = serverParseData.getMab();//构造MAC BLOCK
 			//获取数据包对象
 			JposPackageFather jpos = serverParseData.getJposPackage();

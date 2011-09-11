@@ -4,6 +4,6 @@
 	<classpathentry excluding="com/guanri/android/lib/" kind="src" path="GRJPOS"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="src" path="AndroidProjectLib_src"/>
+	<classpathentry kind="lib" path="/GRJPOSE/lib/comm.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

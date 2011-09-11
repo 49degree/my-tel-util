@@ -32,11 +32,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>AndroidProjectLib_src</name>
-			<type>2</type>
-			<locationURI>_android_AndroidProjectLib_d3b0b05b/src</locationURI>
-		</link>
-		<link>
 			<name>GRJPOS</name>
 			<type>2</type>
 			<location>E:/workgroup/GRJPOSE/src</location>

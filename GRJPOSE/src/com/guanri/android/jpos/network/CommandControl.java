@@ -32,6 +32,7 @@ public class CommandControl {
 	 * 构造方法
 	 */
 	private CommandControl(){
+		
 	}
 	
 	/**

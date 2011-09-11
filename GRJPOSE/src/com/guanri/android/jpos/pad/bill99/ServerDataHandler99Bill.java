@@ -31,6 +31,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		
 		
 		return createQueryBalance(posMessageBean);
+		
+		//return createLogin99(posMessageBean);
 	}
 	
 	/**
@@ -97,6 +99,62 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY);
 		return parseSubmitData(sendMap,messageType);
 	}
+	
+	/**
+	 * 构造签到方法
+	 * @param posMessageBean
+	 * @return
+	 */
+	public byte[] createLogin99(PosMessageBean posMessageBean){
+		
+		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+		sendMap.put(3, "990000");
+		// 域11 流水号
+		// 域11 流水号
+		sendMap.put(11, "011089");
+		// 域 12 本地交易时间
+		sendMap.put(12, "102945");
+		// 域13 本地交易日期
+		sendMap.put(13, "0909");
+		sendMap.put(24, "009");
+		// 域41 终端代码
+		sendMap.put(41, MessageTypeDefine99Bill.POSID);
+		// 域42 商户代码
+		sendMap.put(42, MessageTypeDefine99Bill.CONTACT);
+		
+		// 域61 自定义域      61.1 批次号  000001 网络管理信息码 001
+		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
+		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("1");
+		leaf.setValue("000001");
+		data1.put(1,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("2");
+		leaf.setValue(MessageTypeDefine99Bill.NETMSGCODE);
+		data1.put(2, leaf);
+		sendMap.put(61, data1);
+		
+		// 消息头
+		JposMessageType99Bill messageType = new JposMessageType99Bill();
+		messageType.setPageLength((short)59);
+		messageType.setId((byte)0x60);  
+		messageType.setServerAddress("0000");
+		messageType.setServerAddress("0000");
+		messageType.setAddress("0090");
+		messageType.setPagever("0100");
+		
+		//设置消息头类型
+		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_POS_CHECK_IN);
+		
+		JposPackage99Bill jposPackageUnionPay = new JposPackage99Bill(sendMap,messageType);
+	 
+		return parseSubmitData(sendMap,messageType);
+		
+		
+	}
+	
 	
 	/**
 	 * 解析查询余额数据，构造发送到POS的数据

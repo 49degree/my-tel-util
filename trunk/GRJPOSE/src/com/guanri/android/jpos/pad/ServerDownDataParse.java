@@ -2,6 +2,7 @@ package com.guanri.android.jpos.pad;
 
 import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
+import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 
 /**
  * 返回数据到POS端
@@ -44,6 +45,15 @@ public class ServerDownDataParse {
 		}else{
 			return null;
 		}
+	}
+	/**
+	 * 返回POS需要的对象
+	 * @return
+	 */
+	public TTransaction getTTransaction(){
+		TTransaction tTransaction= ServerDataHandlerFactory.geServerDataHandler().createBackPosObject(
+				jposUnPackage.getMReturnMap(), jposUnPackage.getMMessageType());
+		return tTransaction;
 	}
 	
 	/**

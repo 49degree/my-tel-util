@@ -54,52 +54,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_query:
-		try{
-			TTransaction msgBean = new TTransaction();
-			//构造数据发送对象
-			ServerUpDataParse serverParseData = new ServerUpDataParse(msgBean);
-			byte[] mab = serverParseData.getMab();//构造MAC BLOCK
-			//获取数据包对象
-			JposPackageFather jpos = serverParseData.getJposPackage();
-			//构造MAK BLOCK
-			String makSource = (String)(jpos.getSendMapValue(11))+(String)(jpos.getSendMapValue(13))+
-					(String)(jpos.getSendMapValue(12))+(String)(jpos.getSendMapValue(41));
-			//获取MAC
-			byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
-			jpos.setMac(mac);
-			
-			for(int i=0;i<1;i++){
-				CommandControl.getInstance().connect(10000, 1000);
-				ServerDownDataParse serverDownDataParse = CommandControl.getInstance().sendUpCommand(serverParseData);
-				logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(serverDownDataParse.getReturnData()));
-				JposUnPackageFather bill =serverDownDataParse.getJposUnPackage();
-				
-				TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
-				TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
-				if(amountData.containsKey("02")){
-					AdditionalAmounts am = amountData.get("02");
-					logger.debug(Integer.parseInt(am.getAmount().trim())+":"+am.getAmountType()+":"+am.getBanlanceType());
-					TreeMap<Integer, JposSelfFieldLeaf> tlvData = (TreeMap<Integer, JposSelfFieldLeaf>) getMap.get(61);
-					JposSelfFieldLeaf jposSelfFieldLeaf = tlvData.get(5);
-					String str = jposSelfFieldLeaf.getValue();
-					log.setText(Integer.valueOf(am.getAmount().trim())/100 + "\n 发卡行简介:" + str);
-				}
-			}
-
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CommandParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-			break;
-		case R.id.btn_login:
 			try{
-				
 				TTransaction msgBean = new TTransaction();
+				msgBean.TransCode().SetAsInteger(100);
 				//构造数据发送对象
 				ServerUpDataParse serverParseData = new ServerUpDataParse(msgBean);
 				byte[] mab = serverParseData.getMab();//构造MAC BLOCK
@@ -114,13 +71,60 @@ public class MainActivity extends Activity implements OnClickListener {
 				
 				for(int i=0;i<1;i++){
 					CommandControl.getInstance().connect(10000, 1000);
-					ServerDownDataParse serverDownDataParse = CommandControl.getInstance().sendUpCommand(serverParseData);
-					logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(serverDownDataParse.getReturnData()));
+					ServerDownDataParse reData = CommandControl.getInstance().sendUpCommand(serverParseData);//发送数据
+					logger.debug("收到数据为++++++++++++++++++:"+TypeConversion.byte2hex(reData.getReturnData()));
+					TTransaction returnTransaction = reData.getTTransaction();//取返回POS的对象
 					
-					JposUnPackageFather bill =serverDownDataParse.getJposUnPackage();
+					//以下为读取返回的数据
+					JposUnPackageFather bill =reData.getJposUnPackage();
+					
+					TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
+					TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
+					if(amountData.containsKey("02")){
+						AdditionalAmounts am = amountData.get("02");
+						logger.debug(Integer.parseInt(am.getAmount().trim())+":"+am.getAmountType()+":"+am.getBanlanceType());
+						TreeMap<Integer, JposSelfFieldLeaf> tlvData = (TreeMap<Integer, JposSelfFieldLeaf>) getMap.get(61);
+						JposSelfFieldLeaf jposSelfFieldLeaf = tlvData.get(5);
+						String str = jposSelfFieldLeaf.getValue();
+						log.setText(Integer.valueOf(am.getAmount().trim())/100 + "\n 发卡行简介:" + str);
+					}
+				}
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CommandParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		case R.id.btn_login:
+			try{
+				TTransaction msgBean = new TTransaction();
+				msgBean.TransCode().SetAsInteger(1);
+				//构造数据发送对象
+				ServerUpDataParse serverParseData = new ServerUpDataParse(msgBean);
+				byte[] mab = serverParseData.getMab();//构造MAC BLOCK
+				//获取数据包对象
+				JposPackageFather jpos = serverParseData.getJposPackage();
+				//构造MAK BLOCK
+				String makSource = (String)(jpos.getSendMapValue(11))+(String)(jpos.getSendMapValue(13))+
+						(String)(jpos.getSendMapValue(12))+(String)(jpos.getSendMapValue(41));
+				//获取MAC
+				byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
+				jpos.setMac(mac);
+				
+				for(int i=0;i<1;i++){
+					CommandControl.getInstance().connect(10000, 1000);
+					ServerDownDataParse reData = CommandControl.getInstance().sendUpCommand(serverParseData);//发送数据
+					logger.debug("收到数据为++++++++++++++++++:"+TypeConversion.byte2hex(reData.getReturnData()));
+					TTransaction returnTransaction = reData.getTTransaction();//取返回POS的对象
+					
+					//以下为读取返回的数据
+					JposUnPackageFather bill =reData.getJposUnPackage();
 					TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
 					if(getMap.containsKey(39)){
-						String str =(String)getMap.get(39);
+						String str =TypeConversion.result((String)getMap.get(39));
 						logger.debug("响应成功:"+ str);
 						result.append("响应结果" + str+ "\n");
 						String timeStr = "时间" + (String)getMap.get(12) + "\n";
@@ -159,7 +163,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			break;
 		case R.id.btn_sale:
-			try{
+	try{
 				
 				TTransaction msgBean = new TTransaction();
 				//构造数据发送对象
@@ -176,14 +180,15 @@ public class MainActivity extends Activity implements OnClickListener {
 				
 				for(int i=0;i<1;i++){
 					CommandControl.getInstance().connect(10000, 1000);
-					ServerDownDataParse serverDownDataParse = CommandControl.getInstance().sendUpCommand(serverParseData);
-					logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(serverDownDataParse.getReturnData()));
-					JposUnPackageFather bill =serverDownDataParse.getJposUnPackage();
-
+					ServerDownDataParse reData = CommandControl.getInstance().sendUpCommand(serverParseData);//发送数据
+					logger.debug("收到数据为++++++++++++++++++:"+TypeConversion.byte2hex(reData.getReturnData()));
+					TTransaction returnTransaction = reData.getTTransaction();//取返回POS的对象
 					
+					//以下为读取返回的数据
+					JposUnPackageFather bill =reData.getJposUnPackage();
 					TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
 					if(getMap.containsKey(39)){
-						String str =(String)getMap.get(39);
+						String str =TypeConversion.result((String)getMap.get(39));
 						logger.debug("响应成功:"+ str);
 						result.append("响应结果" + str+ "\n");
 						String timeStr = "时间" + (String)getMap.get(12) + "\n";
@@ -195,21 +200,18 @@ public class MainActivity extends Activity implements OnClickListener {
 						logger.debug("授权码:"+ str1);
 						result.append(str1 +"\n");
 						
-						
 					}
-					
 				}
 				
 				log.setText(result.toString());
-
-			} catch (CommandParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-
+			} catch (CommandParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 			break;
 		case R.id.btn_receive:
 			if(!stopTask&&task!=null){

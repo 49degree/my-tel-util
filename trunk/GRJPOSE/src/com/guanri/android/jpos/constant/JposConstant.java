@@ -1,5 +1,7 @@
 package com.guanri.android.jpos.constant;
 
+import java.util.HashMap;
+
 public class JposConstant {
 	/**
 	 * 数据编码类型
@@ -11,6 +13,25 @@ public class JposConstant {
 	public enum DataEncodeType{
 		JPOS_BCD,JPOS_ASCII
 	}
+	
+
+	//POS终端交易码定义
+	public final static int POS_TRANCE_CODE_QUERY_BALANCE = 100;//余额查询
+	public final static int POS_TRANCE_CODE_PAY = 200;//消费
+	public final static int POS_TRANCE_CODE_BACK_ORDER = 300;//退货
+	
+	public final static HashMap<Integer,String> POS_BILL99_TRANCE_CODE = new HashMap<Integer,String>();//POS终端，快钱交易码对照表
+	public final static HashMap<String,String> BILL99_RESULT_TYPE_CODE = new HashMap<String,String>();//快钱交易结果对照表
+	
+	static{
+		//POS终端交易码对照表
+		POS_BILL99_TRANCE_CODE.put(POS_TRANCE_CODE_QUERY_BALANCE, "");
+		POS_BILL99_TRANCE_CODE.put(POS_TRANCE_CODE_PAY, "");
+		POS_BILL99_TRANCE_CODE.put(POS_TRANCE_CODE_BACK_ORDER, "");
+		//快钱交易结果对照表
+		BILL99_RESULT_TYPE_CODE.put("00", "交易成功");
+	}
+	
 	
 	
 	/**

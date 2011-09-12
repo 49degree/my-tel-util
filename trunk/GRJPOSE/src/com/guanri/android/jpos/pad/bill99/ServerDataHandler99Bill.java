@@ -48,6 +48,13 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	}
 	
 	/**
+	 * 构造返回POS的数据对象
+	 */
+	public Object createBackPosObject(TreeMap<Integer, Object> sendMap, JposMessageType messageType){
+		return null;
+	}
+	
+	/**
 	 * 收到POS数据 ，上送服务器
 	 * 进行相应的协议解析 构造传送到服务器的数据
 	 * @param posMessageBean 从POS机获取的数据

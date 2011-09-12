@@ -33,4 +33,9 @@ public interface ServerDataHandlerImp {
 	 */
 	public JposPackageFather createJposPackage(TreeMap<Integer, Object> sendMap, JposMessageType messageType);
 	
+	/**
+	 * 构造返回POS的数据
+	 */
+	public Object createBackPosObject(TreeMap<Integer, Object> sendMap, JposMessageType messageType);
+	
 }

@@ -22,6 +22,7 @@ import com.guanri.android.jpos.network.CommandControl;
 import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
+import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 
@@ -29,9 +30,9 @@ public class ServerTest {
 	public static Logger logger = Logger.getLogger(ServerTest.class);//日志对象
 	public static void main(String[] args){
 		try{
-			PosMessageBean msgBean = new PosMessageBean();
+			TTransaction posMessageBean = new TTransaction();
 			//构造数据发送对象
-			ServerUpDataParse serverParseData = new ServerUpDataParse(msgBean);
+			ServerUpDataParse serverParseData = new ServerUpDataParse(posMessageBean);
 			byte[] mab = serverParseData.getMab();//构造MAC BLOCK
 			//获取数据包对象
 			JposPackageFather jpos = serverParseData.getJposPackage();

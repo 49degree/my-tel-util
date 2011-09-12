@@ -3,7 +3,6 @@ package com.guanri.android.jpos.pad.bill99;
 import java.util.TreeMap;
 
 import com.guanri.android.exception.PacketException;
-import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposPackageFather;
@@ -13,6 +12,7 @@ import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
 import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
 import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
 import com.guanri.android.jpos.pad.ServerDataHandlerImp;
+import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 
 public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	public static ServerDataHandler99Bill instance = null;
@@ -60,13 +60,57 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * @param posMessageBean 从POS机获取的数据
 	 */
 	@Override
-	public JposPackageFather receivePosData(PosMessageBean posMessageBean){
+	public JposPackageFather receivePosData(TTransaction ttransaction){
 		
+		JposPackageFather jposPackageFather = null;
+		//TTransaction ttransaction = new TTransaction();
+		switch (ttransaction.TransCode().GetAsInteger()) {
+		case 100:
+			// 余额查询
+			jposPackageFather = createQueryBalance(ttransaction);
+			break;
+		case 200:
+			// 消费
+			String Trank2 = "5264102500120211=1301123";
+			String Trank3 = "";
+			String CardNo = "5264102500120211";
+			String pwdstr = "";
+			String cardPeriod = "1301";
+			int money = 10000;
+			String datestr = "0910";
+			String timestr = "175422";
+			String orderNo = "000001";
+			String userNo = "001";
+			String billNo = "010001";
+			jposPackageFather =   createSale(Trank2, Trank3, CardNo, pwdstr, cardPeriod, money, 
+					datestr, timestr, orderNo, userNo, billNo);
+			break;
+			// 退货
+		case 300:
+			
+			break;
+		case 400:
+			
+			break;
+		case 1:
+			// 签到
+			jposPackageFather = createLogin99(ttransaction);
+			break;
+		case 4:
+			// 冲正
+			
+			break;
+		case 6:
+			// 批结算
+			
+			break;
+		default:
 		
-		return createQueryBalance(posMessageBean);
+			break;
+		}
 		
-		//return createLogin99(posMessageBean);
-		
+		return createQueryBalance(ttransaction);
+
 		// 消费
 //		String Trank2 = "5264102500120211=1301123";
 //		String Trank3 = "";
@@ -81,6 +125,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 //		String billNo = "010001";
 //		return  createSale(Trank2, Trank3, CardNo, pwdstr, cardPeriod, money, 
 //				datestr, timestr, orderNo, userNo, billNo);
+
 	}
 	
 	
@@ -91,7 +136,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * 构造查询余额数据
 	 * @param posMessageBean 从POS获取的数据
 	 */
-	public JposPackageFather createQueryBalance(PosMessageBean posMessageBean){
+	public JposPackageFather createQueryBalance(TTransaction posMessageBean){
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		//根据POS得到的数据构造sendMap对象
 		sendMap.put(2, "5264102500120211");
@@ -154,7 +199,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * @param posMessageBean
 	 * @return
 	 */
-	public JposPackageFather createLogin99(PosMessageBean posMessageBean){
+	public JposPackageFather createLogin99(TTransaction posMessageBean){
 		
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		sendMap.put(3, "990000");

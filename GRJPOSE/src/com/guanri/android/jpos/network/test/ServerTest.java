@@ -30,17 +30,21 @@ public class ServerTest {
 	public static Logger logger = Logger.getLogger(ServerTest.class);//日志对象
 	public static void main(String[] args){
 		try{
-			TTransaction posMessageBean = new TTransaction();
+			TTransaction transaction = new TTransaction();
 			//构造数据发送对象
-			ServerUpDataParse serverParseData = new ServerUpDataParse(posMessageBean);
+			ServerUpDataParse serverParseData = new ServerUpDataParse(transaction);
 			byte[] mab = serverParseData.getMab();//构造MAC BLOCK
-			//获取数据包对象
+			
+			
+			//以下为模拟MAC运算，实际MAC值由POS计算
 			JposPackageFather jpos = serverParseData.getJposPackage();
 			//构造MAK BLOCK
 			String makSource = (String)(jpos.getSendMapValue(11))+(String)(jpos.getSendMapValue(13))+
 					(String)(jpos.getSendMapValue(12))+(String)(jpos.getSendMapValue(41));
 			//获取MAC
 			byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
+			//模拟MAC运算结束
+			
 			jpos.setMac(mac);
 			
 			for(int i=0;i<1;i++){

@@ -3,6 +3,7 @@ package com.guanri.android.jpos.pad.bill99;
 import java.util.TreeMap;
 
 import com.guanri.android.exception.PacketException;
+import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposPackageFather;
@@ -65,11 +66,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		JposPackageFather jposPackageFather = null;
 		//TTransaction ttransaction = new TTransaction();
 		switch (ttransaction.TransCode().GetAsInteger()) {
-		case 100:
+		case JposConstant.POS_TRANCE_CODE_QUERY_BALANCE:
 			// 余额查询
 			jposPackageFather = createQueryBalance(ttransaction);
 			break;
-		case 200:
+		case JposConstant.POS_TRANCE_CODE_PAY:
 			// 消费
 			String Trank2 = "5264102500120211=1301123";
 			String Trank3 = "";
@@ -86,7 +87,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 					datestr, timestr, orderNo, userNo, billNo);
 			break;
 			// 退货
-		case 300:
+		case JposConstant.POS_TRANCE_CODE_BACK_ORDER:
 			
 			break;
 		case 400:

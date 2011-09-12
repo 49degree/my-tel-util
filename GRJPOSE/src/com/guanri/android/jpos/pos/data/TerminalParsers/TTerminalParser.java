@@ -3,9 +3,13 @@ package com.guanri.android.jpos.pos.data.TerminalParsers;
 import com.guanri.android.jpos.pos.data.Common;
 import com.guanri.android.jpos.pos.data.Stream;
 import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_LoadFromBytes;
-import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_SaveToBytes;
+//import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_SaveToBytes;
 import com.guanri.android.jpos.pos.data.TerminalLinks.TTerminalLink;
 import com.guanri.android.jpos.pos.data.TerminalMessages.*;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 
 public class TTerminalParser {
 	
@@ -17,12 +21,15 @@ public class TTerminalParser {
 		FTerminalLink = Value;
 	}
 	protected int GetNewIdent() {   //获取新的终端识别码
-		FIdent = 12345;
+		Random rnd = new Random();
+		FIdent = rnd.nextInt(65535);
 		return FIdent;
 	}
 	
 	protected String GetNowDateTime(){   // YYYYMMDDhhmmss
-		return "20110911154850";
+		Date date = new Date();
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddkkmmss");
+		return df.format(date);
 	}
 	
 	public void ParseRequest() {
@@ -59,8 +66,10 @@ public class TTerminalParser {
 			System.out.println("交易报文");
 			TTransaction Transaction = new TTransaction();
 			
-			Stream.SetBytes(Bytes);
 			
+			Transaction.ClearProcess(); //清空流程
+			
+			Stream.SetBytes(Bytes);
 			if (Transaction.LoadFormBytes() != TResult_LoadFromBytes.rfll_NoError) //报文格式错误
 				return; 
 			
@@ -69,7 +78,7 @@ public class TTerminalParser {
 				return; 
 			}	
 			
-			Transaction.ClearProcess(); //清空流程
+			
 			if (! Transaction.LoadProcess()){ //导入流程错误
 				System.out.println("导入流程错误");
 				return; 
@@ -77,10 +86,12 @@ public class TTerminalParser {
 			
 			
 			System.out.println("交易代码: " + Transaction.TransCode().GetAsInteger());
-			
+			System.out.println("2磁道数据: " + Transaction.ProcessList.GetTrack2Data());
+			System.out.println("2磁道数据: " + Transaction.ProcessList.GetTrack3Data());
+			System.out.println("主帐号: " + Transaction.ProcessList.GetPAN());
 			
 			Transaction.ClearProcess(); //清空流程
-			Transaction.ProcessList.Response().SetAsString("00余额为12345");
+			Transaction.ProcessList.Response().SetAsString("00余额为" + 123.45);
 			Transaction.SaveProcess();
 			Transaction.SaveMAC();
 			Stream.SetBytes(null);

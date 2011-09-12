@@ -4,22 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import com.guanri.android.exception.CommandParseException;
-import com.guanri.android.exception.PacketException;
-import com.guanri.android.jpos.bean.AdditionalAmounts;
-import com.guanri.android.jpos.bean.PosMessageBean;
-import com.guanri.android.jpos.common.CommandConstant;
-import com.guanri.android.jpos.iso.JposPackageFather;
-import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
-import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
-import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
-import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
-import com.guanri.android.jpos.network.CommandControl;
-import com.guanri.android.jpos.network.CryptionControl;
-import com.guanri.android.jpos.pad.ServerUpDataParse;
-import com.guanri.android.lib.log.Logger;
-import com.guanri.android.lib.utils.TypeConversion;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,9 +11,24 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.guanri.android.exception.CommandParseException;
+import com.guanri.android.jpos.bean.AdditionalAmounts;
+import com.guanri.android.jpos.iso.JposPackageFather;
+import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
+import com.guanri.android.jpos.iso.JposUnPackageFather;
+import com.guanri.android.jpos.network.CommandControl;
+import com.guanri.android.jpos.network.CryptionControl;
+import com.guanri.android.jpos.pad.ServerDownDataParse;
+import com.guanri.android.jpos.pad.ServerUpDataParse;
+import com.guanri.android.jpos.pos.data.TerminalLinks.TCommTerminalLink;
+import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
+import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
+import com.guanri.android.lib.log.Logger;
+import com.guanri.android.lib.utils.TypeConversion;
+
 public class MainActivity extends Activity implements OnClickListener {
 	EditText log;
-	Button btn_query,btn_login,btn_sale;
+	Button btn_query,btn_login,btn_sale,btn_receive;
 	final Logger logger = new Logger(MainActivity.class);
 	StringBuffer result = new StringBuffer();
 	@Override
@@ -41,10 +40,13 @@ public class MainActivity extends Activity implements OnClickListener {
 		btn_sale = (Button)findViewById(R.id.btn_sale);
 		btn_query = (Button)findViewById(R.id.btn_query);
 		
+		btn_receive = (Button)findViewById(R.id.btn_receive);
+		
 		log = (EditText)findViewById(R.id.edt_log);
 		btn_query.setOnClickListener(this);
 		btn_login.setOnClickListener(this);
 		btn_sale.setOnClickListener(this);
+		btn_receive.setOnClickListener(this);
 		
 	}
 	@Override
@@ -53,7 +55,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.btn_query:
 		try{
-			PosMessageBean msgBean = new PosMessageBean();
+			TTransaction msgBean = new TTransaction();
 			//构造数据发送对象
 			ServerUpDataParse serverParseData = new ServerUpDataParse(msgBean);
 			byte[] mab = serverParseData.getMab();//构造MAC BLOCK
@@ -68,10 +70,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			
 			for(int i=0;i<1;i++){
 				CommandControl.getInstance().connect(10000, 1000);
-				byte[] reData = CommandControl.getInstance().sendUpCommand(serverParseData);
-				logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(reData));
-				JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
-				bill.unPacketed();
+				ServerDownDataParse serverDownDataParse = CommandControl.getInstance().sendUpCommand(serverParseData);
+				logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(serverDownDataParse.getReturnData()));
+				JposUnPackageFather bill =serverDownDataParse.getJposUnPackage();
 				
 				TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
 				TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
@@ -93,14 +94,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (PacketException e) {
-			e.printStackTrace();
 		}
 			break;
 		case R.id.btn_login:
 			try{
 				
-				PosMessageBean msgBean = new PosMessageBean();
+				TTransaction msgBean = new TTransaction();
 				//构造数据发送对象
 				ServerUpDataParse serverParseData = new ServerUpDataParse(msgBean);
 				byte[] mab = serverParseData.getMab();//构造MAC BLOCK
@@ -115,14 +114,13 @@ public class MainActivity extends Activity implements OnClickListener {
 				
 				for(int i=0;i<1;i++){
 					CommandControl.getInstance().connect(10000, 1000);
-					byte[] reData = CommandControl.getInstance().sendUpCommand(serverParseData);
-					logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(reData));
-					JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
-					bill.unPacketed();
+					ServerDownDataParse serverDownDataParse = CommandControl.getInstance().sendUpCommand(serverParseData);
+					logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(serverDownDataParse.getReturnData()));
 					
+					JposUnPackageFather bill =serverDownDataParse.getJposUnPackage();
 					TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
 					if(getMap.containsKey(39)){
-						String str =TypeConversion.result((String)getMap.get(39));
+						String str =(String)getMap.get(39);
 						logger.debug("响应成功:"+ str);
 						result.append("响应结果" + str+ "\n");
 						String timeStr = "时间" + (String)getMap.get(12) + "\n";
@@ -157,15 +155,13 @@ public class MainActivity extends Activity implements OnClickListener {
 			} catch (CommandParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (PacketException e) {
-				e.printStackTrace();
 			}
 
 			break;
 		case R.id.btn_sale:
 			try{
 				
-				PosMessageBean msgBean = new PosMessageBean();
+				TTransaction msgBean = new TTransaction();
 				//构造数据发送对象
 				ServerUpDataParse serverParseData = new ServerUpDataParse(msgBean);
 				byte[] mab = serverParseData.getMab();//构造MAC BLOCK
@@ -180,16 +176,14 @@ public class MainActivity extends Activity implements OnClickListener {
 				
 				for(int i=0;i<1;i++){
 					CommandControl.getInstance().connect(10000, 1000);
-					byte[] reData = CommandControl.getInstance().sendUpCommand(serverParseData);
-					
-					if(reData != null){
-						logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(reData));
-					JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
-					bill.unPacketed();
+					ServerDownDataParse serverDownDataParse = CommandControl.getInstance().sendUpCommand(serverParseData);
+					logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(serverDownDataParse.getReturnData()));
+					JposUnPackageFather bill =serverDownDataParse.getJposUnPackage();
+
 					
 					TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
 					if(getMap.containsKey(39)){
-						String str =TypeConversion.result((String)getMap.get(39));
+						String str =(String)getMap.get(39);
 						logger.debug("响应成功:"+ str);
 						result.append("响应结果" + str+ "\n");
 						String timeStr = "时间" + (String)getMap.get(12) + "\n";
@@ -207,16 +201,42 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 				
 				log.setText(result.toString());
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			} catch (CommandParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (PacketException e) {
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+			break;
+		case R.id.btn_receive:
+			if(!stopTask&&task!=null){
+				stopTask = true;
+				task = null;
+				btn_receive.setText("打开接收数据");
+			}else{
+				task = new Thread(){
+					public void run(){
+						TCommTerminalLink TerminalLink = new TCommTerminalLink();
+						TerminalLink.CommName = "COM5";
+						TerminalLink.ReadTimeout = 5000;
+						TerminalLink.Connect();
+
+						TTerminalParser TerminalParser = new TTerminalParser();
+						TerminalParser.SetTerminalLink(TerminalLink);
+
+						System.out.println("终端解析器正在运行...");
+
+						while (!stopTask) {
+							TerminalParser.ParseRequest();
+						}
+					}
+				};
+				btn_receive.setText("关闭接收数据");
+			}
+			
 
 			break;
 		default:
@@ -224,6 +244,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 	
+	private Thread task = null;
+	public boolean stopTask = false;
 	
 	
 	

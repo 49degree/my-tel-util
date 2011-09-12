@@ -50,7 +50,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	/**
 	 * 构造返回POS的数据对象
 	 */
-	public Object createBackPosObject(TreeMap<Integer, Object> sendMap, JposMessageType messageType){
+	public TTransaction createBackPosObject(TreeMap<Integer, Object> sendMap, JposMessageType messageType){
 		return null;
 	}
 	

@@ -36,7 +36,7 @@ public class ServerTest {
 			byte[] mab = serverParseData.getMab();//构造MAC BLOCK
 			
 			
-			//以下为模拟MAC运算，实际MAC值由POS计算
+			//以下为模拟MAC运算，实际MAC值由POS计算——————————————————————————————————
 			JposPackageFather jpos = serverParseData.getJposPackage();
 			//构造MAK BLOCK
 			String makSource = (String)(jpos.getSendMapValue(11))+(String)(jpos.getSendMapValue(13))+
@@ -45,22 +45,26 @@ public class ServerTest {
 			byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
 			//模拟MAC运算结束
 			
-			jpos.setMac(mac);
+			jpos.setMac(mac);//设置MAC值——————————————————————————————————————————————
+			
+			
+			CommandControl.getInstance().connect(10000, 10000);//连接服务器
+			logger.debug("发送数据为++++++++++++++++++:"+TypeConversion.byte2hex(serverParseData.getBeSendData()));
+			ServerDownDataParse reData = CommandControl.getInstance().sendUpCommand(serverParseData);//发送数据
+			logger.debug("收到数据为++++++++++++++++++:"+TypeConversion.byte2hex(reData.getReturnData()));
+			TTransaction returnTransaction = reData.getTTransaction();//取返回POS的对象
+			
+			//以下为读取返回的数据
+			JposUnPackageFather bill =reData.getJposUnPackage();
+			TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
+			TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
+			if(amountData.containsKey("02")){
+				AdditionalAmounts am = amountData.get("02");
+				logger.debug(Integer.parseInt(am.getAmount().trim())+":"+am.getAmountType()+":"+am.getBanlanceType());
+			}
 			
 			for(int i=0;i<1;i++){
-				CommandControl.getInstance().connect(10000, 10000);
-				logger.debug("发送数据为++++++++++++++++++:"+TypeConversion.byte2hex(serverParseData.getBeSendData()));
-				ServerDownDataParse reData = CommandControl.getInstance().sendUpCommand(serverParseData);
-				logger.debug("收到数据为++++++++++++++++++:"+TypeConversion.byte2hex(reData.getReturnData()));
-				JposUnPackageFather bill =reData.getJposUnPackage();
-				bill.unPacketed();
-				
-				TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
-				TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
-				if(amountData.containsKey("02")){
-					AdditionalAmounts am = amountData.get("02");
-					logger.debug(Integer.parseInt(am.getAmount().trim())+":"+am.getAmountType()+":"+am.getBanlanceType());
-				}
+
 			}
 
 			

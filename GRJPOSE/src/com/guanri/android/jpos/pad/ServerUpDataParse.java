@@ -1,18 +1,18 @@
 package com.guanri.android.jpos.pad;
 
-import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.iso.JposPackageFather;
+import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 /**
  * 用于POS数据交换
  * @author Administrator
  *
  */
 public class ServerUpDataParse {
-	protected PosMessageBean posMessageBean=null;
+	protected TTransaction posMessageBean=null;
 	protected byte[] mac = null;
 	protected JposPackageFather jposPackage = null;
 	
-	public ServerUpDataParse(PosMessageBean posMessageBean){
+	public ServerUpDataParse(TTransaction posMessageBean){
 		jposPackage = ServerDataHandlerFactory.geServerDataHandler().receivePosData(posMessageBean);
 	}
 	

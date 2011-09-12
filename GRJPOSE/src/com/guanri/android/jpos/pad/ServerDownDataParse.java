@@ -1,13 +1,7 @@
 package com.guanri.android.jpos.pad;
 
-import java.util.TreeMap;
-
-import com.guanri.android.jpos.bean.AdditionalAmounts;
-import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
+import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
-import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
-import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
-import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
 
 /**
  * 返回数据到POS端
@@ -33,8 +27,8 @@ public class ServerDownDataParse {
 	 */
 	public byte[] getMab(){
 		if(jposUnPackage!=null&&jposUnPackage.getMReturnMap()!=null){
-			JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(jposUnPackage.getMReturnMap(),jposUnPackage.getMMessageType());
-			return jposPackage99Bill.packagMacBlock();
+			JposPackageFather jposPackage = ServerDataHandlerFactory.geServerDataHandler().createJposPackage(jposUnPackage.getMReturnMap(),jposUnPackage.getMMessageType());
+			return jposPackage.packagMacBlock();
 		}else{
 			return null;
 		}

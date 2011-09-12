@@ -1,8 +1,7 @@
 package com.guanri.android.jpos.pos;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * 抽象串口对象
@@ -28,4 +27,25 @@ public class SerialPortFactory {
 		}
 		return serialPort;
 	}
+	
+	/**
+	 * 查询android中是否存在某个端口
+	 * @param devicePath
+	 * @return
+	 */
+    public static boolean findAndroidDevice(String devicePath){
+    	boolean result = false;
+		File dev = new File("/dev");
+		File[] files = dev.listFiles();
+		int i;
+		for (i=0; i<files.length; i++) {
+			if (files[i].getAbsolutePath().equals(devicePath)) {
+				result = true;
+				break;
+			}
+		}
+		return result;
+    }
+    
+    
 }

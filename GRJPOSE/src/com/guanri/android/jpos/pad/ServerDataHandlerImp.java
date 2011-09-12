@@ -1,7 +1,10 @@
 package com.guanri.android.jpos.pad;
 
+import java.util.TreeMap;
+
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.PosMessageBean;
+import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
 
@@ -23,5 +26,11 @@ public interface ServerDataHandlerImp {
 	 * @param posMessageBean 从POS机获取的数据
 	 */
 	public JposUnPackageFather receiveServerData(byte[] receiveData) throws PacketException;
+	
+	
+	/**
+	 * 构造封包对象
+	 */
+	public JposPackageFather createJposPackage(TreeMap<Integer, Object> sendMap, JposMessageType messageType);
 	
 }

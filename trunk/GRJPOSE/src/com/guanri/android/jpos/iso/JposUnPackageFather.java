@@ -39,6 +39,7 @@ public abstract class JposUnPackageFather {
 	 * 解析数据
 	 */
 	public void unPacketed(){
+		index=0;
 		this.parseMessageType();
 		
 		this.parseBitMap();

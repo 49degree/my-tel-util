@@ -9,9 +9,9 @@ import com.guanri.android.jpos.iso.JposUnPackageFather;
  *
  */
 public class ServerDownDataParse {
-	public byte[] returnData = null;
-	protected JposUnPackageFather jposUnPackage = null;
-	public ServerDownDataParse(byte[] returnData){
+	private byte[] returnData = null;
+	private JposUnPackageFather jposUnPackage = null;
+	public ServerDownDataParse(byte[] returnData) {
 		this.returnData = returnData;
 		//解析数据
 		try{
@@ -19,6 +19,7 @@ public class ServerDownDataParse {
 			jposUnPackage.unPacketed();
 		}catch(Exception e){
 			//返回失败信息
+			e.printStackTrace();
 		}
 	}
 	/**
@@ -52,4 +53,20 @@ public class ServerDownDataParse {
 	public boolean saveOrder(){
 		return true;
 	}
+	
+	
+	public byte[] getReturnData() {
+		return returnData;
+	}
+	public void setReturnData(byte[] returnData) {
+		this.returnData = returnData;
+	}
+	public JposUnPackageFather getJposUnPackage() {
+		return jposUnPackage;
+	}
+	public void setJposUnPackage(JposUnPackageFather jposUnPackage) {
+		this.jposUnPackage = jposUnPackage;
+	}
+	
+	
 }

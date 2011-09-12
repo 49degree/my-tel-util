@@ -12,6 +12,7 @@ import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefineUnionpay;
 import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
+import com.guanri.android.jpos.iso.JposUnPackageFather;
 import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
 import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
 import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
@@ -19,6 +20,7 @@ import com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay;
 import com.guanri.android.jpos.iso.unionpay.JposPackageUnionPay;
 import com.guanri.android.jpos.network.CommandControl;
 import com.guanri.android.jpos.network.CryptionControl;
+import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
@@ -42,9 +44,10 @@ public class ServerTest {
 			
 			for(int i=0;i<1;i++){
 				CommandControl.getInstance().connect(10000, 10000);
-				byte[] reData = CommandControl.getInstance().sendUpCommand(serverParseData);
-				logger.debug("请求数据++++++++++++++++++:"+TypeConversion.byte2hex(reData));
-				JposUnPackage99Bill bill = new JposUnPackage99Bill(reData);
+				logger.debug("发送数据为++++++++++++++++++:"+TypeConversion.byte2hex(serverParseData.getBeSendData()));
+				ServerDownDataParse reData = CommandControl.getInstance().sendUpCommand(serverParseData);
+				logger.debug("收到数据为++++++++++++++++++:"+TypeConversion.byte2hex(reData.getReturnData()));
+				JposUnPackageFather bill =reData.getJposUnPackage();
 				bill.unPacketed();
 				
 				TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
@@ -62,8 +65,6 @@ public class ServerTest {
 			e.printStackTrace();
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (PacketException e) {
 			e.printStackTrace();
 		}
 

@@ -56,24 +56,24 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	public JposPackageFather receivePosData(PosMessageBean posMessageBean){
 		
 		
-		//return createQueryBalance(posMessageBean);
+		return createQueryBalance(posMessageBean);
 		
 		//return createLogin99(posMessageBean);
 		
 		// 消费
-		String Trank2 = "5264102500120211=1301123";
-		String Trank3 = "";
-		String CardNo = "5264102500120211";
-		String pwdstr = "";
-		String cardPeriod = "1301";
-		int money = 10000;
-		String datestr = "0910";
-		String timestr = "175422";
-		String orderNo = "000001";
-		String userNo = "001";
-		String billNo = "010001";
-		return  createSale(Trank2, Trank3, CardNo, pwdstr, cardPeriod, money, 
-				datestr, timestr, orderNo, userNo, billNo);
+//		String Trank2 = "5264102500120211=1301123";
+//		String Trank3 = "";
+//		String CardNo = "5264102500120211";
+//		String pwdstr = "";
+//		String cardPeriod = "1301";
+//		int money = 10000;
+//		String datestr = "0910";
+//		String timestr = "175422";
+//		String orderNo = "000001";
+//		String userNo = "001";
+//		String billNo = "010001";
+//		return  createSale(Trank2, Trank3, CardNo, pwdstr, cardPeriod, money, 
+//				datestr, timestr, orderNo, userNo, billNo);
 	}
 	
 	

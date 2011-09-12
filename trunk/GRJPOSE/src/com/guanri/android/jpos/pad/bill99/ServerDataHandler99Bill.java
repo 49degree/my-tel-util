@@ -5,6 +5,7 @@ import java.util.TreeMap;
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
+import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
@@ -22,7 +23,14 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		return instance;
 	}
 	
-
+	
+	/**
+	 * 构造封包对象
+	 */
+	public JposPackageFather createJposPackage(TreeMap<Integer, Object> sendMap, JposMessageType messageType){
+		return new JposPackage99Bill(sendMap,messageType);
+	}
+	
 	/**
 	 * 收到服务器下发数据 
 	 * 进行相应的协议服务器的数据

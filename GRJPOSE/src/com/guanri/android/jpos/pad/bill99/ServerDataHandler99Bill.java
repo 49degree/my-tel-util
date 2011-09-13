@@ -103,8 +103,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 
 		}
 		// 余额查询
-		if(messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_MONEY)){
-			
+		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_MONEY))
+				&&(messageType.getTransactionCode().equals("31"))){
 			Date date = new Date();
 			tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
 			tTransaction.Date().SetAsString((String) getMap.get(13));
@@ -122,7 +122,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			}
 		}
 		// 消费
-		if(messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY)){
+		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
+			&&(messageType.getTransactionCode().equals("00"))){
 			Date date = new Date();
 			tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
 			tTransaction.Date().SetAsString((String) getMap.get(13));

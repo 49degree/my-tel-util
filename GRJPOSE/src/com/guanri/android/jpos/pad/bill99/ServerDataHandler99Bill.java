@@ -133,6 +133,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
 			tTransaction.TransCode().SetAsInteger(200);
 			String AuthorizeCode = "";
+			
+			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 			// 授权码
 			if(getMap.containsKey(38)){
 				AuthorizeCode = (String) getMap.get(38);
@@ -170,20 +172,20 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			break;
 		case JposConstant.POS_TRANCE_CODE_PAY:
 //			// 消费
-//			String Trank2 = "5264102500120211=1301123";
-//			String Trank3 = "";
-//			String CardNo = "5264102500120211";
-//			String pwdstr = "";
-//			String cardPeriod = "1301";
-//			int money = 10000;
-//			String datestr = "0910";
-//			String timestr = "175422";
-//			String orderNo = "000001";
-//			String userNo = "001";
-//			String billNo = "010001";
-//			jposPackageFather =   createSaleTest(Trank2, Trank3, CardNo, pwdstr, cardPeriod, money, 
-//					datestr, timestr, orderNo, userNo, billNo);
-			jposPackageFather = createSale(ttransaction);
+			//String Trank2 = "5264102500120211=1301123";
+			//String Trank3 = "";
+			//String CardNo = "5264102500120211";
+			//String pwdstr = "";
+			//String cardPeriod = "1301";
+			//int money = 10000;
+			//String datestr = "0910";
+			/*String timestr = "175422";
+			String orderNo = "000001";
+			String userNo = "001";
+			String billNo = "010001";
+			jposPackageFather =   createSaleTest(Trank2, Trank3, CardNo, pwdstr, cardPeriod, money, 
+					datestr, timestr, orderNo, userNo, billNo);*/
+		jposPackageFather = createSale(ttransaction);
 			break;
 			// 退货
 		case JposConstant.POS_TRANCE_CODE_BACK_ORDER:
@@ -507,7 +509,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(2, "5264102500120211");
 		sendMap.put(3, "000000");
 		sendMap.put(4, "000000008837");
-		sendMap.put(11, "011006");
+		sendMap.put(11, "011007");
 		sendMap.put(12, "174217");
 		sendMap.put(13, "0912");
 		// 域14 卡有效期
@@ -579,6 +581,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//String CardNo = Trank.substring(0, 19);
 		//判断POS输入类型
 		String inputtype;
+		/*
 		if(posMessageBean.ProcessList.GetTrack2Data().equals("")){
 			if(posMessageBean.ProcessList.PINData().GetAsString().equals(""))
 				inputtype = "012";
@@ -590,8 +593,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			else
 				inputtype = "022";
 		}
+		*/
+		inputtype = "022";
+		
 		//构造签到所需各域
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+		//System.out.println("主帐号："+ posMessageBean.ProcessList.GetPAN());
 		sendMap.put(2, posMessageBean.ProcessList.GetPAN());
 		sendMap.put(3, "000000");
 		sendMap.put(4, posMessageBean.ProcessList.SaleAmount().GetAsString());
@@ -601,12 +608,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域14 卡有效期
 		//if(posMessageBean.)
 		//	sendMap.put(14, cardPeriod);
-		sendMap.put(22, "022");
+		sendMap.put(22, inputtype);
 		sendMap.put(24, "009");
 		sendMap.put(25, "14");
-		if(!posMessageBean.ProcessList.GetTrack2Data().equals(""))
-			sendMap.put(35, "5264102500120211=1508201");
-		else
+		//if(!posMessageBean.ProcessList.GetTrack2Data().equals(""))
+		//	sendMap.put(35, "5264102500120211=1508201");
+		//else
 			sendMap.put(35, posMessageBean.ProcessList.GetTrack2Data());
 		//if(!Trank3.equals(""))
 		//	sendMap.put(36,Trank3);
@@ -617,9 +624,10 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域49  货币代码
 		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
 		// 自定义域 60 将来用于存放保单号
+		/*
 		if(!posMessageBean.ProcessList.PINData().GetAsString().equals(""))
 			sendMap.put(52, posMessageBean.ProcessList.PINData().GetData());
-		
+		*/
 		//sendMap.put(60, "");
 		// 处理61 域
 		
@@ -627,7 +635,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("1");
-		leaf.setValue(posMessageBean.ProcessList.OrderNumber().GetAsString());
+		leaf.setValue("000001");
 		data1.put(1,leaf);
 		
 		leaf = new JposSelfFieldLeaf();

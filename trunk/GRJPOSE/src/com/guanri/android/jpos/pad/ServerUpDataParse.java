@@ -12,9 +12,10 @@ public class ServerUpDataParse {
 	protected TTransaction posMessageBean=null;
 	protected byte[] mac = null;
 	protected JposPackageFather jposPackage = null;
-	
+	private ServerDataHandlerImp serverDataHandler = null; 
 	public ServerUpDataParse(TTransaction posMessageBean) throws PacketException{
-		jposPackage = ServerDataHandlerFactory.geServerDataHandler().receivePosData(posMessageBean);
+		serverDataHandler = ServerDataHandlerFactory.geServerDataHandler();
+		jposPackage = serverDataHandler.receivePosData(posMessageBean);
 		if(jposPackage==null){
 			throw new PacketException("data is error");
 		}

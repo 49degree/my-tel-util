@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
@@ -21,8 +23,10 @@ public class PosCommandControlSerialPortBak extends PosCommandControlImp{
 	private SerialPortImp serialPortImp;// 串口
 	private SerialPortThread readTask = null;
 	private Timer timeOutTimer = null;
-	private ReadTimerOut readTimerOut = null;
-	private final static int TIME_OUT = 500;//读取数据超时
+	private ReturnDataTask returnDataTask = null;
+	private ExecutorService returnDataTaskPool = Executors.newSingleThreadExecutor(); 
+	private final static int TIME_OUT = 1000;//读取数据间隔超时
+	private final static int WAIT_READ_TIME = 1000;//读取数据间隔等待时间
 	private static byte[] HEADER_PACKET = {0X55,0X55,0X55,0X55,0X55};
 	
 	//保存读取的数据
@@ -48,7 +52,10 @@ public class PosCommandControlSerialPortBak extends PosCommandControlImp{
 		serialPortImp = SerialPortFactory.getSerialPort();//获取串口对象
 		logger.debug("串口初始化结束.........");
 		readTask = new SerialPortThread();//打开读取线程
+		timeOutTimer = new Timer();
 		readTask.start();
+		
+		
 
 	}
 
@@ -66,11 +73,11 @@ public class PosCommandControlSerialPortBak extends PosCommandControlImp{
 	 */
 	public synchronized void sendData(byte[] data,SendDataResultListener sendDataResultListener,long waitTime) throws IOException{
 		try {
-			clearTimeOutTimer();//清楚定时器中的操作
-			readTimerOut = new ReadTimerOut(sendDataResultListener);
-			timeOutTimer = new Timer();
-			timeOutTimer.schedule(readTimerOut, waitTime);//设置超时时间及操作对象
-			
+			synchronized(returnData){
+				clearTimeOutTimer();//清除定时器中的操作
+				returnDataTask = new ReturnDataTask(sendDataResultListener);
+				timeOutTimer.schedule(returnDataTask, waitTime);//设置超时时间及操作对象
+			}
 			serialPortImp.mOutputStream.write(data);
 			serialPortImp.mOutputStream.flush();
           } catch (IOException e) {
@@ -90,15 +97,7 @@ public class PosCommandControlSerialPortBak extends PosCommandControlImp{
 		logger.error("开始关闭串口..........");
 		readTask.stopTask();
 		readTask.interrupt();
-//		try {
-//	        byte[] msg = {0X55,0X55,0X55,0X55,0X55,0X08,0X13,0X00,0X02,0X01,0X01,0X00,0X00,0X30,0X30,0X31,
-//	    			0X30,0X00,0X30,0X02,(byte)0X90,(byte)0XBE,0X00,0X00,(byte)0XB4,0X08};
-//			serialPortImp.mOutputStream.write(msg);
-//			serialPortImp.mOutputStream.flush();
-//		} catch (IOException e) {
-//			 logger.error("发送数据出现异常"+e.getMessage());
-//			 e.printStackTrace();
-//        }
+
 		serialPortImp.portClose();
 		serialPortImp = null;
 		instance = null;
@@ -124,37 +123,35 @@ public class PosCommandControlSerialPortBak extends PosCommandControlImp{
 					return;
 				try{
 					int availLen = serialPortImp.mInputStream.available();
-					if(availLen>0){
-						waitTime = 0;
-						synchronized (returnData) {
+					synchronized (returnData) {
+						if(availLen>0){
+							waitTime = 0;
 							size = serialPortImp.mInputStream.read(returnData, index, availLen);
-							logger.error("读取数据为：" + size + ":"+ TypeConversion.byte2hex(returnData, index, size) + ":"+ Thread.currentThread().getName());
 							index += size;
+							logger.error("读取数据为：" + size + ":"+ TypeConversion.byte2hex(returnData, index, size) + ":"+ Thread.currentThread().getName());
 							logger.error("缓存数据为："+ TypeConversion.byte2hex(returnData, 0, index)+ ":" + Thread.currentThread().getName());
-							if (index >= 5) {
-								// 判断是否包头
-								if (TypeConversion.byte2hex(returnData, 0, 5).equals(TypeConversion.byte2hex(HEADER_PACKET))) {
-									hasPacketHeader = true;
-									if(index==20){//如果数据包已经收完 
-										returnData();//返回数据
-									}
-								} else {
-									hasPacketHeader = false;
-									index = 0;
+							if (index >= 1&& TypeConversion.asciiToString(returnData,0,1).equals("M")) {
+								// 判断是否包头0
+								hasPacketHeader = true;
+								if(index >=3&&TypeConversion.bytesToShortEx(returnData, 1)==index){//如果数据包已经收完 
+									returnData();//返回数据
 								}
+							}else{
+								hasPacketHeader = false;
+								index = 0;
 							}
-						}
-					}else{//无数据
-						if(waitTime>1000&&index > 5){
-							logger.error("读取间隔时间超时——————————————————————————————");
-							if(readTimerOut!=null){
-								new Thread(readTimerOut).start();//返回参数
+						}else{//无数据
+							if(waitTime>TIME_OUT){
+								if(index >= 3&& TypeConversion.bytesToShortEx(returnData, 1)==index){
+									returnData();//返回数据
+								}else{//丢弃数据
+									index = 0;
+									clearTimeOutTimer();//清除定时器中的操作
+								}
+							}else{//等待一段时间
+								sleep(WAIT_READ_TIME);
+								waitTime +=WAIT_READ_TIME;
 							}
-							
-						}else{
-							//logger.error("读取间隔时间++++++++++++++++++++++++++++++++++:"+waitTime);
-							sleep(100);
-							waitTime +=100;
 						}
 					}
 				}catch(IOException e){
@@ -162,7 +159,6 @@ public class PosCommandControlSerialPortBak extends PosCommandControlImp{
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
 				}
-
 			}
 		}
 	}
@@ -170,13 +166,13 @@ public class PosCommandControlSerialPortBak extends PosCommandControlImp{
 	/**
 	 * 返回数据
 	 */
-	public synchronized void returnData(){
-		if(readTimerOut!=null){
-			new Thread(readTimerOut).start();//返回参数
-			readTimerOut = null;
-		}else{
-			synchronized(returnData){
-				//调用固定方法，返回POS数据
+	public void returnData(){
+		synchronized(returnData){
+			if(returnDataTask!=null){
+				returnDataTaskPool.execute(returnDataTask);//返回参数
+				returnDataTask = null;
+			}else{//调用固定方法，返回POS数据
+				
 			}
 		}
 	}
@@ -186,9 +182,9 @@ public class PosCommandControlSerialPortBak extends PosCommandControlImp{
 	/**
 	 *读取数据连接延时计数器 
 	 */
-	private class ReadTimerOut extends TimerTask {
+	private class ReturnDataTask extends TimerTask {
 		SendDataResultListener mSendDataResultListener = null;
-		public ReadTimerOut(SendDataResultListener sendDataResultListener){
+		public ReturnDataTask(SendDataResultListener sendDataResultListener){
 			mSendDataResultListener = sendDataResultListener;
 		}
 		
@@ -212,7 +208,6 @@ public class PosCommandControlSerialPortBak extends PosCommandControlImp{
 					index = 0;
 				}
 			}
-	
 		}
 	}
 	

@@ -7,7 +7,7 @@ package com.guanri.android.jpos.iso;
  */
 public abstract class JposMessageType {
 	private String messageType ;
-	private int transactionCode ; 
+	private String transactionCode ; 
 	
 	// 报文长度
 	private Short pageLength;
@@ -22,12 +22,12 @@ public abstract class JposMessageType {
 	}
 
 
-	public int getTransactionCode() {
+	public String getTransactionCode() {
 		return transactionCode;
 	}
 
 
-	public void setTransactionCode(int transactionCode) {
+	public void setTransactionCode(String transactionCode) {
 		this.transactionCode = transactionCode;
 	}
 

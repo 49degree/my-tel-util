@@ -77,7 +77,7 @@ public class TTransaction extends TTerminalMessage {
 	}
 
 	public boolean LoadProcess() {
-		byte[] sCode = Common.StringToBytes(ProcessCode().GetAsString());
+		byte[] sCode = ProcessCode().GetData();
 		Stream.SetBytes(Data().GetData());
 		TField Field;
 		for (int i = 0; i < Common.Length(sCode); i++) {

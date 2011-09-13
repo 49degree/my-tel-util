@@ -24,10 +24,18 @@ public abstract class JposUnPackageFather {
 	private JposBitMap jposBitMap = null;
 	protected JposMessageType mMessageType = null;
 	
-	
+	/**
+	 * 构造函数
+	 * @param data
+	 * @throws PacketException
+	 */
 	public JposUnPackageFather(byte[] data) throws PacketException{
+		creatMessageType();
 		if(data==null)
 			throw new PacketException("数据为空！");
+		else if(data.length<64+mMessageType.getMessageTypeLength()){
+			throw new PacketException("数据长度错误！");
+		}
 		this.data = data;
 		mReturnMap = new TreeMap<Integer,Object>();
 		
@@ -60,7 +68,10 @@ public abstract class JposUnPackageFather {
 		}
 		
 	}
-	
+	/**
+	 * 解析协议头部信息
+	 */
+	protected abstract void creatMessageType();
 	/**
 	 * 解析协议头部信息
 	 */
@@ -137,6 +148,8 @@ public abstract class JposUnPackageFather {
 			ive.printStackTrace();
 		}catch(IllegalAccessException ile){
 			ile.printStackTrace();
+		}catch(Exception e){
+			
 		}
 		return null;
 		

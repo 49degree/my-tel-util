@@ -46,12 +46,19 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 		super(data);
 	}
 	
+	
+	/**
+	 * 解析协议头部信息
+	 */
+	@Override
+	protected void creatMessageType(){
+		mMessageType = new JposMessageType99Bill();
+	}
 	/**
 	 * 解析协议头部信息
 	 */
 	@Override
 	protected void parseMessageType(){
-		mMessageType = new JposMessageType99Bill();
 		mMessageType.setPageLength(TypeConversion.bytesToShortEx(data,0));
 		index += 2;
 		((JposMessageType99Bill)mMessageType).setId(data[2]);

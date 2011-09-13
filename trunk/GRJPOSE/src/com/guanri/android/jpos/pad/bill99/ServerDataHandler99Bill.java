@@ -1,8 +1,11 @@
 package com.guanri.android.jpos.pad.bill99;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.TreeMap;
 
 import com.guanri.android.exception.PacketException;
+import com.guanri.android.jpos.bean.AdditionalAmounts;
 import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.iso.JposMessageType;
@@ -14,8 +17,11 @@ import com.guanri.android.jpos.iso.bill99.JposPackage99Bill;
 import com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill;
 import com.guanri.android.jpos.pad.ServerDataHandlerImp;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
+import com.guanri.android.lib.log.Logger;
+import com.guanri.android.lib.utils.TypeConversion;
 
 public class ServerDataHandler99Bill implements ServerDataHandlerImp{
+	final Logger logger = new Logger(ServerDataHandler99Bill.class);
 	public static ServerDataHandler99Bill instance = null;
 	public static ServerDataHandler99Bill getInstance(){
 		if(instance==null){
@@ -51,8 +57,90 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	/**
 	 * 构造返回POS的数据对象
 	 */
-	public TTransaction createBackPosObject(TreeMap<Integer, Object> sendMap, JposMessageType messageType){
-		return null;
+	public TTransaction createBackPosObject(TreeMap<Integer, Object> getMap, JposMessageType messageType){
+		TTransaction tTransaction = new TTransaction();
+		//StringBuffer result = new StringBuffer();
+		// 签到
+		if (messageType.getMessageType().equals(
+				MessageTypeDefine99Bill.REQUEST_POS_CHECK_IN)) {
+			if (getMap.containsKey(39)) {
+				String str = TypeConversion.result((String) getMap.get(39));
+
+				logger.debug("响应结果" + str + "\n");
+				Date date = new Date();
+				tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
+				tTransaction.Date().SetAsString((String) getMap.get(13));
+				tTransaction.Time().SetAsString((String) getMap.get(12));
+				tTransaction.SerialNumber()
+						.SetAsString((String) getMap.get(11));
+				if (((String) getMap.get(39)).equals("00"))
+					tTransaction.ProcessList.Response().SetAsString(
+							(String) getMap.get(39) + "签到成功");
+				else
+					tTransaction.ProcessList.Response().SetAsString(
+							(String) getMap.get(39) + str);
+				// 检查6域 是否有数据
+				if (getMap.containsKey(46)) {
+					ArrayList<JposSelfFieldLeaf> datalist = (ArrayList<JposSelfFieldLeaf>) getMap.get(46);
+					for (int j = 0; j < datalist.size(); j++) {
+						JposSelfFieldLeaf jposSelfFieldLeaf = (JposSelfFieldLeaf) datalist
+								.get(j);
+						if (jposSelfFieldLeaf.getTag().equals("0024")) {
+							// 商户名称
+							logger.debug("商户名称" + jposSelfFieldLeaf.getValue()
+									+ "\n");
+							tTransaction.ProcessList.MerchantName()
+									.SetAsString(jposSelfFieldLeaf.getValue());
+						}
+					}
+				}
+			}
+
+		}
+		// 余额查询
+		if(messageType.getMessageType().equals(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY)){
+			
+			Date date = new Date();
+			tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
+			tTransaction.Date().SetAsString((String) getMap.get(13));
+			tTransaction.Time().SetAsString((String) getMap.get(12));
+			tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
+			
+			TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
+			if(amountData.containsKey("02")){
+				AdditionalAmounts am = amountData.get("02");
+				if(((String) getMap.get(39)).equals("00"))
+					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + Integer.valueOf(am.getAmount().trim())/100);
+				else
+					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + TypeConversion.result((String) getMap.get(39)));
+			}
+		}
+		// 消费
+		if(messageType.getMessageType().equals(MessageTypeDefine99Bill.REQUEST_OP_PAY_MONEY)){
+			Date date = new Date();
+			tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
+			tTransaction.Date().SetAsString((String) getMap.get(13));
+			tTransaction.Time().SetAsString((String) getMap.get(12));
+			tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
+			String AuthorizeCode = "";
+			// 授权码
+			if(getMap.containsKey(38)){
+				AuthorizeCode = (String) getMap.get(38);
+				//tTransaction.
+			}
+			String strr = (String)getMap.get(44);
+			logger.debug("返回结果"+strr + "\n");
+			TreeMap<Integer,JposSelfFieldLeaf> datalist = (TreeMap<Integer,JposSelfFieldLeaf>) getMap.get(61);
+			JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+			leaf = datalist.get(4);
+			logger.debug(leaf.getValue() +"\n");
+			leaf = datalist.get(5);
+			logger.debug(leaf.getValue() +"\n");
+			
+		}
+		
+		
+		return tTransaction;
 	}
 	
 	/**
@@ -520,7 +608,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
 		// 自定义域 60 将来用于存放保单号
 		if(!posMessageBean.ProcessList.PINData().GetAsString().equals(""))
-			sendMap.put(52, posMessageBean.ProcessList.PINData().GetAsString());
+			sendMap.put(52, posMessageBean.ProcessList.PINData().GetData());
 		
 		//sendMap.put(60, "");
 		// 处理61 域

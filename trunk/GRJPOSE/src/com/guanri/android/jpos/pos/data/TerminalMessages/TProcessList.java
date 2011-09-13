@@ -41,6 +41,11 @@ public class TProcessList extends TFieldList {
 	}
 	
 	
+	public TField DateOfExpired() { //卡有效期
+		return GetField(0x93);
+	}
+	
+	
 	public TField Response() { // 应答信息
 		return GetField(0x8E);
 	}
@@ -123,6 +128,10 @@ public class TProcessList extends TFieldList {
 		  
 		  AddField(0x8E, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 100, "Response"); // 应答信息
 		  AddField(0xAC, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 50, "MerchantName"); //商户名称
+		  
+		  AddField(0x93, TDataType.dt_BCD, TLengthType.lt_Fixed, 4, "DateOfExpired"); //卡有效期
+		  
+
 	}
 
 }

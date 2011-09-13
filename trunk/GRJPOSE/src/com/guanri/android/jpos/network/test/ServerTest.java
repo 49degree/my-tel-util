@@ -7,7 +7,6 @@ import java.util.TreeMap;
 import com.guanri.android.exception.CommandParseException;
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.AdditionalAmounts;
-import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefineUnionpay;
 import com.guanri.android.jpos.iso.JposPackageFather;
@@ -32,6 +31,7 @@ public class ServerTest {
 		try{
 			TTransaction transaction = new TTransaction();
 			//构造数据发送对象
+
 			ServerUpDataParse serverParseData = new ServerUpDataParse(transaction);
 			byte[] mab = serverParseData.getMab();//构造MAC BLOCK
 			
@@ -73,6 +73,9 @@ public class ServerTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PacketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

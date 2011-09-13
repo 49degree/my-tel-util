@@ -122,6 +122,11 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 		String result = null;
 		try {
 			result = fixBcdToInt(6);
+			System.out.println("解析第三域 :"+result);
+			if((result!=null) && (result.length()>2)){
+				mMessageType.setTransactionCode(result.substring(0, 2));
+				System.out.println("解析第三域 :"+mMessageType.getTransactionCode());
+			}
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

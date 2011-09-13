@@ -76,6 +76,7 @@ public abstract class JposPackageFather {
 			Integer key = keyIt.next();
 			parseBitMap(key-1);//构造位图对象
 			bitDataTemp = parseBitValue(key);
+			logger.error("位数据:位"+key+"数据:"+TypeConversion.byte2hex(bitDataTemp));
 			if(bitDataTemp!=null){// 计算总长度
 				dataLength +=bitDataTemp.length;
 			}

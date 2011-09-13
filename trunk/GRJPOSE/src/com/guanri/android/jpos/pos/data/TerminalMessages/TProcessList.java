@@ -16,8 +16,8 @@ public class TProcessList extends TFieldList {
 		return GetField(0x84);
 	}
 
-	public TField PAN() { // 手工输入的主帐号
-		return GetField(0x85);
+	protected TField PANorTrackData() { // 手输卡号或磁道数据
+		return GetField(0x92);
 	}
 	
 	public TField TerminalID() {  //终端号
@@ -58,8 +58,14 @@ public class TProcessList extends TFieldList {
 		byte[] s = Common.StringToBytes(TrackData().GetAsString());
 		int i, len, k;
 		len = Common.Length(s);
-		if (len <= 0) return null;
-		i = 0;
+		if (len <= 0) {
+			s = Common.StringToBytes(PANorTrackData().GetAsString());
+			len = Common.Length(s);
+			if (len <= 1) return null;
+			if (s[0] != 0) return null; 
+			i = 1;
+		} else 
+			i = 0;	
 		k = i;
 		while (i < len) {
 			if (s[i] == '?') break;
@@ -74,8 +80,14 @@ public class TProcessList extends TFieldList {
 		byte[] s = Common.StringToBytes(TrackData().GetAsString());
 		int i, len, k;
 		len = Common.Length(s);
-		if (len <= 0) return null;
-		i = 0;
+		if (len <= 0) {
+			s = Common.StringToBytes(PANorTrackData().GetAsString());
+			len = Common.Length(s);
+			if (len <= 1) return null;
+			if (s[0] != 0) return null; 
+			i = 1;
+		} else 
+			i = 0;
 		k = i;
 		while (i < len) {
 			if (s[i] == '?') break;
@@ -100,11 +112,17 @@ public class TProcessList extends TFieldList {
 	}
 	
 	public String GetPAN() {  //获取主帐号
-		byte[] s = Common.StringToBytes(GetTrack2Data());
+		byte[] s = Common.StringToBytes(TrackData().GetAsString());
 		int i, len, k;
 		len = Common.Length(s);
-		if (len <= 0) return PAN().GetAsString();
-		i = 0;
+		if (len <= 0) {
+			s = Common.StringToBytes(PANorTrackData().GetAsString());
+			len = Common.Length(s);
+			if (len <= 1) return null;
+			//if (s[0] != 0) return null; 
+			i = 1;
+		} else 
+			i = 0;
 		k = i;
 		while (i < len) {
 			if (s[i] == '=') break;
@@ -119,7 +137,7 @@ public class TProcessList extends TFieldList {
 	public TProcessList() {
 		  AddField(0x83, TDataType.dt_BCD, TLengthType.lt_VarBIN1, 160, "TrackData"); // 2磁道和3磁道的数据
 		  AddField(0x84, TDataType.dt_BIN, TLengthType.lt_Fixed, 8, "PINData"); // 加密后的密码数据
-		  AddField(0x85, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 20, "PAN"); // 手工输入的主帐号  
+		  AddField(0x92, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 20, "PANorTrackData"); // 手输卡号或磁道数据
 		  AddField(0xAE, TDataType.dt_ASC, TLengthType.lt_Fixed, 8, "TerminalID"); // 终端号
 		  AddField(0xAF, TDataType.dt_ASC, TLengthType.lt_Fixed, 3, "UserID"); // 操作员ID
 		  AddField(0xA6, TDataType.dt_ASC, TLengthType.lt_Fixed, 15, "MerchantID"); //商户代码, 商户号 

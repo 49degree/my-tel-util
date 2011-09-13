@@ -20,7 +20,7 @@ import com.guanri.android.jpos.network.CommandControl;
 import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
-import com.guanri.android.jpos.pos.data.TerminalLinks.TCommTerminalLink;
+import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
 import com.guanri.android.lib.log.Logger;
@@ -221,8 +221,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			}else{
 				task = new Thread(){
 					public void run(){
-						TCommTerminalLink TerminalLink = new TCommTerminalLink();
-						TerminalLink.CommName = "COM5";
+						TAndroidCommTerminalLink TerminalLink = new TAndroidCommTerminalLink();
+						TerminalLink.CommName = "/dev/ttyUSB0";
 						TerminalLink.ReadTimeout = 5000;
 						TerminalLink.Connect();
 

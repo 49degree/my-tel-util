@@ -4,7 +4,6 @@
 package com.guanri.android.jpos.pos.data.TerminalLinks;
 
 import com.guanri.android.jpos.pos.data.Common;
-import com.guanri.android.jpos.pos.data.DataLink;
 
 /**
  * @author Dino.TAN
@@ -43,7 +42,7 @@ public abstract class TTerminalLink extends DataLink {
 		if (Common.Length(Bytes) < 2) return null;
 
 		B ^= Bytes[0] ^ Bytes[1];
-		int len = (Bytes[0] << 8) + Bytes[1];
+		int len = ((Bytes[0] & 0xff) << 8) + (Bytes[1] & 0xFF);
 
 		Bytes = ReadBytes(len);
 

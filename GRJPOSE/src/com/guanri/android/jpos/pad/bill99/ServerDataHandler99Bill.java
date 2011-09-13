@@ -64,6 +64,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//		&&(rtTransaction.ProcessList.MerchantID().GetAsString().equals(getMap.get(42))))
 		{
 		//StringBuffer result = new StringBuffer();
+		System.out.print("getTransactionCode:"+messageType.getTransactionCode());
 		// 签到
 		if ((messageType.getMessageType().equals(
 				MessageTypeDefine99Bill.RESPONSE_POS_CHECK_IN))&&(messageType.getTransactionCode().equals("99"))) {

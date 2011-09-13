@@ -149,7 +149,7 @@ public class Common {
 		if (Bytes == null)
 			return S;
 		try {
-			S = new String(Bytes, "GBK");
+			S = new String(Bytes, "GBK");//ISO-8859-1
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

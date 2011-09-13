@@ -6,12 +6,13 @@ import java.util.TreeMap;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.guanri.android.exception.CommandParseException;
 import com.guanri.android.jpos.bean.AdditionalAmounts;
 import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
@@ -20,14 +21,16 @@ import com.guanri.android.jpos.network.CommandControl;
 import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
-import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;;
+import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 
 public class MainActivity extends Activity implements OnClickListener {
+	
 	EditText log;
+	EditText log_info;
 	Button btn_query,btn_login,btn_sale,btn_receive;
 	final Logger logger = new Logger(MainActivity.class);
 	StringBuffer result = new StringBuffer();
@@ -43,6 +46,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		btn_receive = (Button)findViewById(R.id.btn_receive);
 		
 		log = (EditText)findViewById(R.id.edt_log);
+		
+		log_info = (EditText)findViewById(R.id.edt_log_info);
 		btn_query.setOnClickListener(this);
 		btn_login.setOnClickListener(this);
 		btn_sale.setOnClickListener(this);
@@ -93,7 +98,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (CommandParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -124,7 +129,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					JposUnPackageFather bill =reData.getJposUnPackage();
 					TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
 					if(getMap.containsKey(39)){
-						String str =TypeConversion.result((String)getMap.get(39));
+						String str =(String)getMap.get(39);
 						logger.debug("响应成功:"+ str);
 						result.append("响应结果" + str+ "\n");
 						String timeStr = "时间" + (String)getMap.get(12) + "\n";
@@ -156,7 +161,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (CommandParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -188,7 +193,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					JposUnPackageFather bill =reData.getJposUnPackage();
 					TreeMap<Integer, Object>  getMap = bill.getMReturnMap();
 					if(getMap.containsKey(39)){
-						String str =TypeConversion.result((String)getMap.get(39));
+						String str =(String)getMap.get(39);
 						logger.debug("响应成功:"+ str);
 						result.append("响应结果" + str+ "\n");
 						String timeStr = "时间" + (String)getMap.get(12) + "\n";
@@ -208,7 +213,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (CommandParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
@@ -218,24 +223,37 @@ public class MainActivity extends Activity implements OnClickListener {
 				stopTask = true;
 				task = null;
 				btn_receive.setText("打开接收数据");
+				updateUI.sendMessage(updateUI.obtainMessage(1, "终端解析器 close..."));
 			}else{
+				stopTask = false;
 				task = new Thread(){
 					public void run(){
 						TAndroidCommTerminalLink TerminalLink = new TAndroidCommTerminalLink();
 						TerminalLink.CommName = "/dev/ttyUSB0";
 						TerminalLink.ReadTimeout = 5000;
-						TerminalLink.Connect();
+						try{
+							TerminalLink.Connect();
 
-						TTerminalParser TerminalParser = new TTerminalParser();
-						TerminalParser.SetTerminalLink(TerminalLink);
+							TTerminalParser TerminalParser = new TTerminalParser();
+							TerminalParser.SetTerminalLink(TerminalLink);
 
-						System.out.println("终端解析器正在运行...");
-
-						while (!stopTask) {
-							TerminalParser.ParseRequest();
+							updateUI.sendMessage(updateUI.obtainMessage(1, "终端解析器正在运行..."));
+							
+							TTerminalParser.LOG_INFO =TTerminalParser.LOG_INFO+"\n is ok";
+							
+							while (!stopTask) {
+								TerminalParser.ParseRequest();
+							}
+							showInfoTask.start();
+						}catch(SecurityException se){
+							updateUI.sendMessage(updateUI.obtainMessage(1, "open comm failed..."));
+						}catch(Exception e){
+							updateUI.sendMessage(updateUI.obtainMessage(1, "comm failed...:"+e.getMessage()));
 						}
+
 					}
 				};
+				task.start();
 				btn_receive.setText("关闭接收数据");
 			}
 			
@@ -247,8 +265,39 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 	
 	private Thread task = null;
-	public boolean stopTask = false;
+	public boolean stopTask = true;
 	
-	
+    /**
+     * 回调更新界面
+     */
+    public Handler updateUI = new Handler(){
+        public void handleMessage(Message msg) {
+        	if(msg.what==1&&log!=null){
+        		log.setText((String)msg.obj);
+        	}else if(msg.what==2){
+        		log_info.setText((String)msg.obj);
+        	}if(msg.what==3){
+        		
+        	}
+        }
+    };
+    
+    private Thread showInfoTask = new Thread(){
+    	public void run(){
+    		updateUI.sendMessage(updateUI.obtainMessage(1, "open comm failed..."));
+			try{
+				while (!stopTask) {
+					if(TTerminalParser.LOG_INFO!=null&&TTerminalParser.LOG_INFO.length()>250){
+						updateUI.sendMessage(updateUI.obtainMessage(2, TTerminalParser.LOG_INFO.substring(TTerminalParser.LOG_INFO.length()-250, 250)));
+					}else{
+						updateUI.sendMessage(updateUI.obtainMessage(2, TTerminalParser.LOG_INFO));
+					}
+					Thread.sleep(500);
+				}
+			}catch(Exception e){
+				updateUI.sendMessage(updateUI.obtainMessage(2, "read log_info failed...:"+e.getMessage()));
+			}
+    	}
+    };
 	
 }

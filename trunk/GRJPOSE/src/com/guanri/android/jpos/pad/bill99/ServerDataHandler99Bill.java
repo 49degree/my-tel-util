@@ -1,5 +1,6 @@
 package com.guanri.android.jpos.pad.bill99;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TreeMap;
@@ -117,8 +118,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
 			if(amountData.containsKey("02")){
 				AdditionalAmounts am = amountData.get("02");
-				if(((String) getMap.get(39)).equals("00"))
-					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + "可用余额为:"+Long.valueOf(am.getAmount().trim())/100.0);
+				if(((String) getMap.get(39)).equals("00")) {
+					double dou = Long.valueOf(am.getAmount().trim()) / 100.0;
+					DecimalFormat df1 = new DecimalFormat("####.00"); 
+					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + "可用余额为:" + df1.format(dou));
+				}
 				else
 					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 			}
@@ -133,8 +137,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
 			tTransaction.TransCode().SetAsInteger(200);
 			String AuthorizeCode = "";
-			if(((String) getMap.get(39)).equals("00"))
-				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) +"消费金额为:" +(Long.valueOf((String)getMap.get(4))/100.0));
+			if(((String) getMap.get(39)).equals("00")){
+				double dou = Long.valueOf((String)getMap.get(4)) / 100.0;
+				DecimalFormat df1 = new DecimalFormat("####.00"); 
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) +"消费金额为:" +df1.format(dou));
+			}
 			else 
 				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 			// 授权码

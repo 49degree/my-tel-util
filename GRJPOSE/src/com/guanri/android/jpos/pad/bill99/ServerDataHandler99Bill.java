@@ -314,7 +314,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域 12 本地交易时间
 		sendMap.put(11, posMessageBean.Time().GetAsString());
 		// 域13 本地交易日期
-		sendMap.put(13, sendMap.put(11, posMessageBean.Date().GetAsString()));
+		sendMap.put(13, posMessageBean.Date().GetAsString());
 		
 		sendMap.put(22, "022");
 				
@@ -323,7 +323,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域25 服务店条件码
 		sendMap.put(25, "00");
 		// 域35 2磁道数据
-		sendMap.put(35, sendMap.put(11, posMessageBean.ProcessList.GetTrack2Data()));
+		sendMap.put(35, posMessageBean.ProcessList.GetTrack2Data());
 		if(!posMessageBean.ProcessList.GetTrack3Data().equals(""))
 			sendMap.put(36, posMessageBean.ProcessList.GetTrack3Data());
 		// 域41 终端代码

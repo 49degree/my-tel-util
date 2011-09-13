@@ -59,18 +59,23 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 */
 	public TTransaction createBackPosObject(TreeMap<Integer, Object> getMap, JposMessageType messageType){
 		TTransaction tTransaction = new TTransaction();
+		// 检查发送到服务器的数据与服务器返回的 商户号与终端好是否一直
+		//if((rtTransaction.ProcessList.TerminalID().GetAsString().equals(getMap.get(41)))
+		//		&&(rtTransaction.ProcessList.MerchantID().GetAsString().equals(getMap.get(42))))
+		{
 		//StringBuffer result = new StringBuffer();
 		// 签到
-		if (messageType.getMessageType().equals(
-				MessageTypeDefine99Bill.REQUEST_POS_CHECK_IN)) {
+		if ((messageType.getMessageType().equals(
+				MessageTypeDefine99Bill.RESPONSE_POS_CHECK_IN))&&(messageType.getTransactionCode().equals("99"))) {
 			if (getMap.containsKey(39)) {
-				String str = TypeConversion.result((String) getMap.get(39));
+				String str = JposConstant.result((String) getMap.get(39));
 
 				logger.debug("响应结果" + str + "\n");
 				Date date = new Date();
 				tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
 				tTransaction.Date().SetAsString((String) getMap.get(13));
 				tTransaction.Time().SetAsString((String) getMap.get(12));
+				tTransaction.TransCode().SetAsInteger(1);
 				tTransaction.SerialNumber()
 						.SetAsString((String) getMap.get(11));
 				if (((String) getMap.get(39)).equals("00"))
@@ -98,13 +103,14 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 
 		}
 		// 余额查询
-		if(messageType.getMessageType().equals(MessageTypeDefine99Bill.REQUEST_OP_QUERY_MONEY)){
+		if(messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_MONEY)){
 			
 			Date date = new Date();
 			tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
 			tTransaction.Date().SetAsString((String) getMap.get(13));
 			tTransaction.Time().SetAsString((String) getMap.get(12));
 			tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
+			tTransaction.TransCode().SetAsInteger(100);
 			
 			TreeMap<String,AdditionalAmounts> amountData = (TreeMap<String,AdditionalAmounts>)getMap.get(54);
 			if(amountData.containsKey("02")){
@@ -112,16 +118,17 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 				if(((String) getMap.get(39)).equals("00"))
 					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + Integer.valueOf(am.getAmount().trim())/100);
 				else
-					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + TypeConversion.result((String) getMap.get(39)));
+					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 			}
 		}
 		// 消费
-		if(messageType.getMessageType().equals(MessageTypeDefine99Bill.REQUEST_OP_PAY_MONEY)){
+		if(messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY)){
 			Date date = new Date();
 			tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
 			tTransaction.Date().SetAsString((String) getMap.get(13));
 			tTransaction.Time().SetAsString((String) getMap.get(12));
 			tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
+			tTransaction.TransCode().SetAsInteger(200);
 			String AuthorizeCode = "";
 			// 授权码
 			if(getMap.containsKey(38)){
@@ -139,7 +146,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			
 		}
 		
-		
+		}
 		return tTransaction;
 	}
 	

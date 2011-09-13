@@ -146,15 +146,15 @@ public class PosCommandControlSerialPort extends PosCommandControlImp{
 										logger.error("记录数据长度为："+index+":"+Thread.currentThread().getName());
 									}
 									logger.error("缓存数据为："+TypeConversion.byte2hex(returnData,0,index)+":"+Thread.currentThread().getName());
-									if(index>=5){
-										//判断是否包头
-										if(TypeConversion.byte2hex(returnData, 0, 5).equals(TypeConversion.byte2hex(HEADER_PACKET))){
-											hasPacketHeader = true;
-										}else{
-											hasPacketHeader = false;
-											index = 0;
-										}
-									}
+//									if(index>=5){
+//										//判断是否包头
+//										if(TypeConversion.byte2hex(returnData, 0, 5).equals(TypeConversion.byte2hex(HEADER_PACKET))){
+//											hasPacketHeader = true;
+//										}else{
+//											hasPacketHeader = false;
+//											index = 0;
+//										}
+//									}
 				    		   }
 				    		   SerialPortThread.this.interrupt();//唤醒父线程
 				    	   }catch(IOException e){
@@ -218,8 +218,8 @@ public class PosCommandControlSerialPort extends PosCommandControlImp{
 			if(mSendDataResultListener!=null&&mSendDataResultListener.isDone==false){
 				synchronized(returnData){
 					logger.error("真正返回数据:"+Thread.currentThread().getName());
-					mSendDataResultListener.isDone = true;
-					hasPacketHeader = false;
+					//mSendDataResultListener.isDone = true;
+					//hasPacketHeader = false;
 					byte[] times = String.valueOf(new Date().getTime()).getBytes();
 					
 					byte[] buffer = new byte[times.length+index];

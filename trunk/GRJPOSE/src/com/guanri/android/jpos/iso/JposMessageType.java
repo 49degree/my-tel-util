@@ -6,7 +6,8 @@ package com.guanri.android.jpos.iso;
  *
  */
 public abstract class JposMessageType {
-	private String messageType ;
+	private String messageType ;//消息类型
+	//交易类型码，不在包头下载和上送，在下载数据包中得第3域数据前2位
 	private String transactionCode ; 
 	
 	// 报文长度

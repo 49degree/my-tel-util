@@ -64,7 +64,7 @@ public class TTerminalParser {
 	}
 	
 	private static final byte ws_WillConnect = 1;
-	private static final byte ws_ErrorIndet = 3;
+	private static final byte ws_ErrorIdent = 3;
 	
 	private static final byte ws_ErrorConnect = 4;
 	private static final byte ws_ErrorRecv = 10;

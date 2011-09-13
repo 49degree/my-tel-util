@@ -1,5 +1,6 @@
 package com.guanri.android.jpos.pad;
 
+import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 /**
@@ -12,8 +13,11 @@ public class ServerUpDataParse {
 	protected byte[] mac = null;
 	protected JposPackageFather jposPackage = null;
 	
-	public ServerUpDataParse(TTransaction posMessageBean){
+	public ServerUpDataParse(TTransaction posMessageBean) throws PacketException{
 		jposPackage = ServerDataHandlerFactory.geServerDataHandler().receivePosData(posMessageBean);
+		if(jposPackage==null){
+			throw new PacketException("data is error");
+		}
 	}
 	
 	/**

@@ -312,7 +312,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域11 流水号
 		sendMap.put(11, posMessageBean.SerialNumber().GetAsString());
 		// 域 12 本地交易时间
-		sendMap.put(11, posMessageBean.Time().GetAsString());
+		sendMap.put(12, posMessageBean.Time().GetAsString());
 		// 域13 本地交易日期
 		sendMap.put(13, posMessageBean.Date().GetAsString());
 		

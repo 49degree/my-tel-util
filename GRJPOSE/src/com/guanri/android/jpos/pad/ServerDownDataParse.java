@@ -12,11 +12,13 @@ import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 public class ServerDownDataParse {
 	private byte[] returnData = null;
 	private JposUnPackageFather jposUnPackage = null;
+	private ServerDataHandlerImp serverDataHandler = null; 
 	public ServerDownDataParse(byte[] returnData) {
 		this.returnData = returnData;
+		serverDataHandler = ServerDataHandlerFactory.geServerDataHandler();
 		//解析数据
 		try{
-			jposUnPackage = ServerDataHandlerFactory.geServerDataHandler().receiveServerData(returnData);
+			jposUnPackage = serverDataHandler.receiveServerData(returnData);
 			jposUnPackage.unPacketed();
 		}catch(Exception e){
 			//返回失败信息
@@ -29,7 +31,7 @@ public class ServerDownDataParse {
 	 */
 	public byte[] getMab(){
 		if(jposUnPackage!=null&&jposUnPackage.getMReturnMap()!=null){
-			JposPackageFather jposPackage = ServerDataHandlerFactory.geServerDataHandler().createJposPackage(jposUnPackage.getMReturnMap(),jposUnPackage.getMMessageType());
+			JposPackageFather jposPackage = serverDataHandler.createJposPackage(jposUnPackage.getMReturnMap(),jposUnPackage.getMMessageType());
 			return jposPackage.packagMacBlock();
 		}else{
 			return null;
@@ -51,7 +53,7 @@ public class ServerDownDataParse {
 	 * @return
 	 */
 	public TTransaction getTTransaction(){
-		TTransaction tTransaction= ServerDataHandlerFactory.geServerDataHandler().createBackPosObject(
+		TTransaction tTransaction= serverDataHandler.createBackPosObject(
 				jposUnPackage.getMReturnMap(), jposUnPackage.getMMessageType());
 		return tTransaction;
 	}

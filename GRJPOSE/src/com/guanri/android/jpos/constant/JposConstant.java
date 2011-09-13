@@ -229,21 +229,23 @@ public class JposConstant {
 			str = "响应成功";
 		}
 		if(resultNo.equals("01")){
-			str = "响应失败,请联系发卡行,或核对卡信息后重新输入" + resultNo;
+			str = "响应失败,请联系发卡行,或核对卡信息后重新输入" ;
 		}
 		if(resultNo.equals("02")){
-			str = "响应失败,请联系快钱公司" + resultNo;
+			str = "响应失败,请联系快钱公司";
 		}
 		if(resultNo.equals("03")){
-			str = "无效商户" + resultNo;
+			str = "无效商户";
 		}
 		if(resultNo.equals("04")){
-			str = "无效终端" + resultNo;
+			str = "无效终端";
 		}
 		if(resultNo.equals("05")){
-			str = "无效商户" + resultNo;
+			str = "无效商户";
 		}
-		
+		if(resultNo.equals("N2")){
+			str = "流水号重复"; 
+		}
 		return str;
 		
 	}

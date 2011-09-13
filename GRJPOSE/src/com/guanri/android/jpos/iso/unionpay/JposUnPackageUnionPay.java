@@ -2,6 +2,7 @@ package com.guanri.android.jpos.iso.unionpay;
 
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
+import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
 
 /**
  * 块钱解包类
@@ -14,6 +15,13 @@ public class JposUnPackageUnionPay extends JposUnPackageFather{
 	
 	public JposUnPackageUnionPay(byte[] data) throws PacketException{
 		super(data);
+	}
+	
+	/**
+	 * 解析协议头部信息
+	 */
+	@Override
+	protected void creatMessageType(){
 	}
 	/**
 	 * 解析协议头部信息

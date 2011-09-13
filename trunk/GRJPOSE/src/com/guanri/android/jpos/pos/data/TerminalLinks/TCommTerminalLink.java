@@ -4,9 +4,14 @@ package com.guanri.android.jpos.pos.data.TerminalLinks;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.Enumeration;
 
-import com.guanri.android.jpos.pos.SerialPortAndroid;
+import javax.comm.CommPortIdentifier;
+import javax.comm.NoSuchPortException;
+import javax.comm.PortInUseException;
+import javax.comm.SerialPort;
+import javax.comm.UnsupportedCommOperationException;
 
 public class TCommTerminalLink extends TTerminalLink {
 
@@ -16,7 +21,8 @@ public class TCommTerminalLink extends TTerminalLink {
 
 	private OutputStream outputStream;
 	private InputStream inputStream;
-	private SerialPortAndroid serialPort;
+	private SerialPort serialPort;
+	private CommPortIdentifier portId;
 	
 	@SuppressWarnings("rawtypes")
 	private Enumeration portList;
@@ -29,26 +35,51 @@ public class TCommTerminalLink extends TTerminalLink {
 	public void Connect() {
 		// TODO Auto-generated method stub
 		FConnected = false;
-		
-		try{
-			serialPort =  new SerialPortAndroid("/dev/ttyUSB0",9600);
-			outputStream = serialPort.getOutputStream();
-			inputStream = serialPort.getInputStream();
-			FConnected = true;
-			return;
-		}catch(SecurityException se){
-			se.printStackTrace();
-			throw se;
-		}catch(IOException io){
-			io.printStackTrace();
+		portList = CommPortIdentifier.getPortIdentifiers();
+		while (portList.hasMoreElements()) {
+			portId = (CommPortIdentifier) portList.nextElement();
+			if ((portId.getPortType() == CommPortIdentifier.PORT_SERIAL)
+					& portId.getName().equals(CommName)) {
+				try {
+					serialPort = (SerialPort) portId.open("SimpleWriteApp",
+							2000);
+				} catch (PortInUseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return;
+				}
+				try {
+					outputStream = serialPort.getOutputStream();
+					inputStream = serialPort.getInputStream();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					serialPort.close();
+					return;
+				}
+				try {
+					serialPort.setSerialPortParams(BandRate,
+							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+							SerialPort.PARITY_NONE);
+				} catch (UnsupportedCommOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					serialPort.close();
+					return;
+				}
+				FConnected = true;
+				return;
+			}
+			
 		}
+
 	}
 
 	@Override
 	public void Disconnect() {
 		// TODO Auto-generated method stub
 		if (FConnected)
-			serialPort.portClose();
+			serialPort.close();
 		FConnected = false;
 	}
 
@@ -91,10 +122,11 @@ public class TCommTerminalLink extends TTerminalLink {
 				timeout -= tick;
 				try {
 					m = inputStream.available();
-					if (m > 0) {
+					if (m > 0) {						
 						n = Count - readCount;
 						if (m > n)
 							m = n;
+						//System.out.println("Read:"+ m);
 						inputStream.read(ABytes, readCount, m);
 						readCount += m;
 						if (readCount >= Count)

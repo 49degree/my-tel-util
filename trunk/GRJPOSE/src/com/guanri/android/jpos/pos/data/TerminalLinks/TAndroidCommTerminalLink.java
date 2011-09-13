@@ -4,82 +4,52 @@ package com.guanri.android.jpos.pos.data.TerminalLinks;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.Enumeration;
 
-import javax.comm.CommPortIdentifier;
-import javax.comm.NoSuchPortException;
-import javax.comm.PortInUseException;
-import javax.comm.SerialPort;
-import javax.comm.UnsupportedCommOperationException;
+import com.guanri.android.jpos.pos.SerialPortAndroid;
+import com.guanri.android.lib.log.Logger;
 
-public class TCommTerminalLinkBAk extends TTerminalLink {
-
+public class TAndroidCommTerminalLink extends TTerminalLink {
+	static Logger logger = Logger.getLogger(TAndroidCommTerminalLink.class);
 	public String CommName; // 串口名称, COM1, COM2, COM3
 	public int BandRate = 9600;
 	private boolean FConnected = false;
 
-	private OutputStream outputStream;
+	private OutputStream outputStream; 
 	private InputStream inputStream;
-	private SerialPort serialPort;
-	private CommPortIdentifier portId;
+	private SerialPortAndroid serialPort;
 	
 	@SuppressWarnings("rawtypes")
 	private Enumeration portList;
 
-	public TCommTerminalLinkBAk() {
+	public TAndroidCommTerminalLink() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void Connect() {
+	public void Connect() throws SecurityException{
 		// TODO Auto-generated method stub
 		FConnected = false;
-		portList = CommPortIdentifier.getPortIdentifiers();
-		while (portList.hasMoreElements()) {
-			portId = (CommPortIdentifier) portList.nextElement();
-			if ((portId.getPortType() == CommPortIdentifier.PORT_SERIAL)
-					& portId.getName().equals(CommName)) {
-				try {
-					serialPort = (SerialPort) portId.open("SimpleWriteApp",
-							2000);
-				} catch (PortInUseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return;
-				}
-				try {
-					outputStream = serialPort.getOutputStream();
-					inputStream = serialPort.getInputStream();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					serialPort.close();
-					return;
-				}
-				try {
-					serialPort.setSerialPortParams(BandRate,
-							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-							SerialPort.PARITY_NONE);
-				} catch (UnsupportedCommOperationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					serialPort.close();
-					return;
-				}
-				FConnected = true;
-				return;
-			}
-			
+		try{
+			serialPort =  new SerialPortAndroid(CommName, BandRate);
+			outputStream = serialPort.getOutputStream();
+			inputStream = serialPort.getInputStream();
+			FConnected = true;
+			logger.error("TCommTerminalLink comm is starting.............");
+			return;
+		}catch(SecurityException se){
+			se.printStackTrace();
+			throw se;
+		}catch(IOException io){
+			io.printStackTrace(); 
 		}
-
 	}
 
 	@Override
 	public void Disconnect() {
 		// TODO Auto-generated method stub
 		if (FConnected)
-			serialPort.close();
+			serialPort.portClose();
 		FConnected = false;
 	}
 
@@ -105,6 +75,16 @@ public class TCommTerminalLinkBAk extends TTerminalLink {
 		return Result;
 	}
 
+	public byte[] readbyte() {
+		byte[] bytes = new byte[1];
+		try {
+			inputStream.read(bytes);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bytes;
+	}
 	@Override
 	public byte[] ReadBytes(int Count) {
 		// TODO Auto-generated method stub
@@ -126,7 +106,8 @@ public class TCommTerminalLinkBAk extends TTerminalLink {
 						n = Count - readCount;
 						if (m > n)
 							m = n;
-						inputStream.read(ABytes, readCount, m);
+						m = inputStream.read(ABytes, readCount, m);
+						if (m < 0) continue;
 						readCount += m;
 						if (readCount >= Count)
 							break;

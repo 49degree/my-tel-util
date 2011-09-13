@@ -118,7 +118,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			if(amountData.containsKey("02")){
 				AdditionalAmounts am = amountData.get("02");
 				if(((String) getMap.get(39)).equals("00"))
-					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + "可用余额为:"+Integer.valueOf(am.getAmount().trim())/100);
+					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + "可用余额为:"+Long.valueOf(am.getAmount().trim())/100.0);
 				else
 					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 			}
@@ -134,7 +134,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			tTransaction.TransCode().SetAsInteger(200);
 			String AuthorizeCode = "";
 			if(((String) getMap.get(39)).equals("00"))
-				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) +"消费金额" +(Long.valueOf((String)getMap.get(4))/100.0));
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) +"消费金额为:" +(Long.valueOf((String)getMap.get(4))/100.0));
 			else 
 				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 			// 授权码

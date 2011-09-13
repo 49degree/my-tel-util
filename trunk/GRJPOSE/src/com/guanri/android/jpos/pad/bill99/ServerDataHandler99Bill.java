@@ -134,8 +134,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			tTransaction.TransCode().SetAsInteger(200);
 			String AuthorizeCode = "";
 			if(((String) getMap.get(39)).equals("00"))
-				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + (Long.valueOf((String)getMap.get(4))/100));
-			else
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) +"消费金额" +(Long.valueOf((String)getMap.get(4))/100.0));
+			else 
 				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 			// 授权码
 			if(getMap.containsKey(38)){

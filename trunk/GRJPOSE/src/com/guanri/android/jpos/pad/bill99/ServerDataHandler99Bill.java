@@ -64,14 +64,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//		&&(rtTransaction.ProcessList.MerchantID().GetAsString().equals(getMap.get(42))))
 		{
 		//StringBuffer result = new StringBuffer();
-		System.out.print("第三域内容:"+getMap.get(3));
-		
-		if(messageType.getTransactionCode()!= null)
-			System.out.print("第三域内容:"+messageType.getTransactionCode());
 		
 		// 签到
 		if ((messageType.getMessageType().equals(
-				MessageTypeDefine99Bill.RESPONSE_POS_CHECK_IN))) {
+				MessageTypeDefine99Bill.RESPONSE_POS_CHECK_IN))&&
+				messageType.getTransactionCode().equals("99")) {
 			if (getMap.containsKey(39)) {
 				String str = JposConstant.result((String) getMap.get(39));
 

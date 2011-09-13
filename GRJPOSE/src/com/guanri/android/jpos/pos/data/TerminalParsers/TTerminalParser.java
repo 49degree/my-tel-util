@@ -27,10 +27,13 @@ import java.util.Random;
 import java.util.TreeMap;
 
 public class TTerminalParser {
-	
+	public static String LOG_INFO = "";
 	protected TTerminalLink FTerminalLink;
 	protected int FIdent = 0;
 	protected int FLastSerialNumber = 0;  //最后一次的流水号
+	protected String FLastMerchantID = null;  //最后一次的商户号
+	protected String FLastTerminalID = null;  //最后一次的终端号
+	protected String FLastUserID = null;  //最后一次的操作员ID
 	
 	final Logger logger = new Logger(TTerminalParser.class);
 	
@@ -60,10 +63,14 @@ public class TTerminalParser {
 		TermState = TTermState.Offline;
 	}
 	
-	private static final byte ws_Sending = 1;
-	private static final byte ws_RecvError = 2;
+	private static final byte ws_WillConnect = 1;
+	private static final byte ws_ErrorIndet = 3;
 	
-	protected void SendWorkingStatus(byte AStatus) {    //检测工作状态
+	private static final byte ws_ErrorConnect = 4;
+	private static final byte ws_ErrorRecv = 10;
+	private static final byte ws_ErrorBuild = 4;
+	
+	protected void UpdateWorkingStatus(byte AStatus) {    //检测工作状态
 		TWorkingStatus WorkingStatus = new TWorkingStatus();
 		WorkingStatus.Status().SetAsInteger(AStatus & 0xFF);
 		Stream.SetBytes(null);
@@ -127,6 +134,18 @@ public class TTerminalParser {
 			
 			if (Transaction.Ident().GetAsInteger() != FIdent) {   //识别码不匹配
 				System.out.println("识别码不匹配");
+				UpdateWorkingStatus(ws_ErrorIdent);
+				return; 
+			}
+			
+			int TransCode = Transaction.TransCode().GetAsInteger();
+			switch (TransCode) {
+			case 1:
+			case 100:
+			case 200:	
+				break;
+			default:
+				System.out.println("不能识别的交易代码: " + TransCode);
 				return; 
 			}
 			
@@ -135,30 +154,48 @@ public class TTerminalParser {
 				return; 
 			}	
 			
-				
-			System.out.println("流水号: " + Transaction.SerialNumber().GetAsString());
-			System.out.println("交易代码: " + Transaction.TransCode().GetAsInteger());
-			System.out.println("2磁道数据: " + Transaction.ProcessList.GetTrack2Data());
-			System.out.println("2磁道数据: " + Transaction.ProcessList.GetTrack3Data());
-			System.out.println("主帐号: " + Transaction.ProcessList.GetPAN());
-			System.out.println("商户号: " + Transaction.ProcessList.MerchantID().GetAsString());
-			System.out.println("终端号: " + Transaction.ProcessList.TerminalID().GetAsString());
-			System.out.println("操作员ID: " + Transaction.ProcessList.UserID().GetAsString());
+	
 			
-			SendWorkingStatus(ws_Sending);
-			if (!CheckWorkingStatus(ws_Sending)) {
-				System.out.println("工作状态错误");
+			if (Transaction.TransCode().GetAsInteger() == 1) {   //签到
+				FLastMerchantID = Transaction.ProcessList.MerchantID().GetAsString();
+				FLastTerminalID = Transaction.ProcessList.TerminalID().GetAsString();
+				FLastUserID = Transaction.ProcessList.UserID().GetAsString();
+			} 
+			else {
+				Transaction.ProcessList.MerchantID().SetAsString(FLastMerchantID);
+				Transaction.ProcessList.TerminalID().SetAsString(FLastTerminalID);
+				Transaction.ProcessList.UserID().SetAsString(FLastUserID);
+			}
+			
+			FLastSerialNumber = Transaction.SerialNumber().GetAsInteger();
+			
+			
+				
+			System.out.println("[请求]流水号: " + Transaction.SerialNumber().GetAsString());
+			System.out.println("[请求]交易代码: " + Transaction.TransCode().GetAsInteger());
+			System.out.println("[请求]年:" + Transaction.Year().GetAsString());
+			System.out.println("[请求]日期:" + Transaction.Date().GetAsString());
+			System.out.println("[请求]时间:" + Transaction.Time().GetAsString());
+			System.out.println("[请求]2磁道数据: " + Transaction.ProcessList.GetTrack2Data());
+			System.out.println("[请求]3磁道数据: " + Transaction.ProcessList.GetTrack3Data());
+			System.out.println("[请求]卡号: " + Transaction.ProcessList.GetPAN());
+			
+			System.out.println("[请求]商户号: " + Transaction.ProcessList.MerchantID().GetAsString());
+			System.out.println("[请求]终端号: " + Transaction.ProcessList.TerminalID().GetAsString());
+			System.out.println("[请求]操作员ID: " + Transaction.ProcessList.UserID().GetAsString());
+			
+			UpdateWorkingStatus(ws_WillConnect);
+			if (!CheckWorkingStatus(ws_WillConnect)) {
+				System.out.println("更新工作状态错误");
 				return; 
 			}
 			
 			
 			//******************************************************
 			
-
-			
+			ServerUpDataParse serverParseData = null;
 			try {
-				
-				ServerUpDataParse serverParseData = new ServerUpDataParse(Transaction);
+				serverParseData = new ServerUpDataParse(Transaction);
 				byte[] mab = serverParseData.getMab();//构造MAC BLOCK
 				//获取数据包对象
 				JposPackageFather jpos = serverParseData.getJposPackage();
@@ -169,7 +206,26 @@ public class TTerminalParser {
 				byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
 				jpos.setMac(mac);
 				
-				CommandControl.getInstance().connect(10000, 1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("构建数据包错误");
+				UpdateWorkingStatus(ws_ErrorBuild);
+				return;
+			}
+
+			try {
+				CommandControl.getInstance().connect(10000, 20000);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("连接后台错误");
+				UpdateWorkingStatus(ws_ErrorConnect);
+				return;
+			}
+			
+			
+			try {
+				
 				ServerDownDataParse reData = CommandControl.getInstance().sendUpCommand(serverParseData);//发送数据
 				
 				Transaction = reData.getTTransaction();//取返回POS的对象
@@ -187,8 +243,8 @@ public class TTerminalParser {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.out.println("连接后台错误");
-				SendWorkingStatus(ws_RecvError);
+				System.out.println("接收错误");
+				UpdateWorkingStatus(ws_ErrorRecv);
 				return;
 			}
 			
@@ -220,6 +276,8 @@ public class TTerminalParser {
 				System.out.println("保存响应数据错误!");
 				return;
 			};	
+			
+			System.out.println("已发送响应数据.");
 			FTerminalLink.SendPackage(Stream.Bytes);
 			
 			

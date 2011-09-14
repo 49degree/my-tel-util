@@ -120,7 +120,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 				AdditionalAmounts am = amountData.get("02");
 				if(((String) getMap.get(39)).equals("00")) {
 					double dou = Long.valueOf(am.getAmount().trim()) / 100.0;
-					DecimalFormat df1 = new DecimalFormat("####.00"); 
+					DecimalFormat df1 = new DecimalFormat("###0.00"); 
 					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + "可用余额为:" + df1.format(dou));
 				}
 				else
@@ -139,7 +139,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			String AuthorizeCode = "";
 			if(((String) getMap.get(39)).equals("00")){
 				double dou = Long.valueOf((String)getMap.get(4)) / 100.0;
-				DecimalFormat df1 = new DecimalFormat("####.00"); 
+				DecimalFormat df1 = new DecimalFormat("###0.00"); 
 				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) +"消费金额为:" +df1.format(dou));
 			}
 			else 

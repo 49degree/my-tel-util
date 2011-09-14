@@ -1,0 +1,34 @@
+各种交易报文的解析文档
+解析TTransaction类
+
+
+***签到*****
+判别码: 
+	if (Transaction.TransCode().GetAsInteger() == 1) {
+	}
+
+读取:
+	Transaction.SerialNumber().GetAsInteger();						//流水号
+	Transaction.Year().GetAsString();								//年, YYYY
+	Transaction.Date().GetAsString();								//月日, MMDD
+	Transaction.Time().GetAsString();								//时分秒, hhmmss
+	Transaction.ProcessList.MerchantID().GetAsString();				//商户号
+	Transaction.ProcessList.TerminalID().GetAsString();				//终端号
+	Transaction.ProcessList.UserID().GetAsString();					//操作员
+	
+回送:	
+	Transaction.SerialNumber().SetAsInteger();						//流水号
+	Transaction.Year().SetAsString();								//年, YYYY
+	Transaction.Date().SetAsString();								//月日, MMDD
+	Transaction.Time().SetAsString();								//时分秒, hhmmss
+	
+	Transaction.ProcessList.Response().SetAsString();				//应答
+	Transaction.ProcessList.TerminalName().SetAsString();			//商户名称
+	
+应答格式:	
+"00" + "签到成功"
+xx + 错误提示信息
+	
+
+
+

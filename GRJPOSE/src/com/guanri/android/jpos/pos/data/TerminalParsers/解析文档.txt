@@ -57,10 +57,40 @@ xx + 错误提示信息
 	Transaction.ProcessList.ReturnAmount().SetAsString();			//金额
 	
 应答格式:	
-"00" + 提示信息(订单编号，订单金额等等)
+"00" + 提示信息(订单编号，订单金额等等, 暂定使用57域的数据)
 xx + 错误提示信息
 
 
+
+***查询后消费*****
+判别码: 
+	if (Transaction.TransCode().GetAsInteger() == 600) {
+	}
+
+读取:
+	Transaction.SerialNumber().GetAsInteger();						//流水号
+	Transaction.Year().GetAsString();								//年, YYYY
+	Transaction.Date().GetAsString();								//月日, MMDD
+	Transaction.Time().GetAsString();								//时分秒, hhmmss
+	Transaction.ProcessList.MerchantID().GetAsString();				//商户号
+	Transaction.ProcessList.TerminalID().GetAsString();				//终端号
+	Transaction.ProcessList.UserID().GetAsString();					//操作员
+	
+	Transaction.ProcessList.OrderNumber().GetAsString();			//订单编号
+	
+回送:	
+	Transaction.SerialNumber().SetAsInteger();						//流水号
+	Transaction.Year().SetAsString();								//年, YYYY
+	Transaction.Date().SetAsString();								//月日, MMDD
+	Transaction.Time().SetAsString();								//时分秒, hhmmss
+	
+	Transaction.ProcessList.Response().SetAsString();				//应答
+	Transaction.ProcessList.ReturnOrderNumber().SetAsString();		//订单编号
+	Transaction.ProcessList.ReturnAmount().SetAsString();			//金额
+	
+应答格式:	
+"00" + 提示信息(订单编号，订单金额等等)
+xx + 错误提示信息
 
 
 	

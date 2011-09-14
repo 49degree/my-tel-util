@@ -1,10 +1,8 @@
 package com.guanri.android.jpos.pos.data;
 
 
-import com.guanri.android.jpos.pos.data.Fields.*;
-import com.guanri.android.jpos.pos.data.TerminalLinks.*;
-//import com.guanri.android.lib.utils.TypeConversion;
-import com.guanri.android.jpos.pos.data.TerminalParsers.*;
+import com.guanri.android.jpos.pos.data.TerminalLinks.TCommTerminalLink;
+import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
 
 public class Demo {
 

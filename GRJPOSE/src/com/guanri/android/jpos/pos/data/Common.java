@@ -1,10 +1,8 @@
 package com.guanri.android.jpos.pos.data;
 
 import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;

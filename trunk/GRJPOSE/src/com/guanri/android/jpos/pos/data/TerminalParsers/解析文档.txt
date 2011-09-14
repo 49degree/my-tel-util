@@ -17,6 +17,7 @@
 	Transaction.ProcessList.UserID().GetAsString();					//操作员
 	
 回送:	
+	Transaction.TransCode().GetAsInteger(1);						//交易代码
 	Transaction.SerialNumber().SetAsInteger();						//流水号
 	Transaction.Year().SetAsString();								//年, YYYY
 	Transaction.Date().SetAsString();								//月日, MMDD
@@ -47,6 +48,7 @@ xx + 错误提示信息
 	Transaction.ProcessList.OrderNumber().GetAsString();			//订单编号
 	
 回送:	
+	Transaction.TransCode().GetAsInteger(600);						//交易代码
 	Transaction.SerialNumber().SetAsInteger();						//流水号
 	Transaction.Year().SetAsString();								//年, YYYY
 	Transaction.Date().SetAsString();								//月日, MMDD
@@ -84,6 +86,7 @@ xx + 错误提示信息
 	Transaction.ProcessList.PINData().GetData;						//密码
 	
 回送:	
+	Transaction.TransCode().GetAsInteger(601);						//交易代码
 	Transaction.SerialNumber().SetAsInteger();						//流水号
 	Transaction.Year().SetAsString();								//年, YYYY
 	Transaction.Date().SetAsString();								//月日, MMDD

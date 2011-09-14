@@ -2,10 +2,6 @@ package com.guanri.android.jpos.pos.data.Fields;
 
 import com.guanri.android.jpos.pos.data.Common;
 import com.guanri.android.jpos.pos.data.Stream;
-//import com.guanri.android.jpos.pos.data.Fields.TField.TDataType;
-//import com.guanri.android.jpos.pos.data.Fields.TField.TLengthType;
-//import com.guanri.android.jpos.pos.data.Fields.TField.TResult_LoadFromBytes;
-//import com.guanri.android.jpos.pos.data.Fields.TField.TResult_SaveToBytes;
 
 public class TBCDField extends TField {
 	protected TAlignment FAlignment = TAlignment.a_Right;

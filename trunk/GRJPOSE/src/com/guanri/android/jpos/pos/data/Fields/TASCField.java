@@ -1,7 +1,6 @@
 package com.guanri.android.jpos.pos.data.Fields;
 
 import com.guanri.android.jpos.pos.data.Common;
-import com.guanri.android.jpos.pos.data.Fields.TField.TLengthType;
 
 public class TASCField extends TField {
 

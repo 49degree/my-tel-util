@@ -1,8 +1,9 @@
 package com.guanri.android.jpos.pos.data.TerminalMessages;
 
-import com.guanri.android.jpos.pos.data.Fields.*;
+import com.guanri.android.jpos.pos.data.Fields.TField;
 import com.guanri.android.jpos.pos.data.Fields.TField.TDataType;
 import com.guanri.android.jpos.pos.data.Fields.TField.TLengthType;
+import com.guanri.android.jpos.pos.data.Fields.TFieldList;
 
 
 public class TTerminalMessage extends TFieldList {

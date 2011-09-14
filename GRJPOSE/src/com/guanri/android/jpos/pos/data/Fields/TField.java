@@ -105,6 +105,9 @@ public abstract class TField {
 		Result = LoadFromBytes_Length();
 		if (Result != TResult_LoadFromBytes.lfr_NoError)
 			return Result;
+		
+		if (FData_Len <= 0) return Result;
+		
 		Result = LoadFromBytes_Data();
 		return Result;
 	}
@@ -224,6 +227,7 @@ public abstract class TField {
 		Result = SaveToBytes_Length();
 		if (Result != TResult_SaveToBytes.sfr_NoError)
 			return Result;
+		if (Common.Length(FData) <= 0) return Result;
 		Result = SaveToBytes_Data();
 		return Result;
 	}

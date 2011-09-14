@@ -4,7 +4,6 @@ package com.guanri.android.jpos.pos.data.Fields;
 
 import com.guanri.android.jpos.pos.data.Common;
 import com.guanri.android.jpos.pos.data.Stream;
-import com.guanri.android.jpos.pos.data.Fields.TField.TDataType;
 
 public class TBINField extends TField {
 

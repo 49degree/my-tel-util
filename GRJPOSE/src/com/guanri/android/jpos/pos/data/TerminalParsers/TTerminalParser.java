@@ -1,30 +1,24 @@
 package com.guanri.android.jpos.pos.data.TerminalParsers;
 
-import com.guanri.android.exception.CommandParseException;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
+
 import com.guanri.android.jpos.iso.JposPackageFather;
-import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
-import com.guanri.android.jpos.iso.JposUnPackageFather;
 import com.guanri.android.jpos.network.CommandControl;
 import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
 import com.guanri.android.jpos.pos.data.Common;
 import com.guanri.android.jpos.pos.data.Stream;
-import com.guanri.android.jpos.pos.data.Fields.TField;
 import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_LoadFromBytes;
 import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_SaveToBytes;
-//import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_SaveToBytes;
 import com.guanri.android.jpos.pos.data.TerminalLinks.TTerminalLink;
-import com.guanri.android.jpos.pos.data.TerminalMessages.*;
+import com.guanri.android.jpos.pos.data.TerminalMessages.THandshake_Response;
+import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
+import com.guanri.android.jpos.pos.data.TerminalMessages.TWorkingStatus;
 import com.guanri.android.lib.log.Logger;
-import com.guanri.android.lib.utils.TypeConversion;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
-import java.util.TreeMap;
 
 public class TTerminalParser {
 	public static String LOG_INFO = "";
@@ -166,8 +160,6 @@ public class TTerminalParser {
 				Transaction.ProcessList.TerminalID().SetAsString(FLastTerminalID);
 				Transaction.ProcessList.UserID().SetAsString(FLastUserID);
 			}
-			
-			FLastSerialNumber = Transaction.SerialNumber().GetAsInteger();
 			
 			
 				

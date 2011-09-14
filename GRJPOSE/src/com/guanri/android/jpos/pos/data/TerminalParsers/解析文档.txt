@@ -90,11 +90,10 @@ xx + 错误提示信息
 	Transaction.Time().SetAsString();								//时分秒, hhmmss
 	
 	Transaction.ProcessList.Response().SetAsString();				//应答
-	Transaction.ProcessList.ReturnOrderNumber().SetAsString();		//订单编号
-	Transaction.ProcessList.ReturnAmount().SetAsString();			//金额
+
 	
 应答格式:	
-"00" + 提示信息(订单编号，订单金额等等)
+"00" + "交易成功"
 xx + 错误提示信息
 
 

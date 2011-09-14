@@ -64,7 +64,7 @@ xx + 错误提示信息
 
 ***查询后消费*****
 判别码: 
-	if (Transaction.TransCode().GetAsInteger() == 600) {
+	if (Transaction.TransCode().GetAsInteger() == 601) {
 	}
 
 读取:
@@ -76,7 +76,12 @@ xx + 错误提示信息
 	Transaction.ProcessList.TerminalID().GetAsString();				//终端号
 	Transaction.ProcessList.UserID().GetAsString();					//操作员
 	
-	Transaction.ProcessList.OrderNumber().GetAsString();			//订单编号
+	Transaction.ProcessList.ReturnOrderNumber().GetAsString();		//订单编号
+	Transaction.ProcessList.ReturnAmount().GetAsString();			//金额
+	Transaction.ProcessList.GetTrack2Data();						//2磁道数据
+	Transaction.ProcessList.GetTrack3Data();						//3磁道数据
+	Transaction.ProcessList.GetPAN();								//主帐号
+	Transaction.ProcessList.PINData().GetData;						//密码
 	
 回送:	
 	Transaction.SerialNumber().SetAsInteger();						//流水号

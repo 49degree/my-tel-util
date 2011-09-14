@@ -2,9 +2,9 @@ package com.guanri.android.jpos.pos.data.TerminalMessages;
 
 import com.guanri.android.jpos.pos.data.Common;
 import com.guanri.android.jpos.pos.data.Fields.TField;
-import com.guanri.android.jpos.pos.data.Fields.TFieldList;
 import com.guanri.android.jpos.pos.data.Fields.TField.TDataType;
 import com.guanri.android.jpos.pos.data.Fields.TField.TLengthType;
+import com.guanri.android.jpos.pos.data.Fields.TFieldList;
 
 public class TProcessList extends TFieldList {
 
@@ -54,6 +54,40 @@ public class TProcessList extends TFieldList {
 		return GetField(0xAC);
 	}
 	
+	
+	public TField ReturnAmount() {  //回送金额
+		return GetField(0xA9);
+	}
+	
+	public TField ReturnOrderNumber() {  //回送订单编号
+		return GetField(0xB0);
+	}
+	
+	
+	
+	public TProcessList() {
+		  //下列字段是终端传过来的
+		  AddField(0x83, TDataType.dt_BCD, TLengthType.lt_VarBIN1, 160, "TrackData"); // 2磁道和3磁道的数据
+		  AddField(0x84, TDataType.dt_BIN, TLengthType.lt_Fixed, 8, "PINData"); // 加密后的密码数据
+		  AddField(0x92, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 20, "PANorTrackData"); // 手输卡号或磁道数据
+		  AddField(0xAE, TDataType.dt_ASC, TLengthType.lt_Fixed, 8, "TerminalID"); // 终端号
+		  AddField(0xAF, TDataType.dt_ASC, TLengthType.lt_Fixed, 3, "UserID"); // 操作员ID
+		  AddField(0xA6, TDataType.dt_ASC, TLengthType.lt_Fixed, 15, "MerchantID"); //商户代码, 商户号 
+		  AddField(0x87, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 40, "OrderNumber"); //订单编号
+		  AddField(0x8D, TDataType.dt_BCD, TLengthType.lt_Fixed, 12, "SaleAmount"); //消费金额
+		  AddField(0x93, TDataType.dt_BCD, TLengthType.lt_Fixed, 4, "DateOfExpired"); //卡有效期
+		  
+		  
+		//下列字段是需要传给终端的
+		  AddField(0x8E, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 100, "Response"); // 应答信息
+		  AddField(0xAC, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 50, "MerchantName"); //商户名称
+		  
+		 
+		//下列字段是互相传送的  
+		  AddField(0xA9, TDataType.dt_BIN, TLengthType.lt_VarBIN1, 8, "ReturnAmount"); //回送金额
+		  AddField(0xB0, TDataType.dt_BIN, TLengthType.lt_VarBIN1, 40, "ReturnOrderNumber"); //回送订单编号
+
+	}	
 	public String GetTrack2Data() {  //获取2磁道数据
 		byte[] s = Common.StringToBytes(TrackData().GetAsString());
 		int i, len, k;
@@ -134,22 +168,6 @@ public class TProcessList extends TFieldList {
 	}
 	
 	
-	public TProcessList() {
-		  AddField(0x83, TDataType.dt_BCD, TLengthType.lt_VarBIN1, 160, "TrackData"); // 2磁道和3磁道的数据
-		  AddField(0x84, TDataType.dt_BIN, TLengthType.lt_Fixed, 8, "PINData"); // 加密后的密码数据
-		  AddField(0x92, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 20, "PANorTrackData"); // 手输卡号或磁道数据
-		  AddField(0xAE, TDataType.dt_ASC, TLengthType.lt_Fixed, 8, "TerminalID"); // 终端号
-		  AddField(0xAF, TDataType.dt_ASC, TLengthType.lt_Fixed, 3, "UserID"); // 操作员ID
-		  AddField(0xA6, TDataType.dt_ASC, TLengthType.lt_Fixed, 15, "MerchantID"); //商户代码, 商户号 
-		  AddField(0x87, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 40, "OrderNumber"); //订单编号
-		  AddField(0x8D, TDataType.dt_BCD, TLengthType.lt_Fixed, 12, "SaleAmount"); //消费金额
-		  
-		  AddField(0x8E, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 100, "Response"); // 应答信息
-		  AddField(0xAC, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 50, "MerchantName"); //商户名称
-		  
-		  AddField(0x93, TDataType.dt_BCD, TLengthType.lt_Fixed, 4, "DateOfExpired"); //卡有效期
-		  
 
-	}
 
 }

@@ -70,6 +70,7 @@ public class TAndroidCommTerminalLink extends TTerminalLink {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				this.Disconnect();//写数据异常，关闭端口
 			}
 		}
 		return Result;
@@ -82,6 +83,7 @@ public class TAndroidCommTerminalLink extends TTerminalLink {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			this.Disconnect();//读取数据异常，关闭端口
 		}
 		return bytes;
 	}
@@ -116,6 +118,7 @@ public class TAndroidCommTerminalLink extends TTerminalLink {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					this.Disconnect();//读取数据异常，关闭端口
 				}
 				Thread.sleep(tick);
 			} catch (InterruptedException e) {

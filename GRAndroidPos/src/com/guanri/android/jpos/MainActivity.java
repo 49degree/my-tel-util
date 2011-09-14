@@ -5,8 +5,13 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import android.app.Activity;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,9 +26,11 @@ import com.guanri.android.jpos.network.CommandControl;
 import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
+import com.guanri.android.jpos.pos.SerialPortAndroid;
 import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
+import com.guanri.android.jpos.services.MainService;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 
@@ -34,6 +41,21 @@ public class MainActivity extends Activity implements OnClickListener {
 	Button btn_query,btn_login,btn_sale,btn_receive;
 	final Logger logger = new Logger(MainActivity.class);
 	StringBuffer result = new StringBuffer();
+	
+	/**
+	 * 获取services绑定对象
+	 */
+	private MainService mainService = null;
+    private ServiceConnection sc = new ServiceConnection(){
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+        	mainService = ((MainService.MainServiceBinder)binder).getServices();
+        }
+        public void onServiceDisconnected(ComponentName name) {
+        	mainService.onDestroy();
+        	mainService = null;
+        }
+    };
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -47,7 +69,16 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		log = (EditText)findViewById(R.id.edt_log);
 		
-		log_info = (EditText)findViewById(R.id.edt_log_info);
+		//绑定服务
+		bindService(new Intent(MainActivity.this, MainService.class), sc, Service.BIND_AUTO_CREATE);
+		if(mainService!=null&&mainService.isPosTaskStart()){
+			log.setText("POS服务已经打开");
+		}
+		
+		
+
+		
+		
 		btn_query.setOnClickListener(this);
 		btn_login.setOnClickListener(this);
 		btn_sale.setOnClickListener(this);
@@ -168,7 +199,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			break;
 		case R.id.btn_sale:
-	try{
+			try{
 				
 				TTransaction msgBean = new TTransaction();
 				//构造数据发送对象
@@ -232,19 +263,30 @@ public class MainActivity extends Activity implements OnClickListener {
 						TerminalLink.CommName = "/dev/ttyUSB0";
 						TerminalLink.ReadTimeout = 5000;
 						try{
-							TerminalLink.Connect();
-
+							//循环直到打开串口
+							while(!TerminalLink.GetConnected()){
+								if(SerialPortAndroid.findAndroidDevice(TerminalLink.CommName)){
+									TerminalLink.Connect();
+									if(!TerminalLink.GetConnected()){
+										Thread.sleep(1000);
+									}
+								}else{
+									updateUI.sendMessage(updateUI.obtainMessage(1, "串口不存在！"));
+								}
+							}
+							
 							TTerminalParser TerminalParser = new TTerminalParser();
 							TerminalParser.SetTerminalLink(TerminalLink);
 
 							updateUI.sendMessage(updateUI.obtainMessage(1, "终端解析器正在运行..."));
 							
-							TTerminalParser.LOG_INFO =TTerminalParser.LOG_INFO+"\n is ok";
-							
+						
 							while (!stopTask) {
 								TerminalParser.ParseRequest();
 							}
-							showInfoTask.start();
+							if(TerminalLink!=null){
+								TerminalLink.Disconnect();
+							}
 						}catch(SecurityException se){
 							updateUI.sendMessage(updateUI.obtainMessage(1, "open comm failed..."));
 						}catch(Exception e){
@@ -282,22 +324,6 @@ public class MainActivity extends Activity implements OnClickListener {
         }
     };
     
-    private Thread showInfoTask = new Thread(){
-    	public void run(){
-    		updateUI.sendMessage(updateUI.obtainMessage(1, "open comm failed..."));
-			try{
-				while (!stopTask) {
-					if(TTerminalParser.LOG_INFO!=null&&TTerminalParser.LOG_INFO.length()>250){
-						updateUI.sendMessage(updateUI.obtainMessage(2, TTerminalParser.LOG_INFO.substring(TTerminalParser.LOG_INFO.length()-250, 250)));
-					}else{
-						updateUI.sendMessage(updateUI.obtainMessage(2, TTerminalParser.LOG_INFO));
-					}
-					Thread.sleep(500);
-				}
-			}catch(Exception e){
-				updateUI.sendMessage(updateUI.obtainMessage(2, "read log_info failed...:"+e.getMessage()));
-			}
-    	}
-    };
+
 	
 }

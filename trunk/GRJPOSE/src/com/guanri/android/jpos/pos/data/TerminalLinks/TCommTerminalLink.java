@@ -4,11 +4,9 @@ package com.guanri.android.jpos.pos.data.TerminalLinks;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.Enumeration;
 
 import javax.comm.CommPortIdentifier;
-import javax.comm.NoSuchPortException;
 import javax.comm.PortInUseException;
 import javax.comm.SerialPort;
 import javax.comm.UnsupportedCommOperationException;

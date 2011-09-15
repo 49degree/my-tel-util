@@ -157,7 +157,7 @@ public class ServerDataUnPackage99Bill {
 		tTransaction.Time().SetAsString((String) getMap.get(12));
 		// 域11  POS 流水号
 		if(getMap.containsKey(11))
-			tTransaction.SerialNumber().SetAsInteger((Integer)getMap.get(11));
+			tTransaction.SerialNumber().SetAsString((String)getMap.get(11));
 		tTransaction.TransCode().SetAsInteger(200);
 		if (getMap.get(39).equals("00")) {
 			String str = JposConstant.result((String) getMap.get(39));

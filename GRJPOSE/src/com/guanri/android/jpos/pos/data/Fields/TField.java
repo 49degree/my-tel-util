@@ -115,7 +115,7 @@ public abstract class TField {
 	public TResult_LoadFromBytes LoadFromBytes_Length() {
 		TResult_LoadFromBytes Result = TResult_LoadFromBytes.lfr_NoError;
 		int i, k, m, d, Len;
-		byte B;
+		int B;
 		boolean bBCD, bBIN;
 
 		k = Stream.Index;
@@ -157,12 +157,12 @@ public abstract class TField {
 			if (Stream.Compress & bBCD) {
 				for (i = 0; i < d; i++) { // 压缩
 					Len *= 10;
-					B = (byte) ((Stream.Bytes[k] >> 4) & 0x0F);
+					B = ((Stream.Bytes[k] >> 4) & 0x0F);
 					if (B < 10)
 						Len += B;
 
 					Len *= 10;
-					B = (byte) ((Stream.Bytes[k]) & 0x0F);
+					B = ((Stream.Bytes[k]) & 0x0F);
 					if (B < 10)
 						Len += B;
 
@@ -172,7 +172,7 @@ public abstract class TField {
 				if (bBCD) {
 					for (i = 0; i < d; i++) { // 压缩
 						Len *= 10;
-						B = Stream.Bytes[k];
+						B = Stream.Bytes[k] & 0xFF;
 						if (B < 10)
 							Len += B;
 						k++;
@@ -180,7 +180,7 @@ public abstract class TField {
 				} else {
 					for (i = 0; i < d; i++) { // 非压缩
 						Len *= 256;
-						B = Stream.Bytes[k];
+						B = Stream.Bytes[k] & 0xFF;
 						if (B < 256)
 							Len += B;
 						k++;

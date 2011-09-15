@@ -33,7 +33,7 @@ public class ServerDownDataParse {
 	 */
 	public byte[] getMab(){
 		if(jposUnPackage!=null&&jposUnPackage.getMReturnMap()!=null){
-			JposPackageFather jposPackage = ServerDataHandlerFactory.geServerDataHandler().createJposPackage(jposUnPackage.getMReturnMap(),jposUnPackage.getMMessageType());
+			JposPackageFather jposPackage = serverDataHandler.createJposPackage(jposUnPackage.getMReturnMap(),jposUnPackage.getMMessageType());
 			return jposPackage.packagMacBlock();
 		}else{
 			return null;
@@ -55,7 +55,7 @@ public class ServerDownDataParse {
 	 * @return
 	 */
 	public TTransaction getTTransaction(){
-		TTransaction tTransaction= ServerDataHandlerFactory.geServerDataHandler().createBackPosObject(rTransaction,
+		TTransaction tTransaction= serverDataHandler.createBackPosObject(rTransaction,
 				jposUnPackage.getMReturnMap(), jposUnPackage.getMMessageType());
 		return tTransaction;
 	}

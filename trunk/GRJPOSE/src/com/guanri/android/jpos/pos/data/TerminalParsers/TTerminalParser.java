@@ -180,11 +180,7 @@ public class TTerminalParser {
 			System.out.println("[请求]终端号: " + Transaction.ProcessList.TerminalID().GetAsString());
 			System.out.println("[请求]操作员ID: " + Transaction.ProcessList.UserID().GetAsString());
 			
-			UpdateWorkingStatus(ws_WillConnect);
-			if (!CheckWorkingStatus(ws_WillConnect)) {
-				System.out.println("更新工作状态错误");
-				return; 
-			}
+
 			
 			
 			//******************************************************
@@ -234,6 +230,13 @@ public class TTerminalParser {
 				return;
 			}
 
+			
+			UpdateWorkingStatus(ws_WillConnect);
+			if (!CheckWorkingStatus(ws_WillConnect)) {
+				System.out.println("更新工作状态错误");
+				return; 
+			}
+			
 			try {
 				CommandControl.getInstance().connect(10000, 20000);
 				

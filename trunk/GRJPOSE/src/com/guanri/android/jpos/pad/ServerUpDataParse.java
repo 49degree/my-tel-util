@@ -9,13 +9,14 @@ import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
  *
  */
 public class ServerUpDataParse {
-	protected TTransaction posMessageBean=null;
+	public TTransaction tTransaction =null;
 	protected byte[] mac = null;
 	protected JposPackageFather jposPackage = null;
 	private ServerDataHandlerImp serverDataHandler = null; 
-	public ServerUpDataParse(TTransaction posMessageBean) throws PacketException{
+	public ServerUpDataParse(TTransaction tTransaction) throws PacketException{
+		this.tTransaction = tTransaction;
 		serverDataHandler = ServerDataHandlerFactory.geServerDataHandler();
-		jposPackage = serverDataHandler.receivePosData(posMessageBean);
+		jposPackage = serverDataHandler.receivePosData(tTransaction);
 		if(jposPackage==null){
 			throw new PacketException("data is error");
 		}

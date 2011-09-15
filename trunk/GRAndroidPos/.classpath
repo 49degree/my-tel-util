@@ -4,5 +4,6 @@
 	<classpathentry excluding="com/guanri/android/jpos/db/|com/guanri/android/jpos/pos/data/Demo.java|com/guanri/android/jpos/pos/data/TerminalLinks/TCommTerminalLink.java|com/guanri/android/jpos/pos/test/SeriolPortTest.java|com/guanri/android/lib/" kind="src" path="GRJpos"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="src" path="AndroidProjectLib_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -44,8 +44,10 @@ public class CommandControl {
 	public synchronized ServerDownDataParse sendUpCommand(ServerUpDataParse serverUpDataParse) throws IOException,CommandParseException{
 		byte[] sendData = serverUpDataParse.getBeSendData();
 		byte[] returnData = this.submit(sendData);
-		
-		ServerDownDataParse downDataParse = new ServerDownDataParse(serverUpDataParse.tTransaction,returnData);
+		ServerDownDataParse downDataParse = null;
+		if(returnData!=null){
+			downDataParse = new ServerDownDataParse(serverUpDataParse.tTransaction,returnData);
+		}
 		return downDataParse;
 	}
 	
@@ -133,9 +135,13 @@ public class CommandControl {
 	public synchronized byte[] submit(byte[] sendData) throws IOException,CommandParseException{
 		recvAllBufferIndex = 0;
 		try {
-			logger.debug("开始发送数据:"+TypeConversion.byte2hex(sendData));
-			out.write(sendData);//发送数据
-			out.flush(); 
+			if(isConnect){
+				logger.debug("开始发送数据:"+TypeConversion.byte2hex(sendData));
+				out.write(sendData);//发送数据
+				out.flush();
+			}else{
+				return null;
+			}
 			
 			while (in!=null&&!stopReceive) {
 				int nReadbyteLength = in.read(recvbuf);// 读取数据

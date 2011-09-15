@@ -763,8 +763,8 @@ public class JposPackage99Bill extends JposPackageFather{
 			throw new FieldTooLongException("Feild60 to long");
 		}
 		//public byte[] floatLengthStr2cbcd(String s,String length,boolean rightAlign,int lengthBit) {
-		byte[] temp = floatLengthStr2cbcd(acount,acount.length()+"",true,3);
-
+		byte[] temp = floatLengthstr2ASCII(acount,3);
+		
 		return temp;
 	}
 	

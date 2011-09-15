@@ -13,8 +13,10 @@ public class ServerDownDataParse {
 	private byte[] returnData = null;
 	private JposUnPackageFather jposUnPackage = null;
 	private ServerDataHandlerImp serverDataHandler = null; 
-	public ServerDownDataParse(byte[] returnData) {
+	private TTransaction rTransaction;
+	public ServerDownDataParse(TTransaction tTransaction,byte[] returnData) {
 		this.returnData = returnData;
+		this.rTransaction = rTransaction;
 		serverDataHandler = ServerDataHandlerFactory.geServerDataHandler();
 		//解析数据
 		try{
@@ -31,7 +33,7 @@ public class ServerDownDataParse {
 	 */
 	public byte[] getMab(){
 		if(jposUnPackage!=null&&jposUnPackage.getMReturnMap()!=null){
-			JposPackageFather jposPackage = serverDataHandler.createJposPackage(jposUnPackage.getMReturnMap(),jposUnPackage.getMMessageType());
+			JposPackageFather jposPackage = ServerDataHandlerFactory.geServerDataHandler().createJposPackage(jposUnPackage.getMReturnMap(),jposUnPackage.getMMessageType());
 			return jposPackage.packagMacBlock();
 		}else{
 			return null;
@@ -53,7 +55,7 @@ public class ServerDownDataParse {
 	 * @return
 	 */
 	public TTransaction getTTransaction(){
-		TTransaction tTransaction= serverDataHandler.createBackPosObject(
+		TTransaction tTransaction= ServerDataHandlerFactory.geServerDataHandler().createBackPosObject(rTransaction,
 				jposUnPackage.getMReturnMap(), jposUnPackage.getMMessageType());
 		return tTransaction;
 	}
@@ -82,3 +84,4 @@ public class ServerDownDataParse {
 	
 	
 }
+

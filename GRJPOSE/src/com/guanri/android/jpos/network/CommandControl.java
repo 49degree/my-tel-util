@@ -164,6 +164,7 @@ public class CommandControl {
 				throw new CommandParseException("接收数据为空");
 			}
 		} catch (IOException e) {
+			closeConnect();
 			throw e;
 		}catch(CommandParseException ex){
 			throw ex;

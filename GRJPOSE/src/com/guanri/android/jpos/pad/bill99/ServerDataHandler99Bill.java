@@ -66,9 +66,9 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//if((rtTransaction.ProcessList.TerminalID().GetAsString().equals(getMap.get(41)))
 		//		&&(rtTransaction.ProcessList.MerchantID().GetAsString().equals(getMap.get(42))))
 		// 检查数据合法性
-		if (!chackData(rtTransaction,getMap)){
-			return tTransaction;
-		}
+		//if (!chackData(rtTransaction,getMap)){
+		//	return tTransaction;
+		//}
 		
 		// 签到
 		if ((messageType.getMessageType().equals(

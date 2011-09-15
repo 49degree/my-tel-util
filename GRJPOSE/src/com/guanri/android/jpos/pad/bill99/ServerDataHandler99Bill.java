@@ -127,20 +127,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			jposPackageFather = createQueryBalance(ttransaction);
 			break;
 		case JposConstant.POS_TRANCE_CODE_PAY:
-//			// 消费
-			//String Trank2 = "5264102500120211=1301123";
-			//String Trank3 = "";
-			//String CardNo = "5264102500120211";
-			//String pwdstr = "";
-			//String cardPeriod = "1301";
-			//int money = 10000;
-			//String datestr = "0910";
-			/*String timestr = "175422";
-			String orderNo = "000001";
-			String userNo = "001";
-			String billNo = "010001";
-			jposPackageFather =   createSaleTest(Trank2, Trank3, CardNo, pwdstr, cardPeriod, money, 
-					datestr, timestr, orderNo, userNo, billNo);*/
+			// 消费
 			jposPackageFather = createSale(ttransaction);
 			break;
 			// 退货
@@ -149,7 +136,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			break;
 		case 400:
 			// 撤销
-			jposPackageFather = createCanelSale(ttransaction);
+			//jposPackageFather = createCanelSale(ttransaction);
 			break;
 		case 1:
 			// 签到
@@ -171,28 +158,16 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			// 查询后消费
 			jposPackageFather = createOQSSale(ttransaction);
 			break;
+			
+		case 7:  // 交易回执
+		case 8:
+			jposPackageFather = createSaleReceipt(ttransaction);
+			break;
 		default:
 		
 			break;
 		}
-		
 		return jposPackageFather;
-
-		// 消费
-//		String Trank2 = "5264102500120211=1301123";
-//		String Trank3 = "";
-//		String CardNo = "5264102500120211";
-//		String pwdstr = "";
-//		String cardPeriod = "1301";
-//		int money = 10000;
-//		String datestr = "0910";
-//		String timestr = "175422";
-//		String orderNo = "000001";
-//		String userNo = "001";
-//		String billNo = "010001";
-//		return  createSale(Trank2, Trank3, CardNo, pwdstr, cardPeriod, money, 
-//				datestr, timestr, orderNo, userNo, billNo);
-
 	}
 	
 	
@@ -214,7 +189,6 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域13 本地交易日期
 		sendMap.put(13, "0909");
 		sendMap.put(22, "022");
-				
 		// 域24 NII
 		sendMap.put(24,"009");
 		// 域25 服务店条件码
@@ -741,13 +715,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 第13域  
 		logger.debug("POS发送过来的时间:"+posMessageBean.Date().GetAsString());
 		sendMap.put(13, posMessageBean.Date().GetAsString());
-		// 第22域  POS输入方式
-		sendMap.put(22, "011");
 		// 第24域  NII
 		sendMap.put(24, "009");
 		// 第25域  服务点条件码
 		sendMap.put(25, "14");
 		// 第37域 系统参考号 由后台系统定位原交易
+		//----------------------------------
 		if(false)
 			sendMap.put(37, "");
 		// 第41域  终端号
@@ -761,18 +734,20 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
 		jposf.setTag("1");
 		jposf.setValue("20"); //表示交易回执		
-		// 域49  货币代码
-		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
+		datalist.add(jposf);
+		sendMap.put(46, datalist);
 		// 处理61 域
 		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("1");
-		leaf.setValue("000001");
+		logger.debug("POS发送过来的交易批次号:"+posMessageBean.ProcessList.OrderNumber().GetAsString());
+		leaf.setValue(posMessageBean.ProcessList.OrderNumber().GetAsString());
 		data1.put(1,leaf);
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("2");
-		leaf.setValue(posMessageBean.ProcessList.UserID().GetAsString());
+		// 网管交易类型
+		leaf.setValue("001");
 		data1.put(2,leaf);
 		sendMap.put(61, data1);	
 		// 域64 MAC
@@ -843,93 +818,93 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * 构造消费撤销数据
 	 * @param posMessageBean 从POS获取的数据
 	 */
-	public JposPackageFather createCanelSale(TTransaction posMessageBean){
-		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
-		//根据POS得到的数据构造sendMap对象
-		sendMap.put(2, "5264102500120211");//posMessageBean.ProcessList.GetPAN());
-		// 域3 处理码
-		sendMap.put(3, "200000");
-		// 域4  交易金额
-		sendMap.put(4, "000000008837");
-		// 域11 流水号
-		sendMap.put(11, "011006");//posMessageBean.SerialNumber().GetAsString());
-		// 域 12 本地交易时间
-		sendMap.put(12, "093622");//posMessageBean.Time().GetAsString());
-		// 域13 本地交易日期
-		sendMap.put(13, "0913");//posMessageBean.Date().GetAsString());
-		// 域22 POS输入方式
-		sendMap.put(22, "022");			
-		// 域24 NII
-		sendMap.put(24,"009");
-		// 域25 服务店条件码
-		sendMap.put(25, "14");
-		// 域35 2磁道数据
-		//if(posMessageBean.ProcessList.GetTrack2Data()!=null)
-			sendMap.put(35,  "5264102500120211=1508201");//posMessageBean.ProcessList.GetTrack2Data());
-		// 域36 3磁道数据
-		//if(posMessageBean.ProcessList.GetTrack3Data()!=null)
-		//	sendMap.put(36, posMessageBean.ProcessList.GetTrack3Data());
-		// 域38  授权码 原来消费的授权码
-		//if(posMessageBean.ProcessList.GetTrack2Data()!=null)
-			sendMap.put(38, "575432");//posMessageBean.ProcessList.GetTrack2Data());
-		// 域41 终端代码
-		sendMap.put(41, MessageTypeDefine99Bill.POSID);
-		// 域42 商户代码
-		sendMap.put(42, MessageTypeDefine99Bill.CONTACT);
-		// 域49  货币代码
-		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
-		// 域52 个人识别码  密码
-		//if(!posMessageBean.ProcessList.PINData().GetIsEmpty())
-		//	sendMap.put(53, "");//posMessageBean.ProcessList.PINData().GetAsString());
-		//if(!posMessageBean.ProcessList.OrderNumber().GetIsEmpty())
-		//	sendMap.put(60, "");posMessageBean.ProcessList.OrderNumber().GetAsString());
-		
-		//域61 原交易信息域
-		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
-		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
-		// 60.1 批次号
-		leaf.setTag("1");
-		leaf.setValue("000001");
-		data1.put(1,leaf);
-		// 60.2 操作员号
-		leaf = new JposSelfFieldLeaf();
-		leaf.setTag("2");
-		leaf.setValue("001");//posMessageBean.ProcessList.UserID().GetAsString());
-		data1.put(2,leaf);
-		// 60.3 票据号
-		leaf = new JposSelfFieldLeaf();
-		leaf.setTag("3");
-		leaf.setValue("000000");
-		data1.put(3,leaf);
-		sendMap.put(61, data1);//原交易信息域
-		// 62 原始交易数据
-		data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
-		leaf = new JposSelfFieldLeaf();
-		// 62.1 信息类型码
-		leaf.setTag("1");
-		leaf.setValue("0200");//posMessageBean.ProcessList.UserID().GetAsString());
-		data1.put(1,leaf);
-		leaf.setTag("2");
-		leaf.setValue("011005");//posMessageBean.ProcessList.UserID().GetAsString());
-		data1.put(2, leaf);
-		leaf.setTag("3");
-		leaf.setValue("0912174217");//posMessageBean.ProcessList.UserID().GetAsString());
-		sendMap.put(62, data1);
-		sendMap.put(64, "");
-		//sendMap.put(62, posMessageBean.ProcessList.UserID().GetAsString());
-		//得到模拟数据的mac值
-//		byte[] mab = ServerDataHandlerFactory.geServerDataHandler().getPosMacBlock(null);
-//		String makSource = (String)sendMap.get(11)+(String)sendMap.get(13)+(String)sendMap.get(12)+(String)sendMap.get(41);
-//		byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
-//		sendMap.put(64, mac);
-		
-		//设置消息类型
-		JposMessageType99Bill messageType = JposMessageType99Bill.getInstance();
-		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_PAY_CANCEL);
-		
-		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
-		return jposPackage99Bill;
-	}
+//	public JposPackageFather createCanelSale(TTransaction posMessageBean){
+//		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+//		//根据POS得到的数据构造sendMap对象
+//		sendMap.put(2, "5264102500120211");//posMessageBean.ProcessList.GetPAN());
+//		// 域3 处理码
+//		sendMap.put(3, "200000");
+//		// 域4  交易金额
+//		sendMap.put(4, "000000008837");
+//		// 域11 流水号
+//		sendMap.put(11, "011006");//posMessageBean.SerialNumber().GetAsString());
+//		// 域 12 本地交易时间
+//		sendMap.put(12, "093622");//posMessageBean.Time().GetAsString());
+//		// 域13 本地交易日期
+//		sendMap.put(13, "0913");//posMessageBean.Date().GetAsString());
+//		// 域22 POS输入方式
+//		sendMap.put(22, "022");			
+//		// 域24 NII
+//		sendMap.put(24,"009");
+//		// 域25 服务店条件码
+//		sendMap.put(25, "14");
+//		// 域35 2磁道数据
+//		//if(posMessageBean.ProcessList.GetTrack2Data()!=null)
+//			sendMap.put(35,  "5264102500120211=1508201");//posMessageBean.ProcessList.GetTrack2Data());
+//		// 域36 3磁道数据
+//		//if(posMessageBean.ProcessList.GetTrack3Data()!=null)
+//		//	sendMap.put(36, posMessageBean.ProcessList.GetTrack3Data());
+//		// 域38  授权码 原来消费的授权码
+//		//if(posMessageBean.ProcessList.GetTrack2Data()!=null)
+//			sendMap.put(38, "575432");//posMessageBean.ProcessList.GetTrack2Data());
+//		// 域41 终端代码
+//		sendMap.put(41, MessageTypeDefine99Bill.POSID);
+//		// 域42 商户代码
+//		sendMap.put(42, MessageTypeDefine99Bill.CONTACT);
+//		// 域49  货币代码
+//		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
+//		// 域52 个人识别码  密码
+//		//if(!posMessageBean.ProcessList.PINData().GetIsEmpty())
+//		//	sendMap.put(53, "");//posMessageBean.ProcessList.PINData().GetAsString());
+//		//if(!posMessageBean.ProcessList.OrderNumber().GetIsEmpty())
+//		//	sendMap.put(60, "");posMessageBean.ProcessList.OrderNumber().GetAsString());
+//		
+//		//域61 原交易信息域
+//		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
+//		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+//		// 60.1 批次号
+//		leaf.setTag("1");
+//		leaf.setValue("000001");
+//		data1.put(1,leaf);
+//		// 60.2 操作员号
+//		leaf = new JposSelfFieldLeaf();
+//		leaf.setTag("2");
+//		leaf.setValue("001");//posMessageBean.ProcessList.UserID().GetAsString());
+//		data1.put(2,leaf);
+//		// 60.3 票据号
+//		leaf = new JposSelfFieldLeaf();
+//		leaf.setTag("3");
+//		leaf.setValue("000000");
+//		data1.put(3,leaf);
+//		sendMap.put(61, data1);//原交易信息域
+//		// 62 原始交易数据
+//		data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
+//		leaf = new JposSelfFieldLeaf();
+//		// 62.1 信息类型码
+//		leaf.setTag("1");
+//		leaf.setValue("0200");//posMessageBean.ProcessList.UserID().GetAsString());
+//		data1.put(1,leaf);
+//		leaf.setTag("2");
+//		leaf.setValue("011005");//posMessageBean.ProcessList.UserID().GetAsString());
+//		data1.put(2, leaf);
+//		leaf.setTag("3");
+//		leaf.setValue("0912174217");//posMessageBean.ProcessList.UserID().GetAsString());
+//		sendMap.put(62, data1);
+//		sendMap.put(64, "");
+//		//sendMap.put(62, posMessageBean.ProcessList.UserID().GetAsString());
+//		//得到模拟数据的mac值
+////		byte[] mab = ServerDataHandlerFactory.geServerDataHandler().getPosMacBlock(null);
+////		String makSource = (String)sendMap.get(11)+(String)sendMap.get(13)+(String)sendMap.get(12)+(String)sendMap.get(41);
+////		byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
+////		sendMap.put(64, mac);
+//		
+//		//设置消息类型
+//		JposMessageType99Bill messageType = JposMessageType99Bill.getInstance();
+//		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_PAY_CANCEL);
+//		
+//		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
+//		return jposPackage99Bill;
+//	}
 		
 	
 }

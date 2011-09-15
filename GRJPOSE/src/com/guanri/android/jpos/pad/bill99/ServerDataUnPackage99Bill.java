@@ -234,4 +234,38 @@ public class ServerDataUnPackage99Bill {
 		}
 		return tTransaction;
 	}
+	
+	/**
+	 * 交易回执解析
+	 * @param rtTransaction
+	 * @param getMap
+	 * @param messageType
+	 * @return
+	 */
+	public static TTransaction UnPackageSaleReceipt(TTransaction rtTransaction,
+			TreeMap<Integer, Object> getMap, JposMessageType messageType){
+		StringBuffer result = new StringBuffer();
+		tTransaction.TransCode().SetAsInteger(7);
+		Date date = new Date();
+		tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
+		tTransaction.Date().SetAsString((String) getMap.get(13));
+		tTransaction.Time().SetAsString((String) getMap.get(12));
+		// 域11  POS 流水号
+		tTransaction.SerialNumber().SetAsString((String)getMap.get(11));
+		
+		//判断是否相应成功
+		if (getMap.get(39).equals("00")) {
+			String str = JposConstant.result((String) getMap.get(39));
+			logger.debug("响应成功:" + str);
+			result.append("响应结果" + str + "\n");
+			// 响应信息
+			tTransaction.ProcessList.Response().SetAsString("00"+(String)getMap.get(49));
+
+			logger.debug(result.toString());
+		}else{
+			tTransaction.ProcessList.Response().SetAsString((String)getMap.get(39)+JposConstant.result((String)getMap.get(39)));
+		}
+		
+		return tTransaction;
+	}
 }

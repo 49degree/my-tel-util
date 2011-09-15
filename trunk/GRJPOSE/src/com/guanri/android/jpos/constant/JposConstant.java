@@ -22,6 +22,14 @@ public class JposConstant {
 	public final static int POS_TRANCE_CODE_LOGIN = 1; // 签到
 	public final static int POS_TRANCE_CODE_PAYCANEL = 400; // 撤销
 	
+	public final static int POS_TRANCE_CODE_QUERY_ORDER = 600; // 订单查询
+	
+	public final static int POS_TRANCE_CODE_QUERY_SALE = 601; // 查询后付费
+	
+	public final static int POS_TRANCE_CODE_AUTO_RECEIPT = 7; // 自动回执
+	
+	public final static int POS_TRANCE_CODE_MAN_RECEIPT = 8; // 手动回执
+	
 	public final static HashMap<Integer,String> POS_BILL99_TRANCE_CODE = new HashMap<Integer,String>();//POS终端，快钱交易码对照表
 	public final static HashMap<String,String> BILL99_RESULT_TYPE_CODE = new HashMap<String,String>();//快钱交易结果对照表
 	
@@ -146,6 +154,12 @@ public class JposConstant {
 		public final static String REQUEST_OP_QUERY_MONEY = "0200"; // 余额查询
 		public final static String RESPONSE_OP_QUERY_MONEY = "0210"; // 余额查询应答
 		
+		public final static String REQUEST_OP_QUERY_INSURANCE = "0200"; // OQS查询
+		public final static String RESPONSE_OP_QUERY_INSURANCE = "0210"; // OQS查询应答
+
+
+		public final static String REQUEST_POS_RECEIPTSALE = "0800";// 交易回执
+		public final static String RESPONSE_POS_RECEIPTSALE = "0810";// 回执应答
 		
 		// 域41 终端代码
 		public final static String POSID = "20100601";

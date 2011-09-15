@@ -239,30 +239,7 @@ public class JposConstant {
 	
 
 	public static String result(String resultNo){
-		
-		String str = "失败";
-		if(resultNo.equals("00")){
-			str = "响应成功";
-		}
-		if(resultNo.equals("01")){
-			str = "响应失败,请联系发卡行,或核对卡信息后重新输入" ;
-		}
-		if(resultNo.equals("02")){
-			str = "响应失败,请联系快钱公司";
-		}
-		if(resultNo.equals("03")){
-			str = "无效商户";
-		}
-		if(resultNo.equals("04")){
-			str = "无效终端";
-		}
-		if(resultNo.equals("05")){
-			str = "无效商户";
-		}
-		if(resultNo.equals("N2")){
-			str = "流水号重复"; 
-		}
-		if(BILL99_RESULT_TYPE_CODE.containsKey(str))
+		if(BILL99_RESULT_TYPE_CODE.containsKey(resultNo))
 			return BILL99_RESULT_TYPE_CODE.get(resultNo);
 		else
 			return "失败";

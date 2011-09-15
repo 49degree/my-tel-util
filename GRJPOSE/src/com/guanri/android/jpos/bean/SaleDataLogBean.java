@@ -2,12 +2,17 @@ package com.guanri.android.jpos.bean;
 
 public class SaleDataLogBean {
 	// POS流水号 POS终端系统跟踪号
-	public int PosNo;
+	public String PosNo;
 	// 终端MAC 终端上传交易包的MAC值，转换成HEX
 	public String PosMac;
 	// 交易类型　消费，撤销，退货
-	public int TransactionType;
+	public String TransactionType;
+	// 消息处理码
+	public String MsgTypeCode;
 	// 交易状态  建立,发送,接收,成功,已冲正,已冲正成功
+	// 0  已发送
+	// 1 后台已返回
+	// 2 收到后台回执
 	public int TransactionState;
 	// 交易金额
 	public int TransactionMoney;
@@ -29,10 +34,25 @@ public class SaleDataLogBean {
 	public String DataStr;
 	// 时间 hhmmss
 	public String TimeStr;
-	public int getPosNo() {
+	// 批次号
+	public String BatchNo;
+	
+	public String getMsgTypeCode() {
+		return MsgTypeCode;
+	}
+	public void setMsgTypeCode(String msgTypeCode) {
+		MsgTypeCode = msgTypeCode;
+	}
+	public String getBatchNo() {
+		return BatchNo;
+	}
+	public void setBatchNo(String batchNo) {
+		BatchNo = batchNo;
+	}
+	public String getPosNo() {
 		return PosNo;
 	}
-	public void setPosNo(int posNo) {
+	public void setPosNo(String posNo) {
 		PosNo = posNo;
 	}
 	public String getPosMac() {
@@ -41,10 +61,10 @@ public class SaleDataLogBean {
 	public void setPosMac(String posMac) {
 		PosMac = posMac;
 	}
-	public int getTransactionType() {
+	public String getTransactionType() {
 		return TransactionType;
 	}
-	public void setTransactionType(int transactionType) {
+	public void setTransactionType(String transactionType) {
 		TransactionType = transactionType;
 	}
 	public int getTransactionState() {

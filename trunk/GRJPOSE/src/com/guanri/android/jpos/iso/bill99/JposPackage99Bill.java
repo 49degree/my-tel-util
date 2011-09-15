@@ -623,7 +623,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	 */
 	public byte[] parseFeild52(Object o) throws FieldTooLongException{
 		
-		return null;
+		return (byte[])o;
 	}
 	
 	/**

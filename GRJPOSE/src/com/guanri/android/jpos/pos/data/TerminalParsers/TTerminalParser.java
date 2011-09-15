@@ -15,6 +15,8 @@ import com.guanri.android.jpos.pos.data.Stream;
 import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_LoadFromBytes;
 import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_SaveToBytes;
 import com.guanri.android.jpos.pos.data.TerminalLinks.TTerminalLink;
+import com.guanri.android.jpos.pos.data.TerminalMessages.TEncryptMAC_Recv;
+import com.guanri.android.jpos.pos.data.TerminalMessages.TEncryptMAC_Send;
 import com.guanri.android.jpos.pos.data.TerminalMessages.THandshake_Response;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TWorkingStatus;
@@ -79,6 +81,8 @@ public class TTerminalParser {
 		if (WorkingStatus.LoadFormBytes() != TResult_LoadFromBytes.rfll_NoError) return false;
 		return WorkingStatus.Status().GetAsInteger() == (AStatus & 0xFF);
 	}
+	
+	//protected byte[] GetEncryptMAC(byte[] MAB)
 	
 	public void ParseRequest() {
 		if (FTerminalLink == null) return;
@@ -188,15 +192,40 @@ public class TTerminalParser {
 			ServerUpDataParse serverParseData = null;
 			try {
 				serverParseData = new ServerUpDataParse(Transaction);
+				JposPackageFather jpos = serverParseData.getJposPackage();
+				
+				//计算
+				TEncryptMAC_Send MAC_Send = new TEncryptMAC_Send();
+				TEncryptMAC_Recv MAC_Recv = new TEncryptMAC_Recv();
+				
+				MAC_Send.MAB().SetData(serverParseData.getMab()); //MAB
+				MAC_Send.Year().SetAsString("2011"); //Year
+				MAC_Send.Date().SetAsString((String)(jpos.getSendMapValue(13))); //Date
+				MAC_Send.Time().SetAsString((String)(jpos.getSendMapValue(12))); //Date
+				Stream.SetBytes(null);
+				MAC_Send.SaveToBytes();
+				FTerminalLink.SendPackage(Stream.Bytes);  //发送
+				Bytes = FTerminalLink.RecvPackage();
+				Stream.SetBytes(Bytes);
+				if (MAC_Recv.LoadFormBytes() != TResult_LoadFromBytes.rfll_NoError) {  //MAC回复出错
+					System.out.println("MAC回复出错");
+					return;
+				}
+				
+				jpos.setMac(MAC_Recv.MAC().GetData());
+				
+				
+				
+				/*
 				byte[] mab = serverParseData.getMab();//构造MAC BLOCK
 				//获取数据包对象
-				JposPackageFather jpos = serverParseData.getJposPackage();
+				
 				//构造MAK BLOCK
 				String makSource = (String)(jpos.getSendMapValue(11))+(String)(jpos.getSendMapValue(13))+
 						(String)(jpos.getSendMapValue(12))+(String)(jpos.getSendMapValue(41));
 				//获取MAC
 				byte[] mac = CryptionControl.getInstance().getMac(mab,makSource);
-				jpos.setMac(mac);
+				*/
 				
 			} catch (Exception e) {
 				e.printStackTrace();

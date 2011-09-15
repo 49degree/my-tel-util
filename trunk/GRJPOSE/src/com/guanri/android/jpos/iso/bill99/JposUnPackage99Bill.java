@@ -944,7 +944,8 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public Object parseFeild64() throws FieldTooLongException, FieldIsNullException{
-		String mac = TypeConversion.byte2hex(data, index, 8);
+	    byte[] mac = new byte[8];
+	    System.arraycopy(data, index,mac,0, 8);
 		return mac;
 	}
 	

@@ -11,7 +11,8 @@ import com.guanri.android.jpos.pos.data.Fields.TField.TLengthType;
 public class TTransaction extends TTerminalMessage {
 
 	public TProcessList ProcessList = null;
-
+	public TBufferList BufferList = null;
+	
 	public TField Year() {// YYYY
 		return GetField(0);
 	}
@@ -141,5 +142,6 @@ public class TTransaction extends TTerminalMessage {
 		AddField(8, TDataType.dt_BIN, TLengthType.lt_Fixed, 8, "MAC"); // MAC值
 
 		ProcessList = new TProcessList();
+		BufferList = new TBufferList();
 	}
 }

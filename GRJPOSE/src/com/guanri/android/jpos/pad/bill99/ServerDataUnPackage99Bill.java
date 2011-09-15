@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import com.guanri.android.jpos.bean.AdditionalAmounts;
 import com.guanri.android.jpos.constant.JposConstant;
+import com.guanri.android.jpos.db.DBOperator;
 import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
@@ -20,6 +21,7 @@ import com.guanri.android.lib.log.Logger;
 public class ServerDataUnPackage99Bill {
 	final static Logger logger = new Logger(ServerDataUnPackage99Bill.class);
 
+	public static DBOperator bdOperator = DBOperator.getInstance();
 	static TTransaction tTransaction = new TTransaction();
 	/**
 	 * 解析签到返回报文
@@ -166,7 +168,7 @@ public class ServerDataUnPackage99Bill {
 			result.append(dateStr);
 			result.append(timeStr);
 			// 获得域4  保单金额
-			tTransaction.ProcessList.SaleAmount().SetAsString((String)getMap.get(4));
+			tTransaction.ProcessList.ReturnAmount().SetAsString((String)getMap.get(4));
 			// 响应信息
 			if(getMap.containsKey(57))
 				tTransaction.ProcessList.Response().SetAsString("00"+getMap.get(57));
@@ -203,6 +205,9 @@ public class ServerDataUnPackage99Bill {
 		tTransaction.TransCode().SetAsInteger(200);
 		//判断是否相应成功
 		if (getMap.get(39).equals("00")) {
+			// 更新 数据, 代码待完善
+			//------------------------------------------------------------
+			//bdOperator.onUpgrade();
 			String str = JposConstant.result((String) getMap.get(39));
 			logger.debug("响应成功:" + str);
 			result.append("响应结果" + str + "\n");
@@ -255,6 +260,9 @@ public class ServerDataUnPackage99Bill {
 		
 		//判断是否相应成功
 		if (getMap.get(39).equals("00")) {
+			// 更新 数据, 代码待完善
+			//------------------------------------------------------------
+			//bdOperator.onUpgrade();
 			String str = JposConstant.result((String) getMap.get(39));
 			logger.debug("响应成功:" + str);
 			result.append("响应结果" + str + "\n");
@@ -268,4 +276,19 @@ public class ServerDataUnPackage99Bill {
 		
 		return tTransaction;
 	}
+	
+	/**
+	 * 冲正
+	 * @param rtTransaction
+	 * @param getMap
+	 * @param messageType
+	 * @return
+	 */
+	public static TTransaction UnPackageReversal(TTransaction rtTransaction,
+			TreeMap<Integer, Object> getMap, JposMessageType messageType){
+		
+		
+		return tTransaction;
+	}
+	
 }

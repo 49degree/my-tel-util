@@ -36,6 +36,6 @@ public interface ServerDataHandlerImp {
 	/**
 	 * 构造返回POS的数据
 	 */
-	public TTransaction createBackPosObject(TreeMap<Integer, Object> sendMap, JposMessageType messageType);
+	public TTransaction createBackPosObject(TTransaction transaction,TreeMap<Integer, Object> sendMap, JposMessageType messageType);
 	
 }

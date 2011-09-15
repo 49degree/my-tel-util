@@ -1,6 +1,5 @@
 package com.guanri.android.jpos.iso.bill99;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +11,6 @@ import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
-import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 import com.guanri.android.lib.utils.Utils;
@@ -58,7 +56,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	public byte[] parseFeild2(Object o) throws FieldTooLongException, FieldIsNullException{ 
 		String acount = (String)o;
 		//logger.debug("账号："+acount);
-		if(acount!=null&&acount.length()>19){
+		if(acount!=null&&acount.length()>20){
 			throw new FieldTooLongException("Feild2 to long");
 		}else if(acount == null) {
 			throw new FieldIsNullException("Feild2 is Null");
@@ -262,7 +260,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	public byte[] parseFeild22(Object o) throws FieldTooLongException{
 		String acount = (String)o;
 		//logger.debug("POS输入方式："+acount);
-		if(acount!=null&&acount.length()>3){
+		if(acount!=null&&acount.length()>4){
 			throw new FieldTooLongException("Feild22 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,3, true);
@@ -283,7 +281,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	public byte[] parseFeild23(Object o) throws FieldTooLongException{
 		String acount = (String)o;
 		//logger.debug("卡序列号："+acount);
-		if(acount!=null&&acount.length()>3){
+		if(acount!=null&&acount.length()>4){
 			throw new FieldTooLongException("Feild23 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,3, true);
@@ -305,7 +303,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	public byte[] parseFeild24(Object o) throws FieldTooLongException{
 		String acount = (String)o;
 		//logger.debug("NII："+acount);
-		if(acount!=null&&acount.length()>3){
+		if(acount!=null&&acount.length()>4){
 			throw new FieldTooLongException("Feild24 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,3, true);
@@ -375,7 +373,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	public byte[] parseFeild35(Object o) throws FieldTooLongException{
 		String acount = (String)o;
 		//logger.debug("二磁道数据："+acount);
-		if(acount!=null&&acount.length()>37){
+		if(acount!=null&&acount.length()>38){
 			throw new FieldTooLongException("Feild35 to long");
 		}
 		byte[] temp = floatLengthStr2cbcd(acount,String.valueOf(acount.length()), true,2); 
@@ -604,7 +602,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	public byte[] parseFeild49(Object o) throws FieldTooLongException{
 		String acount = (String)o;
 		//logger.debug("货币代码："+acount);
-		if(acount!=null&&acount.length()>3){
+		if(acount!=null&&acount.length()>4){
 			throw new FieldTooLongException("Feild49 to long");
 		}
 		byte[] temp = fixLengthStr2cbcd(acount,4,true);

@@ -262,7 +262,9 @@ public class JposConstant {
 		if(resultNo.equals("N2")){
 			str = "流水号重复"; 
 		}
-		return BILL99_RESULT_TYPE_CODE.get(resultNo);
-		
+		if(BILL99_RESULT_TYPE_CODE.containsKey(str))
+			return BILL99_RESULT_TYPE_CODE.get(resultNo);
+		else
+			return "失败";
 	}
 }

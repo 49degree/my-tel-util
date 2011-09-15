@@ -118,6 +118,7 @@ public class JposConstant {
 		BILL99_RESULT_TYPE_CODE.put("I8", "不支持的报价币种"); 
 		BILL99_RESULT_TYPE_CODE.put("I9", "银行结帐中，请重试交易"); 
 		BILL99_RESULT_TYPE_CODE.put("AA", "中信银行内部系统错误"); 
+		BILL99_RESULT_TYPE_CODE.put("N2", "流水号重复");
 		
 	}
 	
@@ -238,6 +239,7 @@ public class JposConstant {
 	
 
 	public static String result(String resultNo){
+		
 		String str = "失败";
 		if(resultNo.equals("00")){
 			str = "响应成功";
@@ -260,7 +262,7 @@ public class JposConstant {
 		if(resultNo.equals("N2")){
 			str = "流水号重复"; 
 		}
-		return str;
+		return BILL99_RESULT_TYPE_CODE.get(resultNo);
 		
 	}
 }

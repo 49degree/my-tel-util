@@ -98,7 +98,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		
 		// 保单查询
 		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_INSURANCE))
-			&&(messageType.getTransactionCode().equals("32"))){
+			&&(messageType.getTransactionCode().equals("34"))){
 			
 			tTransaction = ServerDataUnPackage99Bill.UnPagckageQueryOQS(rtTransaction, getMap, messageType);
 		}

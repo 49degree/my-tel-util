@@ -44,7 +44,8 @@ public class CommandControl {
 	public synchronized ServerDownDataParse sendUpCommand(ServerUpDataParse serverUpDataParse) throws IOException,CommandParseException{
 		byte[] sendData = serverUpDataParse.getBeSendData();
 		byte[] returnData = this.submit(sendData);
-		ServerDownDataParse downDataParse = new ServerDownDataParse(returnData);
+		
+		ServerDownDataParse downDataParse = new ServerDownDataParse(serverUpDataParse.tTransaction,returnData);
 		return downDataParse;
 	}
 	

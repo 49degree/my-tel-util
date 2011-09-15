@@ -57,6 +57,13 @@ public class CommandControl {
 	private boolean isConnect = false;//是否连接
 
 	/**
+	 * 判断连接状态
+	 * @return
+	 */
+	public boolean isConnect(){
+		return isConnect;
+	}
+	/**
 	 *  连接服务器
 	 *  connectTimeOut;//连接超时时间
 	 *  readTimeOut;//数据发送超时时间
@@ -88,7 +95,33 @@ public class CommandControl {
 		return isConnect;
 	}
 	
-	
+	/**
+	 *  关闭服务器连接
+	 *  connectTimeOut;//连接超时时间
+	 *  readTimeOut;//数据发送超时时间
+	 */
+	public synchronized void closeConnect() throws IOException{
+		
+		try {
+			// 关闭连接
+			try {
+				in.close();
+				in = null;
+				out.close();
+				out = null;
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			try {
+				socket.close();
+			} catch (Exception ex) {
+			}
+			socket = null;
+			isConnect = false;
+		} catch (Exception e) {
+			isConnect = false;
+		}
+	}	
 	/**
 	 * 发送命令
 	 * @param sendData
@@ -121,16 +154,7 @@ public class CommandControl {
 				}
 				logger.debug("发送数据结束:"+recvAllBufferIndex);
 			}
-			
-			// 关闭连接
-			try {
-				in.close();
-				in = null;
-				out.close();
-				out = null;
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+
 			//解析接收到的数据
 			if(recvAllBuffer != null){ 
 				byte[] returnData = new byte[recvAllBufferIndex];
@@ -145,14 +169,7 @@ public class CommandControl {
 			throw ex;
 		}catch(NullPointerException ne){
 			throw new CommandParseException("下载数据解析错误");
-		}finally {
-			isConnect = false;
-			try {
-				socket.close();
-			} catch (Exception ex) {
-			}
-			socket = null;
-		}		
+		}	
 	}
 
 	

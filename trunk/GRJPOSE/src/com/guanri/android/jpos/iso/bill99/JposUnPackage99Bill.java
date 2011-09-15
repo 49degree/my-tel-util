@@ -776,7 +776,7 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	 * @throws FieldTooLongException
 	 */
 	public Object parseFeild60() throws FieldTooLongException, FieldIsNullException{
-		String result = floatbytetoint(3);
+		String result = floatASCIItoStr(3);
 		return (Object)result;
 	}
 	

@@ -45,7 +45,7 @@ public class TProcessList extends TFieldList {
 	}
 	
 	public TField BillNumber() { //票据号
-		return GetField(0xFF);
+		return GetField(0xB2);
 	}
 		
 	
@@ -67,7 +67,7 @@ public class TProcessList extends TFieldList {
 	}
 	
 	public TField ReturnDisplayMessage() {  //回送显示信息
-		return GetField(0xFF);
+		return GetField(0xB1);
 	}
 	
 	
@@ -83,6 +83,7 @@ public class TProcessList extends TFieldList {
 		  AddField(0x87, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 40, "OrderNumber"); //订单编号
 		  AddField(0x8D, TDataType.dt_BCD, TLengthType.lt_Fixed, 12, "SaleAmount"); //消费金额
 		  AddField(0x93, TDataType.dt_BCD, TLengthType.lt_Fixed, 4, "DateOfExpired"); //卡有效期
+		  AddField(0xB2, TDataType.dt_BCD, TLengthType.lt_Fixed, 6, "BillNumber"); //票据号
 		  
 		  
 		//下列字段是需要传给终端的
@@ -91,8 +92,9 @@ public class TProcessList extends TFieldList {
 		  
 		 
 		//下列字段是互相传送的  
-		  AddField(0xA9, TDataType.dt_BIN, TLengthType.lt_VarBIN1, 8, "ReturnAmount"); //回送金额
-		  AddField(0xB0, TDataType.dt_BIN, TLengthType.lt_VarBIN1, 40, "ReturnOrderNumber"); //回送订单编号
+		  AddField(0xA9, TDataType.dt_BIN, TLengthType.lt_VarBIN1, 8, "ReturnSaleAmount"); //回送消费金额
+		  AddField(0xB0, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 40, "ReturnOrderNumber"); //回送订单编号
+		  AddField(0xB1, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 200, "ReturnDisplayMessage"); //回送显示信息
 
 	}	
 	public boolean GetIsExistTrackData() {    //是否存在磁道数据
@@ -149,10 +151,6 @@ public class TProcessList extends TFieldList {
 			i++;
 		}
 		k = i;
-		while (i < len) {
-			if (s[i] == '?') break;
-			i++;
-		}
 		while (i < len) {
 			if (s[i] == '?') break;
 			i++;

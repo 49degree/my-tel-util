@@ -677,7 +677,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		
 			// 域36 第三磁道数
 			if(!posMessageBean.ProcessList.GetTrack2Data().equals("")){
-				sendMap.put(36,posMessageBean.ProcessList.GetTrack2Data());
+				sendMap.put(36,posMessageBean.ProcessList.GetTrack3Data());
 				saleDataLogBean.setTrack3(posMessageBean.ProcessList.GetTrack3Data());
 			}
 		}else{

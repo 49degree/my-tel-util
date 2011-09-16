@@ -114,6 +114,17 @@ public class TTerminalParser {
 		}
 	}
 
+	protected boolean IsFillZeroTrans(TTransaction Transaction) {
+		int TransCode = Transaction.TransCode().GetAsInteger();
+		switch (TransCode) {
+		case 600:
+			return true;
+
+		default:
+			return false;
+		}
+	}
+
 	public void ParseRequest() {
 		if (FTerminalLink == null)
 			return;
@@ -224,16 +235,24 @@ public class TTerminalParser {
 					// 计算
 					System.out.println("正在请求终端计算MAC.......");
 
+					// *
 					TEncryptMAC_Send MAC_Send = new TEncryptMAC_Send();
 					TEncryptMAC_Recv MAC_Recv = new TEncryptMAC_Recv();
 
 					MAC_Send.MAB().SetData(serverParseData.getMab()); // MAB
-					MAC_Send.Year().SetAsString(
-							Transaction.Year().GetAsString()); // Year
-					MAC_Send.Date().SetAsString(
-							Transaction.Date().GetAsString()); // Date
-					MAC_Send.Time().SetAsString(
-							Transaction.Time().GetAsString()); // Time
+					if (!IsFillZeroTrans(Transaction)) {
+						MAC_Send.Year().SetAsString(
+								Transaction.Year().GetAsString()); // Year
+						MAC_Send.Date().SetAsString(
+								Transaction.Date().GetAsString()); // Date
+						MAC_Send.Time().SetAsString(
+								Transaction.Time().GetAsString()); // Time
+					} else {
+						MAC_Send.Year().SetAsInteger(0);
+						MAC_Send.Date().SetAsInteger(0);
+						MAC_Send.Time().SetAsInteger(0);
+					}
+						
 					Stream.SetBytes(null);
 					MAC_Send.SaveToBytes();
 					FTerminalLink.SendPackage(Stream.Bytes); // 发送
@@ -245,18 +264,22 @@ public class TTerminalParser {
 					}
 
 					jpos.setMac(MAC_Recv.MAC().GetData());
-				}
+					// */
 
-				/*
-				 * byte[] mab = serverParseData.getMab();//构造MAC BLOCK //获取数据包对象
-				 * 
-				 * //构造MAK BLOCK String makSource =
-				 * (String)(jpos.getSendMapValue
-				 * (11))+(String)(jpos.getSendMapValue(13))+
-				 * (String)(jpos.getSendMapValue
-				 * (12))+(String)(jpos.getSendMapValue(41)); //获取MAC byte[] mac
-				 * = CryptionControl.getInstance().getMac(mab,makSource);
-				 */
+					/*
+					 * byte[] mab = serverParseData.getMab();//构造MAC BLOCK
+					 * //获取数据包对象
+					 * 
+					 * //构造MAK BLOCK String makSource =
+					 * (String)(jpos.getSendMapValue
+					 * (11))+(String)(jpos.getSendMapValue(13))+
+					 * (String)(jpos.getSendMapValue
+					 * (12))+(String)(jpos.getSendMapValue(41)); //获取MAC byte[]
+					 * mac jpos.setMac(CryptionControl.getInstance().getMac(mab,
+					 * makSource)); //
+					 */
+
+				}
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -273,7 +296,7 @@ public class TTerminalParser {
 
 			try {
 				if (!CommandControl.getInstance().isConnect())
-					CommandControl.getInstance().connect(10000, 20000); //连接后台
+					CommandControl.getInstance().connect(10000, 20000); // 连接后台
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -286,9 +309,9 @@ public class TTerminalParser {
 
 				ServerDownDataParse reData = CommandControl.getInstance()
 						.sendUpCommand(serverParseData);// 发送数据
-				
-				CommandControl.getInstance().closeConnect(); //关闭连接
-				
+
+				CommandControl.getInstance().closeConnect(); // 关闭连接
+
 				Transaction = reData.getTTransaction();// 取返回POS的对象
 
 				Transaction.Ident().SetAsInteger(FIdent);
@@ -306,7 +329,7 @@ public class TTerminalParser {
 						+ Transaction.ProcessList.Response().GetAsString());
 				System.out.println("[响应]商户名称: "
 						+ Transaction.ProcessList.MerchantName().GetAsString());
-				
+
 				if (IsEncryptMACTrans(Transaction)) {
 					// 计算
 					System.out.println("正在请求终端计算MAC.......");
@@ -330,16 +353,17 @@ public class TTerminalParser {
 						System.out.println("MAC回复出错");
 						return;
 					}
-								
-					System.out.println("终端计算MAC:" + Common.ToHex(MAC_Recv.MAC().GetData()));
-					System.out.println("服务器响应MAC:" + Common.ToHex(reData.getMac()));
-					if (! Common.IsSameBytes(MAC_Recv.MAC().GetData(), reData.getMac())) { // MAC校验出错
+
+					System.out.println("终端计算MAC:"
+							+ Common.ToHex(MAC_Recv.MAC().GetData()));
+					System.out.println("服务器响应MAC:"
+							+ Common.ToHex(reData.getMac()));
+					if (!Common.IsSameBytes(MAC_Recv.MAC().GetData(),
+							reData.getMac())) { // MAC校验出错
 						System.out.println("MAC校验出错");
 						return;
 					}
 				}
-
-
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

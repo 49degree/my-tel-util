@@ -11,11 +11,7 @@ public class CommandConstant {
 			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSID);//终端ID
 	public static String COMFIG_POS_CONTACT = SharedPreferencesUtils.getConfigString(
 			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSCONTACT);//商户编号
-	public static String COMFIG_POS_BATCHNO = SharedPreferencesUtils.getConfigString(
-			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSBATCHNO);//批号
-	public static String COMFIG_POS_BILLNO = SharedPreferencesUtils.getConfigString(
-			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSBILLNO);//流水号
-
+	
 	// 人民币代码
 	public final static String RMBCODE = "156";
 	// 网络信息代码

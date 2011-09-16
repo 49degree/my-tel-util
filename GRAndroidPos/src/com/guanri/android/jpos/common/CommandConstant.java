@@ -10,7 +10,7 @@ public class CommandConstant {
 	public static String COMFIG_POS_ID = SharedPreferencesUtils.getConfigString(
 			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSID);//终端ID
 	public static String COMFIG_POS_CONTACT = SharedPreferencesUtils.getConfigString(
-			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSCONTACT);//商户编号
+			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSMERCHANT);//商户编号
 	
 	// 人民币代码
 	public final static String RMBCODE = "156";

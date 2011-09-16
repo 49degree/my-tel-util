@@ -1,8 +1,10 @@
 package com.guanri.android.jpos;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -14,18 +16,17 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.guanri.android.jpos.pos.SerialPortAndroid;
-import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;
-import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
+import com.guanri.android.jpos.services.AidlRunService;
 import com.guanri.android.jpos.services.GrPosService;
 import com.guanri.android.lib.log.Logger;
 
 public class MainActivity extends Activity implements OnClickListener {
 	
 	private EditText comm_state,pos_to_pad,pad_to_pos,pad_to_server,server_to_pad;
-	Button btn_query,btn_login,btn_sale,btn_receive;
+	Button btn_query,btn_login,btn_sale,btn_receive,btn_stop;
 	final Logger logger = new Logger(MainActivity.class);
 	StringBuffer result = new StringBuffer();
+	public LogTask logTask= null;
 	
 	/**
 	 * 获取services绑定对象
@@ -47,6 +48,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.querymoney);
 		btn_receive = (Button)findViewById(R.id.btn_receive);
+		btn_stop  = (Button)findViewById(R.id.btn_stop);
 		//获取日志信息框对象
 		comm_state = (EditText)findViewById(R.id.edt_log);
 		pos_to_pad = (EditText)findViewById(R.id.edt_pos_to_pad);
@@ -55,90 +57,113 @@ public class MainActivity extends Activity implements OnClickListener {
 		server_to_pad = (EditText)findViewById(R.id.edt_server_to_pad);
 		comm_state.setText("mIsRemoteBound:"+mIsRemoteBound);
 		
-		//绑定服务
-//		if (!mIsRemoteBound) {
-//			bindService(new Intent("com.guanri.android.jpos.services.GrPosService"), mRemoteConnection,
-//					Context.BIND_AUTO_CREATE);
-//			mIsRemoteBound = !mIsRemoteBound;
-//		}
+		logTask = new LogTask();
+		logTask.start();
 
 		btn_receive.setOnClickListener(this);
+		btn_stop.setOnClickListener(this);
+		
+		Intent service = new Intent(this,AidlRunService.class);
+		this.startService(service);
+		//绑定服务
+		bindService();
 		
 	}
 	
-	int openTimes = 1;
+	public void onDestroy(){
+		super.onDestroy();
+		stopLog = true;
+		if(logTask!=null)
+			logTask.interrupt();
+		
+	}
+	
+	public boolean stopTask = true;
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_receive:
-			if(!stopTask&&task!=null){
+			if(!stopTask){//关闭
 				stopTask = true;
-				task = null;
-				btn_receive.setText("打开接收数据");
-				updateUI.sendMessage(updateUI.obtainMessage(1, "终端解析器 close..."));
-			}else{
-				
-				task = new Thread(){
-					public void run(){
-						TAndroidCommTerminalLink TerminalLink = new TAndroidCommTerminalLink();
-						TerminalLink.CommName = "/dev/ttyUSB0";
-						TerminalLink.ReadTimeout = 5000;
-						try{
-							//循环直到打开串口
-//							while(!stopTask&&!TerminalLink.GetConnected()){
-//								if(SerialPortAndroid.findAndroidDevice(TerminalLink.CommName)){
-//									TerminalLink.Connect();
-//								}else{
-//									updateUI.sendMessage(updateUI.obtainMessage(1, "串口不存在！"));
-//									if(!TerminalLink.GetConnected()){
-//										Thread.sleep(1000);
-//									}
-//								}
-//							}
-							if(SerialPortAndroid.findAndroidDevice(TerminalLink.CommName)){
-								TerminalLink.Connect();
-								stopTask = false;
-								openTimes = 1;
-							}else{
-								updateUI.sendMessage(updateUI.obtainMessage(1, "串口不存在:"+openTimes++));
-								stopTask = true;
-							}
-							if(!stopTask&&TerminalLink.GetConnected()){
-								TTerminalParser TerminalParser = new TTerminalParser();
-								TerminalParser.SetTerminalLink(TerminalLink);
-								updateUI.sendMessage(updateUI.obtainMessage(1, "终端解析器正在运行..."));
-								updateUI.sendMessage(updateUI.obtainMessage(0, "关闭接收数据"));
-								while (!stopTask) {
-									TerminalParser.ParseRequest();
-								}
-							}
-
-						}catch(SecurityException se){
-							updateUI.sendMessage(updateUI.obtainMessage(1, "open comm failed..."));
-						}catch(Exception e){
-							updateUI.sendMessage(updateUI.obtainMessage(1, "comm failed...:"+e.getMessage()));
-						}finally{
-							if(TerminalLink!=null){
-								TerminalLink.Disconnect();
-							}
-						}
-						stopTask = true;
+				//停止运行
+				try{
+					mRemoteService.stopPos();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				btn_receive.setText("开始接收数据");
+			}else{//打开
+				if(hasCommPort){
+					try{
+						mRemoteService.startPos();
+						stopTask = false;
+						btn_receive.setText("停止接收数据");
+					}catch(Exception e){
+						e.printStackTrace();
 					}
-				};
-				task.start();
-				
+				}else{
+					displayMsg("失败","POS终端未找到");
+				}
 			}
-			
-
+			break;
+		case R.id.btn_stop:
+			try{
+				unBindService();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			Intent service = new Intent(this,AidlRunService.class);
+			this.stopService(service);
 			break;
 		default:
 			break;
 		}
 	}
+	/**
+	 * 绑定服务
+	 */
+	public void bindService(){
+		//绑定服务
+		if (!mIsRemoteBound) {
+			bindService(new Intent("com.guanri.android.jpos.services.GrPosService"), mRemoteConnection,
+					Context.BIND_AUTO_CREATE);
+			mIsRemoteBound = !mIsRemoteBound;
+		}
+	}
 	
-	private Thread task = null;
-	public boolean stopTask = true;
+	/**
+	 * 解绑服务
+	 */
+	public void unBindService(){
+		//解绑定服务
+		if (mIsRemoteBound) {
+			this.unbindService(mRemoteConnection);
+			mIsRemoteBound = !mIsRemoteBound;
+		}
+	}
+	boolean stopLog = false;
+	boolean hasCommPort = false;
+    public class LogTask extends Thread{
+    	public void run(){
+    		// 循环直到打开串口
+    		while (!stopLog) {
+    			try {
+    				logger.error("LogTask.........:"+mRemoteService==null?"":mRemoteService.operate("LOG_INFO"));
+    				updateUI.sendMessage(updateUI.obtainMessage(1, mRemoteService==null?"":mRemoteService.operate("LOG_INFO")));
+    				if(mRemoteService.hasCommPort()){
+    					hasCommPort = true;
+    				}else{
+    					hasCommPort = false;
+    				}
+    				Thread.sleep(1000);
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    			}
+    		}
+    	}
+    }
+	
 	
     /**
      * 回调更新界面
@@ -164,6 +189,15 @@ public class MainActivity extends Activity implements OnClickListener {
         }
     };
     
-
+	private void displayMsg(String title,String msg) {
+		AlertDialog.Builder b = new AlertDialog.Builder(this);
+		b.setTitle("Error");
+		b.setMessage(msg);
+		b.setPositiveButton(title, new AlertDialog.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+		b.show();
+	}
 	
 }

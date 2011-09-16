@@ -77,6 +77,7 @@ public class ServerDataUnPackage99Bill {
 							// 商户名称
 							logger.debug("商户名称" + jposSelfFieldLeaf.getValue() + "\n");
 							tTransaction.ProcessList.MerchantName().SetAsString(jposSelfFieldLeaf.getValue());
+							// 保存商户名称
 							SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO,
 									SharedPreferencesUtils.POSMERCHANTNAME,jposSelfFieldLeaf.getValue());
 						}

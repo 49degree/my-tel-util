@@ -4,15 +4,10 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Service;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
@@ -21,8 +16,6 @@ import android.widget.EditText;
 import com.guanri.android.jpos.pos.PosCommandControlFactory;
 import com.guanri.android.jpos.pos.PosCommandControlImp;
 import com.guanri.android.jpos.pos.PosCommandControlImp.SendDataResultListener;
-import com.guanri.android.jpos.services.AutoRunService;
-import com.guanri.android.jpos.services.MainService;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
 
@@ -36,19 +29,7 @@ public class Main extends Activity {
 	Button send = null;
 	Button open = null;
 	  
-	/**
-	 * 获取services绑定对象
-	 */
-	private AutoRunService mainService = null;
-    private ServiceConnection sc = new ServiceConnection(){
-        public void onServiceConnected(ComponentName name, IBinder binder) {
-        	mainService = ((AutoRunService.AutoRunServiceBinder)binder).getServices();
-        } 
-        public void onServiceDisconnected(ComponentName name) {
-        	mainService.onDestroy();
-        	mainService = null;
-        }
-    };
+
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,10 +40,6 @@ public class Main extends Activity {
         read_info = (EditText)this.findViewById(R.id.read_info);
         send = (Button)this.findViewById(R.id.send); 
         
-		//绑定服务
-        if(!MainService.isPosTaskStart()){
-        	bindService(new Intent(Main.this, MainService.class), sc, Service.BIND_AUTO_CREATE);
-        }
 		
         open = (Button)this.findViewById(R.id.open); 
         final byte[] msg = {0X55,0X55,0X55,0X55,0X55,0X08,0X13,0X00,0X02,0X01,0X01,0X00,0X00,0X30,0X30,0X31,
@@ -86,10 +63,6 @@ public class Main extends Activity {
         			posCommandControlImp = null;
         			open.setText("打开串口");
         			//send.setClickable(false);
-        		}
-        		
-        		if(MainService.isPosTaskStart()){
-        			read_info.setText("POS服务已经打开");
         		}
         	}
         }); 

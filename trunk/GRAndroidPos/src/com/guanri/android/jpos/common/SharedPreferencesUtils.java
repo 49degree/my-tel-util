@@ -24,9 +24,9 @@ public class SharedPreferencesUtils {
 	
 	
 	// 终端ID
-	public final static String POSID = "server_id";
+	public final static String POSID = "Pos_ID";
 	// 商户编号
-	public final static String POSCONTACT = "port";
+	public final static String POSMERCHANT  = "Pos_Merchant";
 	// 批次号
 	public final static String POSBATCHNO = "PosBatchNo";
 	

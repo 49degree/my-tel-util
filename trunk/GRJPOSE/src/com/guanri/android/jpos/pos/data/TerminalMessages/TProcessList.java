@@ -40,11 +40,14 @@ public class TProcessList extends TFieldList {
 		return GetField(0x8D);
 	}
 	
-	
 	public TField DateOfExpired() { //卡有效期
 		return GetField(0x93);
 	}
 	
+	public TField BillNumber() { //票据号
+		return GetField(0xFF);
+	}
+		
 	
 	public TField Response() { // 应答信息
 		return GetField(0x8E);
@@ -55,12 +58,16 @@ public class TProcessList extends TFieldList {
 	}
 	
 	
-	public TField ReturnAmount() {  //回送金额
+	public TField ReturnSaleAmount() {  //回送消费金额
 		return GetField(0xA9);
 	}
 	
 	public TField ReturnOrderNumber() {  //回送订单编号
 		return GetField(0xB0);
+	}
+	
+	public TField ReturnDisplayMessage() {  //回送显示信息
+		return GetField(0xFF);
 	}
 	
 	
@@ -88,6 +95,16 @@ public class TProcessList extends TFieldList {
 		  AddField(0xB0, TDataType.dt_BIN, TLengthType.lt_VarBIN1, 40, "ReturnOrderNumber"); //回送订单编号
 
 	}	
+	public boolean GetIsExistTrackData() {    //是否存在磁道数据
+		return GetTrack2Data() != null;
+	}
+	
+	public boolean GetIsExistPINData() {    //是否存在密码数据
+		return false;
+		//if (PINData().GetIsEmpty()) return false;
+		//return true;
+	}
+
 	public String GetTrack2Data() {  //获取2磁道数据
 		byte[] s = Common.StringToBytes(TrackData().GetAsString());
 		int i, len, k;

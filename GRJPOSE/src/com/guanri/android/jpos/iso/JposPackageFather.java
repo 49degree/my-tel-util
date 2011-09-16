@@ -191,28 +191,34 @@ public abstract class JposPackageFather {
 	 * @return
 	 */
 	public byte[] floatLengthstr2ASCII(String s,int lengthBit){
-		byte[] lengthtemp = null;
-		//补足长度位
-		String length = String.valueOf(s.length());
-		if(length.length()<lengthBit){
-			for(int i=lengthBit-length.length();i>0;i--){
-				length= "0" + length;
-			}
-		}
-		//获取长度位 BCD码
-		lengthtemp = TypeConversion.str2bcd(length);
 		//获取字符串的ACSII码
 		byte[] temp = null;
 		try{
 			temp = TypeConversion.stringToAscii(s);
-		}catch(UnsupportedEncodingException e){
 			
+			byte[] lengthtemp = null;
+			//补足长度位
+			String length = String.valueOf(temp.length);
+			if(length.length()<lengthBit){
+				for(int i=lengthBit-length.length();i>0;i--){
+					length= "0" + length;
+				}
+			}
+			//获取长度位 BCD码
+			lengthtemp = TypeConversion.str2bcd(length);
+
+			//组合长度的BCD码与字符串的ASCII
+			byte[] result = new byte[lengthtemp.length + temp.length];
+			System.arraycopy(lengthtemp, 0, result, 0, lengthtemp.length);
+			System.arraycopy(temp, 0, result, lengthtemp.length, temp.length);
+			return result;
+		}catch(UnsupportedEncodingException e){
+			return null;
+		}catch(Exception e){
+			return null;
 		}
-		//组合长度的BCD码与字符串的ASCII
-		byte[] result = new byte[lengthtemp.length + temp.length];
-		System.arraycopy(lengthtemp, 0, result, 0, lengthtemp.length);
-		System.arraycopy(temp, 0, result, lengthtemp.length, temp.length);
-		return result;
+		
+
 	}
 	/**
 	 * /*

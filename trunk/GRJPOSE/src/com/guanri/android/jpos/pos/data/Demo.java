@@ -10,7 +10,7 @@ public class Demo {
 	public static void main(String[] Args) {
 		// TestField();
 		TCommTerminalLink TerminalLink = new TCommTerminalLink();
-		TerminalLink.CommName = "COM5";
+		TerminalLink.CommName = "COM1";
 		TerminalLink.ReadTimeout = 5000;
 		TerminalLink.Connect();
 		if (!TerminalLink.GetConnected()) {

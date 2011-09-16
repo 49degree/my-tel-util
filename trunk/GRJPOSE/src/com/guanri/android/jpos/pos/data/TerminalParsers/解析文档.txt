@@ -79,6 +79,7 @@ xx + 错误提示信息
 	Transaction.ProcessList.TerminalID().GetAsString();				//终端号
 	Transaction.ProcessList.UserID().GetAsString();					//操作员
 	
+	Transaction.ProcessList.BillNumber().GetAsInteger();			//票据号
 	Transaction.ProcessList.ReturnOrderNumber().GetAsString();		//订单编号
 	Transaction.ProcessList.ReturnSaleAmount().GetAsString();		//消费金额
 	Transaction.ProcessList.ReturnDisplayMessage().GetAsString();	//显示信息

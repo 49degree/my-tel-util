@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.SaleDataLogBean;
+import com.guanri.android.jpos.common.SharedPreferencesUtils;
 import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefine99Bill;
 import com.guanri.android.jpos.db.DBBean;
@@ -229,7 +230,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(42, "104110045110012");
 		// 域49  货币代码
 		sendMap.put(49, "156");
-		//域41 原交易信息域
+		// 域61
 		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf.setTag("1");
@@ -296,11 +297,16 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(42, posMessageBean.ProcessList.MerchantID().GetAsString());
 		// 域49  货币代码
 		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
-		//域41 原交易信息域
+		// 域61  原交易信息域
 		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf.setTag("1");
-		leaf.setValue(posMessageBean.ProcessList.OrderNumber().GetAsString());
+		// 获得批次号
+		String posBatchNo = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+				SharedPreferencesUtils.POSBATCHNO);
+		if (posBatchNo == null)
+			posBatchNo = "000001";
+		leaf.setValue(posBatchNo);
 		data1.put(1,leaf);
 		
 		leaf = new JposSelfFieldLeaf();
@@ -359,8 +365,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf = new JposSelfFieldLeaf();
-		leaf.setTag("1");
-		leaf.setValue(posMessageBean.ProcessList.OrderNumber().GetAsString());
+		leaf.setTag("1");// 获得批次号
+		String posBatchNo = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+				SharedPreferencesUtils.POSBATCHNO);
+		if (posBatchNo == null)
+			posBatchNo = "000001";
+		leaf.setValue(posBatchNo);
 		data1.put(1,leaf);
 		
 		leaf = new JposSelfFieldLeaf();
@@ -546,21 +556,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	public JposPackageFather createSale(TTransaction posMessageBean){
 		//String CardNo = Trank.substring(0, 19);
 		//判断POS输入类型
-		String inputtype;
-		/*
-		if(posMessageBean.ProcessList.GetTrack2Data().equals("")){
-			if(posMessageBean.ProcessList.PINData().GetAsString().equals(""))
-				inputtype = "012";
-			else
-				inputtype = "011";
-		}else{
-			if(posMessageBean.ProcessList.PINData().GetAsString().equals(""))
-				inputtype = "021";
-			else
-				inputtype = "022";
-		}
-		*/
-		inputtype = "022";
+		String inputtype = "022";
 		
 		//构造签到所需各域
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
@@ -577,31 +573,25 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(22, inputtype);
 		sendMap.put(24, "009");
 		sendMap.put(25, "14");
-		//if(!posMessageBean.ProcessList.GetTrack2Data().equals(""))
-		//	sendMap.put(35, "5264102500120211=1508201");
-		//else
-			sendMap.put(35, posMessageBean.ProcessList.GetTrack2Data());
-		//if(!Trank3.equals(""))
-		//	sendMap.put(36,Trank3);
+		sendMap.put(35, posMessageBean.ProcessList.GetTrack2Data());
+		if(!posMessageBean.ProcessList.GetTrack3Data().equals(""))
+			sendMap.put(36,posMessageBean.ProcessList.GetTrack3Data());
 		// 域41 终端代码
 		sendMap.put(41, posMessageBean.ProcessList.TerminalID().GetAsString());
 		// 域42 商户代码
 		sendMap.put(42, posMessageBean.ProcessList.MerchantID().GetAsString());
 		// 域49  货币代码
 		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
-		// 自定义域 60 将来用于存放保单号
-		/*
-		if(!posMessageBean.ProcessList.PINData().GetAsString().equals(""))
-			sendMap.put(52, posMessageBean.ProcessList.PINData().GetData());
-		*/
-		//sendMap.put(60, "");
 		// 处理61 域
-		
 		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("1");
-		leaf.setValue("000001");
+		String posBatchNo = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+				SharedPreferencesUtils.POSBATCHNO);
+		if (posBatchNo == null)
+			posBatchNo = "000001";
+		leaf.setValue(posBatchNo);
 		data1.put(1,leaf);
 		
 		leaf = new JposSelfFieldLeaf();
@@ -712,8 +702,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("1");
-		//logger.debug("Pos发送的批次号"+posMessageBean.ProcessList.OrderNumber().GetAsString());
-		leaf.setValue(posMessageBean.ProcessList.OrderNumber().GetAsString());
+		// 获得批次号
+		String posBatchNo = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+				SharedPreferencesUtils.POSBATCHNO);
+		if (posBatchNo == null)
+			posBatchNo = "000001";
+		leaf.setValue(posBatchNo);
 		data1.put(1,leaf);
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("2");
@@ -790,8 +784,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf.setTag("1");
-		logger.debug("POS发送过来的交易批次号:"+posMessageBean.ProcessList.OrderNumber().GetAsString());
-		leaf.setValue(posMessageBean.ProcessList.OrderNumber().GetAsString());
+		String posBatchNo = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+				SharedPreferencesUtils.POSBATCHNO);
+		if (posBatchNo == null)
+			posBatchNo = "000001";
+		leaf.setValue(posBatchNo);
 		data1.put(1,leaf);
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("2");
@@ -1029,7 +1026,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf.setTag("1");
-		leaf.setValue(posMessageBean.ProcessList.OrderNumber().GetAsString());
+		String posBatchNo = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+				SharedPreferencesUtils.POSBATCHNO);
+		if (posBatchNo == null)
+			posBatchNo = "000001";
+		leaf.setValue(posBatchNo);
 		data1.put(1,leaf);
 		sendMap.put(61, data1);	
 		// 域63 POS结算交易数据

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.guanri.android.jpos.MainActivity;
 import com.guanri.android.jpos.R;
 import com.guanri.android.jpos.pos.SerialPortAndroid;
 import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;
@@ -157,7 +158,6 @@ public class AidlRunService extends Service{
     		// 循环直到打开串口
     		while (!IS_SERVER_STOP) {
     			logger.error(":FindCommTask is runing.........................:"+LOG_INFO);
-    			server_to_pad.append("server_to_pad\n");
     			try {
     				if (SerialPortAndroid.findAndroidDevice("/dev/ttyUSB0")) {
     					HAS_COMM_PORT = true;
@@ -175,7 +175,7 @@ public class AidlRunService extends Service{
 						LOG_INFO="未找到POS终端";
 
 					}
-    				Thread.sleep(500);
+    				Thread.sleep(1500);
     			}catch(SecurityException se){
     				se.printStackTrace();
     			} catch (Exception e) {
@@ -294,7 +294,7 @@ public class AidlRunService extends Service{
         String expandedTitle=msg;
         String expandedText="";
         //intent是非常重要的参数,用来启动你实际想做的事情,设为null后点击状态栏上的Notification就没有任何反应了.
-        Intent intent=null;
+        Intent intent=new Intent(cxt,MainActivity.class);
         PendingIntent nfcIntent=PendingIntent.getActivity(cxt,0,intent,0);
         nfc.setLatestEventInfo(cxt,expandedTitle,expandedText,nfcIntent);
         //发送Notification

@@ -712,7 +712,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("1");
-		logger.debug("Pos发送的批次号"+posMessageBean.ProcessList.OrderNumber().GetAsString());
+		//logger.debug("Pos发送的批次号"+posMessageBean.ProcessList.OrderNumber().GetAsString());
 		leaf.setValue(posMessageBean.ProcessList.OrderNumber().GetAsString());
 		data1.put(1,leaf);
 		leaf = new JposSelfFieldLeaf();

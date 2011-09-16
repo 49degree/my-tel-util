@@ -26,7 +26,8 @@ public class SharedPreferencesUtils {
 	public final static String POSMERCHANTNAME = "Pos_MerchantName";
 	// 批次号
 	public final static String POSBATCHNO = "PosBatchNo";
-	
+	// 最后一次查询订单信息
+	public final static String LASTQUERY = "LastQuery";
 	
 	// 终端设置
 	public final static String COMFIG_INFO="Config_info";

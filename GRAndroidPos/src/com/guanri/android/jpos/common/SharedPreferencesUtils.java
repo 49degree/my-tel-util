@@ -27,6 +27,8 @@ public class SharedPreferencesUtils {
 	public final static String POSID = "Pos_ID";
 	// 商户编号
 	public final static String POSMERCHANT  = "Pos_Merchant";
+	// 商户名称
+	public final static String POSMERCHANTNAME = "Pos_MerchantName";
 	// 批次号
 	public final static String POSBATCHNO = "PosBatchNo";
 	

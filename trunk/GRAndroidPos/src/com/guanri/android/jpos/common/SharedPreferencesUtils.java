@@ -27,8 +27,6 @@ public class SharedPreferencesUtils {
 	public final static String POSID = "server_id";
 	// 商户编号
 	public final static String POSCONTACT = "port";
-	// 流水号
-	public final static String POSBILLNO = "PosBIllNo";
 	// 批次号
 	public final static String POSBATCHNO = "PosBatchNo";
 	

@@ -316,7 +316,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("3");
-		leaf.setValue("000000");
+		leaf.setValue(posMessageBean.ProcessList.BillNumber().GetAsString());
 		data1.put(3,leaf);
 		sendMap.put(61, data1);//原交易信息域
 		
@@ -601,7 +601,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("3");
-		leaf.setValue("000000");
+		leaf.setValue(posMessageBean.ProcessList.BillNumber().GetAsString());
 		data1.put(3,leaf);
 		
 		sendMap.put(61, data1);	
@@ -649,8 +649,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		saleDataLogBean.setTransactionType("000000");
 		saleDataLogBean.setMsgTypeCode(posMessageBean.TransCode().GetAsString());
 		// 域4  交易金额
-		sendMap.put(4, posMessageBean.ProcessList.ReturnAmount().GetAsString());
-		saleDataLogBean.setTransactionMoney(posMessageBean.ProcessList.ReturnAmount().GetAsInteger());
+		sendMap.put(4, posMessageBean.ProcessList.ReturnSaleAmount().GetAsString());
+		saleDataLogBean.setTransactionMoney(posMessageBean.ProcessList.ReturnSaleAmount().GetAsInteger());
 		// 域11 POS流水号 
 		sendMap.put(11, posMessageBean.SerialNumber().GetAsString());
 		saleDataLogBean.setPosNo(posMessageBean.SerialNumber().GetAsString());
@@ -685,12 +685,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
 		//---------------------------------------------------------------------
 		// 域52 个人识别码  暂时不用
-		if((posMessageBean.ProcessList.PINData().GetData() != null)&&(false))
+		if(posMessageBean.ProcessList.GetIsExistPINData())
 			sendMap.put(52, posMessageBean.ProcessList.PINData().GetData());
 		//---------------------------------------------------------------------
 		// 域57 显示信息 充保险公司后台查询得到的保单信息
-		if(false)
-			sendMap.put(57, "");
+		sendMap.put(57, posMessageBean.ProcessList.ReturnDisplayMessage().GetAsString());
 		//---------------------------------------------------------------------
 		// 自定义域 60 将来用于存放保单号  待完善
 		sendMap.put(60, posMessageBean.ProcessList.ReturnOrderNumber().GetAsString());
@@ -717,7 +716,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("3");
 		// 域61.3 票据号 暂时只送000000
-		leaf.setValue("000000");
+		leaf.setValue(posMessageBean.ProcessList.BillNumber().GetAsString());
 		data1.put(3,leaf);
 		sendMap.put(61, data1);	
 		

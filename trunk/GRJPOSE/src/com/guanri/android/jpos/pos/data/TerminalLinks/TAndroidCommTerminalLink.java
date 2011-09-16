@@ -119,6 +119,7 @@ public class TAndroidCommTerminalLink extends TTerminalLink {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					this.Disconnect();//读取数据异常，关闭端口
+					return null;
 				}
 				Thread.sleep(tick);
 			} catch (InterruptedException e) {

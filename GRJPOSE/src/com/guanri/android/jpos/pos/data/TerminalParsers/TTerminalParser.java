@@ -178,10 +178,18 @@ public class TTerminalParser {
 				UpdateWorkingStatus(ws_ErrorIdent);
 				return;
 			}
+			
 
 			if (!IsAllowTrans(Transaction)) {
 				System.out.println("不能识别的交易代码: "
 						+ Transaction.TransCode().GetAsInteger());
+				Transaction.ClearProcess();
+				Transaction.ProcessList.Response().SetAsString("00不能识别的交易代码" );
+				Transaction.SaveProcess();
+				Transaction.SaveMAC();
+				Stream.SetBytes(null);
+				Transaction.SaveToBytes();
+				FTerminalLink.SendPackage(Stream.Bytes); // 发送
 				return;
 			}
 
@@ -223,6 +231,9 @@ public class TTerminalParser {
 					+ Transaction.ProcessList.TerminalID().GetAsString());
 			System.out.println("[请求]操作员ID: "
 					+ Transaction.ProcessList.UserID().GetAsString());
+			
+			System.out.println("[请求]回送金额: "
+					+ Transaction.ProcessList.ReturnSaleAmount().GetAsInt64());
 
 			// ******************************************************
 

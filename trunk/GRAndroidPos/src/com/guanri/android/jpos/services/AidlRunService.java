@@ -23,6 +23,14 @@ public class AidlRunService extends Service{
     private PosCenterThread posCenterTask = null;//数据处理线程
     private FindCommTask findCommTask = null;//查询设备线程
     public static String LOG_INFO = "";
+    
+    
+    public static StringBuffer pad_to_server = new StringBuffer();
+    public static StringBuffer pad_to_pos = new StringBuffer();
+    public static StringBuffer pos_to_pad = new StringBuffer();
+    public static StringBuffer server_to_pad = new StringBuffer();
+    
+    
     public final static int NOTIFY_ID = 20110913;//通知ID
 
     @Override
@@ -112,13 +120,25 @@ public class AidlRunService extends Service{
          * @param params
          * @return
          */
-        public String  operate(String params){
-        	logger.error("GrPosService.Stub operate");
-        	if("LOG_INFO".equals(params)){
-        		return LOG_INFO;
-        	}
-        	return "";
-        }
+		public String operate(String params) {
+			logger.error("GrPosService.Stub operate");
+			if ("LOG_INFO".equals(params)) {
+				return LOG_INFO;
+			} else if ("pad_to_pos".equals(params)) {
+				pad_to_pos=new StringBuffer(pad_to_pos.length()<250?pad_to_pos:pad_to_pos.substring(pad_to_pos.length()-250));
+				return pad_to_pos.toString();
+			} else if ("pad_to_server".equals(params)) {
+				pad_to_server=new StringBuffer(pad_to_server.length()<250?pad_to_server:pad_to_server.substring(pad_to_server.length()-250));
+				return pad_to_server.toString();
+			} else if ("pos_to_pad".equals(params)) {
+				pos_to_pad=new StringBuffer(pos_to_pad.length()<250?pos_to_pad:pos_to_pad.substring(pos_to_pad.length()-250));
+				return pos_to_pad.toString();
+			} else if ("server_to_pad".equals(params)) {
+				server_to_pad=new StringBuffer(server_to_pad.length()<250?server_to_pad:server_to_pad.substring(server_to_pad.length()-250));
+				return server_to_pad.toString();
+			}
+			return "";
+		}
     };
     
     
@@ -137,6 +157,7 @@ public class AidlRunService extends Service{
     		// 循环直到打开串口
     		while (!IS_SERVER_STOP) {
     			logger.error(":FindCommTask is runing.........................:"+LOG_INFO);
+    			server_to_pad.append("server_to_pad\n");
     			try {
     				if (SerialPortAndroid.findAndroidDevice("/dev/ttyUSB0")) {
     					HAS_COMM_PORT = true;

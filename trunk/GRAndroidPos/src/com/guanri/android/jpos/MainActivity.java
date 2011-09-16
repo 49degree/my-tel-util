@@ -152,7 +152,11 @@ public class MainActivity extends Activity implements OnClickListener {
     		while (!stopLog) {
     			try {
     				logger.error("LogTask.........:"+mRemoteService==null?"":mRemoteService.operate("LOG_INFO"));
-    				updateUI.sendMessage(updateUI.obtainMessage(1, mRemoteService==null?"":mRemoteService.operate("LOG_INFO")));
+    				updateUI.sendMessage(updateUI.obtainMessage(1,mRemoteService.operate("LOG_INFO")));
+    				updateUI.sendMessage(updateUI.obtainMessage(2, mRemoteService.operate("pos_to_pad")));
+    				updateUI.sendMessage(updateUI.obtainMessage(3, mRemoteService.operate("pad_to_pos")));
+    				updateUI.sendMessage(updateUI.obtainMessage(4, mRemoteService.operate("pad_to_server")));
+    				updateUI.sendMessage(updateUI.obtainMessage(5, mRemoteService.operate("server_to_pad")));
     				if(mRemoteService.hasCommPort()){
     					hasCommPort = true;
     				}else{

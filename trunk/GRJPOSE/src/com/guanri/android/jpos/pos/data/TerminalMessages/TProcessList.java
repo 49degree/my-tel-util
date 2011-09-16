@@ -92,7 +92,7 @@ public class TProcessList extends TFieldList {
 		  
 		 
 		//下列字段是互相传送的  
-		  AddField(0xA9, TDataType.dt_BIN, TLengthType.lt_VarBIN1, 8, "ReturnSaleAmount"); //回送消费金额
+		  AddField(0xA9, TDataType.dt_BIN, TLengthType.lt_VarBIN1, 12, "ReturnSaleAmount"); //回送消费金额
 		  AddField(0xB0, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 40, "ReturnOrderNumber"); //回送订单编号
 		  AddField(0xB1, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 200, "ReturnDisplayMessage"); //回送显示信息
 

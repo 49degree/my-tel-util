@@ -1005,6 +1005,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 
 	/**
 	 *  POS 结账
+	 *  ---------------------------------------为完成
 	 */
 	public JposPackageFather createCheckout(TTransaction posMessageBean){
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();

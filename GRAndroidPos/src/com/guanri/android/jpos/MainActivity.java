@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.querymoney);
-		btn_receive = (Button)findViewById(R.id.btn_receive);
+		//btn_receive = (Button)findViewById(R.id.btn_receive);
 		btn_stop  = (Button)findViewById(R.id.btn_stop);
 		//获取日志信息框对象
 		comm_state = (EditText)findViewById(R.id.edt_log);
@@ -60,7 +60,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		logTask = new LogTask();
 		logTask.start();
 
-		btn_receive.setOnClickListener(this);
+		//btn_receive.setOnClickListener(this);
 		btn_stop.setOnClickListener(this);
 		
 		Intent service = new Intent(this,AidlRunService.class);
@@ -83,6 +83,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
+		/**
 		case R.id.btn_receive:
 			if(!stopTask){//关闭
 				stopTask = true;
@@ -106,7 +107,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					displayMsg("失败","POS终端未找到");
 				}
 			}
-			break;
+			break;*/
 		case R.id.btn_stop:
 			try{
 				unBindService();
@@ -115,6 +116,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 			Intent service = new Intent(this,AidlRunService.class);
 			this.stopService(service);
+			finish();
 			break;
 		default:
 			break;
@@ -156,7 +158,7 @@ public class MainActivity extends Activity implements OnClickListener {
     				}else{
     					hasCommPort = false;
     				}
-    				Thread.sleep(1000);
+    				Thread.sleep(500);
     			} catch (Exception e) {
     				e.printStackTrace();
     			}

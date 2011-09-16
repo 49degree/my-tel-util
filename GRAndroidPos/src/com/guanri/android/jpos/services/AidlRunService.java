@@ -1,19 +1,72 @@
 package com.guanri.android.jpos.services;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-public class AidlRunService extends MainService{
+import com.guanri.android.jpos.R;
+import com.guanri.android.jpos.pos.SerialPortAndroid;
+import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;
+import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
+import com.guanri.android.lib.context.MainApplication;
+import com.guanri.android.lib.log.Logger;
+
+public class AidlRunService extends Service{
     //定义个一个Tag标签   
+	static Logger logger = Logger.getLogger(PosCenterThread.class);
     private static final String TAG = "AidlRunService"; 
+    private boolean isAutoRun = true;//是否自动运行
+    private PosCenterThread posCenterTask = null;//数据处理线程
+    private FindCommTask findCommTask = null;//查询设备线程
+    public static String LOG_INFO = "";
+    public final static int NOTIFY_ID = 20110913;//通知ID
+
+    @Override
+    public void onCreate(){
+    	logger.error("start onCreate~~~");  
+    	super.onCreate();
+        //初始化数据处理线程对象
+    	AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","POS终端服务已经打开");
+    	//启动查询设备线程
+    	IS_SERVER_STOP = false;
+    	findCommTask = new FindCommTask();
+    	findCommTask.start();
+    }
+    
+    
+    @Override
+    public void onDestroy(){
+    	logger.error("start onDestroy~~~");  
+    	//关闭查询设备线程
+    	IS_SERVER_STOP = true;
+    	if(findCommTask!=null)
+    		findCommTask.interrupt();
+    	//停止真正运行线程
+    	try{
+    		mBinder.stopPos();
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	AidlRunService.clearNotify(NOTIFY_ID);//清除消息提示
+    	super.onDestroy();
+    }
     
     @Override  
     public IBinder onBind(Intent intent) {  
-        Log.e(TAG, "start IBinder~~~");  
+        logger.error("start IBinder~~~");  
         return mBinder;  
     }
+    
+    @Override  
+    public void onStart(Intent intent, int startId) {  
+        logger.error("start onStart~~~");  
+        super.onStart(intent, startId);  
+    }  
     
     private final GrPosService.Stub mBinder = new GrPosService.Stub(){ 
         /**
@@ -21,7 +74,19 @@ public class AidlRunService extends MainService{
          * @return
          */
         public boolean startPos(){
-        	Log.d(TAG, "startPos");
+        	logger.error("GrPosService.Stub startPos");
+        	if(HAS_COMM_PORT){
+        		posCenterTask = PosCenterThread.getInstance();
+            	if(!posCenterTask.getTaskStop()&&!posCenterTask.isAlive()){//Thread在run之前和run完成之后isAlive()返回false,run运行过程中返回true;
+            		try{
+            			posCenterTask.start();//Thread 不可重复调用start()方法，
+            		}catch(IllegalThreadStateException ie){//重复调用则抛出异常
+            			ie.printStackTrace();
+            		}
+            	}
+        	}else{
+        		AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","POS终端未找到");
+        	}
         	return true;
         }
         /**
@@ -29,8 +94,19 @@ public class AidlRunService extends MainService{
          * @return
          */
         public boolean stopPos(){
-        	Log.d(TAG, "stopPos");
+        	if(posCenterTask!=null&&!posCenterTask.getTaskStop()){
+        		logger.error("GrPosService.Stub stopPos");
+        		posCenterTask.setTaskStop(true);
+        		posCenterTask.interrupt();
+        		posCenterTask = null;
+        		AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","POS终端已经关闭");
+        	}
         	return true;
+        }
+        
+        public boolean hasCommPort(){
+        	logger.error("GrPosService.Stub hasCommPort");
+        	return HAS_COMM_PORT;
         }
         /**
          * 其他操作
@@ -38,8 +114,181 @@ public class AidlRunService extends MainService{
          * @return
          */
         public String  operate(String params){
-        	Log.d(TAG, "operate");
+        	logger.error("GrPosService.Stub operate");
+        	if("LOG_INFO".equals(params)){
+        		return LOG_INFO;
+        	}
         	return "";
         }
     };
+    
+    
+
+    
+    
+    /**
+     * 查询串口
+     * @author Administrator
+     *
+     */
+    public static boolean IS_SERVER_STOP = false;
+    public static boolean HAS_COMM_PORT = false;
+    public class FindCommTask extends Thread{
+    	public void run(){
+    		// 循环直到打开串口
+    		while (!IS_SERVER_STOP) {
+    			logger.error(":FindCommTask is runing.........................:"+LOG_INFO);
+    			try {
+    				if (SerialPortAndroid.findAndroidDevice("/dev/ttyUSB0")) {
+    					HAS_COMM_PORT = true;
+
+    					if(isAutoRun){
+    						mBinder.startPos();
+    					}else{
+        					AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","找到POS终端");
+        					LOG_INFO="找到POS终端";
+    					}
+					}else{
+						HAS_COMM_PORT = false;
+						mBinder.stopPos();
+						AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","未找到POS终端");
+						LOG_INFO="未找到POS终端";
+
+					}
+    				Thread.sleep(500);
+    			}catch(SecurityException se){
+    				se.printStackTrace();
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    				e.printStackTrace();
+    			}
+    		}
+    	}
+    }
+    
+    /**
+     * POS数据读取线程
+     * @author Administrator
+     *
+     */
+    
+    public static class PosCenterThread extends Thread{
+    	
+    	private TAndroidCommTerminalLink TerminalLink = null;
+    	private TTerminalParser TerminalParser = null;
+    	public boolean IS_TASK_STOP = false;//判断当前线程是否已经停止
+    	private static PosCenterThread instance = null;
+    	static int index = 0;
+    	public static StringBuffer LOG_INFO = new StringBuffer();
+
+    	/**
+    	 * 如果instance为空或者instance.isAlive()且已经运行完则创建新线程对象
+    	 * @return
+    	 */
+    	public synchronized static PosCenterThread getInstance(){
+    		if (instance == null || (instance.IS_TASK_STOP == true)) {
+    			instance = new PosCenterThread();
+    		}
+    		return instance;
+    	}
+    	
+    	public synchronized boolean getTaskStop(){
+    		return IS_TASK_STOP;
+    	}
+    	
+    	public synchronized void setTaskStop(boolean isStop){
+    		IS_TASK_STOP = isStop;
+    	}
+    	
+    	
+    	private PosCenterThread(){
+    		IS_TASK_STOP = false;
+    		TerminalLink = new TAndroidCommTerminalLink();
+    		TerminalLink.CommName = "/dev/ttyUSB0";
+    		TerminalLink.ReadTimeout = 5000;
+    		TerminalParser = new TTerminalParser();
+    	}
+    	
+    	@Override
+    	public void run() {
+    		logger.error("PosCenterThread is start.........................:"+index++);
+    		//未连接，判断是否存在串口设备
+    		if (!TerminalLink.GetConnected()) {
+    			if(SerialPortAndroid.findAndroidDevice(TerminalLink.CommName)){
+    				try{
+    					TerminalLink.Connect();
+    					AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","设备连接成功,正在读取数据.....");
+    				}catch(SecurityException se){
+    					AidlRunService.LOG_INFO = "打开POS连接失败";
+    				}
+        			TerminalParser.SetTerminalLink(TerminalLink);
+    			}else{
+    				setTaskStop(true);
+    				return ;
+    			}
+    		}
+    		// 循环读取数据
+    		while (!IS_TASK_STOP&&!IS_SERVER_STOP) {
+    			logger.error("PosCenterThread is reading..........................");
+    			try {
+    				//读取数据
+    				if (TerminalLink.GetConnected()) {
+    					AidlRunService.LOG_INFO = "设备连接成功,正在读取数据......";
+    					TerminalParser.ParseRequest();
+    				}
+    				
+    			}catch(SecurityException se){
+    				se.printStackTrace();
+    			} catch (Exception e) {
+    				AidlRunService.LOG_INFO = "POS连接出现问题："+e.getMessage();
+    				e.printStackTrace();
+    			}
+    		}
+    		//关闭连接
+    		try {
+    			TerminalLink.Disconnect();
+    			AidlRunService.LOG_INFO = "POS连接已经关闭";
+    			AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","POS连接已经关闭.....");
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}
+    		if(IS_SERVER_STOP){//清除消息提示
+    	    	AidlRunService.clearNotify(NOTIFY_ID);//清除消息提示
+    		}
+    		setTaskStop(true);
+    	}	
+    }
+    
+	/**
+	 * 发通知
+	 * @param noifyId
+	 * @param msg
+	 */
+	public static void notify(int noifyId,String title,String msg){
+        //以下是对Notification的各种参数设定
+        int icon=R.drawable.icon;
+        String tickerText=title;
+        long when=System.currentTimeMillis();
+        Notification nfc=new Notification(icon,tickerText,when);
+        Context cxt=MainApplication.getInstance();
+        String expandedTitle=msg;
+        String expandedText="";
+        //intent是非常重要的参数,用来启动你实际想做的事情,设为null后点击状态栏上的Notification就没有任何反应了.
+        Intent intent=null;
+        PendingIntent nfcIntent=PendingIntent.getActivity(cxt,0,intent,0);
+        nfc.setLatestEventInfo(cxt,expandedTitle,expandedText,nfcIntent);
+        //发送Notification
+        NotificationManager nfcManager=(NotificationManager)cxt.getSystemService(Context.NOTIFICATION_SERVICE);
+        nfcManager.notify(noifyId,nfc);
+	}
+	
+	/**
+	 * 发通知
+	 * @param noifyId
+	 * @param msg
+	 */
+	public static void clearNotify(int noifyId){
+        NotificationManager nfcManager=(NotificationManager)MainApplication.getInstance().getSystemService(Context.NOTIFICATION_SERVICE);
+        nfcManager.cancel(noifyId);
+	}
 }

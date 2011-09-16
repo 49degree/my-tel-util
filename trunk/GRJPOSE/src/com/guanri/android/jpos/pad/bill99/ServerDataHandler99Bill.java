@@ -589,7 +589,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		leaf.setTag("1");
 		String posBatchNo = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
 				SharedPreferencesUtils.POSBATCHNO);
-		if (posBatchNo == null)
+		if ((posBatchNo == null)||(posBatchNo.length()<1))
 			posBatchNo = "000001";
 		leaf.setValue(posBatchNo);
 		data1.put(1,leaf);
@@ -649,6 +649,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		saleDataLogBean.setTransactionType("000000");
 		saleDataLogBean.setMsgTypeCode(posMessageBean.TransCode().GetAsString());
 		// 域4  交易金额
+		logger.debug("POS发送过来的金额"+posMessageBean.ProcessList.ReturnSaleAmount().GetAsString());
 		sendMap.put(4, posMessageBean.ProcessList.ReturnSaleAmount().GetAsString());
 		saleDataLogBean.setTransactionMoney(posMessageBean.ProcessList.ReturnSaleAmount().GetAsInteger());
 		// 域11 POS流水号 
@@ -670,12 +671,18 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域25 服务点条件码
 		sendMap.put(25, "14");
 		// 域35 第二磁道数  
-		sendMap.put(35, posMessageBean.ProcessList.GetTrack2Data());
-		saleDataLogBean.setTrack2(posMessageBean.ProcessList.GetTrack2Data());
-		// 域36 第三磁道数
-		if(!posMessageBean.ProcessList.GetTrack2Data().equals("")){
-			sendMap.put(36,posMessageBean.ProcessList.GetTrack2Data());
-			saleDataLogBean.setTrack3(posMessageBean.ProcessList.GetTrack3Data());
+		if(posMessageBean.ProcessList.GetIsExistTrackData()) {
+			sendMap.put(35, posMessageBean.ProcessList.GetTrack2Data());
+			saleDataLogBean.setTrack2(posMessageBean.ProcessList.GetTrack2Data());
+		
+			// 域36 第三磁道数
+			if(!posMessageBean.ProcessList.GetTrack2Data().equals("")){
+				sendMap.put(36,posMessageBean.ProcessList.GetTrack2Data());
+				saleDataLogBean.setTrack3(posMessageBean.ProcessList.GetTrack3Data());
+			}
+		}else{
+			//域 14  卡有效期
+			sendMap.put(14, posMessageBean.ProcessList.DateOfExpired().GetAsString());
 		}
 		// 域41 终端代码
 		sendMap.put(41, posMessageBean.ProcessList.TerminalID().GetAsString());
@@ -1037,6 +1044,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//格式：正向交易笔数(3 位) + 正向交易总金额(12 位) + 逆向总笔数(3 位) + 逆向交易总金额(12位)。如：017000000495526002000000123622，表示消费17笔，总金额
 		//4955.26；撤销2笔，总金额1236.22。
 		sendMap.put(63,getCheckOutData(posMessageBean.ProcessList.OrderNumber().GetAsString()));
+		
 		return null;
 	}
 

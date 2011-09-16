@@ -192,7 +192,8 @@ public class ServerDataUnPackage99Bill {
 			result.append(dateStr);
 			result.append(timeStr);
 			// 获得域4 保单金额
-			tTransaction.ProcessList.ReturnSaleAmount().SetAsString((String) getMap.get(4));
+			String money = (String) getMap.get(4);
+			tTransaction.ProcessList.ReturnSaleAmount().SetAsInt64(Long.valueOf(money));
 			// 响应信息
 			if (getMap.containsKey(57)){
 				tTransaction.ProcessList.Response().SetAsString("00" + getMap.get(57));

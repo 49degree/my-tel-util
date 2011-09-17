@@ -11,6 +11,10 @@ public class TBufferList extends TFieldList {
 		return GetField(-1);
 	}
 	
+	public TField ProcessCode() { // 处理码
+		return GetField(3);
+	}
+	
 	public TField PAN() { // 主帐号
 		return GetField(2);
 	}
@@ -47,6 +51,7 @@ public class TBufferList extends TFieldList {
 	public TBufferList(){
 		AddField(-1, TDataType.dt_BCD, TLengthType.lt_Fixed, 4, "MsgTypeID"); // 消息类型
 		AddField(2, TDataType.dt_BCD, TLengthType.lt_VarBCD2, 19, "PAN"); //主帐号
+		AddField(3, TDataType.dt_BCD, TLengthType.lt_Fixed, 6, "ProcessCode"); //主帐号
 		AddField(35, TDataType.dt_BCD, TLengthType.lt_VarBCD2, 37, "Track2Data"); //2磁道的数据
 		AddField(36, TDataType.dt_BCD, TLengthType.lt_VarBCD3, 104, "Track3Data"); //主帐号
 		AddField(4, TDataType.dt_BCD, TLengthType.lt_Fixed, 12, "SaleAmount"); //消费金额

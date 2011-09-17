@@ -29,6 +29,7 @@ public class TTerminalParser {
 	protected String FLastMerchantID = null; // 最后一次的商户号
 	protected String FLastTerminalID = null; // 最后一次的终端号
 	protected String FLastUserID = null; // 最后一次的操作员ID
+	protected String FLastReferenceNumber = null; // 最后一次的POS中心流水号
 
 	final Logger logger = new Logger(TTerminalParser.class);
 
@@ -88,11 +89,12 @@ public class TTerminalParser {
 	protected boolean IsAllowTrans(TTransaction Transaction) {
 		int TransCode = Transaction.TransCode().GetAsInteger();
 		switch (TransCode) {
-		case 1:
-		case 100:
-		case 200:
-		case 600:
-		case 601:
+		case 1: // 签到
+		case 100: // 余额查询
+		case 200: // 消费
+		case 600: // 订单查询
+		case 601: // 订单付款
+		case 7: // 交易回执
 			return true;
 			// break;
 		default:
@@ -107,6 +109,7 @@ public class TTerminalParser {
 		case 200:
 		case 600:
 		case 601:
+		case 7:
 			return true;
 			// break;
 		default:
@@ -125,6 +128,35 @@ public class TTerminalParser {
 		}
 	}
 
+	protected byte[] EncryptMAC(TTransaction Transaction, byte[] MAB,
+			boolean IsFill) {
+
+		TEncryptMAC_Send MAC_Send = new TEncryptMAC_Send();
+		TEncryptMAC_Recv MAC_Recv = new TEncryptMAC_Recv();
+
+		MAC_Send.MAB().SetData(MAB); // MAB
+		if (!IsFill) {
+			MAC_Send.Year().SetAsString(Transaction.Year().GetAsString()); // Year
+			MAC_Send.Date().SetAsString(Transaction.Date().GetAsString()); // Date
+			MAC_Send.Time().SetAsString(Transaction.Time().GetAsString()); // Time
+		} else {
+			MAC_Send.Year().SetAsInteger(0);
+			MAC_Send.Date().SetAsInteger(0);
+			MAC_Send.Time().SetAsInteger(0);
+		}
+
+		Stream.SetBytes(null);
+		MAC_Send.SaveToBytes();
+		FTerminalLink.SendPackage(Stream.Bytes); // 发送
+		byte[] Bytes = FTerminalLink.RecvPackage();
+		Stream.SetBytes(Bytes);
+		if (MAC_Recv.LoadFormBytes() != TResult_LoadFromBytes.rfll_NoError) { // MAC回复出错
+			// PutLog("MAC回复出错");
+			return null;
+		}
+		return MAC_Recv.MAC().GetData();
+	}
+
 	public void ParseRequest() {
 		if (FTerminalLink == null)
 			return;
@@ -140,7 +172,7 @@ public class TTerminalParser {
 			byte CmdID = Bytes[2];
 			switch (CmdID) {
 			case 6:
-				System.out.println("握手, 时间同步");
+				PutLog("握手, 时间同步");
 
 				THandshake_Response Handshake_Response = new THandshake_Response();
 
@@ -159,7 +191,7 @@ public class TTerminalParser {
 		}
 
 		if (MsgType == 1) {
-			System.out.println("交易报文");
+			PutLog("交易报文");
 			TTransaction Transaction = new TTransaction();
 
 			Transaction.ClearProcess(); // 清空流程
@@ -169,32 +201,24 @@ public class TTerminalParser {
 				return;
 
 			if (!Transaction.CheckMAC()) { // MAC签名错误
-				System.out.println("MAC签名错误");
+				PutLog("MAC签名错误");
 				return;
 			}
 
 			if (Transaction.Ident().GetAsInteger() != FIdent) { // 识别码不匹配
-				System.out.println("识别码不匹配");
+				PutLog("识别码不匹配");
 				UpdateWorkingStatus(ws_ErrorIdent);
 				return;
 			}
-			
 
 			if (!IsAllowTrans(Transaction)) {
-				System.out.println("不能识别的交易代码: "
+				PutLog("不能识别的交易代码: "
 						+ Transaction.TransCode().GetAsInteger());
-				Transaction.ClearProcess();
-				Transaction.ProcessList.Response().SetAsString("00不能识别的交易代码" );
-				Transaction.SaveProcess();
-				Transaction.SaveMAC();
-				Stream.SetBytes(null);
-				Transaction.SaveToBytes();
-				FTerminalLink.SendPackage(Stream.Bytes); // 发送
 				return;
 			}
 
 			if (!Transaction.LoadProcess()) { // 导入流程错误
-				System.out.println("导入流程错误");
+				PutLog("导入流程错误");
 				return;
 			}
 
@@ -212,31 +236,13 @@ public class TTerminalParser {
 				Transaction.ProcessList.UserID().SetAsString(FLastUserID);
 			}
 
-			System.out.println("[请求]流水号: "
-					+ Transaction.SerialNumber().GetAsString());
-			System.out.println("[请求]交易代码: "
-					+ Transaction.TransCode().GetAsInteger());
-			System.out.println("[请求]年:" + Transaction.Year().GetAsString());
-			System.out.println("[请求]日期:" + Transaction.Date().GetAsString());
-			System.out.println("[请求]时间:" + Transaction.Time().GetAsString());
-			System.out.println("[请求]2磁道数据: "
-					+ Transaction.ProcessList.GetTrack2Data());
-			System.out.println("[请求]3磁道数据: "
-					+ Transaction.ProcessList.GetTrack3Data());
-			System.out.println("[请求]卡号: " + Transaction.ProcessList.GetPAN());
+			Transaction.BufferList.ReferenceNumber().SetAsString(
+					FLastReferenceNumber);
 
-			System.out.println("[请求]商户号: "
-					+ Transaction.ProcessList.MerchantID().GetAsString());
-			System.out.println("[请求]终端号: "
-					+ Transaction.ProcessList.TerminalID().GetAsString());
-			System.out.println("[请求]操作员ID: "
-					+ Transaction.ProcessList.UserID().GetAsString());
-			
-			System.out.println("[请求]回送金额: "
-					+ Transaction.ProcessList.ReturnSaleAmount().GetAsInt64());
-
+			PutLog_Request(Transaction);
 			// ******************************************************
 
+			byte[] MAC;
 			ServerUpDataParse serverParseData = null;
 			try {
 				serverParseData = new ServerUpDataParse(Transaction);
@@ -244,64 +250,30 @@ public class TTerminalParser {
 
 				if (IsEncryptMACTrans(Transaction)) {
 					// 计算
-					System.out.println("正在请求终端计算MAC.......");
+					PutLog("正在请求终端计算MAC.......");
 
-					// *
-					TEncryptMAC_Send MAC_Send = new TEncryptMAC_Send();
-					TEncryptMAC_Recv MAC_Recv = new TEncryptMAC_Recv();
+					MAC = EncryptMAC(Transaction, serverParseData.getMab(),
+							IsFillZeroTrans(Transaction));
 
-					MAC_Send.MAB().SetData(serverParseData.getMab()); // MAB
-					if (!IsFillZeroTrans(Transaction)) {
-						MAC_Send.Year().SetAsString(
-								Transaction.Year().GetAsString()); // Year
-						MAC_Send.Date().SetAsString(
-								Transaction.Date().GetAsString()); // Date
-						MAC_Send.Time().SetAsString(
-								Transaction.Time().GetAsString()); // Time
-					} else {
-						MAC_Send.Year().SetAsInteger(0);
-						MAC_Send.Date().SetAsInteger(0);
-						MAC_Send.Time().SetAsInteger(0);
-					}
-						
-					Stream.SetBytes(null);
-					MAC_Send.SaveToBytes();
-					FTerminalLink.SendPackage(Stream.Bytes); // 发送
-					Bytes = FTerminalLink.RecvPackage();
-					Stream.SetBytes(Bytes);
-					if (MAC_Recv.LoadFormBytes() != TResult_LoadFromBytes.rfll_NoError) { // MAC回复出错
-						System.out.println("MAC回复出错");
+					if (Common.Length(MAC) <= 0) { // MAC回复出错
+						PutLog("MAC回复出错");
 						return;
 					}
 
-					jpos.setMac(MAC_Recv.MAC().GetData());
-					// */
-
-					/*
-					 * byte[] mab = serverParseData.getMab();//构造MAC BLOCK
-					 * //获取数据包对象
-					 * 
-					 * //构造MAK BLOCK String makSource =
-					 * (String)(jpos.getSendMapValue
-					 * (11))+(String)(jpos.getSendMapValue(13))+
-					 * (String)(jpos.getSendMapValue
-					 * (12))+(String)(jpos.getSendMapValue(41)); //获取MAC byte[]
-					 * mac jpos.setMac(CryptionControl.getInstance().getMac(mab,
-					 * makSource)); //
-					 */
+					jpos.setMac(MAC);
 
 				}
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("构建数据包错误");
+				PutLog("构建数据包错误");
 				UpdateWorkingStatus(ws_ErrorBuild);
 				return;
 			}
 
 			UpdateWorkingStatus(ws_WillConnect);
 			if (!CheckWorkingStatus(ws_WillConnect)) {
-				System.out.println("更新工作状态错误");
+				PutLog("更新工作状态错误");
 				return;
 			}
 
@@ -311,7 +283,7 @@ public class TTerminalParser {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("连接后台错误");
+				PutLog("连接后台错误");
 				UpdateWorkingStatus(ws_ErrorConnect);
 				return;
 			}
@@ -327,89 +299,97 @@ public class TTerminalParser {
 
 				Transaction.Ident().SetAsInteger(FIdent);
 
-				System.out.println("[响应]流水号: "
-						+ Transaction.SerialNumber().GetAsString());
-				System.out.println("[响应]交易代码: "
-						+ Transaction.TransCode().GetAsInteger());
-				System.out.println("[响应]年:" + Transaction.Year().GetAsString());
-				System.out
-						.println("[响应]日期:" + Transaction.Date().GetAsString());
-				System.out
-						.println("[响应]时间:" + Transaction.Time().GetAsString());
-				System.out.println("[响应]应答: "
-						+ Transaction.ProcessList.Response().GetAsString());
-				System.out.println("[响应]商户名称: "
-						+ Transaction.ProcessList.MerchantName().GetAsString());
+				PutLog_Response(Transaction);
+				FLastReferenceNumber = Transaction.BufferList.ReferenceNumber()
+						.GetAsString();
 
 				if (IsEncryptMACTrans(Transaction)) {
 					// 计算
-					System.out.println("正在请求终端计算MAC.......");
+					PutLog("正在请求终端计算MAC.......");
 
-					TEncryptMAC_Send MAC_Send = new TEncryptMAC_Send();
-					TEncryptMAC_Recv MAC_Recv = new TEncryptMAC_Recv();
+					MAC = EncryptMAC(Transaction, reData.getMab(), false);
 
-					MAC_Send.MAB().SetData(reData.getMab()); // MAB
-					MAC_Send.Year().SetAsString(
-							Transaction.Year().GetAsString()); // Year
-					MAC_Send.Date().SetAsString(
-							Transaction.Date().GetAsString()); // Date
-					MAC_Send.Time().SetAsString(
-							Transaction.Time().GetAsString()); // Time
-					Stream.SetBytes(null);
-					MAC_Send.SaveToBytes();
-					FTerminalLink.SendPackage(Stream.Bytes); // 发送
-					Bytes = FTerminalLink.RecvPackage();
-					Stream.SetBytes(Bytes);
-					if (MAC_Recv.LoadFormBytes() != TResult_LoadFromBytes.rfll_NoError) { // MAC回复出错
-						System.out.println("MAC回复出错");
+					if (Common.Length(MAC) <= 0) { // MAC回复出错
+						PutLog("MAC回复出错");
 						return;
 					}
 
-					System.out.println("终端计算MAC:"
-							+ Common.ToHex(MAC_Recv.MAC().GetData()));
-					System.out.println("服务器响应MAC:"
-							+ Common.ToHex(reData.getMac()));
-					if (!Common.IsSameBytes(MAC_Recv.MAC().GetData(),
-							reData.getMac())) { // MAC校验出错
-						System.out.println("MAC校验出错");
+					if (!Common.IsSameBytes(MAC, reData.getMac())) { // MAC校验出错
+						PutLog("MAC校验出错");
 						return;
 					}
+					PutLog("MAC校验正确.");
 				}
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.out.println("接收错误");
+				PutLog("接收错误");
 				UpdateWorkingStatus(ws_ErrorRecv);
 				return;
 			}
 
 			// ******************************************************
 
-			/*
-			 * Transaction.ClearProcess(); //清空流程 switch
-			 * (Transaction.TransCode().GetAsInteger()) { case 1:
-			 * Transaction.ProcessList.Response().SetAsString("00签到成功" );
-			 * Transaction.ProcessList.MerchantName().SetAsString("太平洋公司");
-			 * break; case 100:
-			 * Transaction.ProcessList.Response().SetAsString("00余额为"
-			 * +888666.55); break; default:
-			 * Transaction.ProcessList.Response().SetAsString("00交易成功" ); break;
-			 * }
-			 */
-
 			Transaction.SaveProcess();
 			Transaction.SaveMAC();
 			Stream.SetBytes(null);
 			if (Transaction.SaveToBytes() != TResult_SaveToBytes.rfls_NoError) {
-				System.out.println("保存响应数据错误!");
+				PutLog("保存响应数据错误!");
 				return;
 			}
 			;
 
-			System.out.println("已发送响应数据.");
+			PutLog("已发送响应数据.");
 			FTerminalLink.SendPackage(Stream.Bytes);
 
 		}
+	}
+	public void PutLog(String s) {
+		System.out.println(s);
+	}
+	public void PutLog_Request(TTransaction Transaction) {
+		PutLog("[请求]流水号: "
+				+ Transaction.SerialNumber().GetAsString());
+		PutLog("[请求]交易代码: "
+				+ Transaction.TransCode().GetAsInteger());
+		PutLog("[请求]年:" + Transaction.Year().GetAsString());
+		PutLog("[请求]日期:" + Transaction.Date().GetAsString());
+		PutLog("[请求]时间:" + Transaction.Time().GetAsString());
+		PutLog("[请求]2磁道数据: "
+				+ Transaction.ProcessList.GetTrack2Data());
+		PutLog("[请求]3磁道数据: "
+				+ Transaction.ProcessList.GetTrack3Data());
+		PutLog("[请求]卡号: " + Transaction.ProcessList.GetPAN());
+
+		PutLog("[请求]商户号: "
+				+ Transaction.ProcessList.MerchantID().GetAsString());
+		PutLog("[请求]终端号: "
+				+ Transaction.ProcessList.TerminalID().GetAsString());
+		PutLog("[请求]操作员ID: "
+				+ Transaction.ProcessList.UserID().GetAsString());
+
+		PutLog("[请求]回送金额: "
+				+ Transaction.ProcessList.ReturnSaleAmount().GetAsInt64());
+
+		PutLog("[请求]上次参考号: "
+				+ Transaction.BufferList.ReferenceNumber().GetAsString());
+	}
+
+	public void PutLog_Response(TTransaction Transaction) {
+		PutLog("[响应]流水号: "
+				+ Transaction.SerialNumber().GetAsString());
+		PutLog("[响应]交易代码: "
+				+ Transaction.TransCode().GetAsInteger());
+		PutLog("[响应]年:" + Transaction.Year().GetAsString());
+		PutLog("[响应]日期:" + Transaction.Date().GetAsString());
+		PutLog("[响应]时间:" + Transaction.Time().GetAsString());
+		PutLog("[响应]应答: "
+				+ Transaction.ProcessList.Response().GetAsString());
+		PutLog("[响应]商户名称: "
+				+ Transaction.ProcessList.MerchantName().GetAsString());
+
+		PutLog("[响应]参考号: "
+				+ Transaction.BufferList.ReferenceNumber().GetAsString());
 	}
 }

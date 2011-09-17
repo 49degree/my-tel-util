@@ -154,6 +154,14 @@ public class ServerDataUnPackage99Bill {
 			AuthorizeCode = (String) getMap.get(38);
 			// tTransaction.
 		}
+		
+		//tanzijie
+		if (getMap.containsKey(37)) {
+			tTransaction.BufferList.ReferenceNumber().SetAsString((String) getMap.get(37));
+			// tTransaction.
+		}
+		
+		
 		String strr = (String) getMap.get(44);
 		logger.debug("返回结果" + strr + "\n");
 		TreeMap<Integer, JposSelfFieldLeaf> datalist = (TreeMap<Integer, JposSelfFieldLeaf>) getMap.get(61);

@@ -906,7 +906,7 @@ public class JposPackage99Bill extends JposPackageFather{
 	
 	/**
 	 * 自定义域
-	 * 格式: 定长 
+	 * 格式: 3位变长
 	 * 类型: ANS30 30个字节的ASCII
 	 * 描述: 自定义域
 	 * 此自定域在本规范中用于在 POS 结帐报文，用于定义 POS 本批交易的总计数据。

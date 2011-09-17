@@ -18,9 +18,9 @@
 		<TextView android:text="POS下发PAD数据:" android:gravity="right"
 			android:layout_width="150dip" android:layout_height="wrap_content" />
 		<ScrollView android:layout_width="fill_parent"
-			android:layout_height="150dip">
+			android:layout_height="550dip">
 			<EditText android:id="@+id/edt_pos_to_pad"
-				android:layout_width="fill_parent" android:layout_height="wrap_content" />
+				android:layout_width="fill_parent" android:layout_height="fill_parent" />
 		</ScrollView>
 	</LinearLayout>
 	<LinearLayout android:orientation="horizontal"

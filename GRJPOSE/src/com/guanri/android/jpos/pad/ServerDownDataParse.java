@@ -13,7 +13,7 @@ public class ServerDownDataParse {
 	private byte[] returnData = null;
 	private JposUnPackageFather jposUnPackage = null;
 	private ServerDataHandlerImp serverDataHandler = null; 
-	private TTransaction rTransaction;
+	final private TTransaction rTransaction;
 	public ServerDownDataParse(TTransaction transaction,byte[] returnData) {
 		this.returnData = returnData;
 		this.rTransaction = transaction;

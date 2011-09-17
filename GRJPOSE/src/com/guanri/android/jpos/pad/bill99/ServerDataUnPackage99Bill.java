@@ -256,6 +256,7 @@ public class ServerDataUnPackage99Bill {
 			String ReferenceStr = "";
 			if (getMap.containsKey(37))
 				ReferenceStr = (String) getMap.get(37);
+				logger.debug("服务下发参考号:"+(String) getMap.get(37));
 				tTransaction.BufferList.ReferenceNumber().SetAsString(ReferenceStr);
 			// 域38 授权码
 			String authorizeStr = "";

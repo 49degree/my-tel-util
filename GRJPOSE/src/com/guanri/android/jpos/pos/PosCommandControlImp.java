@@ -1,11 +1,8 @@
 package com.guanri.android.jpos.pos;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.guanri.android.lib.log.Logger;
-import com.guanri.android.lib.utils.TypeConversion;
 
 /**
  * 串口通信 抽象父类

@@ -5,10 +5,8 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefineUnionpay;
 import com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay;
 import com.guanri.android.jpos.iso.unionpay.JposPackageUnionPay;
-import com.guanri.android.jpos.network.CommandControl;
 import com.guanri.android.lib.utils.TypeConversion;
 
 /**
@@ -99,42 +97,4 @@ public class JposBitMap {
 		
 		//System.out.println(TypeConversion.byte2hex(unionpayRequestLongin()));
 	}
-	
-	
-	/**
-	 * 银联签到方法
-	 * @return 返回签到报文
-	 */
-	public static byte[] unionpayRequestLongin(){
-		//构造签到所需各域
-		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
-		// 域11 流水号
-		sendMap.put(11, "000001");
-		// 域41 终端代码
-		sendMap.put(41, "00000001");
-		// 域42 商户代码
-		sendMap.put(42, "000000000000001");
-		// 域60 自定义域     60.1 交易类型码 00  60.2 批次号  000001 网络管理信息码 001
-		sendMap.put(60, "00000001001");
-		// 域63 自定义域  63.1 操作员代码
-		sendMap.put(63, "001");
-		
-		JposMessageTypeUnionPay messageType = new JposMessageTypeUnionPay();
-		messageType.setID("6");
-		messageType.setServerAddress("0000");
-		messageType.setAddress("0000");
-		messageType.setAppType("60");
-		messageType.setSoftVer("22");
-		messageType.setPosstate("0");
-		messageType.setDisposal("0");
-		messageType.setPreserving("000000");
-		//设置消息头类型
-		//messageType.setMessageType(MessageTypeDefineUnionpay.REQUEST_POS_CHECK_IN);
-		
-		JposPackageUnionPay jposPackageUnionPay = new JposPackageUnionPay(sendMap,messageType);
-	 
-		return jposPackageUnionPay.packaged();
-		
-	}
-	
 }

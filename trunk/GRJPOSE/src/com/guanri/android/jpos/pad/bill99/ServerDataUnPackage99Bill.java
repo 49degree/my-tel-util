@@ -358,7 +358,7 @@ public class ServerDataUnPackage99Bill {
 			logger.debug("响应成功:" + str);
 			result.append("响应结果" + str + "\n");
 			// 响应信息
-			tTransaction.ProcessList.Response().SetAsString("00" + (String) getMap.get(39));
+			tTransaction.ProcessList.Response().SetAsString("00" + "批结算成功");
 			if (getMap.containsKey(61)) {
 				TreeMap<Integer,JposSelfFieldLeaf> datalist = (TreeMap<Integer,JposSelfFieldLeaf>) getMap.get(61);
 				if (datalist.containsKey(1)) {

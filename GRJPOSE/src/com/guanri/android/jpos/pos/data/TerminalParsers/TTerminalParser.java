@@ -19,6 +19,7 @@ import com.guanri.android.jpos.pos.data.TerminalMessages.TEncryptMAC_Send;
 import com.guanri.android.jpos.pos.data.TerminalMessages.THandshake_Response;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TWorkingStatus;
+import com.guanri.android.lib.log.LogInfo;
 import com.guanri.android.lib.log.Logger;
 
 public class TTerminalParser {
@@ -95,6 +96,7 @@ public class TTerminalParser {
 		case 600: // 订单查询
 		case 601: // 订单付款
 		case 7: // 交易回执
+		case 6: // 批结算
 			return true;
 			// break;
 		default:
@@ -296,6 +298,11 @@ public class TTerminalParser {
 				CommandControl.getInstance().closeConnect(); // 关闭连接
 
 				Transaction = reData.getTTransaction();// 取返回POS的对象
+				
+				if (Transaction == null) {
+					PutLog("返回对象错误, Transaction为空");
+					return;
+				}
 
 				Transaction.Ident().SetAsInteger(FIdent);
 
@@ -347,6 +354,8 @@ public class TTerminalParser {
 	}
 	public void PutLog(String s) {
 		System.out.println(s);
+		
+		LogInfo.instance.pos_to_pad.append(s+"\n");
 	}
 	public void PutLog_Request(TTransaction Transaction) {
 		PutLog("[请求]流水号: "

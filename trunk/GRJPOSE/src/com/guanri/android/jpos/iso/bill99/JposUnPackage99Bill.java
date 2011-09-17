@@ -895,7 +895,7 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	public Object parseFeild63() throws FieldTooLongException, FieldIsNullException{
 		//获取该域的全部数据
 		TreeMap<Integer,JposSelfFieldLeaf> tlvData = new TreeMap<Integer,JposSelfFieldLeaf>();
-		int tlvLength = 30;//计算数据长度
+		int tlvLength =  Integer.parseInt(TypeConversion.bcd2string(data,index,2));//计算数据长度
 		byte[] tlvBuffer = new byte[tlvLength];
 		System.arraycopy(data, index, tlvBuffer, 0, tlvLength);//获取数据
 		index +=tlvLength;
@@ -922,6 +922,8 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 					leaf.setTag("4");
 					leaf.setValue(TypeConversion.asciiToString(tlvBuffer,tvfIndex,12));
 					tvfIndex += 12;
+				}else{
+					continue;
 				}
 				tlvData.put(dataIndex, leaf);
 			}catch(Exception e){

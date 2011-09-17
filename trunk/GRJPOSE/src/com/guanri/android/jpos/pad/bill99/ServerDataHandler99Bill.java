@@ -381,7 +381,9 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		leaf.setTag("1");// 获得批次号
 		String posBatchNo = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
 				SharedPreferencesUtils.POSBATCHNO);
-		if (posBatchNo == null)
+		logger.debug("批次号："+posBatchNo);
+		
+		//if (posBatchNo == null)
 			posBatchNo = "000001";
 		leaf.setValue(posBatchNo);
 		data1.put(1,leaf);

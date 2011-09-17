@@ -953,9 +953,7 @@ public class JposPackage99Bill extends JposPackageFather{
 					e.printStackTrace();
 				}	
 			}
-			if(feild.length>index){
 
-			}
 			byte[] result = new byte[2+index];
 			System.arraycopy(fixLengthStr2cbcd(String.valueOf(index), 3, true), 0, result, 0,2);
 			System.arraycopy(feild, 0, result, 2, index);

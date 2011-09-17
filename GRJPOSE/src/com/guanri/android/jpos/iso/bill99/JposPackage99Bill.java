@@ -919,8 +919,8 @@ public class JposPackage99Bill extends JposPackageFather{
 		//自定义域由TreeMap对象传递
 		if(o!=null&&o instanceof TreeMap){
 			TreeMap<Integer,JposSelfFieldLeaf> data = (TreeMap<Integer,JposSelfFieldLeaf>)o;
-			byte[] feild = new byte[31];
-			System.arraycopy(fixLengthStr2cbcd("30", 2, true), 0, feild, 0, 1);//长度用3位BCD码表示
+			byte[] feild = new byte[30];
+			//System.arraycopy(fixLengthStr2cbcd("30", 2, true), 0, feild, 0, 1);//长度用3位BCD码表示
 			int index = 0;
 			Iterator<Integer> it = data.keySet().iterator();
 			byte[] temp = null;
@@ -931,16 +931,16 @@ public class JposPackage99Bill extends JposPackageFather{
 					
 					temp = TypeConversion.stringToAscii(leaf.getValue());
 					if(key==1){
-						insertFeild(feild,temp,1,3);
+						insertFeild(feild,temp,0,3);
 						index += 3;
 					}else if(key==2){
-						insertFeild(feild,temp,4,12);
+						insertFeild(feild,temp,3,12);
 						index += 12;
 					}else if(key==3){
-						insertFeild(feild,temp,16,3);
+						insertFeild(feild,temp,15,3);
 						index += 3;
 					}else if(key==4){
-						insertFeild(feild,temp,19,12);
+						insertFeild(feild,temp,18,12);
 						index += 12;
 					}
 				} catch (Exception e) {

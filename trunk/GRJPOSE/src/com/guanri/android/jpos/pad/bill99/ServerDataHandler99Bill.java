@@ -1125,13 +1125,13 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
 		jposf.setTag("1");
 		//jposf.setValue(sumdata);
-		jposf.setValue("001");
+		jposf.setValue("000");
 		data.put(1, jposf);
 
 		jposf = new JposSelfFieldLeaf();
 		jposf.setTag("2");
 		//jposf.setValue(summoneystr);
-		jposf.setValue("000000009999");
+		jposf.setValue("000000000000");
 		data.put(2, jposf);
 		// 处理反向交易次数 目前没做退货方法都为0
 		jposf = new JposSelfFieldLeaf();

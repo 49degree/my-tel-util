@@ -580,6 +580,8 @@ public class TypeConversion {
 	
 	public static void main(String args[]) {
 		try{
+			byte[] temp = stringToAscii(null);
+			System.out.println(temp.length);
 			byte[] s = TypeConversion.intToBytes(1);
 			String str = "123456我";
 			System.out.println(str.getBytes("GBK").length);

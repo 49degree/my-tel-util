@@ -330,4 +330,48 @@ public class ServerDataUnPackage99Bill {
 		return tTransaction;
 	}
 
+	/**
+	 * POS结算
+	 * @param rtTransaction
+	 * @param getMap
+	 * @param messageType
+	 * @return
+	 */
+	public static TTransaction UnPackageCheck(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
+		TTransaction tTransaction = new TTransaction();
+		StringBuffer result = new StringBuffer();
+		tTransaction.TransCode().SetAsInteger(6);
+		Date date = new Date();
+		tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
+		tTransaction.Date().SetAsString((String) getMap.get(13));
+		tTransaction.Time().SetAsString((String) getMap.get(12));
+		// 域11 POS 流水号
+		tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
+
+		// 判断是否相应成功
+		if (getMap.get(39).equals("00")) {
+			// 更新 数据, 代码待完善
+			// ------------------------------------------------------------
+			// bdOperator.onUpgrade();
+			String str = JposConstant.result((String) getMap.get(39));
+			logger.debug("响应成功:" + str);
+			result.append("响应结果" + str + "\n");
+			// 响应信息
+			tTransaction.ProcessList.Response().SetAsString("00" + (String) getMap.get(49));
+			if (getMap.containsKey(61)) {
+				ArrayList<JposSelfFieldLeaf> datalist = (ArrayList<JposSelfFieldLeaf>) getMap.get(46);
+				if (datalist.size() > 0) {
+					JposSelfFieldLeaf jposf = datalist.get(0);
+					SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+							SharedPreferencesUtils.POSBATCHNO, jposf.getValue());
+					logger.debug("新批次号:" + jposf.getValue());
+				}
+			}
+			logger.debug(result.toString());
+		} else {
+			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
+		}
+
+		return tTransaction;
+	}
 }

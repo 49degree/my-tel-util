@@ -1057,7 +1057,20 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//4955.26；撤销2笔，总金额1236.22。
 		sendMap.put(63,getCheckOutData(posMessageBean.ProcessList.OrderNumber().GetAsString()));
 		
-		return null;
+		JposMessageType99Bill messageType = new JposMessageType99Bill();
+		//设置消息头类型
+
+		// 003B60000000900100：003B(长度字节) + 6000000090(TPDU) + 0100(报文版本号)
+		messageType.setPageLength((short)59);
+		messageType.setId((byte)0x60);  
+		messageType.setServerAddress("0000");
+		messageType.setServerAddress("0000");
+		messageType.setAddress("0090");
+		messageType.setPagever("0100");
+		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_CHACKOUT);
+		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
+	 
+		return jposPackage99Bill;
 	}
 
 	// TODO Auto-generated method stub

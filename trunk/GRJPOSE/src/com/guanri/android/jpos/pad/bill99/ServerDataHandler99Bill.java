@@ -68,7 +68,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * getMap 返回报文
 	 */
 	public TTransaction createBackPosObject(TTransaction rtTransaction,TreeMap<Integer, Object> getMap, JposMessageType messageType){
-		TTransaction tTransaction = new TTransaction();
+		TTransaction tTransaction =null;//new TTransaction();
 		// 检查发送到服务器的数据与服务器返回的 商户号与终端好是否一直
 		//if((rtTransaction.ProcessList.TerminalID().GetAsString().equals(getMap.get(41)))
 		//		&&(rtTransaction.ProcessList.MerchantID().GetAsString().equals(getMap.get(42))))
@@ -110,15 +110,15 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 					tTransaction = ServerDataUnPackage99Bill.UnPackageSale(rtTransaction, getMap, messageType);
 		}
 		// 交易回执
-//		switch (rtTransaction.TransCode().GetAsInteger()) {
-//		case 7:
-//		case 8:	
-//			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
-//			break;
-//		default:
-//			break;
-//		}
-//		
+		switch (rtTransaction.TransCode().GetAsInteger()) {
+		case 7:
+		case 8:	
+			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
+			break;
+		default:
+			break;
+		}
+		
 		return tTransaction;
 	}
 	

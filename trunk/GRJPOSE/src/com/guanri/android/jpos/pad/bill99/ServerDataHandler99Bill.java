@@ -771,8 +771,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(25, "14");
 		// 第37域 系统参考号 由后台系统定位原交易
 		//----------------------------------
-		//if(false)
-			sendMap.put(37, posMessageBean.BufferList.ReferenceNumber().GetAsString());
+		logger.debug("POS发送过来的系统参考号:"+ posMessageBean.BufferList.ReferenceNumber().GetAsString());
+		sendMap.put(37, posMessageBean.BufferList.ReferenceNumber().GetAsString());
 		// 第41域  终端号
 		logger.debug("POS发送过来的终端号:"+posMessageBean.ProcessList.TerminalID().GetAsString());
 		sendMap.put(41, posMessageBean.ProcessList.TerminalID().GetAsString());

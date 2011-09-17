@@ -14,7 +14,7 @@ public class ServerDownDataParse {
 	private JposUnPackageFather jposUnPackage = null;
 	private ServerDataHandlerImp serverDataHandler = null; 
 	private TTransaction rTransaction;
-	public ServerDownDataParse(TTransaction tTransaction,byte[] returnData) {
+	public ServerDownDataParse(TTransaction rTransaction,byte[] returnData) {
 		this.returnData = returnData;
 		this.rTransaction = rTransaction;
 		serverDataHandler = ServerDataHandlerFactory.geServerDataHandler();

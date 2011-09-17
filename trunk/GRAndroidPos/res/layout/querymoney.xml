@@ -14,7 +14,7 @@
 	</LinearLayout>
 	<LinearLayout android:orientation="horizontal"
 		android:paddingTop="5dip" android:layout_width="fill_parent"
-		android:layout_height="150dip">
+		android:layout_height="550dip">
 		<TextView android:text="POS下发PAD数据:" android:gravity="right"
 			android:layout_width="150dip" android:layout_height="wrap_content" />
 		<ScrollView android:layout_width="fill_parent"

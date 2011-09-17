@@ -18,6 +18,7 @@ import android.widget.EditText;
 
 import com.guanri.android.jpos.services.AidlRunService;
 import com.guanri.android.jpos.services.GrPosService;
+import com.guanri.android.lib.log.LogInfo;
 import com.guanri.android.lib.log.Logger;
 
 public class MainActivity extends Activity implements OnClickListener {
@@ -151,7 +152,7 @@ public class MainActivity extends Activity implements OnClickListener {
     		// 循环直到打开串口
     		while (!stopLog) {
     			try {
-    				logger.error("LogTask.........:"+mRemoteService==null?"":mRemoteService.operate("LOG_INFO"));
+    				logger.error("LogTask.........11:"+mRemoteService.operate("pos_to_pad")+":"+(mRemoteService==null?"":mRemoteService.operate("LOG_INFO")));
     				updateUI.sendMessage(updateUI.obtainMessage(1,mRemoteService.operate("LOG_INFO")));
     				updateUI.sendMessage(updateUI.obtainMessage(2, mRemoteService.operate("pos_to_pad")));
     				updateUI.sendMessage(updateUI.obtainMessage(3, mRemoteService.operate("pad_to_pos")));
@@ -184,13 +185,18 @@ public class MainActivity extends Activity implements OnClickListener {
         	}else if(msg.what==1){
         		comm_state.setText((String)msg.obj);
         	}else if(msg.what==2){
+        		
         		pos_to_pad.setText((String)msg.obj);
+        		pos_to_pad.setSelection(pos_to_pad.length());//将光标移至文字末尾
         	}else if(msg.what==3){
         		pad_to_pos.setText((String)msg.obj);
+        		pad_to_pos.setSelection(pad_to_pos.length());//将光标移至文字末尾
         	}else if(msg.what==4){
         		pad_to_server.setText((String)msg.obj);
+        		pad_to_server.setSelection(pad_to_server.length());//将光标移至文字末尾
         	}else if(msg.what==5){
         		server_to_pad.setText((String)msg.obj);
+        		server_to_pad.setSelection(server_to_pad.length());//将光标移至文字末尾
         	}
         }
     };

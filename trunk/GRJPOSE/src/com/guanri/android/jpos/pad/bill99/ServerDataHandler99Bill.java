@@ -113,6 +113,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		switch (rtTransaction.TransCode().GetAsInteger()) {
 		case 6:
 			tTransaction = ServerDataUnPackage99Bill.UnPackageCheck(rtTransaction, getMap, messageType);
+			break;
 		case 7:
 		case 8:	
 			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);

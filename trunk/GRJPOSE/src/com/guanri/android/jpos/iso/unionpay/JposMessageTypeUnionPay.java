@@ -1,7 +1,5 @@
 package com.guanri.android.jpos.iso.unionpay;
 
-import com.guanri.android.exception.FieldTooLongException;
-import com.guanri.android.jpos.constant.JposConstant.MessageTypeDefineUnionpay;
 import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.lib.utils.TypeConversion;
 

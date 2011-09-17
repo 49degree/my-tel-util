@@ -2,7 +2,6 @@ package com.guanri.android.jpos.iso.unionpay;
 
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.iso.JposUnPackageFather;
-import com.guanri.android.jpos.iso.bill99.JposMessageType99Bill;
 
 /**
  * 块钱解包类

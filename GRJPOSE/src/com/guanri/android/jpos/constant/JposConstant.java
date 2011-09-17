@@ -158,7 +158,9 @@ public class JposConstant {
 		public final static String REQUEST_OP_QUERY_INSURANCE = "0200"; // OQS查询
 		public final static String RESPONSE_OP_QUERY_INSURANCE = "0210"; // OQS查询应答
 
-
+		public final static String REQUEST_OP_QUERY_CHACKOUT = "0500"; // 批结算
+		public final static String RESPONSE_OP_QUERY_CHACKOUT = "0500"; // 批结算应答
+		
 		public final static String REQUEST_POS_RECEIPTSALE = "0800";// 交易回执
 		public final static String RESPONSE_POS_RECEIPTSALE = "0810";// 回执应答
 		

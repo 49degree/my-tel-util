@@ -254,7 +254,7 @@ public class ServerDataUnPackage99Bill {
 				tTransaction.ProcessList.ReturnOrderNumber().SetAsString((String) getMap.get(60));
 			// 域37 参考号
 			String ReferenceStr = "";
-			if (getMap.containsKey(37))
+			//if (getMap.containsKey(37))
 				ReferenceStr = (String) getMap.get(37);
 				logger.debug("服务下发参考号:"+(String) getMap.get(37));
 				tTransaction.BufferList.ReferenceNumber().SetAsString(ReferenceStr);

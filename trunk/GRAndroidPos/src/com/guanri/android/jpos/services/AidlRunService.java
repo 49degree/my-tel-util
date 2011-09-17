@@ -144,10 +144,7 @@ public class AidlRunService extends Service{
     	public void run(){
     		// 循环直到打开串口
     		while (!IS_SERVER_STOP) {
-    			
-    			
-
-    			logger.error(":FindCommTask is runing.........................:");
+    			//logger.error(":FindCommTask is runing.........................:");
     			
     			try {
     				if (SerialPortAndroid.findAndroidDevice("/dev/ttyUSB0")) {
@@ -222,7 +219,7 @@ public class AidlRunService extends Service{
     	
     	@Override
     	public void run() {
-    		logger.error("PosCenterThread is start.........................:"+index++);
+    		//logger.error("PosCenterThread is start.........................:"+index++);
     		//未连接，判断是否存在串口设备
     		if (!TerminalLink.GetConnected()) {
     			if(SerialPortAndroid.findAndroidDevice(TerminalLink.CommName)){
@@ -240,7 +237,7 @@ public class AidlRunService extends Service{
     		}
     		// 循环读取数据
     		while (!IS_TASK_STOP&&!IS_SERVER_STOP) {
-    			logger.error("PosCenterThread is reading..........................");
+    			//logger.error("PosCenterThread is reading..........................");
     			try {
     				//读取数据
     				if (TerminalLink.GetConnected()) {

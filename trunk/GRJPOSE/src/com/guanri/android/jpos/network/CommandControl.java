@@ -45,7 +45,7 @@ public class CommandControl {
 		byte[] sendData = serverUpDataParse.getBeSendData();
 		byte[] returnData = this.submit(sendData);
 		ServerDownDataParse downDataParse = null;
-		if(returnData!=null){
+		if(returnData!=null&&returnData.length>0){
 			downDataParse = new ServerDownDataParse(serverUpDataParse.tTransaction,returnData);
 		}
 		return downDataParse;

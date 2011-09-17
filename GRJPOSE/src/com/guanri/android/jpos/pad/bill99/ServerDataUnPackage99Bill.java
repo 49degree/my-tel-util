@@ -361,7 +361,7 @@ public class ServerDataUnPackage99Bill {
 			tTransaction.ProcessList.Response().SetAsString("00" + (String) getMap.get(49));
 			if (getMap.containsKey(61)) {
 				TreeMap<Integer,JposSelfFieldLeaf> datalist = (TreeMap<Integer,JposSelfFieldLeaf>) getMap.get(61);
-				if (datalist.containsKey("1")) {
+				if (datalist.containsKey(1)) {
 					JposSelfFieldLeaf jposf = datalist.get(1);
 					SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
 							SharedPreferencesUtils.POSBATCHNO, jposf.getValue());

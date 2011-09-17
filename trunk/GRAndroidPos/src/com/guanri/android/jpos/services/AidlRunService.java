@@ -80,10 +80,11 @@ public class AidlRunService extends Service{
          * @return
          */
         public boolean startPos(){
-        	logger.error("GrPosService.Stub startPos");
         	if(HAS_COMM_PORT){
+        		//logger.error("GrPosService.Stub startPos");
         		posCenterTask = PosCenterThread.getInstance();
             	if(!posCenterTask.getTaskStop()&&!posCenterTask.isAlive()){//Thread在run之前和run完成之后isAlive()返回false,run运行过程中返回true;
+            		logger.error("GrPosService.Stub startPos");
             		try{
             			posCenterTask.start();//Thread 不可重复调用start()方法，
             		}catch(IllegalThreadStateException ie){//重复调用则抛出异常

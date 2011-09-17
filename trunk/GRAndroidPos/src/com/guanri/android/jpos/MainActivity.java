@@ -53,9 +53,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		//获取日志信息框对象
 		comm_state = (EditText)findViewById(R.id.edt_log);
 		pos_to_pad = (EditText)findViewById(R.id.edt_pos_to_pad);
-		pad_to_pos = (EditText)findViewById(R.id.edt_pad_to_pos);
+		//pad_to_pos = (EditText)findViewById(R.id.edt_pad_to_pos);
 		pad_to_server = (EditText)findViewById(R.id.edt_pad_to_server);
-		server_to_pad = (EditText)findViewById(R.id.edt_server_to_pad);
+		//server_to_pad = (EditText)findViewById(R.id.edt_server_to_pad);
 		comm_state.setText("mIsRemoteBound:"+mIsRemoteBound);
 		
 		logTask = new LogTask();
@@ -185,18 +185,22 @@ public class MainActivity extends Activity implements OnClickListener {
         	}else if(msg.what==1){
         		comm_state.setText((String)msg.obj);
         	}else if(msg.what==2){
-        		
-        		pos_to_pad.setText((String)msg.obj);
-        		pos_to_pad.setSelection(pos_to_pad.length());//将光标移至文字末尾
+        		if(!((String)msg.obj).equals(pos_to_pad.getText().toString())){
+            		pos_to_pad.setText((String)msg.obj);
+            		pos_to_pad.setSelection(pos_to_pad.length());//将光标移至文字末尾
+        		}
+
         	}else if(msg.what==3){
-        		pad_to_pos.setText((String)msg.obj);
-        		pad_to_pos.setSelection(pad_to_pos.length());//将光标移至文字末尾
+        		//pad_to_pos.setText((String)msg.obj);
+        		//pad_to_pos.setSelection(pad_to_pos.length());//将光标移至文字末尾
         	}else if(msg.what==4){
-        		pad_to_server.setText((String)msg.obj);
-        		pad_to_server.setSelection(pad_to_server.length());//将光标移至文字末尾
+        		if(!((String)msg.obj).equals(pad_to_server.getText().toString())){
+        			pad_to_server.setText((String)msg.obj);
+        			pad_to_server.setSelection(pad_to_server.length());//将光标移至文字末尾
+        		}
         	}else if(msg.what==5){
-        		server_to_pad.setText((String)msg.obj);
-        		server_to_pad.setSelection(server_to_pad.length());//将光标移至文字末尾
+        		//server_to_pad.setText((String)msg.obj);
+        		//server_to_pad.setSelection(server_to_pad.length());//将光标移至文字末尾
         	}
         }
     };

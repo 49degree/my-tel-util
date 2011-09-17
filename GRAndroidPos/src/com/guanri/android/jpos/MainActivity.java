@@ -152,7 +152,7 @@ public class MainActivity extends Activity implements OnClickListener {
     		// 循环直到打开串口
     		while (!stopLog) {
     			try {
-    				logger.error("LogTask.........11:"+mRemoteService.operate("pos_to_pad")+":"+(mRemoteService==null?"":mRemoteService.operate("LOG_INFO")));
+    				//logger.error("LogTask.........11:"+mRemoteService.operate("pos_to_pad")+":"+(mRemoteService==null?"":mRemoteService.operate("LOG_INFO")));
     				updateUI.sendMessage(updateUI.obtainMessage(1,mRemoteService.operate("LOG_INFO")));
     				updateUI.sendMessage(updateUI.obtainMessage(2, mRemoteService.operate("pos_to_pad")));
     				updateUI.sendMessage(updateUI.obtainMessage(3, mRemoteService.operate("pad_to_pos")));

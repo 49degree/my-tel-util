@@ -111,7 +111,7 @@ public class AidlRunService extends Service{
         }
         
         public boolean hasCommPort(){
-        	logger.error("GrPosService.Stub hasCommPort");
+        	//logger.error("GrPosService.Stub hasCommPort");
         	return HAS_COMM_PORT;
         }
         /**

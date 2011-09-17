@@ -24,7 +24,6 @@ public class ServerDataUnPackage99Bill {
 	final static Logger logger = new Logger(ServerDataUnPackage99Bill.class);
 
 	public static DBOperator bdOperator = DBOperator.getInstance();
-	static TTransaction tTransaction = new TTransaction();
 
 	/**
 	 * 解析签到返回报文
@@ -35,7 +34,7 @@ public class ServerDataUnPackage99Bill {
 	 * @return
 	 */
 	public static TTransaction UnPackageLogin(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
-
+		TTransaction tTransaction = new TTransaction();
 		if (getMap.containsKey(39)) {
 			String str = JposConstant.result((String) getMap.get(39));
 
@@ -102,7 +101,7 @@ public class ServerDataUnPackage99Bill {
 	 * @return
 	 */
 	public static TTransaction UnPackageQuery(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
-
+		TTransaction tTransaction = new TTransaction();
 		Date date = new Date();
 		tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
 		tTransaction.Date().SetAsString((String) getMap.get(13));
@@ -136,6 +135,7 @@ public class ServerDataUnPackage99Bill {
 	 */
 
 	public static TTransaction UnPackageSale(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
+		TTransaction tTransaction = new TTransaction();
 		Date date = new Date();
 		tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
 		tTransaction.Date().SetAsString((String) getMap.get(13));
@@ -182,6 +182,7 @@ public class ServerDataUnPackage99Bill {
 	 * @return
 	 */
 	public static TTransaction UnPagckageQueryOQS(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
+		TTransaction tTransaction = new TTransaction();
 		StringBuffer result = new StringBuffer();
 		Date date = new Date();
 		tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
@@ -229,6 +230,7 @@ public class ServerDataUnPackage99Bill {
 	 * @return
 	 */
 	public static TTransaction UnPackageQueryOQSSale(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
+		TTransaction tTransaction = new TTransaction();
 		StringBuffer result = new StringBuffer();
 		Date date = new Date();
 		tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
@@ -286,6 +288,7 @@ public class ServerDataUnPackage99Bill {
 	 * @return
 	 */
 	public static TTransaction UnPackageSaleReceipt(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
+		TTransaction tTransaction = new TTransaction();
 		StringBuffer result = new StringBuffer();
 		tTransaction.TransCode().SetAsInteger(7);
 		Date date = new Date();
@@ -323,7 +326,7 @@ public class ServerDataUnPackage99Bill {
 	 * @return
 	 */
 	public static TTransaction UnPackageReversal(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
-
+		TTransaction tTransaction = new TTransaction();
 		return tTransaction;
 	}
 

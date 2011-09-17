@@ -1,9 +1,5 @@
 package com.guanri.android.jpos.pos;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
 /**
  * PC的串口对象
  * @author Administrator

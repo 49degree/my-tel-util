@@ -44,8 +44,8 @@ public class ServerDownDataParse {
 	 * @return
 	 */
 	public byte[] getMac(){
-		if(jposUnPackage!=null&&jposUnPackage.getMReturnMap()!=null&&jposUnPackage.getMReturnMap().containsKey("64")){
-			return (byte[])(jposUnPackage.getMReturnMap().get("64"));
+		if(jposUnPackage!=null&&jposUnPackage.getMReturnMap()!=null&&jposUnPackage.getMReturnMap().containsKey(64)){
+			return (byte[])(jposUnPackage.getMReturnMap().get(64));
 		}else{
 			return null;
 		}

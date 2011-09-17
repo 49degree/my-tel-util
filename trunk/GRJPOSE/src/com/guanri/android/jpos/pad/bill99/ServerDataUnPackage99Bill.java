@@ -327,6 +327,7 @@ public class ServerDataUnPackage99Bill {
 	 */
 	public static TTransaction UnPackageReversal(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
 		TTransaction tTransaction = new TTransaction();
+		
 		return tTransaction;
 	}
 

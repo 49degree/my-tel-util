@@ -2,7 +2,6 @@ package com.guanri.android.jpos.bean;
 
 
 import com.guanri.android.exception.CommandParseException;
-import com.guanri.android.jpos.bean.PosMessageBean;
 import com.guanri.android.lib.log.Logger;
 
 /**

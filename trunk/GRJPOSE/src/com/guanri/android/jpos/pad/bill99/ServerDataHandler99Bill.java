@@ -111,6 +111,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		}
 		// 交易回执
 		switch (rtTransaction.TransCode().GetAsInteger()) {
+		case 6:
+			tTransaction = ServerDataUnPackage99Bill.UnPackageCheck(rtTransaction, getMap, messageType);
 		case 7:
 		case 8:	
 			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
@@ -167,7 +169,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			break;
 		case 6:
 			// 批结算
-			
+			jposPackageFather = createCheckout(ttransaction);
 			break;
 		case 600:
 			// 订单查询

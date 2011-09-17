@@ -782,7 +782,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域46 TVL
 		ArrayList<JposSelfFieldLeaf> datalist = new ArrayList<JposSelfFieldLeaf>();
 		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
-		jposf.setTag("1");
+		jposf.setTag("0000");
 		jposf.setValue("20"); //表示交易回执		
 		datalist.add(jposf);
 		sendMap.put(46, datalist);

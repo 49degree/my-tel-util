@@ -33,7 +33,7 @@ public abstract class JposUnPackageFather {
 		creatMessageType();
 		if(data==null)
 			throw new PacketException("数据为空！");
-		else if(data.length<64+mMessageType.getMessageTypeLength()){
+		else if(data.length<8+mMessageType.getMessageTypeLength()){
 			throw new PacketException("数据长度错误！");
 		}
 		this.data = data;

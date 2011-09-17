@@ -90,12 +90,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 				&&(messageType.getTransactionCode().equals("31"))){
 			tTransaction = ServerDataUnPackage99Bill.UnPackageQuery(rtTransaction, getMap, messageType);
 		}
-		// 消费
-		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
-			&&(messageType.getTransactionCode().equals("00"))){
-			
-			tTransaction = ServerDataUnPackage99Bill.UnPackageSale(rtTransaction, getMap, messageType);
-		}
+		
 		
 		// 保单查询
 		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_INSURANCE))
@@ -108,6 +103,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 				&&(messageType.getTransactionCode().equals("32"))
 				&&(rtTransaction.TransCode().GetAsString().equals("601"))){
 			tTransaction = ServerDataUnPackage99Bill.UnPackageQueryOQSSale(rtTransaction, getMap, messageType);
+		}
+		else if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
+					&&(messageType.getTransactionCode().equals("00"))){
+		
+					tTransaction = ServerDataUnPackage99Bill.UnPackageSale(rtTransaction, getMap, messageType);
 		}
 		return tTransaction;
 	}

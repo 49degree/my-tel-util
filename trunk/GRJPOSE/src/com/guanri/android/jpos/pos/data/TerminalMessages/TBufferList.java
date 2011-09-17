@@ -52,13 +52,17 @@ public class TBufferList extends TFieldList {
 		AddField(-1, TDataType.dt_BCD, TLengthType.lt_Fixed, 4, "MsgTypeID"); // 消息类型
 		AddField(2, TDataType.dt_BCD, TLengthType.lt_VarBCD2, 19, "PAN"); //主帐号
 		AddField(3, TDataType.dt_BCD, TLengthType.lt_Fixed, 6, "ProcessCode"); //主帐号
+		AddField(4, TDataType.dt_BCD, TLengthType.lt_Fixed, 12, "SaleAmount"); //消费金额
+		AddField(11, TDataType.dt_BCD, TLengthType.lt_Fixed, 6, "TraceAuditNumber"); // 系统跟踪号， POS终端流水号
+		AddField(14, TDataType.dt_BCD, TLengthType.lt_Fixed, 4, "DateOfExpired"); //卡有效期
+		
 		AddField(35, TDataType.dt_BCD, TLengthType.lt_VarBCD2, 37, "Track2Data"); //2磁道的数据
 		AddField(36, TDataType.dt_BCD, TLengthType.lt_VarBCD3, 104, "Track3Data"); //主帐号
-		AddField(4, TDataType.dt_BCD, TLengthType.lt_Fixed, 12, "SaleAmount"); //消费金额
-		AddField(14, TDataType.dt_BCD, TLengthType.lt_Fixed, 4, "DateOfExpired"); //卡有效期
-		AddField(38, TDataType.dt_ASC, TLengthType.lt_Fixed, 6, "AuthCode"); //授权码
-		AddField(11, TDataType.dt_BCD, TLengthType.lt_Fixed, 6, "TraceAuditNumber"); // 系统跟踪号， POS终端流水号
+		
 		AddField(37, TDataType.dt_ASC, TLengthType.lt_Fixed, 12, "ReferenceNumber"); // 检索参考号, POS中心流水号
+		AddField(38, TDataType.dt_ASC, TLengthType.lt_Fixed, 6, "AuthCode"); //授权码
+		
+		
 	}
 	
 	

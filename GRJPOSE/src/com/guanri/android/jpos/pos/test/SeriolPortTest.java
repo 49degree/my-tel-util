@@ -37,6 +37,9 @@ public class SeriolPortTest {
 	
 	
 	public void parseData(byte[] data){
+		//jie
+
+		
 		
 	}
 	
@@ -48,7 +51,7 @@ public class SeriolPortTest {
             portId = (CommPortIdentifier) portList.nextElement();
             logger.debug(portId.getName());
             if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                if (portId.getName().equals("COM3")) {
+                if (portId.getName().equals("COM5")) {
                     try {
                         serialPort = (SerialPort) portId.open("SimpleWriteApp", 2000);
                     } catch (PortInUseException e) {
@@ -126,6 +129,7 @@ public class SeriolPortTest {
 								if(TypeConversion.bytesToShortEx(recvAllBuffer, 0)<=recvAllBufferIndex-2){
 									byte[] data = new byte[recvAllBufferIndex];
 									System.arraycopy(recvAllBuffer, 0, data, 0, recvAllBufferIndex);
+									recvAllBufferIndex = 0;
 									parseData(data);//处理数据
 								}
 							}else{

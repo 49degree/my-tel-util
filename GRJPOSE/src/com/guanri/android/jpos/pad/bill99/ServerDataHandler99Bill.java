@@ -1068,6 +1068,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		params.put("BatchNo=", OrderNo);
 		params.put("TransactionMoney>", "0");
 		params.put("TransactionState=", "2");
+		/**get trance history infomation
 		List<Object> listdata = dbOperator.queryBeanList(DBBean.TB_SALE_RECORD, params);
 		// 处理正向交易总数
 		String sumdata = String.valueOf(listdata.size());
@@ -1076,11 +1077,6 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 				sumdata = "0" +sumdata;
 			}
 		}
-		// 正向交易笔数(3 位) 
-		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
-		jposf.setTag("1");
-		jposf.setValue(sumdata);
-		data.put(1, jposf);
 		// 处理正向交易总金额
 		int sunmoney = 0;
 		for (int i = 0; i < listdata.size(); i++) {
@@ -1093,9 +1089,18 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 				summoneystr = "0" +summoneystr;
 			}
 		}
+		*/
+		// 正向交易笔数(3 位) 
+		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
+		jposf.setTag("1");
+		//jposf.setValue(sumdata);
+		jposf.setValue("001");
+		data.put(1, jposf);
+
 		jposf = new JposSelfFieldLeaf();
 		jposf.setTag("2");
-		jposf.setValue(summoneystr);
+		//jposf.setValue(summoneystr);
+		jposf.setValue("000000009999");
 		data.put(2, jposf);
 		// 处理反向交易次数 目前没做退货方法都为0
 		jposf = new JposSelfFieldLeaf();

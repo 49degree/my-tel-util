@@ -109,6 +109,16 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		
 					tTransaction = ServerDataUnPackage99Bill.UnPackageSale(rtTransaction, getMap, messageType);
 		}
+		// 交易回执
+		switch (rtTransaction.TransCode().GetAsInteger()) {
+		case 7:
+		case 8:	
+			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
+			break;
+		default:
+			break;
+		}
+		
 		return tTransaction;
 	}
 	

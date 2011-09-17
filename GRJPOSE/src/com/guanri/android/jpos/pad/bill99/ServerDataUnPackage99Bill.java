@@ -360,9 +360,9 @@ public class ServerDataUnPackage99Bill {
 			// 响应信息
 			tTransaction.ProcessList.Response().SetAsString("00" + (String) getMap.get(49));
 			if (getMap.containsKey(61)) {
-				ArrayList<JposSelfFieldLeaf> datalist = (ArrayList<JposSelfFieldLeaf>) getMap.get(46);
-				if (datalist.size() > 0) {
-					JposSelfFieldLeaf jposf = datalist.get(0);
+				TreeMap<Integer,JposSelfFieldLeaf> datalist = (TreeMap<Integer,JposSelfFieldLeaf>) getMap.get(61);
+				if (datalist.containsKey("1")) {
+					JposSelfFieldLeaf jposf = datalist.get(1);
 					SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
 							SharedPreferencesUtils.POSBATCHNO, jposf.getValue());
 					logger.debug("新批次号:" + jposf.getValue());

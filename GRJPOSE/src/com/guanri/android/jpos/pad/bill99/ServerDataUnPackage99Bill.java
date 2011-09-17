@@ -49,11 +49,13 @@ public class ServerDataUnPackage99Bill {
 				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + "签到成功");
 				// 保存交易批次号
 				if (getMap.containsKey(61)) {
-					ArrayList<JposSelfFieldLeaf> datalist = (ArrayList<JposSelfFieldLeaf>) getMap.get(46);
+					TreeMap<Integer,JposSelfFieldLeaf> datalist = (TreeMap<Integer,JposSelfFieldLeaf>) getMap.get(61);
 					if (datalist.size() > 0) {
-						JposSelfFieldLeaf jposf = datalist.get(0);
+						JposSelfFieldLeaf jposf = datalist.get(1);
 						SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
 								SharedPreferencesUtils.POSBATCHNO, jposf.getValue());
+						logger.debug("返回的批次号："+jposf.getValue());
+
 					}
 				}
 				// 保存终端号

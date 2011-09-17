@@ -931,16 +931,21 @@ public class JposPackage99Bill extends JposPackageFather{
 					
 					temp = TypeConversion.stringToAscii(leaf.getValue());
 					if(key==1){
-						insertFeild(feild,temp,0,3);
+						//insertFeild(feild,temp,0,3);
+						feild=Utils.insertEnoughLengthBuffer(feild, index, temp, 0, 3, 10);
+						
 						index += 3;
 					}else if(key==2){
-						insertFeild(feild,temp,3,12);
+						//insertFeild(feild,temp,3,12);
+						feild = Utils.insertEnoughLengthBuffer(feild, index, temp, 0, 12, 10);
 						index += 12;
 					}else if(key==3){
-						insertFeild(feild,temp,15,3);
+						//insertFeild(feild,temp,15,3);
+						feild = Utils.insertEnoughLengthBuffer(feild, index, temp, 0, 3, 10);
 						index += 3;
 					}else if(key==4){
-						insertFeild(feild,temp,18,12);
+						//insertFeild(feild,temp,18,12);
+						feild = Utils.insertEnoughLengthBuffer(feild, index, temp, 0, 12, 10);
 						index += 12;
 					}
 				} catch (Exception e) {
@@ -948,7 +953,13 @@ public class JposPackage99Bill extends JposPackageFather{
 					e.printStackTrace();
 				}	
 			}
-			return feild;
+			if(feild.length>index){
+
+			}
+			byte[] result = new byte[2+index];
+			System.arraycopy(fixLengthStr2cbcd(String.valueOf(index), 3, true), 0, result, 0,2);
+			System.arraycopy(feild, 0, result, 2, index);
+			return result;
 			
 		}else{
 			return null;

@@ -887,17 +887,31 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 */
 	public JposPackageFather createReversal(TTransaction posMessageBean){
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
+		// 第2域  主账号
+		sendMap.put(2, posMessageBean.ProcessList.GetPAN());
 		// 第3域    处理码
-		sendMap.put(3, "340000");
+		sendMap.put(3, posMessageBean.BufferList.ProcessCode().GetAsString());
+		// 第4域 交易金额
+		sendMap.put(4, posMessageBean.BufferList.SaleAmount().GetAsString());
 		// 第11域  POS流水号
 		logger.debug("POS发送过来的流水号:"+posMessageBean.SerialNumber().GetAsString());
 		sendMap.put(11, posMessageBean.SerialNumber().GetAsString());
+		//
+		sendMap.put(12, posMessageBean.Time().GetAsString());
+		sendMap.put(13, posMessageBean.Time().GetAsString());
+		if(!posMessageBean.ProcessList.DateOfExpired().GetIsEmpty())
+			sendMap.put(14, posMessageBean.ProcessList.DateOfExpired());
+			
 		// 第22域  POS输入方式
 		sendMap.put(22, "012");
 		// 第24域  NII
 		sendMap.put(24, "009");
 		// 第25域  服务点条件码
 		sendMap.put(25, "14");
+		if(!posMessageBean.BufferList.Track2Data().GetIsEmpty())
+			sendMap.put(35,posMessageBean.BufferList.Track2Data().GetAsString());
+		if(!posMessageBean.BufferList.Track3Data().GetIsEmpty())
+			sendMap.put(35,posMessageBean.BufferList.Track3Data().GetAsString());
 		// 第41域  终端号
 		logger.debug("POS发送过来的终端号:"+posMessageBean.ProcessList.TerminalID().GetAsString());
 		sendMap.put(41, posMessageBean.ProcessList.TerminalID().GetAsString());
@@ -906,6 +920,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(42, posMessageBean.ProcessList.MerchantID().GetAsString());
 		// 域49  货币代码
 		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
+		
+		
 		// 域60 订单号
 		logger.debug("POS发送过来的订单号:"+posMessageBean.ProcessList.OrderNumber().GetAsString());
 		sendMap.put(60, posMessageBean.ProcessList.OrderNumber().GetAsString());

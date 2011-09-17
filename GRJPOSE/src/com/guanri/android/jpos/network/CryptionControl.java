@@ -35,7 +35,11 @@ public class CryptionControl {
 	}
 
 
-	
+	/**
+	 * 计算密钥
+	 * @param msg
+	 * @return
+	 */
 	public byte[] getMak(String msg){
 //		终端号：20100601 
 //		流水号：000022 
@@ -51,10 +55,6 @@ public class CryptionControl {
 		
 		byte[] result = {(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF};
 		
-//		byte[] source = TypeConversion.hexStringToByte("FFFFFFFFFFFFFFFF323031303036303130303030323230393130323230383539");
-//		int blockNum = source.length % 8>0?(source.length/8+1):source.length/8;
-//		byte[] result = new byte[8];
-//		System.arraycopy(source, 0, result, 0, 8);
 		
 		for (int i = 0; i < blockNum; i++) {
 			byte[] checkBlock = new byte[8];
@@ -77,17 +77,23 @@ public class CryptionControl {
 		return result;
 	}
 	
+	/**
+	 * 构造MAC
+	 * @param mab
+	 * @param makSource
+	 * @return
+	 */
 	public byte[] getMac(byte[] mab,String makSource){
-		byte[] mak = getMak(makSource);
+		byte[] mak = getMak(makSource);//计算加密密码
 		
-		if(mab.length%8>0){
+		if(mab.length%8>0){//补足8字节整数倍
 			byte[] temp = new byte[(mab.length/8+1)*8];
 			System.arraycopy(mab, 0, temp, 0, mab.length);
 			mab = temp;
 		}
 		logger.debug("getMac:"+TypeConversion.byte2hex(mab));
 		
-		byte[] result = this.getDynamicMAC(mab, mak);
+		byte[] result = this.getDynamicMAC(mab, mak);//调用mac算法，ans x9.9算法
 		logger.debug(TypeConversion.byte2hex(result));
 		
 		
@@ -97,6 +103,7 @@ public class CryptionControl {
 	
 	/**
 	 * 构造消息摘要
+	 * ans x9.9算法
 	 * @return String
 	 * @roseuid 4DF71E7A02AF
 	 */

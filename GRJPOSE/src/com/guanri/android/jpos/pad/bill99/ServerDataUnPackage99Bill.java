@@ -247,10 +247,6 @@ public class ServerDataUnPackage99Bill {
 		tTransaction.TransCode().SetAsInteger(200);
 		// 判断是否相应成功
 		if (getMap.get(39).equals("00")) {
-			// 更新 数据, --------------------------------------------------
-			upDataState(rtTransaction.SerialNumber().GetAsString(),
-						rtTransaction.MAC().GetAsString(),"1");
-			
 			String str = JposConstant.result((String) getMap.get(39));
 			logger.debug("响应成功:" + str);
 			result.append("响应结果" + str + "\n");
@@ -278,6 +274,14 @@ public class ServerDataUnPackage99Bill {
 			String authorizeStr = "";
 			if (getMap.containsKey(38))
 				authorizeStr = (String) getMap.get(38);
+			// 更新 数据, --------------------------------------------------
+			// 更新 单据状态为1 更新服务器下发的 参考号,授权码
+			Map<String,String> params = new HashMap<String,String>();
+			params.put("TransactionState=", "1");
+			params.put("SearchNo=", ReferenceStr);
+			params.put("AuthorizationNo=", authorizeStr);
+			upDataState(rtTransaction.SerialNumber().GetAsString(),
+						rtTransaction.MAC().GetAsString(),params);
 			logger.debug(result.toString());
 		} else {
 			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
@@ -317,8 +321,10 @@ public class ServerDataUnPackage99Bill {
 			
 			// 更新数据库状态
 			//-------------------------------------------------------
+			//Map<String,String> params = new HashMap<String,String>();
+			//params.put("TransactionState=", "2");
 			//upDataState(rtTransaction.SerialNumber().GetAsString(),
-			//			rtTransaction.MAC().GetAsString(),"2");
+			//			rtTransaction.MAC().GetAsString(),params);
 			
 			logger.debug(result.toString());
 		} else {
@@ -388,7 +394,7 @@ public class ServerDataUnPackage99Bill {
 	}
 	
 	
-	public static void upDataState(String SerialNumber,String MAC,String state){
+	public static void upDataState(String SerialNumber,String MAC,Map<String,String> params){
 		// 更新数据库标识
 		Map<String,String> values = new HashMap<String,String>();
 		// 流水号
@@ -397,9 +403,6 @@ public class ServerDataUnPackage99Bill {
 		values.put("PosMac=", MAC);
 		//values.put("PosMac=", rtTransaction.MAC().GetAsString());
 		//values.put("CardNo=", rtTransaction.ProcessList.GetPAN());
-		// 更新 单据状态为1
-		Map<String,String> params = new HashMap<String,String>();
-		params.put("TransactionState=", state);
 		bdOperator.update(DBBean.TB_SALE_RECORD, values, params);
 	}
 }

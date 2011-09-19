@@ -894,10 +894,13 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	public JposPackageFather createReversal(TTransaction posMessageBean){
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		// 第2域  主账号
+		logger.debug("主账号:"+posMessageBean.BufferList.TraceAuditNumber().GetAsString());
 		sendMap.put(2, posMessageBean.BufferList.TraceAuditNumber().GetAsString());
 		// 第3域   // 交易处理码
+		logger.debug("交易处理码:"+posMessageBean.BufferList.ProcessCode().GetAsString());
 		sendMap.put(3,posMessageBean.BufferList.ProcessCode().GetAsString());
 		// 第4域 交易金额
+		logger.debug("交易金额:"+posMessageBean.BufferList.SaleAmount().GetAsString());
 		sendMap.put(4, posMessageBean.BufferList.SaleAmount().GetAsString());
 		// 第11域  POS流水号
 		logger.debug("POS发送过来的流水号:"+posMessageBean.SerialNumber().GetAsString());
@@ -913,10 +916,10 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 第25域  服务点条件码
 		sendMap.put(25, "14");
 		// 第41域  终端号
-		logger.debug("POS发送过来的终端号:"+posMessageBean.ProcessList.TerminalID().GetAsString());
+		logger.debug("终端号:"+posMessageBean.ProcessList.TerminalID().GetAsString());
 		sendMap.put(41, posMessageBean.ProcessList.TerminalID().GetAsString());
 		// 域42 商户代码
-		logger.debug("POS发送过来的商户号:"+posMessageBean.ProcessList.MerchantID().GetAsString());
+		logger.debug("商户号:"+posMessageBean.ProcessList.MerchantID().GetAsString());
 		sendMap.put(42, posMessageBean.ProcessList.MerchantID().GetAsString());
 		// 域49  货币代码
 		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
@@ -925,11 +928,13 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
 		// 原信息类型码
 		jposf.setTag("1");
+		logger.debug("原信息类型码:"+posMessageBean.BufferList.MsgTypeID().GetAsString());
 		jposf.setValue(posMessageBean.BufferList.MsgTypeID().GetAsString());
 		data.put(1, jposf);
 		// 系统跟踪号
 		jposf = new JposSelfFieldLeaf();
 		jposf.setTag("2");
+		logger.debug("系统跟踪号:"+posMessageBean.BufferList.TraceAuditNumber().GetAsString());
 		jposf.setValue(posMessageBean.BufferList.TraceAuditNumber().GetAsString());
 		data.put(2,jposf);
 		// 日期全填0

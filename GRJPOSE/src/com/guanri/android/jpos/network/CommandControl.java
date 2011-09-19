@@ -158,7 +158,7 @@ public class CommandControl {
 				} else {
 					stopReceive = true;
 				}
-				logger.debug("发送数据结束:"+recvAllBufferIndex);
+				logger.debug("接收数据长度:"+recvAllBufferIndex);
 			}
 
 			//解析接收到的数据

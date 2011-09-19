@@ -73,9 +73,9 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//if((rtTransaction.ProcessList.TerminalID().GetAsString().equals(getMap.get(41)))
 		//		&&(rtTransaction.ProcessList.MerchantID().GetAsString().equals(getMap.get(42))))
 		// 检查数据合法性
-		//if (!chackData(rtTransaction,getMap)){
-		//	return tTransaction;
-		//}
+//		if (!chackData(rtTransaction,getMap)){
+//			return tTransaction;
+//		}
 		
 		// 签到
 		if ((messageType.getMessageType().equals(
@@ -128,9 +128,30 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		return tTransaction;
 	}
 	
+	/**
+	 * 检查放回数据域是否正确
+	 * @param rtTransaction
+	 * @param getMap
+	 * @return
+	 */
 	private boolean chackData(TTransaction rtTransaction, TreeMap<Integer, Object> getMap) {
 		// TODO Auto-generated method stub
-		return false;
+		String TerminalID = null;
+		String MerchantID = null;
+		if((getMap.containsKey(41))&&(getMap.containsKey(42))){
+			  TerminalID = (String)getMap.get(41);
+			  MerchantID = (String)getMap.get(42);
+			
+			if((TerminalID.equals(rtTransaction.ProcessList.TerminalID().GetAsString()))
+				&&(MerchantID.equals(rtTransaction.ProcessList.MerchantID().GetAsString())))
+				return true;
+			else
+				return false;
+		}else{
+			return false;
+		}
+			
+		
 	}
 
 
@@ -807,12 +828,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		jposf.setValue("20"); //表示交易回执		
 		datalist.add(jposf);
 		jposf = new JposSelfFieldLeaf();
-		jposf.setTag("0001");
+		jposf.setTag("0030");
 		logger.debug("原交易消息类型:"+posMessageBean.BufferList.MsgTypeID().GetAsString());
 		jposf.setValue(posMessageBean.BufferList.MsgTypeID().GetAsString()); //原交易消息类型		
 		datalist.add(jposf);
 		jposf = new JposSelfFieldLeaf();
-		jposf.setTag("0002");
+		jposf.setTag("0031");
 		logger.debug("原处理码"+posMessageBean.BufferList.ProcessCode().GetAsString());
 		jposf.setValue(posMessageBean.BufferList.ProcessCode().GetAsString()); //原处理码		
 		datalist.add(jposf);

@@ -20,12 +20,6 @@ public class SaleDataLogBean {
 	public String OrderNo;
 	// 卡号
 	public String CardNo;
-	// 有效期
-	public String CardPeriod;
-	// 2磁道数据
-	public String Track2;
-	// 3磁道数据
-	public String Track3;
 	// 检索参考号
 	public String SearchNo;
 	// 授权码  
@@ -90,24 +84,6 @@ public class SaleDataLogBean {
 	}
 	public void setCardNo(String cardNo) {
 		CardNo = cardNo;
-	}
-	public String getCardPeriod() {
-		return CardPeriod;
-	}
-	public void setCardPeriod(String cardPeriod) {
-		CardPeriod = cardPeriod;
-	}
-	public String getTrack2() {
-		return Track2;
-	}
-	public void setTrack2(String track2) {
-		Track2 = track2;
-	}
-	public String getTrack3() {
-		return Track3;
-	}
-	public void setTrack3(String track3) {
-		Track3 = track3;
 	}
 	public String getSearchNo() {
 		return SearchNo;

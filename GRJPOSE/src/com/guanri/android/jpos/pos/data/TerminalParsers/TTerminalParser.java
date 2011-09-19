@@ -10,7 +10,7 @@ import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
 import com.guanri.android.jpos.pos.data.Common;
-import com.guanri.android.jpos.pos.data.Stream;
+import com.guanri.android.jpos.pos.data.TStream;
 import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_LoadFromBytes;
 import com.guanri.android.jpos.pos.data.Fields.TFieldList.TResult_SaveToBytes;
 import com.guanri.android.jpos.pos.data.TerminalLinks.TTerminalLink;
@@ -71,8 +71,8 @@ public class TTerminalParser {
 	protected void UpdateWorkingStatus(byte AStatus) { // 检测工作状态
 		TWorkingStatus WorkingStatus = new TWorkingStatus();
 		WorkingStatus.Status().SetAsInteger(AStatus & 0xFF);
-		Stream.SetBytes(null);
-		WorkingStatus.SaveToBytes();
+		TStream Stream = new TStream(null);
+		WorkingStatus.SaveToBytes(Stream);
 		FTerminalLink.SendPackage(Stream.Bytes);
 	}
 
@@ -81,8 +81,8 @@ public class TTerminalParser {
 		byte[] Bytes = FTerminalLink.RecvPackage();
 		if (Common.Length(Bytes) <= 0)
 			return false;
-		Stream.SetBytes(Bytes);
-		if (WorkingStatus.LoadFormBytes() != TResult_LoadFromBytes.rfll_NoError)
+		TStream Stream = new TStream(Bytes);
+		if (WorkingStatus.LoadFormBytes(Stream) != TResult_LoadFromBytes.rfll_NoError)
 			return false;
 		return WorkingStatus.Status().GetAsInteger() == (AStatus & 0xFF);
 	}
@@ -147,12 +147,13 @@ public class TTerminalParser {
 			MAC_Send.Time().SetAsInteger(0);
 		}
 
-		Stream.SetBytes(null);
-		MAC_Send.SaveToBytes();
+		TStream Stream = new TStream(null);
+		MAC_Send.SaveToBytes(Stream);
 		FTerminalLink.SendPackage(Stream.Bytes); // 发送
 		byte[] Bytes = FTerminalLink.RecvPackage();
-		Stream.SetBytes(Bytes);
-		if (MAC_Recv.LoadFormBytes() != TResult_LoadFromBytes.rfll_NoError) { // MAC回复出错
+
+		Stream = new TStream(Bytes);
+		if (MAC_Recv.LoadFormBytes(Stream) != TResult_LoadFromBytes.rfll_NoError) { // MAC回复出错
 			// PutLog("MAC回复出错");
 			return null;
 		}
@@ -183,10 +184,9 @@ public class TTerminalParser {
 						FLastSerialNumber);
 				Handshake_Response.Ident().SetAsInteger(GetNewIdent());
 
-				Stream.SetBytes(null);
-				Handshake_Response.SaveToBytes();
+				TStream Stream = new TStream(null);
+				Handshake_Response.SaveToBytes(Stream);
 				FTerminalLink.SendPackage(Stream.Bytes);
-
 				break;
 			}
 			return;
@@ -198,8 +198,9 @@ public class TTerminalParser {
 
 			Transaction.ClearProcess(); // 清空流程
 
-			Stream.SetBytes(Bytes);
-			if (Transaction.LoadFormBytes() != TResult_LoadFromBytes.rfll_NoError) // 报文格式错误
+			TStream Stream = new TStream(Bytes);
+			// Stream.SetBytes(Bytes);
+			if (Transaction.LoadFormBytes(Stream) != TResult_LoadFromBytes.rfll_NoError) // 报文格式错误
 				return;
 
 			if (!Transaction.CheckMAC()) { // MAC签名错误
@@ -214,8 +215,7 @@ public class TTerminalParser {
 			}
 
 			if (!IsAllowTrans(Transaction)) {
-				PutLog("不能识别的交易代码: "
-						+ Transaction.TransCode().GetAsInteger());
+				PutLog("不能识别的交易代码: " + Transaction.TransCode().GetAsInteger());
 				return;
 			}
 
@@ -298,7 +298,7 @@ public class TTerminalParser {
 				CommandControl.getInstance().closeConnect(); // 关闭连接
 
 				Transaction = reData.getTTransaction();// 取返回POS的对象
-				
+
 				if (Transaction == null) {
 					PutLog("返回对象错误, Transaction为空");
 					return;
@@ -307,8 +307,8 @@ public class TTerminalParser {
 				Transaction.Ident().SetAsInteger(FIdent);
 
 				PutLog_Response(Transaction);
-				FLastReferenceNumber = Transaction.BufferList.ReferenceNumber()
-						.GetAsString();
+				if (!Transaction.BufferList.ReferenceNumber().GetIsEmpty())
+					FLastReferenceNumber = Transaction.BufferList.ReferenceNumber().GetAsString();
 
 				if (IsEncryptMACTrans(Transaction)) {
 					// 计算
@@ -340,44 +340,38 @@ public class TTerminalParser {
 
 			Transaction.SaveProcess();
 			Transaction.SaveMAC();
-			Stream.SetBytes(null);
-			if (Transaction.SaveToBytes() != TResult_SaveToBytes.rfls_NoError) {
+			Stream = new TStream(null);
+			if (Transaction.SaveToBytes(Stream) != TResult_SaveToBytes.rfls_NoError) {
 				PutLog("保存响应数据错误!");
 				return;
 			}
 			;
-	
-			
-			PutLog("已发送响应数据.");		
+
+			PutLog("已发送响应数据.");
 			FTerminalLink.SendPackage(Stream.Bytes);
 
 		}
 	}
+
 	public void PutLog(String s) {
 		System.out.println(s);
-		
-		LogInfo.instance.pos_to_pad.append(s+"\n");
+
+		LogInfo.instance.pos_to_pad.append(s + "\n");
 	}
+
 	public void PutLog_Request(TTransaction Transaction) {
-		PutLog("[请求]流水号: "
-				+ Transaction.SerialNumber().GetAsString());
-		PutLog("[请求]交易代码: "
-				+ Transaction.TransCode().GetAsInteger());
+		PutLog("[请求]流水号: " + Transaction.SerialNumber().GetAsString());
+		PutLog("[请求]交易代码: " + Transaction.TransCode().GetAsInteger());
 		PutLog("[请求]年:" + Transaction.Year().GetAsString());
 		PutLog("[请求]日期:" + Transaction.Date().GetAsString());
 		PutLog("[请求]时间:" + Transaction.Time().GetAsString());
-		PutLog("[请求]2磁道数据: "
-				+ Transaction.ProcessList.GetTrack2Data());
-		PutLog("[请求]3磁道数据: "
-				+ Transaction.ProcessList.GetTrack3Data());
+		PutLog("[请求]2磁道数据: " + Transaction.ProcessList.GetTrack2Data());
+		PutLog("[请求]3磁道数据: " + Transaction.ProcessList.GetTrack3Data());
 		PutLog("[请求]卡号: " + Transaction.ProcessList.GetPAN());
 
-		PutLog("[请求]商户号: "
-				+ Transaction.ProcessList.MerchantID().GetAsString());
-		PutLog("[请求]终端号: "
-				+ Transaction.ProcessList.TerminalID().GetAsString());
-		PutLog("[请求]操作员ID: "
-				+ Transaction.ProcessList.UserID().GetAsString());
+		PutLog("[请求]商户号: " + Transaction.ProcessList.MerchantID().GetAsString());
+		PutLog("[请求]终端号: " + Transaction.ProcessList.TerminalID().GetAsString());
+		PutLog("[请求]操作员ID: " + Transaction.ProcessList.UserID().GetAsString());
 
 		PutLog("[请求]回送金额: "
 				+ Transaction.ProcessList.ReturnSaleAmount().GetAsInt64());
@@ -387,15 +381,12 @@ public class TTerminalParser {
 	}
 
 	public void PutLog_Response(TTransaction Transaction) {
-		PutLog("[响应]流水号: "
-				+ Transaction.SerialNumber().GetAsString());
-		PutLog("[响应]交易代码: "
-				+ Transaction.TransCode().GetAsInteger());
+		PutLog("[响应]流水号: " + Transaction.SerialNumber().GetAsString());
+		PutLog("[响应]交易代码: " + Transaction.TransCode().GetAsInteger());
 		PutLog("[响应]年:" + Transaction.Year().GetAsString());
 		PutLog("[响应]日期:" + Transaction.Date().GetAsString());
 		PutLog("[响应]时间:" + Transaction.Time().GetAsString());
-		PutLog("[响应]应答: "
-				+ Transaction.ProcessList.Response().GetAsString());
+		PutLog("[响应]应答: " + Transaction.ProcessList.Response().GetAsString());
 		PutLog("[响应]商户名称: "
 				+ Transaction.ProcessList.MerchantName().GetAsString());
 

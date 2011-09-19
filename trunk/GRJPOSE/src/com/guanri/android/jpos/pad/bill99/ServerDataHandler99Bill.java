@@ -915,7 +915,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(11, posMessageBean.SerialNumber().GetAsString());
 		//
 		sendMap.put(12, posMessageBean.Time().GetAsString());
-		sendMap.put(13, posMessageBean.Time().GetAsString());
+		sendMap.put(13, posMessageBean.Date().GetAsString());
 			
 		// 第22域  POS输入方式
 		sendMap.put(22, "012");

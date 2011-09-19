@@ -1,6 +1,7 @@
 package com.guanri.android.jpos.pos.data.Fields;
 
 import com.guanri.android.jpos.pos.data.Common;
+import com.guanri.android.jpos.pos.data.TStream;
 import com.guanri.android.jpos.pos.data.Fields.TField.TDataType;
 import com.guanri.android.jpos.pos.data.Fields.TField.TLengthType;
 
@@ -27,7 +28,7 @@ public class TFieldList {
 
 	}
 
-	public void AddField(int AIndex, TDataType ADataType,
+	public TField CreateField(int AIndex, TDataType ADataType,
 			TLengthType ALengthType, int AMaxLength, String AName) {
 		TField Field;
 		switch (ADataType) {
@@ -41,15 +42,18 @@ public class TFieldList {
 			Field = new TASCField();
 			break;
 		default:
-			return;
+			return null;
 		}
 		
 		Field.FIndex = AIndex;
 		Field.FLengthType = ALengthType;
 		Field.FMaxLength = AMaxLength;
 		Field.FName = AName;
-		
-		AddField(Field);
+		return Field;
+	}
+	public void AddField(int AIndex, TDataType ADataType,
+			TLengthType ALengthType, int AMaxLength, String AName) {		
+		AddField(CreateField(AIndex, ADataType, ALengthType, AMaxLength, AName));
 	}
 	public void AddField(TField Field) {
 		if (Field == null) return;
@@ -80,11 +84,11 @@ public class TFieldList {
 		  FFields[k] = Field;
 	}
 	
-	public TResult_LoadFromBytes LoadFormBytes() {
+	public TResult_LoadFromBytes LoadFormBytes(TStream Stream) {
 		TField.TResult_LoadFromBytes R;
 		for (int i = 0; i < Common.Length(FFields); i++) {
 			if (FFields[i] != null) {
-				R = FFields[i].LoadFromBytes();
+				R = FFields[i].LoadFromBytes(Stream);
 				if (R != TField.TResult_LoadFromBytes.lfr_NoError) {
 					if (R == TField.TResult_LoadFromBytes.lfr_LessBytes) 
 						return TResult_LoadFromBytes.rfll_LessBytes;
@@ -96,11 +100,11 @@ public class TFieldList {
 		return TResult_LoadFromBytes.rfll_NoError;
 	}
 	
-	public TResult_SaveToBytes SaveToBytes() {
+	public TResult_SaveToBytes SaveToBytes(TStream Stream) {
 		TField.TResult_SaveToBytes R;
 		for (int i = 0; i < Common.Length(FFields); i++) {
 			if (FFields[i] != null) {
-				R = FFields[i].SaveToBytes();
+				R = FFields[i].SaveToBytes(Stream);
 				if (R != TField.TResult_SaveToBytes.sfr_NoError) {
 					if (R == TField.TResult_SaveToBytes.sfr_EmptyField) 
 						return TResult_SaveToBytes.rfls_EmptyField;

@@ -808,11 +808,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		datalist.add(jposf);
 		jposf = new JposSelfFieldLeaf();
 		jposf.setTag("0001");
-		jposf.setValue("20"); //原交易消息类型		
+		jposf.setValue(posMessageBean.BufferList.MsgTypeID().GetAsString()); //原交易消息类型		
 		datalist.add(jposf);
 		jposf = new JposSelfFieldLeaf();
 		jposf.setTag("0002");
-		jposf.setValue("20"); //原处理码		
+		jposf.setValue(posMessageBean.BufferList.ProcessCode().GetAsString()); //原处理码		
 		datalist.add(jposf);
 		sendMap.put(46, datalist);
 		// 处理61 域
@@ -898,7 +898,6 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	
 	/**
 	 * 封装冲正数据包
-	 * ----------------------------------------未完成
 	 * @param posMessageBean
 	 * @return
 	 */

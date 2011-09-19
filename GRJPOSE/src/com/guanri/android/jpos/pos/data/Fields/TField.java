@@ -1,7 +1,7 @@
 package com.guanri.android.jpos.pos.data.Fields;
 
 import com.guanri.android.jpos.pos.data.Common;
-import com.guanri.android.jpos.pos.data.Stream;
+import com.guanri.android.jpos.pos.data.TStream;
 
 public abstract class TField {
 	public enum TDataType {
@@ -98,21 +98,21 @@ public abstract class TField {
 		FData = Value;
 	}
 
-	public TResult_LoadFromBytes LoadFromBytes() {
+	public TResult_LoadFromBytes LoadFromBytes(TStream Stream) {
 		TResult_LoadFromBytes Result;
 		Clear();
 
-		Result = LoadFromBytes_Length();
+		Result = LoadFromBytes_Length(Stream);
 		if (Result != TResult_LoadFromBytes.lfr_NoError)
 			return Result;
 		
 		if (FData_Len <= 0) return Result;
 		
-		Result = LoadFromBytes_Data();
+		Result = LoadFromBytes_Data(Stream);
 		return Result;
 	}
 
-	public TResult_LoadFromBytes LoadFromBytes_Length() {
+	public TResult_LoadFromBytes LoadFromBytes_Length(TStream Stream) {
 		TResult_LoadFromBytes Result = TResult_LoadFromBytes.lfr_NoError;
 		int i, k, m, d, Len;
 		int B;
@@ -200,7 +200,7 @@ public abstract class TField {
 		return Result;
 	}
 
-	public TResult_LoadFromBytes LoadFromBytes_Data() {
+	public TResult_LoadFromBytes LoadFromBytes_Data(TStream Stream) {
 		TResult_LoadFromBytes Result = TResult_LoadFromBytes.lfr_NoError;
 		int i, k, d;
 
@@ -222,17 +222,17 @@ public abstract class TField {
 
 	}
 
-	public TResult_SaveToBytes SaveToBytes() {
+	public TResult_SaveToBytes SaveToBytes(TStream Stream) {
 		TResult_SaveToBytes Result = TResult_SaveToBytes.sfr_NoError;
-		Result = SaveToBytes_Length();
+		Result = SaveToBytes_Length(Stream);
 		if (Result != TResult_SaveToBytes.sfr_NoError)
 			return Result;
 		if (Common.Length(FData) <= 0) return Result;
-		Result = SaveToBytes_Data();
+		Result = SaveToBytes_Data(Stream);
 		return Result;
 	}
 
-	public TResult_SaveToBytes SaveToBytes_Length() {
+	public TResult_SaveToBytes SaveToBytes_Length(TStream Stream) {
 		TResult_SaveToBytes Result = TResult_SaveToBytes.sfr_NoError;
 		int i, k, m, d, Len;
 		byte B;
@@ -315,7 +315,7 @@ public abstract class TField {
 
 	}
 
-	public TResult_SaveToBytes SaveToBytes_Data() {
+	public TResult_SaveToBytes SaveToBytes_Data(TStream Stream) {
 		TResult_SaveToBytes Result = TResult_SaveToBytes.sfr_NoError;
 	
 		  int Len, d, k, i;

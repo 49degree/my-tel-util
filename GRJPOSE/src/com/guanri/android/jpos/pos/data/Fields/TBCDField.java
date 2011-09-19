@@ -1,7 +1,7 @@
 package com.guanri.android.jpos.pos.data.Fields;
 
 import com.guanri.android.jpos.pos.data.Common;
-import com.guanri.android.jpos.pos.data.Stream;
+import com.guanri.android.jpos.pos.data.TStream;
 
 public class TBCDField extends TField {
 	protected TAlignment FAlignment = TAlignment.a_Right;
@@ -232,14 +232,14 @@ public class TBCDField extends TField {
 	}
 
 	@Override
-	public TResult_LoadFromBytes LoadFromBytes_Data() {
+	public TResult_LoadFromBytes LoadFromBytes_Data(TStream Stream) {
 		TResult_LoadFromBytes Result = TResult_LoadFromBytes.lfr_NoError;
 		int Len, i, k, d, j;
 		byte[] Temp;
 		byte B;
 
 		if (!Stream.Compress)
-			return super.LoadFromBytes_Data();
+			return super.LoadFromBytes_Data(Stream);
 
 		k = Stream.Index;
 		Len = FData_Len;
@@ -278,7 +278,7 @@ public class TBCDField extends TField {
 	}
 
 	@Override
-	public TResult_SaveToBytes SaveToBytes_Data() {
+	public TResult_SaveToBytes SaveToBytes_Data(TStream Stream) {
 		TResult_SaveToBytes Result = TResult_SaveToBytes.sfr_NoError;
 
 		int Len, d, k, i, j;
@@ -286,7 +286,7 @@ public class TBCDField extends TField {
 		byte B;
 
 		if (!Stream.Compress)
-			return super.SaveToBytes_Data();
+			return super.SaveToBytes_Data(Stream);
 
 		k = Stream.Index;
 
@@ -338,8 +338,8 @@ public class TBCDField extends TField {
 		System.out.println(GetAsInt64() + ".");
 		System.out.println(GetAsString() + ".");
 		
-		Stream.SetBytes(null);
-		SaveToBytes();
+		TStream Stream = new TStream(null);
+		SaveToBytes(Stream);
 		System.out.println(Common.ToHex(Stream.Bytes) + ".");
 		
 
@@ -348,8 +348,8 @@ public class TBCDField extends TField {
 		System.out.println(GetAsInteger() + ".");
 		System.out.println(GetAsInt64() + ".");
 		System.out.println(GetAsString() + ".");
-		Stream.SetBytes(null);
-		SaveToBytes();
+		Stream = new TStream(null);
+		SaveToBytes(Stream);
 		System.out.println(Common.ToHex(Stream.Bytes) + ".");
 		
 		
@@ -358,8 +358,8 @@ public class TBCDField extends TField {
 		SetAsInteger(54321);
 		System.out.println(GetAsInteger() + ".");
 		FAlignment = TAlignment.a_Left;
-		Stream.SetBytes(null);
-		SaveToBytes();
+		Stream = new TStream(null);
+		SaveToBytes(Stream);
 		System.out.println(Common.ToHex(Stream.Bytes) + ".");
 		
 	}

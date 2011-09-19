@@ -3,7 +3,7 @@ package com.guanri.android.jpos.pos.data.Fields;
 //import java.io.UnsupportedEncodingException;
 
 import com.guanri.android.jpos.pos.data.Common;
-import com.guanri.android.jpos.pos.data.Stream;
+import com.guanri.android.jpos.pos.data.TStream;
 
 public class TBINField extends TField {
 
@@ -88,7 +88,7 @@ public class TBINField extends TField {
 		for (i = L; i <= H; i++) {
 			BResult[i - L] = FData[i];
 		}
-		
+
 		return Common.BytesToString(BResult);
 	}
 
@@ -183,7 +183,7 @@ public class TBINField extends TField {
 	public void SetString(int Index, int Len, String Value) {
 		// TODO Auto-generated method stub
 		int i, NewLen, L, H, j;
-		//byte B;
+		// byte B;
 
 		byte[] BValue = Common.StringToBytes(Value);
 
@@ -222,87 +222,85 @@ public class TBINField extends TField {
 		return;
 	}
 
-	public  TBINField() {
+	public TBINField() {
 		FDataType = TDataType.dt_BIN;
 	}
-	
+
 	public boolean Test() {
 
 		System.out.println("Test_TBINField");
-		
+
 		FMaxLength = 10;
 		Clear();
 		SetAsString("tan谭");
 		System.out.println(GetAsString() + ".");
 
-		Stream.SetBytes(null);
-		
-		SaveToBytes();
+		TStream Stream = new TStream(null);
+		SaveToBytes(Stream);
+
 		System.out.println(Common.ToHex(Stream.Bytes));
-		
+
 		FMaxLength = 10;
 		Clear();
 		SetAsString("谭自杰tanzijie");
 		System.out.println(GetAsString() + ".");
-		
-		Stream.SetBytes(null);
-		SaveToBytes();
+
+		Stream = new TStream(null);
+		SaveToBytes(Stream);
+
 		System.out.println(Common.ToHex(Stream.Bytes));
-		
+
 		FLengthType = TLengthType.lt_VarBCD2;
 		FMaxLength = 10;
 		Clear();
 		SetAsString("tan谭");
 		System.out.println(GetAsString() + ".");
 
-		Stream.SetBytes(null);
-		
-		SaveToBytes();
+		Stream = new TStream(null);
+		SaveToBytes(Stream);
+
 		System.out.println(Common.ToHex(Stream.Bytes));
-		
+
 		FLengthType = TLengthType.lt_VarBCD2;
 		FMaxLength = 10;
 		Clear();
 		SetAsString("谭自杰tanzijie");
 		System.out.println(GetAsString() + ".");
 
-		Stream.SetBytes(null);
-		
-		SaveToBytes();
+		Stream = new TStream(null);
+		SaveToBytes(Stream);
+
 		System.out.println(Common.ToHex(Stream.Bytes));
-		
+
 		FLengthType = TLengthType.lt_VarBCD3;
 		FMaxLength = 10;
 		Clear();
 		SetAsString("谭自杰tanzijie");
 		System.out.println(GetAsString() + ".");
 
-		Stream.SetBytes(null);
-		
-		SaveToBytes();
+		Stream = new TStream(null);
+		SaveToBytes(Stream);
+
 		System.out.println(Common.ToHex(Stream.Bytes));
-		
+
 		FLengthType = TLengthType.lt_VarBIN1;
 		FMaxLength = 10;
 		Clear();
 		SetAsString("谭自杰tanzijie");
 		System.out.println(GetAsString() + ".");
 
+		Stream = new TStream(null);
+		SaveToBytes(Stream);
 
-		Stream.SetBytes(null);
-		
-		SaveToBytes();
 		System.out.println(Common.ToHex(Stream.Bytes));
-		
 
 		SetAsInteger(123456);
 		System.out.println(GetAsInteger() + ".");
 		System.out.println(GetAsInt64() + ".");
 
-
-		Stream.SetBytes(null);
+		Stream = new TStream(null);
+		SaveToBytes(Stream);
 		
-		SaveToBytes();
 		System.out.println(Common.ToHex(Stream.Bytes));
 		return true;
 	}

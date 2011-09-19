@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.poslog);
+		setContentView(R.layout.main);
 		//btn_receive = (Button)findViewById(R.id.btn_receive);
 		btn_stop  = (Button)findViewById(R.id.btn_stop);
 		//获取日志信息框对象
@@ -201,6 +201,7 @@ public class MainActivity extends Activity implements OnClickListener {
      */
     public Handler updateUI = new Handler(){
         public void handleMessage(Message msg) {
+        	/*
         	if(msg.obj==null){
         		return;
         	}
@@ -226,6 +227,7 @@ public class MainActivity extends Activity implements OnClickListener {
         		//server_to_pad.setText((String)msg.obj);
         		//server_to_pad.setSelection(server_to_pad.length());//将光标移至文字末尾
         	}
+        	*/
         }
     };
     

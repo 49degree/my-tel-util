@@ -201,7 +201,7 @@ public class MainActivity extends Activity implements OnClickListener {
      */
     public Handler updateUI = new Handler(){
         public void handleMessage(Message msg) {
-        	/*
+        	
         	if(msg.obj==null){
         		return;
         	}
@@ -209,7 +209,7 @@ public class MainActivity extends Activity implements OnClickListener {
         		btn_receive.setText((String)msg.obj);
         	}else if(msg.what==1){
         		comm_state.setText((String)msg.obj);
-        	}else if(msg.what==2){
+        	}/*else if(msg.what==2){
         		if(!((String)msg.obj).equals(pos_to_pad.getText().toString())){
             		pos_to_pad.setText((String)msg.obj);
             		pos_to_pad.setSelection(pos_to_pad.length());//将光标移至文字末尾

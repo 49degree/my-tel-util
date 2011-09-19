@@ -1,13 +1,25 @@
 package com.guanri.android.jpos.pos.data.TerminalMessages;
 
 import com.guanri.android.jpos.pos.data.Common;
+import com.guanri.android.jpos.pos.data.TStream;
 import com.guanri.android.jpos.pos.data.Fields.TField;
 import com.guanri.android.jpos.pos.data.Fields.TField.TDataType;
 import com.guanri.android.jpos.pos.data.Fields.TField.TLengthType;
 import com.guanri.android.jpos.pos.data.Fields.TFieldList;
 
 public class TProcessList extends TFieldList {
-
+	protected TField FOriginalSerialNumber;
+	protected TField FOriginalMAC;
+	
+	
+	public TField OriginalMAC() {     		//原始MAC值
+		return FOriginalMAC;
+	}
+	
+	public TField OriginalSerialNumber() {    //原始流水号
+		return FOriginalSerialNumber;
+	}
+	
 	protected TField TrackData() { // 2磁道和3磁道的数据
 		return GetField(0x83);
 	}
@@ -70,6 +82,17 @@ public class TProcessList extends TFieldList {
 		return GetField(0xB1);
 	}
 	
+	public TField OriginalReverseMessage() {  //原始冲正信息
+		return GetField(0xA5);
+	}
+	
+	
+	public void Resolve() {   //分解出虚拟字段, 在导入所有字段后调用
+		TStream Stream = new TStream(OriginalReverseMessage().GetData());
+		
+		OriginalSerialNumber().LoadFromBytes(Stream);
+		OriginalMAC().LoadFromBytes(Stream);
+	}
 	
 	
 	public TProcessList() {
@@ -84,6 +107,7 @@ public class TProcessList extends TFieldList {
 		  AddField(0x8D, TDataType.dt_BCD, TLengthType.lt_Fixed, 12, "SaleAmount"); //消费金额
 		  AddField(0x93, TDataType.dt_BCD, TLengthType.lt_Fixed, 4, "DateOfExpired"); //卡有效期
 		  AddField(0xB2, TDataType.dt_BCD, TLengthType.lt_Fixed, 6, "BillNumber"); //票据号
+		  AddField(0xA5, TDataType.dt_BIN, TLengthType.lt_Fixed, 11, "OriginalReverseMessage"); //原始冲正信息
 		  
 		  
 		//下列字段是需要传给终端的
@@ -95,6 +119,10 @@ public class TProcessList extends TFieldList {
 		  AddField(0xA9, TDataType.dt_BCD, TLengthType.lt_VarBIN1, 6, "ReturnSaleAmount"); //回送消费金额
 		  AddField(0xB0, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 40, "ReturnOrderNumber"); //回送订单编号
 		  AddField(0xB1, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 200, "ReturnDisplayMessage"); //回送显示信息
+		  		  
+		  
+		  FOriginalSerialNumber = CreateField(0, TDataType.dt_BCD, TLengthType.lt_Fixed, 6, "OriginalSerialNumber");//原始流水号
+		  FOriginalMAC = CreateField(0, TDataType.dt_BIN, TLengthType.lt_Fixed, 8, "MAC");//原始MAC值		  
 
 	}	
 	public boolean GetIsExistTrackData() {    //是否存在磁道数据

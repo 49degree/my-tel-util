@@ -351,7 +351,7 @@ public class ServerDataUnPackage99Bill {
 		tTransaction.Time().SetAsString((String) getMap.get(12));
 		// 域11 POS 流水号
 		tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
-
+		// 响应信息
 		tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 		
 		return tTransaction;

@@ -29,7 +29,7 @@ public class DBOperator extends SQLiteOpenHelper {
 	public static Logger logger = Logger.getLogger(DBOperator.class);//日志对象
 	public static String TAG = "DBOperator";
 	private static SQLiteDatabase sqlDb = null;
-	public static String DB_NAME = "APSAI_DATABASE";
+	public static String DB_NAME = "GRPOS_DATABASE";
 	public static int DB_VERSION = 1;
 	private Context context = null;
 	
@@ -327,6 +327,21 @@ public class DBOperator extends SQLiteOpenHelper {
 		return insertRow;
 	}
 
+	/**
+	 * 重新封装一下查询方法 方便在java环境下调用
+	 * @param tableName
+	 * @param values
+	 * @param params
+	 * @return
+	 */
+	public long update(String tableName, Map<String,String> values,Map<String, String> params){
+		ContentValues cv = new ContentValues();
+		for (Map.Entry<String, String> m : values.entrySet()) {   
+		    cv.put(m.getKey(), m.getValue());
+		} 
+		return update(tableName,cv,params);
+	}
+	
 	/**
 	 * 修改记录
 	 * @param tableName 表名

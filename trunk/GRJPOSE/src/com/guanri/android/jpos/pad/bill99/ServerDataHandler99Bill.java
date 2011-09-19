@@ -174,7 +174,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			break;
 		case 600:
 			// 订单查询
-			jposPackageFather = createOQSDate(ttransaction);
+			jposPackageFather = createOQSData(ttransaction);
 		  break;
 		case 601:
 			// 查询后消费
@@ -204,12 +204,19 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//ttransaction.ProcessList.;
 		TTransaction rtTransaction = ttransaction;
 		Map<String,String> params = new HashMap<String, String>();
-		params.put("PosMac=", ttransaction.MAC().GetAsString());
-		//params.put("", value)
+		params.put("PosMac=", TypeConversion.byte2hex(ttransaction.ProcessList.OriginalMAC().GetData()));
+				
+		params.put("PosNo", ttransaction.ProcessList.OriginalSerialNumber().GetAsString());
 		List<Object> datalist = dbOperator.queryBeanList(DBBean.TB_SALE_RECORD, params);
 		SaleDataLogBean saleDataLogBean = (SaleDataLogBean) datalist.get(0);
-		//rtTransaction.ProcessList saleDataLogBean.getCardNo();
-		
+		// 消息类型码
+		rtTransaction.BufferList.MsgTypeID().SetAsString(saleDataLogBean.getMsgTypeCode());
+		// 主账号
+		rtTransaction.BufferList.TraceAuditNumber().SetAsString(saleDataLogBean.PosNo);
+		// 交易处理码
+		rtTransaction.BufferList.ProcessCode().SetAsString(saleDataLogBean.getProcessCode());
+		// 金额
+		rtTransaction.BufferList.SaleAmount().SetAsInt64(saleDataLogBean.getTransactionMoney());
 		return rtTransaction;
 	}
 
@@ -660,6 +667,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		saleDataLogBean.setCardNo(posMessageBean.ProcessList.GetPAN());
 		// 域3 处理码
 		sendMap.put(3, "000000");
+		saleDataLogBean.setProcessCode("000000");
 		// 保存处理码和POS终端的流程码
 		saleDataLogBean.setTransactionType("000000");
 		saleDataLogBean.setMsgTypeCode(posMessageBean.TransCode().GetAsString());
@@ -835,7 +843,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * @param posMessageBean
 	 * @return
 	 */
-	public JposPackageFather createOQSDate(TTransaction posMessageBean){
+	public JposPackageFather createOQSData(TTransaction posMessageBean){
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		// 第3域    处理码
 		sendMap.put(3, "340000");
@@ -886,9 +894,9 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	public JposPackageFather createReversal(TTransaction posMessageBean){
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		// 第2域  主账号
-		sendMap.put(2, posMessageBean.ProcessList.GetPAN());
-		// 第3域    处理码
-		sendMap.put(3, posMessageBean.BufferList.ProcessCode().GetAsString());
+		sendMap.put(2, posMessageBean.BufferList.TraceAuditNumber().GetAsString());
+		// 第3域   // 交易处理码
+		sendMap.put(3,posMessageBean.BufferList.ProcessCode().GetAsString());
 		// 第4域 交易金额
 		sendMap.put(4, posMessageBean.BufferList.SaleAmount().GetAsString());
 		// 第11域  POS流水号
@@ -897,8 +905,6 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//
 		sendMap.put(12, posMessageBean.Time().GetAsString());
 		sendMap.put(13, posMessageBean.Time().GetAsString());
-		if(!posMessageBean.ProcessList.DateOfExpired().GetIsEmpty())
-			sendMap.put(14, posMessageBean.ProcessList.DateOfExpired());
 			
 		// 第22域  POS输入方式
 		sendMap.put(22, "012");
@@ -906,10 +912,6 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		sendMap.put(24, "009");
 		// 第25域  服务点条件码
 		sendMap.put(25, "14");
-		if(!posMessageBean.BufferList.Track2Data().GetIsEmpty())
-			sendMap.put(35,posMessageBean.BufferList.Track2Data().GetAsString());
-		if(!posMessageBean.BufferList.Track3Data().GetIsEmpty())
-			sendMap.put(35,posMessageBean.BufferList.Track3Data().GetAsString());
 		// 第41域  终端号
 		logger.debug("POS发送过来的终端号:"+posMessageBean.ProcessList.TerminalID().GetAsString());
 		sendMap.put(41, posMessageBean.ProcessList.TerminalID().GetAsString());
@@ -919,15 +921,26 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域49  货币代码
 		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
 		
+		TreeMap<Integer,JposSelfFieldLeaf> data = new TreeMap<Integer,JposSelfFieldLeaf>();
+		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
+		// 原信息类型码
+		jposf.setTag("1");
+		jposf.setValue(posMessageBean.BufferList.MsgTypeID().GetAsString());
+		data.put(1, jposf);
+		// 系统跟踪号
+		jposf = new JposSelfFieldLeaf();
+		jposf.setTag("2");
+		jposf.setValue(posMessageBean.BufferList.TraceAuditNumber().GetAsString());
+		data.put(2,jposf);
+		// 日期全填0
+		jposf = new JposSelfFieldLeaf();
+		jposf.setTag("3");
+		jposf.setValue("0000000000");
+		data.put(3,jposf);
+		sendMap.put(62, data);
 		
-		// 域60 订单号
-		logger.debug("POS发送过来的订单号:"+posMessageBean.ProcessList.OrderNumber().GetAsString());
-		sendMap.put(60, posMessageBean.ProcessList.OrderNumber().GetAsString());
-		// 域64 MAC
-		//sendMap.put(64, "");
 		JposMessageType99Bill messageType = new JposMessageType99Bill();
 		//设置消息头类型
-
 		// 003B60000000900100：003B(长度字节) + 6000000090(TPDU) + 0100(报文版本号)
 		messageType.setPageLength((short)59);
 		messageType.setId((byte)0x60);  

@@ -7,6 +7,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 
 import com.guanri.android.jpos.MainActivity;
 import com.guanri.android.jpos.R;
@@ -42,6 +44,7 @@ public class AidlRunService extends Service{
     	IS_SERVER_STOP = false;
     	findCommTask = new FindCommTask();
     	findCommTask.start();
+    	acquireWakeLock();//加入CPU锁，保持CUP在该service运行期间一直运行
     }
     
     
@@ -59,6 +62,8 @@ public class AidlRunService extends Service{
     		e.printStackTrace();
     	}
     	AidlRunService.clearNotify(NOTIFY_ID);//清除消息提示
+    	releaseWakeLock();//释放CPU锁，
+    	
     	super.onDestroy();
     }
     
@@ -131,7 +136,43 @@ public class AidlRunService extends Service{
     };
     
     
+    /**
+     *   各种锁的类型对CPU 、屏幕、键盘的影响： 
+	    PARTIAL_WAKE_LOCK :保持CPU 运转，屏幕和键盘灯有可能是关闭的。
+	
+	    SCREEN_DIM_WAKE_LOCK ：保持CPU 运转，允许保持屏幕显示但有可能是灰的，允许关闭键盘灯
+	
+	    SCREEN_BRIGHT_WAKE_LOCK ：保持CPU 运转，允许保持屏幕高亮显示，允许关闭键盘灯
+	
+	    FULL_WAKE_LOCK ：保持CPU 运转，保持屏幕高亮显示，键盘灯也保持亮度
+	
+	    ACQUIRE_CAUSES_WAKEUP ：Normal wake locks don't actually turn on the illumination. Instead, they cause the illumination to remain on once it turns on (e.g. from user activity). This flag will force the screen and/or keyboard to turn on immediately, when the WakeLock is acquired. A typical use would be for notifications which are important for the user to see immediately.
+	
+	    ON_AFTER_RELEASE ：f this flag is set, the user activity timer will be reset when the WakeLock is released, causing the illumination to remain on a bit longer. This can be used to reduce flicker if you are cycling between wake lock conditions. 
 
+   */
+    private WakeLock wakeLock = null;
+    /**
+     * 打开锁4
+     */
+	private void acquireWakeLock() {
+		if (wakeLock == null) {
+			logger.debug("Acquiring wake lock");
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getCanonicalName());//来生成WakeLock实例。int Flags指示要获取哪种WakeLock，不同的Lock对cpu 、屏幕、键盘灯有不同影响。 
+			wakeLock.acquire();
+		}
+	}
+
+	/**
+	 * 关闭锁
+	 */
+	private void releaseWakeLock() {
+		if (wakeLock != null && wakeLock.isHeld()) {
+			wakeLock.release();
+			wakeLock = null;
+		}
+	} 
     
     
     /**

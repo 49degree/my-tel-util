@@ -335,7 +335,7 @@ public class ServerDataUnPackage99Bill {
 	}
 
 	/**
-	 * 冲正
+	 * 冲正相应
 	 * 
 	 * @param rtTransaction
 	 * @param getMap
@@ -344,6 +344,15 @@ public class ServerDataUnPackage99Bill {
 	 */
 	public static TTransaction UnPackageReversal(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
 		TTransaction tTransaction = new TTransaction();
+		tTransaction.TransCode().SetAsInteger(4);
+		Date date = new Date();
+		tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
+		tTransaction.Date().SetAsString((String) getMap.get(13));
+		tTransaction.Time().SetAsString((String) getMap.get(12));
+		// 域11 POS 流水号
+		tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
+
+		tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 		
 		return tTransaction;
 	}

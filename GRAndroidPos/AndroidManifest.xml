@@ -40,8 +40,21 @@
 	<uses-sdk android:minSdkVersion="3" />
 	<!-- 接受系统启动完毕的 Broadcast 的权限 -->
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+	
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+	
+	<!-- 获得修改移动数据状态的权限，但是暂时无效，WRITE_SECURE_SETTINGS普通应用无法获取权限 -->
+	<uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+	<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+	<uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+	
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<uses-permission android:name="android.permission.DEVICE_POWER"/>
+	
 </manifest>

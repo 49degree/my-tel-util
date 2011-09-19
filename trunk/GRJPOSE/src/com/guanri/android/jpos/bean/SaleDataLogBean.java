@@ -1,6 +1,8 @@
 package com.guanri.android.jpos.bean;
 
 public class SaleDataLogBean {
+	// 主键
+	public int logid;
 	// POS流水号 POS终端系统跟踪号
 	public String PosNo;
 	// 终端MAC 终端上传交易包的MAC值，转换成HEX
@@ -108,6 +110,12 @@ public class SaleDataLogBean {
 	}
 	public void setTimeStr(String timeStr) {
 		TimeStr = timeStr;
+	}
+	public int getLogid() {
+		return logid;
+	}
+	public void setLogid(int logid) {
+		this.logid = logid;
 	}
 	
 	

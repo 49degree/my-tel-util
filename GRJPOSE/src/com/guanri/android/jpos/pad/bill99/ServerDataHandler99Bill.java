@@ -138,12 +138,16 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// TODO Auto-generated method stub
 		String TerminalID = null;
 		String MerchantID = null;
-		if((getMap.containsKey(41))&&(getMap.containsKey(42))){
+		String PosNo = null;
+		if((getMap.containsKey(41))&&(getMap.containsKey(42))&&
+				(getMap.containsKey(11))){
 			  TerminalID = (String)getMap.get(41);
 			  MerchantID = (String)getMap.get(42);
+			  PosNo = (String)getMap.get(11);
 			
 			if((TerminalID.equals(rtTransaction.ProcessList.TerminalID().GetAsString()))
-				&&(MerchantID.equals(rtTransaction.ProcessList.MerchantID().GetAsString())))
+				&&(MerchantID.equals(rtTransaction.ProcessList.MerchantID().GetAsString()))
+				&&(PosNo.equals(rtTransaction.SerialNumber().GetAsString())))
 				return true;
 			else
 				return false;

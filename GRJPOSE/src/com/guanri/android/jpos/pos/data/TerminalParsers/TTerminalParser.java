@@ -97,6 +97,7 @@ public class TTerminalParser {
 		case 601: // 订单付款
 		case 7: // 交易回执
 		case 6: // 批结算
+		case 4: // 冲正	
 			return true;
 			// break;
 		default:
@@ -378,6 +379,12 @@ public class TTerminalParser {
 
 		PutLog("[请求]上次参考号: "
 				+ Transaction.BufferList.ReferenceNumber().GetAsString());
+		
+		PutLog("[请求]原始流水号: "
+				+ Transaction.ProcessList.OriginalSerialNumber().GetAsString());
+		
+		PutLog("[请求]原始MAC值: "
+				+ Common.ToHex(Transaction.ProcessList.OriginalMAC().GetData()));
 	}
 
 	public void PutLog_Response(TTransaction Transaction) {

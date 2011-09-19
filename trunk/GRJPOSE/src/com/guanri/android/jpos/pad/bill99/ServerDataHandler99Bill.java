@@ -808,10 +808,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		datalist.add(jposf);
 		jposf = new JposSelfFieldLeaf();
 		jposf.setTag("0001");
+		logger.debug("原交易消息类型:"+posMessageBean.BufferList.MsgTypeID().GetAsString());
 		jposf.setValue(posMessageBean.BufferList.MsgTypeID().GetAsString()); //原交易消息类型		
 		datalist.add(jposf);
 		jposf = new JposSelfFieldLeaf();
 		jposf.setTag("0002");
+		logger.debug("原处理码"+posMessageBean.BufferList.ProcessCode().GetAsString());
 		jposf.setValue(posMessageBean.BufferList.ProcessCode().GetAsString()); //原处理码		
 		datalist.add(jposf);
 		sendMap.put(46, datalist);

@@ -1,16 +1,12 @@
 package com.guanri.android.lib.network;
+import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -82,6 +78,7 @@ public class NetWorkTools {
 	private int mGprsType;
 	private boolean mIsAuto;
 	private boolean mIsConnected;
+	private boolean stopConnect = false;
 	private ConnectionChangeReciver mReceiver;
 	private Timer mTimer;
 	
@@ -121,11 +118,15 @@ public class NetWorkTools {
 	 *  取消监听；默认会注册一个广播接收器监听系统网络状态，所以在退出程序的时候应该注销掉
 	 */
 	public void cancelMmonitor(){
+		LogCat.v(TAG, "停止网络监控...");
+		stopConnect = true;
 		if (mReceiver!=null) {
+			LogCat.v(TAG, "停止网络监控...");
 			try{
 				mContext.unregisterReceiver(mReceiver);
 				if (mTimer != null) {
 					mTimer.purge();
+					mTimer.cancel();
 				}
 			}catch(Exception e){
 				//e.printStackTrace();
@@ -186,6 +187,22 @@ public class NetWorkTools {
 		LogCat.v(TAG, "GPRS网络类型为:" + mGprsType);
 		ApnNode apnNode = null;
 		mContext.getContentResolver().delete(URL_APN_LIST, "_id=?", new String[]{String.valueOf(APN_ID)});
+		
+		
+
+		/**
+		 * 以下开启功能无效，因为无法获得android.permission.WRITE_SECURE_SETTINGS系统权限
+		 
+		try{
+			ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+			Method m = cm.getClass().getDeclaredMethod("setMobileDataEnabled", new Class[]{boolean.class});
+			//m.setAccessible( true );
+			Object it = m.invoke( cm,true);
+		}catch(Exception e){
+			e.printStackTrace();
+			
+		}*/
+
 		switch (mGprsType) {
 			case GPRS_TYPE_MOBIL_3G:
 				if (!isUseOnly2G) {
@@ -316,7 +333,7 @@ public class NetWorkTools {
 		public final static boolean DEBUG = true;
 		public static void v(String tag, String mes) {
 			if (DEBUG) {
-				Log.v(tag, mes);
+				Log.e(tag, mes);
 			}
 		}
 	}
@@ -365,7 +382,7 @@ public class NetWorkTools {
 			// TODO Auto-generated method stub
 			ConnectivityManager connec = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo activeNetInfo = connec.getActiveNetworkInfo();
-			if (activeNetInfo == null || !activeNetInfo.isAvailable()) {
+			if ((activeNetInfo == null || !activeNetInfo.isAvailable()) && !stopConnect) {
 				Log.e(TAG, "本次连接尝试失败");
 				WifiManager mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
 				if(mWifiManager.isWifiEnabled()) {

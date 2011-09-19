@@ -12,6 +12,7 @@ import android.os.PowerManager.WakeLock;
 
 import com.guanri.android.jpos.MainActivity;
 import com.guanri.android.jpos.R;
+import com.guanri.android.jpos.common.NetWorkBlthStateHandler;
 import com.guanri.android.jpos.pos.SerialPortAndroid;
 import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;
 import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
@@ -45,6 +46,7 @@ public class AidlRunService extends Service{
     	findCommTask = new FindCommTask();
     	findCommTask.start();
     	acquireWakeLock();//加入CPU锁，保持CUP在该service运行期间一直运行
+    	MainApplication.getInstance().startNetWorkListen(new NetWorkBlthStateHandler());//开始监听网络状态
     }
     
     
@@ -63,7 +65,8 @@ public class AidlRunService extends Service{
     	}
     	AidlRunService.clearNotify(NOTIFY_ID);//清除消息提示
     	releaseWakeLock();//释放CPU锁，
-    	
+    	MainApplication.getInstance().stopNetWorkListen();//停止监听网络情况
+    	logger.error("end onDestroy~~~"); 
     	super.onDestroy();
     }
     

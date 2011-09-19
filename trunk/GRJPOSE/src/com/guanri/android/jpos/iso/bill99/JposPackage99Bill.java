@@ -894,9 +894,9 @@ public class JposPackage99Bill extends JposPackageFather{
 				}	
 			}
 			//返回数据，计算总长度，长度用3位BCD码表示
-			byte[] returnData = new byte[index+1];
-			System.arraycopy(fixLengthStr2cbcd(String.valueOf(index), 2, true), 0, returnData, 0, 1);//长度用3位BCD码表示
-			System.arraycopy(feild, 0, returnData, 1, index);
+			byte[] returnData = new byte[index+2];
+			System.arraycopy(fixLengthStr2cbcd(String.valueOf(index), 3, true), 0, returnData, 0, 2);//长度用3位BCD码表示
+			System.arraycopy(feild, 0, returnData, 2, index);
 			return returnData;
 			
 		}else{

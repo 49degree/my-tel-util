@@ -1,5 +1,6 @@
 package com.guanri.android.jpos.pos.data.TerminalMessages;
 
+import com.guanri.android.jpos.pos.data.TStream;
 import com.guanri.android.jpos.pos.data.Fields.TField;
 import com.guanri.android.jpos.pos.data.Fields.TField.TDataType;
 import com.guanri.android.jpos.pos.data.Fields.TField.TLengthType;
@@ -22,9 +23,9 @@ public class TTerminalMessage extends TFieldList {
 	}
 
 	@Override
-	public TResult_SaveToBytes SaveToBytes() {
+	public TResult_SaveToBytes SaveToBytes(TStream Stream) {
 		Build_DefaultData();
-		return super.SaveToBytes();
+		return super.SaveToBytes(Stream);
 	}
 	public TTerminalMessage() {
 		AddField(-2, TDataType.dt_BIN, TLengthType.lt_Fixed, 1, "MsgType"); // 报文类型

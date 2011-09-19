@@ -1,7 +1,7 @@
 package com.guanri.android.jpos.pos.data.TerminalMessages;
 
 import com.guanri.android.jpos.pos.data.Common;
-import com.guanri.android.jpos.pos.data.Stream;
+import com.guanri.android.jpos.pos.data.TStream;
 import com.guanri.android.jpos.pos.data.Fields.TField;
 import com.guanri.android.jpos.pos.data.Fields.TField.TDataType;
 import com.guanri.android.jpos.pos.data.Fields.TField.TLengthType;
@@ -56,13 +56,12 @@ public class TTransaction extends TTerminalMessage {
 	}
 
 	protected byte[] EncryptMAC() {
-		int iMAC = MAC().GetIndex();
-
-		Stream.SetBytes(null);
+		int iMAC = MAC().GetIndex();		
+		TStream Stream = new TStream(null); 
 
 		for (int i = 0; i < Common.Length(FFields); i++) {
 			if ((FFields[i] != null) & (iMAC != (i + FFristFieldIndex)))
-				FFields[i].SaveToBytes();
+				FFields[i].SaveToBytes(Stream);
 		}
 
 		byte[] XorBytes = Common.ANSIX98_Xor(Stream.Bytes);
@@ -79,16 +78,17 @@ public class TTransaction extends TTerminalMessage {
 
 	public boolean LoadProcess() {
 		byte[] sCode = ProcessCode().GetData();
-		Stream.SetBytes(Data().GetData());
+		TStream Stream = new TStream(Data().GetData()); 
 		TField Field;
 		for (int i = 0; i < Common.Length(sCode); i++) {
 			Field = ProcessList.GetField(sCode[i] & 0xFF);
 			if (Field != null) {
-				if (Field.LoadFromBytes() != TField.TResult_LoadFromBytes.lfr_NoError)
+				if (Field.LoadFromBytes(Stream) != TField.TResult_LoadFromBytes.lfr_NoError)
 					return false;
 			} else
 				return false;
 		}
+		ProcessList.Resolve();
 		return true;
 	}
 
@@ -98,7 +98,7 @@ public class TTransaction extends TTerminalMessage {
 	}
 
 	public void SaveProcess() {
-		Stream.SetBytes(null);
+		TStream Stream = new TStream(null);
 
 		byte[] sCode = null;
 		TField Field;
@@ -110,7 +110,7 @@ public class TTransaction extends TTerminalMessage {
 					Len = Common.Length(sCode);
 					sCode = Common.SetLength(sCode, Len + 1);
 					sCode[Len] = (byte) Field.GetIndex();
-					Field.SaveToBytes();
+					Field.SaveToBytes(Stream);
 				}
 			}
 		}

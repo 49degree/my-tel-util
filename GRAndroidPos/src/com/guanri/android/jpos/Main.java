@@ -36,12 +36,12 @@ public class Main extends Activity {
 		super.onCreate(savedInstanceState);
 		
         setContentView(R.layout.main); 
-        info = (EditText)this.findViewById(R.id.info);
-        read_info = (EditText)this.findViewById(R.id.read_info);
-        send = (Button)this.findViewById(R.id.send); 
-        
-		
-        open = (Button)this.findViewById(R.id.open); 
+//        info = (EditText)this.findViewById(R.id.info);
+//        read_info = (EditText)this.findViewById(R.id.read_info);
+//        send = (Button)this.findViewById(R.id.send); 
+//        
+//		
+//        open = (Button)this.findViewById(R.id.open); 
         final byte[] msg = {0X55,0X55,0X55,0X55,0X55,0X08,0X13,0X00,0X02,0X01,0X01,0X00,0X00,0X30,0X30,0X31,
     			0X30,0X00,0X30,0X02,(byte)0X90,(byte)0XBE,0X00,0X00,(byte)0XB4,0X08};
         

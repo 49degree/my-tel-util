@@ -11,15 +11,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.guanri.android.jpos.services.AidlRunService;
 import com.guanri.android.jpos.services.GrPosService;
 import com.guanri.android.lib.log.LogInfo;
 import com.guanri.android.lib.log.Logger;
+
 
 public class MainActivity extends Activity implements OnClickListener {
 	
@@ -47,7 +49,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.querymoney);
+		setContentView(R.layout.poslog);
 		//btn_receive = (Button)findViewById(R.id.btn_receive);
 		btn_stop  = (Button)findViewById(R.id.btn_stop);
 		//获取日志信息框对象
@@ -69,6 +71,28 @@ public class MainActivity extends Activity implements OnClickListener {
 		//绑定服务
 		bindService();
 		
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		menu.add(0, 1, 1, "查询数据库");
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		super.onOptionsItemSelected(item);
+		if (item.getItemId() == 1) {
+			// 重新下载服务列表
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//			builder.setMessage("数据库查询");
+//			builder.setTitle("数据库查询");
+//			builder.create().show();
+			logger.debug("test");
+		}
+		return true;
 	}
 	
 	public void onDestroy(){

@@ -688,12 +688,9 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域35 第二磁道数  
 		if(posMessageBean.ProcessList.GetIsExistTrackData()) {
 			sendMap.put(35, posMessageBean.ProcessList.GetTrack2Data());
-			saleDataLogBean.setTrack2(posMessageBean.ProcessList.GetTrack2Data());
-		
 			// 域36 第三磁道数
 			if(!posMessageBean.ProcessList.GetTrack2Data().equals("")){
 				sendMap.put(36,posMessageBean.ProcessList.GetTrack3Data());
-				saleDataLogBean.setTrack3(posMessageBean.ProcessList.GetTrack3Data());
 			}
 		}else{
 			//域 14  卡有效期
@@ -716,8 +713,6 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 自定义域 60 将来用于存放保单号  待完善
 		sendMap.put(60, posMessageBean.ProcessList.ReturnOrderNumber().GetAsString());
 		saleDataLogBean.setOrderNo(posMessageBean.ProcessList.ReturnOrderNumber().GetAsString());
-		if(!posMessageBean.ProcessList.DateOfExpired().GetIsEmpty())
-			saleDataLogBean.setCardPeriod(posMessageBean.ProcessList.DateOfExpired().GetAsString());
 		// 处理61 域
 		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
 		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();

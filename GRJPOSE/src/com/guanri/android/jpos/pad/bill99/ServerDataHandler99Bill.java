@@ -165,8 +165,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		case 4:
 			// 冲正
 			
-			TTransaction temp = getReversalData(ttransaction);
-			jposPackageFather = createReversal(temp);
+			//TTransaction temp = getReversalData(ttransaction);
+			jposPackageFather = createReversal(ttransaction);
 			break;
 		case 6:
 			// 批结算

@@ -54,6 +54,7 @@
 	<uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
 	
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<!-- 获取系统CPU运行锁权限，可设置休眠情况下得CPU运行情况 -->
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<uses-permission android:name="android.permission.DEVICE_POWER"/>
 	

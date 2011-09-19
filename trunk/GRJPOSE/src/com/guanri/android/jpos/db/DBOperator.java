@@ -15,7 +15,7 @@ import com.guanri.android.lib.log.Logger;
 public class DBOperator{
 	public static Logger logger = Logger.getLogger(DBOperator.class);//日志对象
 	public static String TAG = "DBOperator";
-	public static String DB_NAME = "APSAI_DATABASE";
+	public static String DB_NAME = "GRPOS_DATABASE";
 	public static int DB_VERSION = 1;
 	
 	private static DBOperator instance = null;

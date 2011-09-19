@@ -346,8 +346,9 @@ public class TTerminalParser {
 				return;
 			}
 			;
-
-			PutLog("已发送响应数据.");
+	
+			
+			PutLog("已发送响应数据.");		
 			FTerminalLink.SendPackage(Stream.Bytes);
 
 		}

@@ -9,7 +9,7 @@ public class SaleDataLogBean {
 	public String PosMac;
 	// 交易类型　消费，撤销，退货
 	public String TransactionType;
-	// 消息处理码
+	// 消息类型码
 	public String MsgTypeCode;
 	// 交易状态  建立,发送,接收,成功,已冲正,已冲正成功
 	// 0  已发送
@@ -17,7 +17,7 @@ public class SaleDataLogBean {
 	// 2 收到后台回执
 	public int TransactionState;
 	// 交易金额
-	public int TransactionMoney;
+	public long TransactionMoney;
 	// 订单编号
 	public String OrderNo;
 	// 卡号
@@ -32,6 +32,8 @@ public class SaleDataLogBean {
 	public String TimeStr;
 	// 批次号
 	public String BatchNo;
+	// 消息处理码
+	public String ProcessCode;
 	
 	public String getMsgTypeCode() {
 		return MsgTypeCode;
@@ -69,10 +71,10 @@ public class SaleDataLogBean {
 	public void setTransactionState(int transactionState) {
 		TransactionState = transactionState;
 	}
-	public int getTransactionMoney() {
+	public long getTransactionMoney() {
 		return TransactionMoney;
 	}
-	public void setTransactionMoney(int transactionMoney) {
+	public void setTransactionMoney(long transactionMoney) {
 		TransactionMoney = transactionMoney;
 	}
 	public String getOrderNo() {
@@ -116,6 +118,12 @@ public class SaleDataLogBean {
 	}
 	public void setLogid(int logid) {
 		this.logid = logid;
+	}
+	public String getProcessCode() {
+		return ProcessCode;
+	}
+	public void setProcessCode(String processCode) {
+		ProcessCode = processCode;
 	}
 	
 	

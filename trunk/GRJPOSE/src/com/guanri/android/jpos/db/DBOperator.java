@@ -130,6 +130,13 @@ public class DBOperator{
 	 */
 	public void del(String tableName,Map<String, String> params){
 	}
+	
+	public long update(String tableName, Object values,Map<String, String> params){
+		return 0;
+	}
+	public long update(String tableName, Map<String,String> values,Map<String, String> params){
+		return 0;
+	}
 	/**
 	 * 释放资源
 	 */

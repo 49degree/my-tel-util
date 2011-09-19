@@ -788,7 +788,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 第25域  服务点条件码
 		sendMap.put(25, "14");
 		// 第37域 系统参考号 由后台系统定位原交易
-		//----------------------------------
+		//---------------------------------------
 		logger.debug("POS发送过来的系统参考号:"+ posMessageBean.BufferList.ReferenceNumber().GetAsString());
 		sendMap.put(37, posMessageBean.BufferList.ReferenceNumber().GetAsString());
 		// 第41域  终端号
@@ -802,6 +802,14 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
 		jposf.setTag("0000");
 		jposf.setValue("20"); //表示交易回执		
+		datalist.add(jposf);
+		jposf = new JposSelfFieldLeaf();
+		jposf.setTag("0001");
+		jposf.setValue("20"); //原交易消息类型		
+		datalist.add(jposf);
+		jposf = new JposSelfFieldLeaf();
+		jposf.setTag("0002");
+		jposf.setValue("20"); //原处理码		
 		datalist.add(jposf);
 		sendMap.put(46, datalist);
 		// 处理61 域
@@ -924,6 +932,29 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域49  货币代码
 		sendMap.put(49, MessageTypeDefine99Bill.RMBCODE);
 		
+		// 域61  原交易信息域
+		TreeMap<Integer,JposSelfFieldLeaf> data1 = new TreeMap<Integer,JposSelfFieldLeaf>();
+		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+		leaf.setTag("1");
+		// 获得批次号
+		String posBatchNo = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+				SharedPreferencesUtils.POSBATCHNO);
+		if (posBatchNo == null)
+			posBatchNo = "000001";
+		leaf.setValue(posBatchNo);
+		data1.put(1,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("2");
+		leaf.setValue(posMessageBean.ProcessList.UserID().GetAsString());
+		data1.put(2,leaf);
+		
+		leaf = new JposSelfFieldLeaf();
+		leaf.setTag("3");
+		leaf.setValue(posMessageBean.ProcessList.BillNumber().GetAsString());
+		data1.put(3,leaf);
+		sendMap.put(61, data1);//原交易信息域
+		
 		TreeMap<Integer,JposSelfFieldLeaf> data = new TreeMap<Integer,JposSelfFieldLeaf>();
 		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
 		// 原信息类型码
@@ -953,7 +984,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		messageType.setServerAddress("0000");
 		messageType.setAddress("0090");
 		messageType.setPagever("0100");
-		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_QUERY_INSURANCE);
+		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_OPERATE_CANCEL);
 		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
 	 
 		return jposPackage99Bill;

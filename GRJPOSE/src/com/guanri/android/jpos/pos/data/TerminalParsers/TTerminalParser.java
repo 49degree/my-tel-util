@@ -98,6 +98,7 @@ public class TTerminalParser {
 		case 7: // 交易回执
 		case 6: // 批结算
 		case 4: // 冲正	
+		case 8: //手动交易回执	
 			return true;
 			// break;
 		default:
@@ -113,6 +114,8 @@ public class TTerminalParser {
 		case 600:
 		case 601:
 		case 7:
+		case 4: // 冲正	
+		case 8: //手动交易回执		
 			return true;
 			// break;
 		default:
@@ -239,6 +242,14 @@ public class TTerminalParser {
 				Transaction.ProcessList.UserID().SetAsString(FLastUserID);
 			}
 
+			
+			
+			Transaction.BufferList.MsgTypeID().SetAsInteger(200);
+			Transaction.BufferList.ProcessCode().SetAsInteger(0);
+			Transaction.BufferList.PAN().SetAsString("5264102500120211");
+			Transaction.BufferList.TraceAuditNumber().SetAsInteger(10);
+			Transaction.BufferList.SaleAmount().SetAsInt64(100000);
+			
 			Transaction.BufferList.ReferenceNumber().SetAsString(
 					FLastReferenceNumber);
 
@@ -282,7 +293,7 @@ public class TTerminalParser {
 
 			try {
 				if (!CommandControl.getInstance().isConnect())
-					CommandControl.getInstance().connect(10000, 20000); // 连接后台
+					CommandControl.getInstance().connect(20000, 60000); // 连接后台
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -369,7 +380,8 @@ public class TTerminalParser {
 		PutLog("[请求]2磁道数据: " + Transaction.ProcessList.GetTrack2Data());
 		PutLog("[请求]3磁道数据: " + Transaction.ProcessList.GetTrack3Data());
 		PutLog("[请求]卡号: " + Transaction.ProcessList.GetPAN());
-
+		PutLog("[请求]票据号: " + Transaction.ProcessList.BillNumber().GetAsString());
+		
 		PutLog("[请求]商户号: " + Transaction.ProcessList.MerchantID().GetAsString());
 		PutLog("[请求]终端号: " + Transaction.ProcessList.TerminalID().GetAsString());
 		PutLog("[请求]操作员ID: " + Transaction.ProcessList.UserID().GetAsString());

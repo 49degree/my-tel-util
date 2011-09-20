@@ -102,12 +102,14 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
 				&&(messageType.getTransactionCode().equals("32"))
 				&&(rtTransaction.TransCode().GetAsString().equals("601"))){
+			logger.debug("解析查询后消费");
 			tTransaction = ServerDataUnPackage99Bill.UnPackageQueryOQSSale(rtTransaction, getMap, messageType);
 		}
 		else if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
 					&&(messageType.getTransactionCode().equals("00"))){
-		
+			logger.debug("解析消费");
 					tTransaction = ServerDataUnPackage99Bill.UnPackageSale(rtTransaction, getMap, messageType);
+			
 		}
 		// 交易回执
 		switch (rtTransaction.TransCode().GetAsInteger()) {
@@ -122,6 +124,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
 			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
 			break;
+		
 		default:
 			break;
 		}
@@ -237,28 +240,38 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//ttransaction.ProcessList.;
 		TTransaction rtTransaction = ttransaction;
 		Map<String,String> params = new HashMap<String, String>();
-		logger.debug("查询条件POSMAC"+TypeConversion.byte2hex(ttransaction.ProcessList.OriginalMAC().GetData()));
-		params.put("PosMac=", TypeConversion.byte2hex(ttransaction.ProcessList.OriginalMAC().GetData()));
-		logger.debug("查询条件PosNo"+ttransaction.ProcessList.OriginalSerialNumber().GetAsString());
-		params.put("PosNo", ttransaction.ProcessList.OriginalSerialNumber().GetAsString());
+		if(ttransaction.TransCode().GetAsInteger()!=8){
+			logger.debug("查询条件POSMAC"+TypeConversion.byte2hex(ttransaction.ProcessList.OriginalMAC().GetData()));
+			params.put("PosMac=", TypeConversion.byte2hex(ttransaction.ProcessList.OriginalMAC().GetData()));
+			logger.debug("查询条件PosNo"+ttransaction.ProcessList.OriginalSerialNumber().GetAsString());
+			params.put("PosNo=", ttransaction.ProcessList.OriginalSerialNumber().GetAsString());
+			
+		}else{
+			// 手动回执
+			params.put("OrderNo=", ttransaction.ProcessList.OrderNumber().GetAsString());
+		}
 		
 		List<Object> datalist = dbOperator.queryBeanList(DBBean.TB_SALE_RECORD, params);
-		SaleDataLogBean saleDataLogBean = (SaleDataLogBean) datalist.get(0);
-		logger.debug("查询结果MsgTypeID "+saleDataLogBean.getMsgTypeCode());
-		// 消息类型码
-		rtTransaction.BufferList.MsgTypeID().SetAsString(saleDataLogBean.getMsgTypeCode());
-		
-		logger.debug("查询结果getPosNo "+saleDataLogBean.getPosNo());
-		// 主账号
-		rtTransaction.BufferList.TraceAuditNumber().SetAsString(saleDataLogBean.getPosNo());
-		
-		logger.debug("查询结果ProcessCode "+saleDataLogBean.getProcessCode());
-		// 交易处理码
-		rtTransaction.BufferList.ProcessCode().SetAsString(saleDataLogBean.getProcessCode());
-		
-		logger.debug("查询结果SaleAmount "+saleDataLogBean.getTransactionMoney());
-		// 金额
-		rtTransaction.BufferList.SaleAmount().SetAsInt64(saleDataLogBean.getTransactionMoney());
+		if(datalist.size()>0){
+			SaleDataLogBean saleDataLogBean = (SaleDataLogBean) datalist.get(0);
+			logger.debug("查询结果MsgTypeID "+saleDataLogBean.getMsgTypeCode());
+			// 消息类型码
+			rtTransaction.BufferList.MsgTypeID().SetAsString(saleDataLogBean.getMsgTypeCode());
+			
+			logger.debug("查询结果getPosNo "+saleDataLogBean.getPosNo());
+				// 主账号
+			rtTransaction.BufferList.TraceAuditNumber().SetAsString(saleDataLogBean.getPosNo());
+			
+			logger.debug("查询结果ProcessCode "+saleDataLogBean.getProcessCode());
+			// 交易处理码
+			rtTransaction.BufferList.ProcessCode().SetAsString(saleDataLogBean.getProcessCode());
+			
+			logger.debug("查询结果SaleAmount "+saleDataLogBean.getTransactionMoney());
+			// 金额
+			rtTransaction.BufferList.SaleAmount().SetAsInt64(saleDataLogBean.getTransactionMoney());
+			
+			rtTransaction.BufferList.ReferenceNumber().SetAsString(saleDataLogBean.getSearchNo());
+		}
 		return rtTransaction;
 	}
 
@@ -710,9 +723,10 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域3 处理码
 		sendMap.put(3, "000000");
 		saleDataLogBean.setProcessCode("000000");
-		// 保存处理码和POS终端的流程码
-		saleDataLogBean.setTransactionType("000000");
-		saleDataLogBean.setMsgTypeCode(posMessageBean.TransCode().GetAsString());
+		// POS交易类型
+		saleDataLogBean.setTransactionType(posMessageBean.TransCode().GetAsString());
+		// 服务器消息类型码
+		saleDataLogBean.setMsgTypeCode(MessageTypeDefine99Bill.REQUEST_OP_PAY_MONEY);
 		// 域4  交易金额
 		logger.debug("POS发送过来的金额"+posMessageBean.ProcessList.ReturnSaleAmount().GetAsString());
 		sendMap.put(4, posMessageBean.ProcessList.ReturnSaleAmount().GetAsString());

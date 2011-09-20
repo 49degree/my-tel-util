@@ -31,6 +31,7 @@ public final class DBBean {
 		needInitTables.put(TB_SALE_RECORD,"com.guanri.android.jpos.beans.SaleDataLogBean");
 		//设置主键
 		primaryKey.put(TB_OPERATE_LOG,"Log_id");
+		primaryKey.put(TB_SALE_RECORD, "logid");
 
 	}
 	

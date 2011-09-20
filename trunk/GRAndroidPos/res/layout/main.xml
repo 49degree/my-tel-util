@@ -29,7 +29,29 @@
 			android:textSize="24sp" android:layout_marginTop="20dip"/>	
 		<Button android:id="@+id/btn_view_order" android:layout_width="300dip"
 			android:layout_height="wrap_content" android:text="订单查询"
-			android:textSize="24sp" android:layout_marginTop="20dip"/>				
-						
+			android:textSize="24sp" android:layout_marginTop="20dip"/>		
 	</LinearLayout>
+	
+	<LinearLayout android:orientation="horizontal"
+		android:paddingTop="5dip" android:layout_width="fill_parent"
+		android:layout_height="350dip" android:layout_weight="1">
+		<TextView android:text="POS下发PAD数据:" android:gravity="right"
+			android:layout_width="150dip" android:layout_height="wrap_content" />
+		<ScrollView android:layout_width="fill_parent"
+			android:layout_height="350dip">
+			<EditText android:id="@+id/edt_pos_to_pad"
+				android:layout_width="fill_parent" android:layout_height="fill_parent" />
+		</ScrollView>
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:paddingTop="5dip" android:layout_width="fill_parent"
+		android:layout_height="350dip" android:layout_weight="1">
+		<TextView android:text="PAD上传SERVER数据" android:gravity="right"
+			android:layout_width="150dip" android:layout_height="wrap_content" />
+		<ScrollView android:layout_width="fill_parent"
+			android:layout_height="350dip">
+			<EditText android:id="@+id/edt_pad_to_server"
+				android:layout_width="fill_parent" android:layout_height="wrap_content" />
+		</ScrollView>
+	</LinearLayout>	
 </LinearLayout>

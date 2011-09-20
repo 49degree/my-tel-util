@@ -27,8 +27,11 @@ import com.guanri.android.lib.log.Logger;
 
 public class MainActivity extends Activity implements OnClickListener {
 	
-	private EditText comm_state,pos_to_pad,pad_to_pos,pad_to_server,server_to_pad;
-	Button btn_query,btn_login,btn_sale,btn_receive,btn_stop,btn_modify_server,btn_view_order,btn_modify_pwd;
+	private EditText comm_state;
+	private EditText pos_to_pad,pad_to_server;
+	
+	Button btn_stop;
+	Button btn_modify_server,btn_view_order,btn_modify_pwd;
 	final Logger logger = new Logger(MainActivity.class);
 	StringBuffer result = new StringBuffer();
 	public LogTask logTask= null;
@@ -51,29 +54,26 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.poslog);
-		//btn_receive = (Button)findViewById(R.id.btn_receive);
+		setContentView(R.layout.main);
 		btn_stop  = (Button)findViewById(R.id.btn_stop);
+		comm_state = (EditText)findViewById(R.id.edt_log);
+		btn_stop.setOnClickListener(this);
+		
+		//初始化按钮
 		btn_modify_server  = (Button)findViewById(R.id.btn_modify_server);
 		btn_modify_pwd  = (Button)findViewById(R.id.btn_modify_pwd);
 		btn_view_order = (Button)findViewById(R.id.btn_view_order);
-		//获取日志信息框对象
-		comm_state = (EditText)findViewById(R.id.edt_log);
-		pos_to_pad = (EditText)findViewById(R.id.edt_pos_to_pad);
-		//pad_to_pos = (EditText)findViewById(R.id.edt_pad_to_pos);
-		pad_to_server = (EditText)findViewById(R.id.edt_pad_to_server);
-		//server_to_pad = (EditText)findViewById(R.id.edt_server_to_pad);
-		comm_state.setText("mIsRemoteBound:"+mIsRemoteBound);
-		
-		logTask = new LogTask();
-		logTask.start();
-
-		//btn_receive.setOnClickListener(this);
-		btn_stop.setOnClickListener(this);
 		btn_modify_pwd.setOnClickListener(this);
 		btn_modify_server.setOnClickListener(this);
 		btn_view_order.setOnClickListener(this);
 		
+		//获取日志信息框对象
+		pos_to_pad = (EditText)findViewById(R.id.edt_pos_to_pad);
+		pad_to_server = (EditText)findViewById(R.id.edt_pad_to_server);
+		
+		logTask = new LogTask();
+		logTask.start();
+
 		Intent service = new Intent(this,AidlRunService.class);
 		this.startService(service);
 		//绑定服务
@@ -96,38 +96,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		/**
-		case R.id.btn_receive:
-			if(!stopTask){//关闭
-				stopTask = true;
-				//停止运行
-				try{
-					mRemoteService.stopPos();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				btn_receive.setText("开始接收数据");
-			}else{//打开
-				if(hasCommPort){
-					try{
-						mRemoteService.startPos();
-						stopTask = false;
-						btn_receive.setText("停止接收数据");
-					}catch(Exception e){
-						e.printStackTrace();
-					}
-				}else{
-					displayMsg("失败","POS终端未找到");
-				}
-			}
-			break;*/
-		case R.id.btn_modify_server:
-			logger.error("修改地址");
-			new CheckPSWDialog(this).displayDlg();//先打开验证密码对话框，密码正确再打开服务器信息修改对话框
-			break;
-		case R.id.btn_modify_pwd:
-			new UpdateUserDialog(this).displayDlg();
-			break;			
 		case R.id.btn_stop:
 			try{
 				unBindService();
@@ -137,6 +105,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			Intent service = new Intent(this,AidlRunService.class);
 			this.stopService(service);
 			finish();
+			break;
+		case R.id.btn_modify_server:
+			new CheckPSWDialog(this).displayDlg();//先打开验证密码对话框，密码正确再打开服务器信息修改对话框
+			break;
+		case R.id.btn_modify_pwd:
+			new UpdateUserDialog(this).displayDlg();
 			break;
 		case R.id.btn_view_order:
 			Intent intent = new Intent(this, QueryDateActivity.class);
@@ -176,16 +150,19 @@ public class MainActivity extends Activity implements OnClickListener {
     		while (!stopLog) {
     			try {
     				//logger.error("LogTask.........11:"+mRemoteService.operate("pos_to_pad")+":"+(mRemoteService==null?"":mRemoteService.operate("LOG_INFO")));
-    				updateUI.sendMessage(updateUI.obtainMessage(1,mRemoteService.operate("LOG_INFO")));
-    				updateUI.sendMessage(updateUI.obtainMessage(2, mRemoteService.operate("pos_to_pad")));
-    				updateUI.sendMessage(updateUI.obtainMessage(3, mRemoteService.operate("pad_to_pos")));
-    				updateUI.sendMessage(updateUI.obtainMessage(4, mRemoteService.operate("pad_to_server")));
-    				updateUI.sendMessage(updateUI.obtainMessage(5, mRemoteService.operate("server_to_pad")));
-    				if(mRemoteService.hasCommPort()){
-    					hasCommPort = true;
-    				}else{
-    					hasCommPort = false;
+    				if(mRemoteService!=null){
+        				updateUI.sendMessage(updateUI.obtainMessage(1,mRemoteService.operate("LOG_INFO")));
+        				updateUI.sendMessage(updateUI.obtainMessage(2, mRemoteService.operate("pos_to_pad")));
+        				updateUI.sendMessage(updateUI.obtainMessage(3, mRemoteService.operate("pad_to_pos")));
+        				updateUI.sendMessage(updateUI.obtainMessage(4, mRemoteService.operate("pad_to_server")));
+        				updateUI.sendMessage(updateUI.obtainMessage(5, mRemoteService.operate("server_to_pad")));
+        				if(mRemoteService.hasCommPort()){
+        					hasCommPort = true;
+        				}else{
+        					hasCommPort = false;
+        				}
     				}
+
     				Thread.sleep(500);
     			} catch (Exception e) {
     				e.printStackTrace();
@@ -204,27 +181,18 @@ public class MainActivity extends Activity implements OnClickListener {
         	if(msg.obj==null){
         		return;
         	}
-        	if(msg.what==0){
-        		btn_receive.setText((String)msg.obj);
-        	}else if(msg.what==1){
+        	if(msg.what==1){
         		comm_state.setText((String)msg.obj);
         	}else if(msg.what==2){
-        		if(!((String)msg.obj).equals(pos_to_pad.getText().toString())){
+        		if(pos_to_pad!=null&&!((String)msg.obj).equals(pos_to_pad.getText().toString())){
             		pos_to_pad.setText((String)msg.obj);
             		pos_to_pad.setSelection(pos_to_pad.length());//将光标移至文字末尾
         		}
-
-        	}else if(msg.what==3){
-        		//pad_to_pos.setText((String)msg.obj);
-        		//pad_to_pos.setSelection(pad_to_pos.length());//将光标移至文字末尾
         	}else if(msg.what==4){
-        		if(!((String)msg.obj).equals(pad_to_server.getText().toString())){
+        		if(pad_to_server!=null&&!((String)msg.obj).equals(pad_to_server.getText().toString())){
         			pad_to_server.setText((String)msg.obj);
         			pad_to_server.setSelection(pad_to_server.length());//将光标移至文字末尾
         		}
-        	}else if(msg.what==5){
-        		//server_to_pad.setText((String)msg.obj);
-        		//server_to_pad.setSelection(server_to_pad.length());//将光标移至文字末尾
         	}
         	
         }

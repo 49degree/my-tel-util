@@ -64,7 +64,7 @@ public class CheckPSWDialog extends Dialog implements
 				new SystemSettingDialog(context).displayDlg();//打开修改服务器信息对话框
 				dismiss();
 			}else{
-				DialogUtils.showMessageAlertDlg(context, "提示", "密码错误，请重新输入"+TypeConversion.byte2hex(strUserPWD.getBytes())+":"+savePwd, null);
+				DialogUtils.showMessageAlertDlg(context, "提示", "密码错误，请重新输入",null);
 			}
 			
 		} else if (v.getId() == R.id.setting_out) {

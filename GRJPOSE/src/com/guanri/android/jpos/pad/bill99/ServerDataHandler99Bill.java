@@ -120,6 +120,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		case 7:
 		case 8:	
 			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
+			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
 			break;
 		default:
 			break;
@@ -209,8 +210,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			jposPackageFather = createOQSSale(ttransaction);
 			break;
 			
-		case 7:  // 交易回执
+		case 7:  // 交易自动回执
+			jposPackageFather = createSaleReceipt(ttransaction);
+			break;
 		case 8:
+			//	手动回执		
+			TTransaction temp = getReversalData(ttransaction);
 			jposPackageFather = createSaleReceipt(ttransaction);
 			break;
 		default:
@@ -788,7 +793,9 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
 	 
 		// 保存数据
-		dbOperator.insert(DBBean.TB_SALE_RECORD, saleDataLogBean);
+		logger.debug("开始保存数据--------------------------");
+		Long res = dbOperator.insert(DBBean.TB_SALE_RECORD, saleDataLogBean);
+		logger.debug("保存数据结束--------------------------" + res);
 		return jposPackage99Bill;
 		
 	}

@@ -66,7 +66,7 @@ public class TTerminalParser {
 
 	private static final byte ws_ErrorConnect = 4;
 	private static final byte ws_ErrorRecv = 10;
-	private static final byte ws_ErrorBuild = 4;
+	private static final byte ws_ErrorBuild = 11;
 
 	protected void UpdateWorkingStatus(byte AStatus) { // 检测工作状态
 		TWorkingStatus WorkingStatus = new TWorkingStatus();
@@ -246,7 +246,7 @@ public class TTerminalParser {
 			}
 
 			
-			
+			/*  测试用 */
 			Transaction.BufferList.MsgTypeID().SetAsInteger(200);
 			Transaction.BufferList.ProcessCode().SetAsInteger(0);
 			Transaction.BufferList.PAN().SetAsString("5264102500120211");

@@ -27,8 +27,8 @@ public final class DBBean {
 	public static Map<String,String> primaryKey = new HashMap<String,String>(1);
 	static{
 		//定义表与实体类对应关系
-		needInitTables.put(TB_OPERATE_LOG,"com.guanri.android.jpos.beans.OperateLogBean");
-		needInitTables.put(TB_SALE_RECORD,"com.guanri.android.jpos.beans.SaleDataLogBean");
+		needInitTables.put(TB_OPERATE_LOG,"com.guanri.android.jpos.bean.OperateLogBean");
+		needInitTables.put(TB_SALE_RECORD,"com.guanri.android.jpos.bean.SaleDataLogBean");
 		//设置主键
 		primaryKey.put(TB_OPERATE_LOG,"Log_id");
 		primaryKey.put(TB_SALE_RECORD, "logid");

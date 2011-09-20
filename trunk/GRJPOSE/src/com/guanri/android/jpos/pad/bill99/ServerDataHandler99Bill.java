@@ -194,7 +194,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		case 4:
 			// 冲正
 			
-			//TTransaction temp = getReversalData(ttransaction);
+			TTransaction temp = getReversalData(ttransaction);
 			jposPackageFather = createReversal(ttransaction);
 			break;
 		case 6:
@@ -215,8 +215,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			break;
 		case 8:
 			//	手动回执		
-			TTransaction temp = getReversalData(ttransaction);
-			jposPackageFather = createSaleReceipt(ttransaction);
+			TTransaction tempttransaction = getReversalData(ttransaction);
+			jposPackageFather = createSaleReceipt(tempttransaction);
 			break;
 		default:
 		
@@ -237,17 +237,26 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//ttransaction.ProcessList.;
 		TTransaction rtTransaction = ttransaction;
 		Map<String,String> params = new HashMap<String, String>();
+		logger.debug("查询条件POSMAC"+TypeConversion.byte2hex(ttransaction.ProcessList.OriginalMAC().GetData()));
 		params.put("PosMac=", TypeConversion.byte2hex(ttransaction.ProcessList.OriginalMAC().GetData()));
-				
+		logger.debug("查询条件PosNo"+ttransaction.ProcessList.OriginalSerialNumber().GetAsString());
 		params.put("PosNo", ttransaction.ProcessList.OriginalSerialNumber().GetAsString());
+		
 		List<Object> datalist = dbOperator.queryBeanList(DBBean.TB_SALE_RECORD, params);
 		SaleDataLogBean saleDataLogBean = (SaleDataLogBean) datalist.get(0);
+		logger.debug("查询结果MsgTypeID "+saleDataLogBean.getMsgTypeCode());
 		// 消息类型码
 		rtTransaction.BufferList.MsgTypeID().SetAsString(saleDataLogBean.getMsgTypeCode());
+		
+		logger.debug("查询结果getPosNo "+saleDataLogBean.getPosNo());
 		// 主账号
-		rtTransaction.BufferList.TraceAuditNumber().SetAsString(saleDataLogBean.PosNo);
+		rtTransaction.BufferList.TraceAuditNumber().SetAsString(saleDataLogBean.getPosNo());
+		
+		logger.debug("查询结果ProcessCode "+saleDataLogBean.getProcessCode());
 		// 交易处理码
 		rtTransaction.BufferList.ProcessCode().SetAsString(saleDataLogBean.getProcessCode());
+		
+		logger.debug("查询结果SaleAmount "+saleDataLogBean.getTransactionMoney());
 		// 金额
 		rtTransaction.BufferList.SaleAmount().SetAsInt64(saleDataLogBean.getTransactionMoney());
 		return rtTransaction;

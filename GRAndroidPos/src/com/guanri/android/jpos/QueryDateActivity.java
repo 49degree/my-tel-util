@@ -41,6 +41,7 @@ public class QueryDateActivity extends Activity {
 			strbuf.append("参考号:"+saledata.SearchNo);
 			strbuf.append("授权号:"+saledata.AuthorizationNo);
 			strbuf.append("批次号:"+saledata.BatchNo);
+			strbuf.append("PosMAC:"+saledata.PosMac);
 			strbuf.append("\n");
 		}
 		}

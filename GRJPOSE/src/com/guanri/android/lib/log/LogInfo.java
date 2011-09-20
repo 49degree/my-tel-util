@@ -24,7 +24,7 @@ public class LogInfo {
      * @param params
      * @return
      */
-    final static int keepLength=2000;
+    final static int keepLength=4000;
 	public String operate(String params) {
 		if ("pad_to_pos".equals(params)) {
 			pad_to_pos=new StringBuffer(pad_to_pos.length()<keepLength?pad_to_pos:pad_to_pos.substring(pad_to_pos.length()-keepLength));

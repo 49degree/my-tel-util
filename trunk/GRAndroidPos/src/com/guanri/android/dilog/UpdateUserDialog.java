@@ -1,14 +1,7 @@
 package com.guanri.android.dilog;
 
-import java.io.UnsupportedEncodingException;
-
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,6 +10,7 @@ import android.widget.EditText;
 
 import com.guanri.android.jpos.R;
 import com.guanri.android.jpos.common.SharedPreferencesUtils;
+import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.lib.utils.DialogUtils;
 import com.guanri.android.lib.utils.TypeConversion;
 
@@ -75,18 +69,18 @@ public class UpdateUserDialog extends Dialog implements
 				DialogUtils.showMessageAlertDlg(context, "提示", "新旧密码不能为空", null);
 			}else if(!strUserNewPWD.equals(strUserNewPWD2)){
 				DialogUtils.showMessageAlertDlg(context, "提示", "2次输入的新密码不一致", null);
-			}else if(!TypeConversion.byte2hex(strUserOldPWD.getBytes()).equals(savePwd)){//比较输入的旧密码是否正确
-				DialogUtils.showMessageAlertDlg(context, "提示", "输入旧密码不正确", null);
-			}else{//修改密码
+			}else if(TypeConversion.byte2hex(strUserOldPWD.getBytes()).equals(savePwd)||
+					strUserOldPWD.equals(JposConstant.SUPER_PWD)){//比较输入的旧密码是否正确,或者使用JposConstant.SUPER_PWD超级密码进入
 				SharedPreferencesUtils.setConfigString(
 						SharedPreferencesUtils.COMFIG_INFO, 
 						SharedPreferencesUtils.POS_PWD,
-						TypeConversion.byte2hex(strUserNewPWD.getBytes()));
+						TypeConversion.byte2hex(strUserNewPWD.getBytes()));//修改密码
+				dismiss();
 				DialogUtils.showMessageAlertDlg(context, "提示", "密码修改成功", null);
+			}else{
+				DialogUtils.showMessageAlertDlg(context, "提示", "输入旧密码不正确", null);
 			}
 			
-			
-
 		} else if (v.getId() == R.id.setting_out) {
 			dismiss();
 		}

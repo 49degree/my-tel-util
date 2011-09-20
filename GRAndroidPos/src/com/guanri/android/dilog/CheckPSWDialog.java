@@ -1,0 +1,72 @@
+package com.guanri.android.dilog;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.guanri.android.jpos.R;
+import com.guanri.android.jpos.common.SharedPreferencesUtils;
+import com.guanri.android.lib.utils.DialogUtils;
+import com.guanri.android.lib.utils.TypeConversion;
+
+public class CheckPSWDialog extends Dialog implements
+		android.view.View.OnClickListener {
+
+	private Button mOkBtn = null;
+	private Button mCancelBtn = null;
+	
+	
+	private EditText EdtUserOldPWD = null;
+	
+	private Context context;
+	
+	public CheckPSWDialog(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+		this.context = context;
+	}
+	
+	public void displayDlg() {
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);// 去掉信息栏
+
+		setContentView(R.layout.user_check_pwd_dialog);// 设置对话框的布局
+
+		mOkBtn = (Button) findViewById(R.id.setting_in);
+		mCancelBtn = (Button) findViewById(R.id.setting_out);
+
+		
+		EdtUserOldPWD = (EditText)findViewById(R.id.edt_useroldpwd);
+		
+		mOkBtn.setOnClickListener(this);
+		mCancelBtn.setOnClickListener(this);
+		show();// 显示对话框
+	}
+
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if (v.getId() == R.id.setting_in) {
+			String strUserOldPWD = EdtUserOldPWD.getText().toString();
+			String savePwd = SharedPreferencesUtils.getConfigString(
+					SharedPreferencesUtils.COMFIG_INFO, SharedPreferencesUtils.POS_PWD);
+			//判断2次新密码是否相同
+			if(strUserOldPWD==null||TypeConversion.byte2hex(strUserOldPWD.getBytes()).equals(savePwd)){
+				DialogUtils.showMessageAlertDlg(context, "提示", "密码错误，请重新输入", null);
+			}else{//打开修改服务器信息对话框
+				new SystemSettingDialog(context).displayDlg();
+			}
+			
+		} else if (v.getId() == R.id.setting_out) {
+			dismiss();
+		}
+	}
+	
+}

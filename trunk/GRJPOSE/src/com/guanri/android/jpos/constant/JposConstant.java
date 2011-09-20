@@ -3,6 +3,7 @@ package com.guanri.android.jpos.constant;
 import java.util.HashMap;
 
 import com.guanri.android.jpos.common.SharedPreferencesUtils;
+import com.guanri.android.lib.utils.TypeConversion;
 
 public class JposConstant {
 	/**
@@ -42,11 +43,14 @@ public class JposConstant {
 	public static String COMFIG_POS_CONTACT = SharedPreferencesUtils.getConfigString(
 			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSMERCHANT);//商户编号
 	
-	public static String SERVER_IP =  SharedPreferencesUtils.getConfigString(
-			SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERIP);//服务器IP
-	public static int SERVER_PORT =  Integer.parseInt(SharedPreferencesUtils.getConfigString(
-			SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERPORT));//服务器PORT
+	
+	public static String SERVER_IP =  null;//服务器IP
+	public static int SERVER_PORT = 0;//服务器PORT
 	public final static String SUPER_PWD = "201109";//超级密码
+	//初始值
+	public final static String POS_PWD_INIT_VALUE = "000000";	//初始密码
+	public final static String SERVERIP_INIT_VALUE = "211.148.7.252";//初始服务器IP	
+	public final static String SERVERPORT_INIT_VALUE = "7001";//初始服务器端口
 	
 	static{
 		//POS终端交易码对照表
@@ -258,29 +262,33 @@ public class JposConstant {
 	 */
 	public static void initPos(){
 		String isPosInit = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, SharedPreferencesUtils.IS_POS_INIT);
+		JposConstant.reflesh();//加载数据
 		if(isPosInit==null||"".equals(isPosInit)){//未初始化
 			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
 					SharedPreferencesUtils.IS_POS_INIT, "YES");//表示已经初始化
 			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
-					SharedPreferencesUtils.POS_PWD, SharedPreferencesUtils.POS_PWD_INIT_VALUE);//密码初始值
+					SharedPreferencesUtils.POS_PWD, TypeConversion.byte2hex(JposConstant.POS_PWD_INIT_VALUE.getBytes()));//密码初始值
 			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.SERVER_INFO, 
-					SharedPreferencesUtils.SERVERIP, SharedPreferencesUtils.SERVERIP_INIT_VALUE);//IP初始值
+					SharedPreferencesUtils.SERVERIP, JposConstant.SERVERIP_INIT_VALUE);//IP初始值
 			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.SERVER_INFO, 
-					SharedPreferencesUtils.SERVERPORT, SharedPreferencesUtils.SERVERPORT_INIT_VALUE);//PORT初始值
-			
+					SharedPreferencesUtils.SERVERPORT, JposConstant.SERVERPORT_INIT_VALUE);//PORT初始值
 			JposConstant.reflesh();//重新加载
 			
 		}
 	}
 	
 	/**
-	 * 重新加载
+	 * 加载数据
 	 */
 	public static void reflesh(){
-		SERVER_IP =  SharedPreferencesUtils.getConfigString(
-				SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERIP);//IP
-		SERVER_PORT =  Integer.parseInt(SharedPreferencesUtils.getConfigString(
-				SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERPORT));//PORT
+		try{
+			SERVER_IP =  SharedPreferencesUtils.getConfigString(
+					SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERIP);//IP
+			SERVER_PORT =  Integer.parseInt(SharedPreferencesUtils.getConfigString(
+					SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERPORT));//PORT
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	public static String result(String resultNo){

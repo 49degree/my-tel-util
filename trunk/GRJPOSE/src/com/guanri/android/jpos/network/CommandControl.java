@@ -83,6 +83,9 @@ public class CommandControl {
 				socket.setSoLinger( true, 50 );
 		        //关闭Nagle算法.立即发包   
 		        socket.setTcpNoDelay(true);
+		        
+		        JposConstant.reflesh();//更新数据
+		        logger.debug(JposConstant.SERVER_IP+":"+JposConstant.SERVER_PORT);
 				socket.connect(new InetSocketAddress(JposConstant.SERVER_IP,JposConstant.SERVER_PORT), connectTimeOut);//建立连接超时设置
 				out = socket.getOutputStream();
 				in = socket.getInputStream();

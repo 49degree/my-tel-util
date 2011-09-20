@@ -130,9 +130,11 @@ public class TProcessList extends TFieldList {
 	}
 	
 	public boolean GetIsExistPINData() {    //是否存在密码数据
-		return true;
-		//if (PINData().GetIsEmpty()) return false;
-		//return true;
+		byte[] Bytes = PINData().GetData();
+	    for (int i = 0; i < Common.Length(Bytes); i++) {
+	    	if ((Bytes[i] & 0xFF) != 0xFF) return true;
+	    }		
+		return false;
 	}
 
 	public String GetTrack2Data() {  //获取2磁道数据

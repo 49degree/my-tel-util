@@ -130,7 +130,7 @@ public class TProcessList extends TFieldList {
 	}
 	
 	public boolean GetIsExistPINData() {    //是否存在密码数据
-		return false;
+		return true;
 		//if (PINData().GetIsEmpty()) return false;
 		//return true;
 	}

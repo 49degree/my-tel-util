@@ -154,6 +154,9 @@ public class TTerminalParser {
 		TStream Stream = new TStream(null);
 		MAC_Send.SaveToBytes(Stream);
 		FTerminalLink.SendPackage(Stream.Bytes); // 发送
+		
+		PutLog("MAB = " + Common.ToHex(Stream.Bytes));
+		
 		byte[] Bytes = FTerminalLink.RecvPackage();
 
 		Stream = new TStream(Bytes);

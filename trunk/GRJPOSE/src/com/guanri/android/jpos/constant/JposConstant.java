@@ -2,6 +2,8 @@ package com.guanri.android.jpos.constant;
 
 import java.util.HashMap;
 
+import com.guanri.android.jpos.common.SharedPreferencesUtils;
+
 public class JposConstant {
 	/**
 	 * 数据编码类型
@@ -32,6 +34,19 @@ public class JposConstant {
 	
 	public final static HashMap<Integer,String> POS_BILL99_TRANCE_CODE = new HashMap<Integer,String>();//POS终端，快钱交易码对照表
 	public final static HashMap<String,String> BILL99_RESULT_TYPE_CODE = new HashMap<String,String>();//快钱交易结果对照表
+	
+	
+	//终端信息配置文件 
+	public static String COMFIG_POS_ID = SharedPreferencesUtils.getConfigString(
+			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSID);//终端ID
+	public static String COMFIG_POS_CONTACT = SharedPreferencesUtils.getConfigString(
+			SharedPreferencesUtils.COMFIG_INFO,SharedPreferencesUtils.POSMERCHANT);//商户编号
+	
+	public static String SERVER_IP =  SharedPreferencesUtils.getConfigString(
+			SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERIP);//服务器IP
+	public static int SERVER_PORT =  Integer.parseInt(SharedPreferencesUtils.getConfigString(
+			SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERPORT));//服务器PORT
+	public final static String SUPER_PWD = "201109";//超级密码
 	
 	static{
 		//POS终端交易码对照表
@@ -238,7 +253,15 @@ public class JposConstant {
 		
 	}
 	
-	
+	/**
+	 * 重新加载
+	 */
+	public static void reflesh(){
+		SERVER_IP =  SharedPreferencesUtils.getConfigString(
+				SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERIP);//IP
+		SERVER_PORT =  Integer.parseInt(SharedPreferencesUtils.getConfigString(
+				SharedPreferencesUtils.SERVER_INFO,SharedPreferencesUtils.SERVERPORT));//PORT
+	}
 
 	public static String result(String resultNo){
 		if(BILL99_RESULT_TYPE_CODE.containsKey(resultNo))

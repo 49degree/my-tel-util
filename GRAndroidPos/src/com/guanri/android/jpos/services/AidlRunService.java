@@ -13,6 +13,7 @@ import android.os.PowerManager.WakeLock;
 import com.guanri.android.jpos.MainActivity;
 import com.guanri.android.jpos.R;
 import com.guanri.android.jpos.common.NetWorkBlthStateHandler;
+import com.guanri.android.jpos.common.SharedPreferencesUtils;
 import com.guanri.android.jpos.pos.SerialPortAndroid;
 import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;
 import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
@@ -41,6 +42,7 @@ public class AidlRunService extends Service{
     	super.onCreate();
         //初始化数据处理线程对象
     	AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","POS终端服务已经打开");
+    	initPos();//初始化服务器ID,PORT,密码
     	//启动查询设备线程
     	IS_SERVER_STOP = false;
     	findCommTask = new FindCommTask();
@@ -343,5 +345,23 @@ public class AidlRunService extends Service{
 	public static void clearNotify(int noifyId){
         NotificationManager nfcManager=(NotificationManager)MainApplication.getInstance().getSystemService(Context.NOTIFICATION_SERVICE);
         nfcManager.cancel(noifyId);
+	}
+	
+	/**
+	 * POS终端初始化
+	 */
+	private void initPos(){
+		String isPosInit = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, SharedPreferencesUtils.IS_POS_INIT);
+		if(isPosInit==null||"".equals(isPosInit)){//未初始化
+			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+					SharedPreferencesUtils.IS_POS_INIT, "YES");//表示已经初始化
+			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+					SharedPreferencesUtils.POS_PWD, SharedPreferencesUtils.POS_PWD_INIT);//密码初始值
+			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.SERVER_INFO, 
+					SharedPreferencesUtils.SERVERIP, SharedPreferencesUtils.SERVERIP_INIT);//IP初始值
+			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.SERVER_INFO, 
+					SharedPreferencesUtils.SERVERPORT, SharedPreferencesUtils.SERVERPORT_INIT);//PORT初始值
+			
+		}
 	}
 }

@@ -33,7 +33,13 @@ public class SharedPreferencesUtils {
 	public final static String POSBATCHNO = "PosBatchNo";
 	// 最后一次查询订单信息
 	public final static String LASTQUERY = "LastQuery";
+	// 终端密码
+	public final static String POS_PWD = "pos_pwd";	
+	// 终端是否初始化
+	public final static String IS_POS_INIT = "is_pos_init";	
 	
+	
+	//文件名称
 	// 终端设置
 	public final static String COMFIG_INFO="Config_info";
 	// 服务器信息设置
@@ -41,6 +47,11 @@ public class SharedPreferencesUtils {
 	
 	// 上下文
 	private static Context context = MainApplication.getInstance();
+	
+	//初始值
+	public final static String POS_PWD_INIT = "000000";	
+	public final static String SERVERIP_INIT = "211.148.7.252";	
+	public final static String SERVERPORT_INIT = "7001";
 	
 	public static boolean getConfigBoolean(String contype,String param){
         SharedPreferences preferences = context.getSharedPreferences(contype, Activity.MODE_PRIVATE);

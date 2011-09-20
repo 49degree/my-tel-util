@@ -2,6 +2,7 @@ package com.guanri.android.lib.context;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.view.Display;
 import android.view.WindowManager;

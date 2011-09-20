@@ -17,16 +17,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.guanri.android.dilog.CheckPSWDialog;
+import com.guanri.android.dilog.UpdateUserDialog;
 import com.guanri.android.jpos.services.AidlRunService;
 import com.guanri.android.jpos.services.GrPosService;
-import com.guanri.android.lib.log.LogInfo;
 import com.guanri.android.lib.log.Logger;
 
 
 public class MainActivity extends Activity implements OnClickListener {
 	
 	private EditText comm_state,pos_to_pad,pad_to_pos,pad_to_server,server_to_pad;
-	Button btn_query,btn_login,btn_sale,btn_receive,btn_stop;
+	Button btn_query,btn_login,btn_sale,btn_receive,btn_stop,btn_modify_server,btn_modify_pwd;
 	final Logger logger = new Logger(MainActivity.class);
 	StringBuffer result = new StringBuffer();
 	public LogTask logTask= null;
@@ -52,6 +54,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 		//btn_receive = (Button)findViewById(R.id.btn_receive);
 		btn_stop  = (Button)findViewById(R.id.btn_stop);
+		btn_modify_server  = (Button)findViewById(R.id.btn_modify_server);
+		btn_modify_pwd  = (Button)findViewById(R.id.btn_modify_pwd);
+		
 		//获取日志信息框对象
 		comm_state = (EditText)findViewById(R.id.edt_log);
 		pos_to_pad = (EditText)findViewById(R.id.edt_pos_to_pad);
@@ -65,6 +70,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		//btn_receive.setOnClickListener(this);
 		btn_stop.setOnClickListener(this);
+		btn_modify_pwd.setOnClickListener(this);
+		btn_modify_server.setOnClickListener(this);
 		
 		Intent service = new Intent(this,AidlRunService.class);
 		this.startService(service);
@@ -133,6 +140,13 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 			}
 			break;*/
+		case R.id.btn_modify_server:
+			logger.error("修改地址");
+			new CheckPSWDialog(this).displayDlg();//先打开验证密码对话框，密码正确再打开服务器信息修改对话框
+			break;
+		case R.id.btn_modify_pwd:
+			new UpdateUserDialog(this).displayDlg();
+			break;			
 		case R.id.btn_stop:
 			try{
 				unBindService();

@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import com.guanri.android.exception.CommandParseException;
+import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
 import com.guanri.android.lib.log.Logger;
@@ -17,8 +18,8 @@ public class CommandControl {
 	public static Logger logger = Logger.getLogger(CommandControl.class);//日志对象
 	
 	private static CommandControl instance = new CommandControl();
-	private String serverIp = "211.148.7.252";//ip地址
-	private int serverPort = 7001;//端口号
+//	private String serverIp = "211.148.7.252";//ip地址
+//	private int serverPort = 7001;//端口号
 	
 	private Socket socket = null;//连接对象
 	private InputStream in = null;//输入流
@@ -82,7 +83,7 @@ public class CommandControl {
 				socket.setSoLinger( true, 50 );
 		        //关闭Nagle算法.立即发包   
 		        socket.setTcpNoDelay(true);
-				socket.connect(new InetSocketAddress(serverIp,serverPort), connectTimeOut);//建立连接超时设置
+				socket.connect(new InetSocketAddress(JposConstant.SERVER_IP,JposConstant.SERVER_PORT), connectTimeOut);//建立连接超时设置
 				out = socket.getOutputStream();
 				in = socket.getInputStream();
 				isConnect = true;

@@ -1,12 +1,14 @@
 package com.guanri.android.jpos.common;
 
 
+
 /**
  * 配置文件管理类
  * @author Administrator
  *
  */
 public class SharedPreferencesUtils {
+	
 	
 	// 服务器IP地址
 	public final static String SERVERIP = "Server_id";
@@ -28,13 +30,26 @@ public class SharedPreferencesUtils {
 	public final static String POSBATCHNO = "PosBatchNo";
 	// 最后一次查询订单信息
 	public final static String LASTQUERY = "LastQuery";
+	// 终端密码
+	public final static String POS_PWD = "pos_pwd";	
+	// 终端是否初始化
+	public final static String IS_POS_INIT = "is_pos_init";	
 	
+	
+	//文件名称
 	// 终端设置
 	public final static String COMFIG_INFO="Config_info";
 	// 服务器信息设置
 	public final static String SERVER_INFO="Server_info";
 	
 	// 上下文
+	
+	//初始值
+	public final static String POS_PWD_INIT_VALUE = "000000";	
+	public final static String SERVERIP_INIT_VALUE = "211.148.7.252";	
+	public final static String SERVERPORT_INIT_VALUE = "7001";
+	
+
 	
 	public static boolean getConfigBoolean(String contype,String param){
 		return false;

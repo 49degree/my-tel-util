@@ -254,6 +254,26 @@ public class JposConstant {
 	}
 	
 	/**
+	 * POS终端初始化
+	 */
+	public static void initPos(){
+		String isPosInit = SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, SharedPreferencesUtils.IS_POS_INIT);
+		if(isPosInit==null||"".equals(isPosInit)){//未初始化
+			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+					SharedPreferencesUtils.IS_POS_INIT, "YES");//表示已经初始化
+			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+					SharedPreferencesUtils.POS_PWD, SharedPreferencesUtils.POS_PWD_INIT_VALUE);//密码初始值
+			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.SERVER_INFO, 
+					SharedPreferencesUtils.SERVERIP, SharedPreferencesUtils.SERVERIP_INIT_VALUE);//IP初始值
+			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.SERVER_INFO, 
+					SharedPreferencesUtils.SERVERPORT, SharedPreferencesUtils.SERVERPORT_INIT_VALUE);//PORT初始值
+			
+			JposConstant.reflesh();//重新加载
+			
+		}
+	}
+	
+	/**
 	 * 重新加载
 	 */
 	public static void reflesh(){

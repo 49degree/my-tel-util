@@ -7,9 +7,9 @@ public class SaleDataLogBean {
 	public String PosNo;
 	// 终端MAC 终端上传交易包的MAC值，转换成HEX
 	public String PosMac;
-	// 交易类型　消费，撤销，退货
+	// POS交易类型码　消费，撤销，退货
 	public String TransactionType;
-	// 消息类型码
+	// 服务器消息类型码
 	public String MsgTypeCode;
 	// 交易状态  建立,发送,接收,成功,已冲正,已冲正成功
 	// 0  已发送
@@ -32,7 +32,7 @@ public class SaleDataLogBean {
 	public String TimeStr;
 	// 批次号
 	public String BatchNo;
-	// 消息处理码
+	// 服务器消息处理码
 	public String ProcessCode;
 	
 	public String getMsgTypeCode() {

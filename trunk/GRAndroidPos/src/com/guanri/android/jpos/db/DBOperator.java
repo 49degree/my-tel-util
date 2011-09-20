@@ -291,7 +291,7 @@ public class DBOperator extends SQLiteOpenHelper {
 	 * @return
 	 */
 	public long insert(String tableName,Object value){
-		
+		logger.error("开始插入数据++++++++++++++++");
 		long insertRow = 0;
 		//SQLiteDatabase insertDB = null;
 		try {
@@ -321,6 +321,8 @@ public class DBOperator extends SQLiteOpenHelper {
 			}
 			
 			insertRow = sqlDb.insert(tableName, null, contentValues);
+			logger.debug("数据插入成功---------------------------------------"+insertRow);
+			
 		} catch (Exception ce) {
 			ce.printStackTrace();
 		}

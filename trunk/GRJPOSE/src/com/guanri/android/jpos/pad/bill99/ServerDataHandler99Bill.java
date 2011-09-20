@@ -701,7 +701,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 状态
 		saleDataLogBean.setTransactionState(0);
 		// 终端MCK
-		if(!posMessageBean.MAC().GetIsEmpty())
+		//if(!posMessageBean.MAC().GetIsEmpty())
 			saleDataLogBean.setPosMac(TypeConversion.byte2hex(posMessageBean.MAC().GetData(),0));
 		// 域2 主账号
 		logger.debug("POS发送过来的主账号"+posMessageBean.ProcessList.GetPAN());

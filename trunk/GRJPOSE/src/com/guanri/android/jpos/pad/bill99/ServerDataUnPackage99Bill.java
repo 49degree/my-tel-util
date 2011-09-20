@@ -16,6 +16,7 @@ import com.guanri.android.jpos.iso.JposMessageType;
 import com.guanri.android.jpos.iso.JposSelfFieldLeaf;
 import com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction;
 import com.guanri.android.lib.log.Logger;
+import com.guanri.android.lib.utils.TypeConversion;
 
 /**
  * 解析报文
@@ -281,7 +282,7 @@ public class ServerDataUnPackage99Bill {
 			params.put("SearchNo=", ReferenceStr);
 			params.put("AuthorizationNo=", authorizeStr);
 			upDataState(rtTransaction.SerialNumber().GetAsString(),
-						rtTransaction.MAC().GetAsString(),params);
+					TypeConversion.byte2hex(rtTransaction.MAC().GetData()),params);
 			logger.debug(result.toString());
 		} else {
 			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
@@ -321,10 +322,10 @@ public class ServerDataUnPackage99Bill {
 			
 			// 更新数据库状态
 			//-------------------------------------------------------
-			//Map<String,String> params = new HashMap<String,String>();
-			//params.put("TransactionState=", "2");
-			//upDataState(rtTransaction.SerialNumber().GetAsString(),
-			//			rtTransaction.MAC().GetAsString(),params);
+			Map<String,String> params = new HashMap<String,String>();
+			params.put("TransactionState=", "2");
+			upDataState(rtTransaction.SerialNumber().GetAsString(),
+						rtTransaction.MAC().GetAsString(),params);
 			
 			logger.debug(result.toString());
 		} else {
@@ -401,7 +402,6 @@ public class ServerDataUnPackage99Bill {
 
 		return tTransaction;
 	}
-	
 	
 	public static void upDataState(String SerialNumber,String MAC,Map<String,String> params){
 		// 更新数据库标识

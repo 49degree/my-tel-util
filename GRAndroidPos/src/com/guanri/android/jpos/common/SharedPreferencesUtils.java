@@ -47,11 +47,7 @@ public class SharedPreferencesUtils {
 	
 	// 上下文
 	private static Context context = MainApplication.getInstance();
-	
-	//初始值
-	public final static String POS_PWD_INIT = "000000";	
-	public final static String SERVERIP_INIT = "211.148.7.252";	
-	public final static String SERVERPORT_INIT = "7001";
+
 	
 	public static boolean getConfigBoolean(String contype,String param){
         SharedPreferences preferences = context.getSharedPreferences(contype, Activity.MODE_PRIVATE);

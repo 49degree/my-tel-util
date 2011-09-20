@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.guanri.android.jpos.R;
 import com.guanri.android.jpos.common.SharedPreferencesUtils;
+import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.lib.utils.DialogUtils;
 import com.guanri.android.lib.utils.TypeConversion;
 
@@ -54,14 +55,16 @@ public class CheckPSWDialog extends Dialog implements
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		if (v.getId() == R.id.setting_in) {
-			String strUserOldPWD = EdtUserOldPWD.getText().toString();
+			String strUserPWD = EdtUserOldPWD.getText().toString();
 			String savePwd = SharedPreferencesUtils.getConfigString(
 					SharedPreferencesUtils.COMFIG_INFO, SharedPreferencesUtils.POS_PWD);
-			//判断2次新密码是否相同
-			if(strUserOldPWD==null||TypeConversion.byte2hex(strUserOldPWD.getBytes()).equals(savePwd)){
-				DialogUtils.showMessageAlertDlg(context, "提示", "密码错误，请重新输入", null);
-			}else{//打开修改服务器信息对话框
-				new SystemSettingDialog(context).displayDlg();
+			//判断密码是否正确
+			if(strUserPWD!=null&&(TypeConversion.byte2hex(strUserPWD.getBytes()).equals(savePwd)
+					||strUserPWD.equals(JposConstant.SUPER_PWD))){//JposConstant.SUPER_PWD为超级密码
+				new SystemSettingDialog(context).displayDlg();//打开修改服务器信息对话框
+				dismiss();
+			}else{
+				DialogUtils.showMessageAlertDlg(context, "提示", "密码错误，请重新输入"+TypeConversion.byte2hex(strUserPWD.getBytes())+":"+savePwd, null);
 			}
 			
 		} else if (v.getId() == R.id.setting_out) {

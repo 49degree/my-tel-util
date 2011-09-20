@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.guanri.android.jpos.R;
+import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.lib.utils.DialogUtils;
 
 /**
@@ -95,6 +96,8 @@ public class SystemSettingDialog extends Dialog
 				systemConfig.saveServerInfoValues(strServerIp, strServerPort);
 				dismiss();
 			}		
+			JposConstant.reflesh();//重新加载
+			
 			DialogUtils.showMessageAlertDlg(context, "提示", "服务器信息修改成功", null);
 		} else if (v.getId() == R.id.setting_out) {
 			dismiss();

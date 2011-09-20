@@ -74,6 +74,9 @@ public abstract class JposPackageFather {
 		//遍历数据位
 		while(keyIt.hasNext()){
 			Integer key = keyIt.next();
+			if(key>64){
+				return null;
+			}
 			parseBitMap(key-1);//构造位图对象
 			bitDataTemp = parseBitValue(key);
 			

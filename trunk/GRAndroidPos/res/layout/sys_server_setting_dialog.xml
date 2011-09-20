@@ -3,23 +3,22 @@
 	android:layout_width="400dip" android:layout_height="300dip"
 	android:orientation="vertical">
 	<LinearLayout android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:orientation="vertical"
-		android:layout_weight="1" android:layout_gravity="center">
+	android:layout_height="wrap_content" android:orientation="vertical"
+	android:layout_weight="1" android:layout_gravity="center">
 		<TextView android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="10dip" android:text="快钱服务器配置" />
+			android:layout_height="wrap_content" android:layout_marginTop="10dip"
+			android:text="快钱服务器配置" />
 	</LinearLayout>
 
 
 	<LinearLayout android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:orientation="horizontal"
-		android:layout_weight="1">
-		>
+		android:layout_height="wrap_content" android:orientation="horizontal" android:layout_weight="1">
+		
 		<TextView android:layout_width="80dip" android:layout_height="wrap_content"
 			android:layout_marginLeft="20dip" android:layout_marginTop="10dip"
 			android:layout_marginBottom="10dip" android:text="快钱服务器IP" />
 		<EditText android:id="@+id/edt_serverip1"
-			android:layout_width="45dip" android:layout_height="wrap_content"
+			android:layout_width="70dip" android:layout_height="wrap_content"
 			android:layout_marginTop="10dip" android:layout_marginBottom="10dip"
 			android:maxLines="1" android:maxLength="3" android:numeric="integer"
 			android:text="" android:textSize="18sp" />
@@ -28,7 +27,7 @@
 			android:layout_marginBottom="10dip" android:text="."
 			android:textColor="#000" />
 		<EditText android:id="@+id/edt_serverip2"
-			android:layout_width="45dip" android:layout_height="wrap_content"
+			android:layout_width="70dip" android:layout_height="wrap_content"
 			android:layout_marginTop="10dip" android:layout_marginBottom="10dip"
 			android:maxLines="1" android:numeric="integer" android:maxLength="3"
 			android:text="" android:textSize="18sp" />
@@ -37,7 +36,7 @@
 			android:layout_marginBottom="10dip" android:text="."
 			android:textColor="#000" />
 		<EditText android:id="@+id/edt_serverip3"
-			android:layout_width="45dip" android:layout_height="wrap_content"
+			android:layout_width="70dip" android:layout_height="wrap_content"
 			android:layout_marginTop="10dip" android:layout_marginBottom="10dip"
 			android:maxLines="1" android:numeric="integer" android:maxLength="3"
 			android:text="" android:textSize="18sp" />
@@ -46,7 +45,7 @@
 			android:layout_marginBottom="10dip" android:text="."
 			android:textColor="#000" />
 		<EditText android:id="@+id/edt_serverip4"
-			android:layout_width="45dip" android:layout_height="wrap_content"
+			android:layout_width="70dip" android:layout_height="wrap_content"
 			android:layout_marginTop="10dip" android:layout_marginBottom="10dip"
 			android:maxLines="1" android:numeric="integer" android:maxLength="3"
 			android:text="" android:textSize="18sp" />
@@ -54,8 +53,7 @@
 	<LinearLayout android:layout_width="fill_parent"
 		android:layout_height="1dip" android:orientation="horizontal" />
 	<LinearLayout android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:orientation="horizontal"
-		android:layout_weight="1">
+		android:layout_height="wrap_content" android:orientation="horizontal" android:layout_weight="1">
 		<TextView android:layout_width="80dip" android:layout_height="wrap_content"
 			android:text="快钱服务器端口" android:layout_marginLeft="20dip"
 			android:layout_marginTop="10dip" android:layout_marginBottom="10dip" />
@@ -64,18 +62,17 @@
 			android:layout_marginLeft="2dip" android:layout_marginTop="10dip"
 			android:layout_marginBottom="10dip" android:numeric="integer"
 			android:maxLines="1" android:text="" android:textSize="18sp" />
-
-		<LinearLayout android:layout_width="fill_parent"
-			android:layout_height="1dip" android:orientation="horizontal" />
-		<LinearLayout android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:orientation="horizontal"
-			android:layout_weight="1" android:gravity="center_horizontal">
-			<Button android:id="@+id/setting_in" android:layout_width="120dip"
-				android:layout_height="35dip" android:layout_marginTop="10dip"
-				android:text="修改" />
-			<Button android:id="@+id/setting_out" android:layout_width="120dip"
-				android:layout_height="35dip" android:layout_marginLeft="10dip"
-				android:layout_marginTop="10dip" android:text="返回" />
-		</LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="1dip" android:orientation="horizontal" />
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="horizontal"
+		android:gravity="center_horizontal" android:layout_weight="1">
+		<Button android:id="@+id/setting_in" android:layout_width="120dip"
+			android:layout_height="35dip" android:layout_marginTop="10dip"
+			android:text="修改" />
+		<Button android:id="@+id/setting_out" android:layout_width="120dip"
+			android:layout_height="35dip" android:layout_marginLeft="10dip"
+			android:layout_marginTop="10dip" android:text="返回" />
 	</LinearLayout>
 </LinearLayout>

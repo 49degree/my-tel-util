@@ -64,12 +64,15 @@ public class TTerminalParser {
 		TermState = TTermState.Offline;
 	}
 
-	private static final byte ws_WillConnect = 1;
-	private static final byte ws_ErrorIdent = 3;
+	private static final byte ws_WillConnect = 1;  //
+	private static final byte ws_ErrorIdent = 3;   //
 
-	private static final byte ws_ErrorConnect = 4;
-	private static final byte ws_ErrorRecv = 10;
-	private static final byte ws_NoOrderNumber = 11;
+	private static final byte ws_ErrorConnect = 4; //
+	private static final byte ws_NoOrderNumber = 11; //
+	private static final byte ws_ErrorBuild = 11; 
+	
+	private static final byte ws_ErrorRecv = 10;  //引发冲正
+	
 
 	protected void UpdateWorkingStatus(byte AStatus) { // 检测工作状态
 		TWorkingStatus WorkingStatus = new TWorkingStatus();
@@ -289,7 +292,7 @@ public class TTerminalParser {
 			} catch (Exception e) {
 				e.printStackTrace();
 				PutLog("构建数据包错误");
-				//UpdateWorkingStatus(ws_ErrorBuild);
+				UpdateWorkingStatus(ws_ErrorBuild);
 				return;
 			}
 

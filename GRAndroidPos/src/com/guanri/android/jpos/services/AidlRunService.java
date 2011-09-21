@@ -41,15 +41,33 @@ public class AidlRunService extends Service{
     public void onCreate(){
     	logger.error("start onCreate~~~");  
     	super.onCreate();
-        //初始化数据处理线程对象
-    	AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","POS终端服务已经打开");
-    	JposConstant.initPos();//初始化服务器ID,PORT,密码
+    	//初始化数据处理线程对象
+    	try{
+        	AidlRunService.notify(AidlRunService.NOTIFY_ID,"POS服务通知","POS终端服务已经打开");
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	try{
+    		JposConstant.initPos();//初始化服务器ID,PORT,密码
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
     	//启动查询设备线程
     	IS_SERVER_STOP = false;
     	findCommTask = new FindCommTask();
     	findCommTask.start();
-    	acquireWakeLock();//加入CPU锁，保持CUP在该service运行期间一直运行
-    	MainApplication.getInstance().startNetWorkListen(new NetWorkBlthStateHandler());//开始监听网络状态
+    	
+    	try{
+    		acquireWakeLock();//加入CPU锁，保持CUP在该service运行期间一直运行
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	try{
+    		MainApplication.getInstance().startNetWorkListen(new NetWorkBlthStateHandler());//开始监听网络状态
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	
     }
     
     
@@ -60,15 +78,37 @@ public class AidlRunService extends Service{
     	IS_SERVER_STOP = true;
     	if(findCommTask!=null)
     		findCommTask.interrupt();
+    	try{
+        	if(findCommTask!=null)
+        		findCommTask.interrupt();
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
     	//停止真正运行线程
     	try{
     		mBinder.stopPos();
     	}catch(Exception e){
     		e.printStackTrace();
     	}
-    	AidlRunService.clearNotify(NOTIFY_ID);//清除消息提示
-    	releaseWakeLock();//释放CPU锁，
-    	MainApplication.getInstance().stopNetWorkListen();//停止监听网络情况
+    	
+    	try{
+    		AidlRunService.clearNotify(NOTIFY_ID);//清除消息提示
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	
+    	try{
+    		releaseWakeLock();//释放CPU锁，
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	try{
+    		MainApplication.getInstance().stopNetWorkListen();//停止监听网络情况
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	
+    	
     	logger.error("end onDestroy~~~"); 
     	super.onDestroy();
     	System.exit(0);

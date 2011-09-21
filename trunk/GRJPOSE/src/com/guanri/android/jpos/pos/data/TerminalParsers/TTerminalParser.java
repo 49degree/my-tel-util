@@ -1,12 +1,15 @@
 package com.guanri.android.jpos.pos.data.TerminalParsers;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.iso.JposPackageFather;
 import com.guanri.android.jpos.network.CommandControl;
-import com.guanri.android.jpos.network.CryptionControl;
 import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
 import com.guanri.android.jpos.pos.data.Common;
@@ -299,7 +302,19 @@ public class TTerminalParser {
 			try {
 				if (!CommandControl.getInstance().isConnect())
 					CommandControl.getInstance().connect(20000, 60000); // 连接后台
-
+			} catch (IOException e) {
+				e.printStackTrace();
+				if(e instanceof SocketTimeoutException){
+					PutLog("连接超时");//连接超时
+				}else if(e instanceof ConnectException){
+					PutLog("服务器无法连接");//IP端口错误
+				}else{
+					PutLog("连接错误");//网络或者其他错误
+				}
+				
+				UpdateWorkingStatus(ws_ErrorConnect);
+				return;
+			
 			} catch (Exception e) {
 				e.printStackTrace();
 				PutLog("连接后台错误");
@@ -322,7 +337,6 @@ public class TTerminalParser {
 				}
 
 				Transaction.Ident().SetAsInteger(FIdent);
-
 				PutLog_Response(Transaction);
 				
 				/*
@@ -347,7 +361,22 @@ public class TTerminalParser {
 					}
 					PutLog("MAC校验正确.");
 				}
-
+			} catch (IOException e) {
+				e.printStackTrace();
+				if(e instanceof SocketTimeoutException){
+					PutLog("连接超时");//连接超时
+				}else if(e instanceof ConnectException){
+					PutLog("服务器无法连接");//IP端口错误
+				}else{
+					PutLog("连接错误");//网络或者其他错误
+				}
+				
+				UpdateWorkingStatus(ws_ErrorRecv);
+				return;
+			} catch (PacketException e) {
+				PutLog("数据错误");
+				UpdateWorkingStatus(ws_ErrorRecv);
+				return;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

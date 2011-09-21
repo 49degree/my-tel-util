@@ -802,6 +802,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		if (posBatchNo == null)
 			posBatchNo = "000001";
 		leaf.setValue(posBatchNo);
+		//保存批次号
+		saleDataLogBean.setBatchNo(posBatchNo);
 		data1.put(1,leaf);
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("2");

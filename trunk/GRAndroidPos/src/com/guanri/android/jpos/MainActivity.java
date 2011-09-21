@@ -97,6 +97,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_stop:
+			mRemoteService = null;//释放service引用
 			try{
 				unBindService();
 			}catch(Exception e){

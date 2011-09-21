@@ -192,6 +192,27 @@ public class JposConstant {
 		
 		// 网络信息代码
 		public final static String NETMSGCODE = "001";
+		
+		
+		/**
+		 * POS 交易代码
+		 */
+		// 冲正代码
+		public final static int POS_REVERSAL = 4;
+		// POS结算
+		public final static int POS_CHECK = 6;
+		// 自动交易回执
+		public final static int POS_SALE_ATRECEIPT = 7;
+		// 手动交易回执
+		public final static int POS_SALE_MTRECEIPT = 8;
+		// 查询后消费
+		public final static int POS_QUERYSALE = 601;
+		// 查询
+		public final static int POS_QUERY = 600;
+		// POS 签到
+		public final static int POS_LOGIN = 1;
+		//
+		
 	}
 	
 	/**

@@ -71,6 +71,7 @@ public class AidlRunService extends Service{
     	MainApplication.getInstance().stopNetWorkListen();//停止监听网络情况
     	logger.error("end onDestroy~~~"); 
     	super.onDestroy();
+    	System.exit(0);
     }
     
     @Override  

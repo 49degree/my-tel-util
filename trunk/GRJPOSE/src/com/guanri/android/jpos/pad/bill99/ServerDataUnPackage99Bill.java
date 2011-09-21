@@ -167,7 +167,7 @@ public class ServerDataUnPackage99Bill {
 			// 更新 数据, --------------------------------------------------
 			// 更新 单据状态为1 更新服务器下发的 参考号,授权码
 			Map<String,String> params = new HashMap<String,String>();
-			params.put("TransactionState=", "1");
+			params.put("TransactionState=", "2");
 			params.put("SearchNo=", ReferenceStr);
 			logger.debug("更新参考号:"+ReferenceStr);
 			params.put("AuthorizationNo=", authorizeStr);
@@ -289,7 +289,7 @@ public class ServerDataUnPackage99Bill {
 			// 更新 数据, --------------------------------------------------
 			// 更新 单据状态为1 更新服务器下发的 参考号,授权码
 			Map<String,String> value = new HashMap<String,String>();
-			value.put("TransactionState", "1");
+			value.put("TransactionState", "2");
 			value.put("SearchNo", ReferenceStr);
 			value.put("AuthorizationNo=", authorizeStr);
 			
@@ -318,8 +318,8 @@ public class ServerDataUnPackage99Bill {
 	 */
 	public static TTransaction UnPackageSaleReceipt(TTransaction rtTransaction, TreeMap<Integer, Object> getMap, JposMessageType messageType) {
 		TTransaction tTransaction = new TTransaction();
-		StringBuffer result = new StringBuffer();
-		tTransaction.TransCode().SetAsInteger(7);
+		
+		tTransaction.TransCode().SetAsInteger(rtTransaction.TransCode().GetAsInteger());
 		Date date = new Date();
 		tTransaction.Year().SetAsString((date.getYear() + 1900) + "");
 		tTransaction.Date().SetAsString((String) getMap.get(13));
@@ -332,16 +332,8 @@ public class ServerDataUnPackage99Bill {
 			// 更新 数据, 代码待完善
 			// ------------------------------------------------------------
 			// bdOperator.onUpgrade();
-			String str = JposConstant.result((String) getMap.get(39));
 			// 响应信息
 			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39)+JposConstant.result((String) getMap.get(39)));
-			// 更新数据库状态
-			//-------------------------------------------------------
-			Map<String,String> values = new HashMap<String,String>();
-			logger.debug("更新状态为    -------------TransactionState 2");
-			values.put("TransactionState", "2");
-			upDataState(rtTransaction.ProcessList.OriginalSerialNumber().GetAsString(),
-					TypeConversion.byte2hex(rtTransaction.ProcessList.OriginalMAC().GetData()),values);
 			
 		} else {
 			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
@@ -369,6 +361,15 @@ public class ServerDataUnPackage99Bill {
 		tTransaction.SerialNumber().SetAsString((String) getMap.get(11));
 		// 响应信息
 		tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
+		if(((String) getMap.get(39)).equals("00")){
+			// 更新数据库状态
+			//-------------------------------------------------------
+			Map<String,String> values = new HashMap<String,String>();
+			logger.debug("更新状态为    -------------TransactionState 3");
+			values.put("TransactionState", "4");
+			upDataState(rtTransaction.ProcessList.OriginalSerialNumber().GetAsString(),
+					TypeConversion.byte2hex(rtTransaction.ProcessList.OriginalMAC().GetData()),values);
+		}
 		
 		return tTransaction;
 	}
@@ -411,6 +412,8 @@ public class ServerDataUnPackage99Bill {
 				}
 			}
 			logger.debug(result.toString());
+			
+			bdOperator.del(DBBean.TB_SALE_RECORD,null);
 		} else {
 			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 		}

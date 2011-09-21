@@ -228,10 +228,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			break;
 			
 		case 7:  // 交易自动回执
-			jposPackageFather = createSaleReceipt(ttransaction);
+			TTransaction lastttransaction = getReversalData(ttransaction);
+			jposPackageFather = createSaleReceipt(lastttransaction);
 			break;
 		case 8:
 			//	手动回执		
+			logger.debug("----手动回执---------------");
 			TTransaction tempttransaction = getReversalData(ttransaction);
 			jposPackageFather = createSaleReceipt(tempttransaction);
 			break;
@@ -242,10 +244,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		return jposPackageFather;
 	}
 	
-	
+
+
+
 	/**
 	 * 根据终端发过来的MAC查询历史记录
-	 * ---------------------------------------未完成
 	 * @param ttransaction
 	 * @return
 	 */
@@ -254,15 +257,21 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//ttransaction.ProcessList.;
 		TTransaction rtTransaction = ttransaction;
 		Map<String,String> params = new HashMap<String, String>();
-		if(ttransaction.TransCode().GetAsInteger()!=8){
+		// 自动回执
+		if(ttransaction.TransCode().GetAsInteger() == 7){
+			params.put("LIMIT","1");
+			params.put("ORDERBY","logid DESC");
+		}
+		else if(ttransaction.TransCode().GetAsInteger() ==8){	
+			// 手动回执
+			logger.debug("查询条件订单标号:"+ttransaction.ProcessList.OrderNumber().GetAsString());
+			params.put("OrderNo=", ttransaction.ProcessList.OrderNumber().GetAsString());
+		}else{
 			logger.debug("查询条件POSMAC"+TypeConversion.byte2hex(ttransaction.ProcessList.OriginalMAC().GetData()));
 			params.put("PosMac=", TypeConversion.byte2hex(ttransaction.ProcessList.OriginalMAC().GetData()));
 			logger.debug("查询条件PosNo"+ttransaction.ProcessList.OriginalSerialNumber().GetAsString());
 			params.put("PosNo=", ttransaction.ProcessList.OriginalSerialNumber().GetAsString());
 			
-		}else{
-			// 手动回执
-			params.put("OrderNo=", ttransaction.ProcessList.OrderNumber().GetAsString());
 		}
 		
 		List<Object> datalist = dbOperator.queryBeanList(DBBean.TB_SALE_RECORD, params);
@@ -1062,6 +1071,15 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		messageType.setMessageType(MessageTypeDefine99Bill.REQUEST_OP_OPERATE_CANCEL);
 		JposPackage99Bill jposPackage99Bill = new JposPackage99Bill(sendMap,messageType);
 	 
+		
+		// 发起冲正 更新
+		Map<String,String> values = new HashMap<String,String>();
+		logger.debug("更新状态为    -------------TransactionState 3");
+		values.put("TransactionState", "3");
+		ServerDataUnPackage99Bill.upDataState(posMessageBean.ProcessList.OriginalSerialNumber().GetAsString(),
+				TypeConversion.byte2hex(posMessageBean.ProcessList.OriginalMAC().GetData()),values);
+	
+		
 		return jposPackage99Bill;
 	}
 	
@@ -1193,7 +1211,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域63 POS结算交易数据
 		//格式：正向交易笔数(3 位) + 正向交易总金额(12 位) + 逆向总笔数(3 位) + 逆向交易总金额(12位)。如：017000000495526002000000123622，表示消费17笔，总金额
 		//4955.26；撤销2笔，总金额1236.22。
-		sendMap.put(63,getCheckOutData(posMessageBean.ProcessList.OrderNumber().GetAsString()));
+		sendMap.put(63,getCheckOutData(posBatchNo));
 		
 		JposMessageType99Bill messageType = new JposMessageType99Bill();
 		//设置消息头类型
@@ -1221,39 +1239,40 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		params.put("BatchNo=", OrderNo);
 		params.put("TransactionMoney>", "0");
 		params.put("TransactionState=", "2");
-		/**get trance history infomation
+		//get trance history infomation
 		List<Object> listdata = dbOperator.queryBeanList(DBBean.TB_SALE_RECORD, params);
 		// 处理正向交易总数
 		String sumdata = String.valueOf(listdata.size());
 		if(sumdata.length()<3){
-			for (int i = 1; i < (3-sumdata.length()); i++) {
+			for (int i = sumdata.length(); i < 3; i++) {
 				sumdata = "0" +sumdata;
 			}
 		}
+		logger.debug("POS结算比数:"+sumdata);
 		// 处理正向交易总金额
-		int sunmoney = 0;
-		for (int i = 0; i < listdata.size(); i++) {
-			SaleDataLogBean saleDataLogBean = (SaleDataLogBean)listdata.get(i);
+		long sunmoney = 0;
+		for (int j = 0; j < listdata.size(); j++) {
+			SaleDataLogBean saleDataLogBean = (SaleDataLogBean)listdata.get(j);
 			sunmoney = sunmoney + saleDataLogBean.getTransactionMoney();
 		}
 		String summoneystr = String.valueOf(sunmoney);
 		if(summoneystr.length()<12){
-			for (int i = 1; i < (12-sumdata.length()); i++) {
+			for (int i = summoneystr.length(); i < 12; i++) {
 				summoneystr = "0" +summoneystr;
 			}
 		}
-		*/
+		logger.debug("POS结账金额:"+summoneystr);
 		// 正向交易笔数(3 位) 
 		JposSelfFieldLeaf jposf = new JposSelfFieldLeaf();
 		jposf.setTag("1");
-		//jposf.setValue(sumdata);
-		jposf.setValue("000");
+		jposf.setValue(sumdata);
+		//jposf.setValue("000");
 		data.put(1, jposf);
 
 		jposf = new JposSelfFieldLeaf();
 		jposf.setTag("2");
-		//jposf.setValue(summoneystr);
-		jposf.setValue("000000000000");
+		jposf.setValue(summoneystr);
+		//jposf.setValue("000000000000");
 		data.put(2, jposf);
 		// 处理反向交易次数 目前没做退货方法都为0
 		jposf = new JposSelfFieldLeaf();

@@ -66,7 +66,7 @@ public class TTerminalParser {
 
 	private static final byte ws_ErrorConnect = 4;
 	private static final byte ws_ErrorRecv = 10;
-	private static final byte ws_ErrorBuild = 11;
+	private static final byte ws_NoOrderNumber = 11;
 
 	protected void UpdateWorkingStatus(byte AStatus) { // 检测工作状态
 		TWorkingStatus WorkingStatus = new TWorkingStatus();
@@ -247,6 +247,7 @@ public class TTerminalParser {
 
 			
 			/*  测试用 */
+			/*
 			Transaction.BufferList.MsgTypeID().SetAsInteger(200);
 			Transaction.BufferList.ProcessCode().SetAsInteger(0);
 			Transaction.BufferList.PAN().SetAsString("5264102500120211");
@@ -255,7 +256,8 @@ public class TTerminalParser {
 			
 			Transaction.BufferList.ReferenceNumber().SetAsString(
 					FLastReferenceNumber);
-
+			//*/
+			
 			PutLog_Request(Transaction);
 			// ******************************************************
 
@@ -284,7 +286,7 @@ public class TTerminalParser {
 			} catch (Exception e) {
 				e.printStackTrace();
 				PutLog("构建数据包错误");
-				UpdateWorkingStatus(ws_ErrorBuild);
+				//UpdateWorkingStatus(ws_ErrorBuild);
 				return;
 			}
 
@@ -322,9 +324,12 @@ public class TTerminalParser {
 				Transaction.Ident().SetAsInteger(FIdent);
 
 				PutLog_Response(Transaction);
+				
+				/*
 				if (!Transaction.BufferList.ReferenceNumber().GetIsEmpty())
 					FLastReferenceNumber = Transaction.BufferList.ReferenceNumber().GetAsString();
-
+				//*/
+				
 				if (IsEncryptMACTrans(Transaction)) {
 					// 计算
 					PutLog("正在请求终端计算MAC.......");
@@ -362,9 +367,9 @@ public class TTerminalParser {
 			}
 			;
 
-			PutLog("已发送响应数据.");
+			
 			FTerminalLink.SendPackage(Stream.Bytes);
-
+			PutLog("已发送响应数据.");
 		}
 	}
 

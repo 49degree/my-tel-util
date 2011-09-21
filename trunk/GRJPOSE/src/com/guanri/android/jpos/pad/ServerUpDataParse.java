@@ -40,9 +40,13 @@ public class ServerUpDataParse {
 		return jposPackage.setMac(mac);
 	}
 	
-	public byte[] getBeSendData(){
+	public byte[] getBeSendData() throws PacketException{
 		//设置消息类型
-		return jposPackage.packaged();
+		byte[] dataBuffer = jposPackage.packaged();
+		if(dataBuffer == null){
+			throw new PacketException("data is error");
+		}
+		return dataBuffer;
 	}
 	
 	public JposPackageFather getJposPackage(){

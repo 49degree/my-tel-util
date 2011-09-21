@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.guanri.android.exception.OrderOutPacketException;
+import com.guanri.android.exception.OrderNonPacketException;
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.SaleDataLogBean;
 import com.guanri.android.jpos.common.SharedPreferencesUtils;
@@ -207,7 +207,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			logger.debug("----手动回执---------------");
 			TTransaction tempttransaction = getReversalData(ttransaction);
 			if(tempttransaction==null){
-				throw new OrderOutPacketException("data is error");
+				throw new OrderNonPacketException("data is error");
 			}
 			
 			jposPackageFather = createSaleReceipt(tempttransaction);

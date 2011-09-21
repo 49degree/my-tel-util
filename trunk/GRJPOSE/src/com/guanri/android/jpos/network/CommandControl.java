@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import com.guanri.android.exception.CommandParseException;
+import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.jpos.pad.ServerDownDataParse;
 import com.guanri.android.jpos.pad.ServerUpDataParse;
@@ -42,7 +43,7 @@ public class CommandControl {
 	 * @param upCommandParse
 	 * @return DownCommandParse 
 	 */
-	public synchronized ServerDownDataParse sendUpCommand(ServerUpDataParse serverUpDataParse) throws IOException,CommandParseException{
+	public synchronized ServerDownDataParse sendUpCommand(ServerUpDataParse serverUpDataParse) throws IOException,PacketException,CommandParseException{
 		byte[] sendData = serverUpDataParse.getBeSendData();
 		byte[] returnData = this.submit(sendData);
 		ServerDownDataParse downDataParse = null;
@@ -178,8 +179,6 @@ public class CommandControl {
 			throw e;
 		}catch(CommandParseException ex){
 			throw ex;
-		}catch(NullPointerException ne){
-			throw new CommandParseException("下载数据解析错误");
 		}	
 	}
 

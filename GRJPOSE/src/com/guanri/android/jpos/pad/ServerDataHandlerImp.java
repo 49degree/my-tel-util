@@ -19,7 +19,7 @@ public interface ServerDataHandlerImp {
 	 * 进行相应的协议解析 构造传送到服务器的数据
 	 * @param posMessageBean 从POS机获取的数据
 	 */
-	public JposPackageFather receivePosData(TTransaction posMessageBean);
+	public JposPackageFather receivePosData(TTransaction posMessageBean) throws PacketException;
 	/**
 	 * 收到POS上送服务器数据 
 	 * 进行相应的协议解析 构造传送到服务器的数据

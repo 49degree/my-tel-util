@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.guanri.android.exception.OrderOutPacketException;
 import com.guanri.android.exception.PacketException;
 import com.guanri.android.jpos.bean.SaleDataLogBean;
 import com.guanri.android.jpos.common.SharedPreferencesUtils;
@@ -74,6 +75,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//		&&(rtTransaction.ProcessList.MerchantID().GetAsString().equals(getMap.get(42))))
 		// 检查数据合法性
 		if (!chackData(rtTransaction,getMap)){
+			// 如果数据不对  直接返回空
 			return tTransaction;
 		}
 		
@@ -102,7 +104,6 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		case MessageTypeDefine99Bill.POS_SALE_ATRECEIPT:
 		case MessageTypeDefine99Bill.POS_SALE_MTRECEIPT:	
 			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
-			//tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
 			break;
 		
 		default:
@@ -113,15 +114,18 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	}
 	
 	/**
-	 * 检查放回数据域是否正确
+	 * 检查放回数据域是否发送数据一致
 	 * @param rtTransaction
 	 * @param getMap
 	 * @return
 	 */
 	private boolean chackData(TTransaction rtTransaction, TreeMap<Integer, Object> getMap) {
 		// TODO Auto-generated method stub
+		// 终端号
 		String TerminalID = null;
+		// 商户号
 		String MerchantID = null;
+		// 流水号
 		String PosNo = null;
 		if((getMap.containsKey(41))&&
 		   (getMap.containsKey(42))&&
@@ -150,7 +154,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	 * @param posMessageBean 从POS机获取的数据
 	 */
 	@Override
-	public JposPackageFather receivePosData(TTransaction ttransaction){
+	public JposPackageFather receivePosData(TTransaction ttransaction) throws PacketException{
 		
 		JposPackageFather jposPackageFather = null;
 		//TTransaction ttransaction = new TTransaction();
@@ -202,6 +206,10 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			//	手动回执		
 			logger.debug("----手动回执---------------");
 			TTransaction tempttransaction = getReversalData(ttransaction);
+			if(tempttransaction==null){
+				throw new OrderOutPacketException("data is error");
+			}
+			
 			jposPackageFather = createSaleReceipt(tempttransaction);
 			break;
 		default:
@@ -261,6 +269,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			rtTransaction.BufferList.SaleAmount().SetAsInt64(saleDataLogBean.getTransactionMoney());
 			
 			rtTransaction.BufferList.ReferenceNumber().SetAsString(saleDataLogBean.getSearchNo());
+		}else{
+			rtTransaction = null;
 		}
 		return rtTransaction;
 	}

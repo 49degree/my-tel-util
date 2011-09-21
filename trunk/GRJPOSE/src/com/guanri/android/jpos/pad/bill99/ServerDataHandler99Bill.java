@@ -77,52 +77,66 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 //			return tTransaction;
 //		}
 		
-		// 签到
-		if ((messageType.getMessageType().equals(
-				MessageTypeDefine99Bill.RESPONSE_POS_CHECK_IN))&&
-				messageType.getTransactionCode().equals("99")) {
-			// 解析签到放回报文
-			tTransaction = ServerDataUnPackage99Bill.UnPackageLogin(rtTransaction, getMap, messageType);
-
-		}
-		// 余额查询
-		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_MONEY))
-				&&(messageType.getTransactionCode().equals("31"))){
-			tTransaction = ServerDataUnPackage99Bill.UnPackageQuery(rtTransaction, getMap, messageType);
-		}
+//		// 签到
+//		if ((messageType.getMessageType().equals(
+//				MessageTypeDefine99Bill.RESPONSE_POS_CHECK_IN))&&
+//				messageType.getTransactionCode().equals("99")) {
+//			// 解析签到放回报文
+//			tTransaction = ServerDataUnPackage99Bill.UnPackageLogin(rtTransaction, getMap, messageType);
+//
+//		}
+//		// 余额查询
+//		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_MONEY))
+//				&&(messageType.getTransactionCode().equals("31"))){
+//			tTransaction = ServerDataUnPackage99Bill.UnPackageQuery(rtTransaction, getMap, messageType);
+//		}
+//		// 保单查询
+//		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_INSURANCE))
+//			&&(messageType.getTransactionCode().equals("34"))){
+//			
+//			tTransaction = ServerDataUnPackage99Bill.UnPagckageQueryOQS(rtTransaction, getMap, messageType);
+//		}
+//		// 查询后消费返回报文解析
+//		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
+//				&&(messageType.getTransactionCode().equals("32"))
+//				&&(rtTransaction.TransCode().GetAsString().equals("601"))){
+//			logger.debug("解析查询后消费");
+//			tTransaction = ServerDataUnPackage99Bill.UnPackageQueryOQSSale(rtTransaction, getMap, messageType);
+//		}
+//		else if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
+//					&&(messageType.getTransactionCode().equals("00"))){
+//			logger.debug("解析消费");
+//					tTransaction = ServerDataUnPackage99Bill.UnPackageSale(rtTransaction, getMap, messageType);
+//			
+//		}
 		
 		
-		// 保单查询
-		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_INSURANCE))
-			&&(messageType.getTransactionCode().equals("34"))){
-			
-			tTransaction = ServerDataUnPackage99Bill.UnPagckageQueryOQS(rtTransaction, getMap, messageType);
-		}
-		// 查询后消费返回报文解析
-		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
-				&&(messageType.getTransactionCode().equals("32"))
-				&&(rtTransaction.TransCode().GetAsString().equals("601"))){
-			logger.debug("解析查询后消费");
-			tTransaction = ServerDataUnPackage99Bill.UnPackageQueryOQSSale(rtTransaction, getMap, messageType);
-		}
-		else if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
-					&&(messageType.getTransactionCode().equals("00"))){
-			logger.debug("解析消费");
-					tTransaction = ServerDataUnPackage99Bill.UnPackageSale(rtTransaction, getMap, messageType);
-			
-		}
-		// 交易回执
 		switch (rtTransaction.TransCode().GetAsInteger()) {
-		case 4:
+		// POS 签到
+		case MessageTypeDefine99Bill.POS_LOGIN:
+			tTransaction = ServerDataUnPackage99Bill.UnPackageLogin(rtTransaction, getMap, messageType);
+			break;
+			// 查询
+		case MessageTypeDefine99Bill.POS_QUERY:
+			tTransaction = ServerDataUnPackage99Bill.UnPagckageQueryOQS(rtTransaction, getMap, messageType);
+			break;
+			// 查询后消费
+		case MessageTypeDefine99Bill.POS_QUERYSALE:
+			tTransaction = ServerDataUnPackage99Bill.UnPackageSale(rtTransaction, getMap, messageType);
+			break;
+			// 冲正代码
+		case MessageTypeDefine99Bill.POS_REVERSAL:
 			tTransaction = ServerDataUnPackage99Bill.UnPackageReversal(rtTransaction, getMap, messageType);
 			break;
-		case 6:
+			// POS结算
+		case MessageTypeDefine99Bill.POS_CHECK:
 			tTransaction = ServerDataUnPackage99Bill.UnPackageCheck(rtTransaction, getMap, messageType);
 			break;
-		case 7:
-		case 8:	
+			// 交易回执
+		case MessageTypeDefine99Bill.POS_SALE_ATRECEIPT:
+		case MessageTypeDefine99Bill.POS_SALE_MTRECEIPT:	
 			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
-			tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
+			//tTransaction = ServerDataUnPackage99Bill.UnPackageSaleReceipt(rtTransaction, getMap, messageType);
 			break;
 		
 		default:

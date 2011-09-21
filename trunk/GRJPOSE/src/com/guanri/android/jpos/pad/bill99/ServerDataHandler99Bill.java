@@ -73,43 +73,9 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//if((rtTransaction.ProcessList.TerminalID().GetAsString().equals(getMap.get(41)))
 		//		&&(rtTransaction.ProcessList.MerchantID().GetAsString().equals(getMap.get(42))))
 		// 检查数据合法性
-//		if (!chackData(rtTransaction,getMap)){
-//			return tTransaction;
-//		}
-		
-//		// 签到
-//		if ((messageType.getMessageType().equals(
-//				MessageTypeDefine99Bill.RESPONSE_POS_CHECK_IN))&&
-//				messageType.getTransactionCode().equals("99")) {
-//			// 解析签到放回报文
-//			tTransaction = ServerDataUnPackage99Bill.UnPackageLogin(rtTransaction, getMap, messageType);
-//
-//		}
-//		// 余额查询
-//		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_MONEY))
-//				&&(messageType.getTransactionCode().equals("31"))){
-//			tTransaction = ServerDataUnPackage99Bill.UnPackageQuery(rtTransaction, getMap, messageType);
-//		}
-//		// 保单查询
-//		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_QUERY_INSURANCE))
-//			&&(messageType.getTransactionCode().equals("34"))){
-//			
-//			tTransaction = ServerDataUnPackage99Bill.UnPagckageQueryOQS(rtTransaction, getMap, messageType);
-//		}
-//		// 查询后消费返回报文解析
-//		if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
-//				&&(messageType.getTransactionCode().equals("32"))
-//				&&(rtTransaction.TransCode().GetAsString().equals("601"))){
-//			logger.debug("解析查询后消费");
-//			tTransaction = ServerDataUnPackage99Bill.UnPackageQueryOQSSale(rtTransaction, getMap, messageType);
-//		}
-//		else if((messageType.getMessageType().equals(MessageTypeDefine99Bill.RESPONSE_OP_PAY_MONEY))
-//					&&(messageType.getTransactionCode().equals("00"))){
-//			logger.debug("解析消费");
-//					tTransaction = ServerDataUnPackage99Bill.UnPackageSale(rtTransaction, getMap, messageType);
-//			
-//		}
-		
+		if (!chackData(rtTransaction,getMap)){
+			return tTransaction;
+		}
 		
 		switch (rtTransaction.TransCode().GetAsInteger()) {
 		// POS 签到
@@ -157,8 +123,9 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		String TerminalID = null;
 		String MerchantID = null;
 		String PosNo = null;
-		if((getMap.containsKey(41))&&(getMap.containsKey(42))&&
-				(getMap.containsKey(11))){
+		if((getMap.containsKey(41))&&
+		   (getMap.containsKey(42))&&
+     	   (getMap.containsKey(11))){
 			  TerminalID = (String)getMap.get(41);
 			  MerchantID = (String)getMap.get(42);
 			  PosNo = (String)getMap.get(11);

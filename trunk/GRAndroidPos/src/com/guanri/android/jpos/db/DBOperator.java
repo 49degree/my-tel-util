@@ -376,6 +376,7 @@ public class DBOperator extends SQLiteOpenHelper {
 				queryParm = queryKey.toString();
 			}
 			insertRow = sqlDb.update(tableName, values, queryParm, queryParmValue);
+			logger.debug("更新数据成功"+insertRow);
 		} catch (Exception ce) {
 			ce.printStackTrace();
 		}

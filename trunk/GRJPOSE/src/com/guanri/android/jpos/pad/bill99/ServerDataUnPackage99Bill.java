@@ -333,15 +333,15 @@ public class ServerDataUnPackage99Bill {
 			// ------------------------------------------------------------
 			// bdOperator.onUpgrade();
 			String str = JposConstant.result((String) getMap.get(39));
-			logger.debug("响应成功:" + str);
 			// 响应信息
 			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39)+JposConstant.result((String) getMap.get(39)));
 			// 更新数据库状态
 			//-------------------------------------------------------
-			Map<String,String> params = new HashMap<String,String>();
-			params.put("TransactionState=", "2");
-			upDataState(rtTransaction.SerialNumber().GetAsString(),
-						rtTransaction.MAC().GetAsString(),params);
+			Map<String,String> values = new HashMap<String,String>();
+			logger.debug("更新状态为    -------------TransactionState 2");
+			values.put("TransactionState", "2");
+			upDataState(rtTransaction.ProcessList.OriginalSerialNumber().GetAsString(),
+					TypeConversion.byte2hex(rtTransaction.ProcessList.OriginalMAC().GetData()),values);
 			
 		} else {
 			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
@@ -423,9 +423,8 @@ public class ServerDataUnPackage99Bill {
 		Map<String,String>  params = new HashMap<String,String>();
 		// 流水号
 		params.put("PosNo=", SerialNumber);
-		// MAC值
+		// MAC值 
 		params.put("PosMac=", MAC);
-		
 		logger.debug("更新条件流水号:"+SerialNumber);
 		logger.debug("更新条件MAC:"+MAC);
 		long res = bdOperator.update(DBBean.TB_SALE_RECORD, values,  params);

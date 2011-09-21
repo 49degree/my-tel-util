@@ -32,9 +32,6 @@ public class AidlRunService extends Service{
     public static String LOG_INFO = "";
     
     
-
-    
-    
     public final static int NOTIFY_ID = 20110913;//通知ID
 
     @Override

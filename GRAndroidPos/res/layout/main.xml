@@ -27,11 +27,13 @@
 		<Button android:id="@+id/btn_modify_pwd" android:layout_width="300dip"
 			android:layout_height="wrap_content" android:text="修改密码"
 			android:textSize="24sp" android:layout_marginTop="20dip"/>	
+		<!-- 
 		<Button android:id="@+id/btn_view_order" android:layout_width="300dip"
 			android:layout_height="wrap_content" android:text="订单查询"
-			android:textSize="24sp" android:layout_marginTop="20dip"/>		
+			android:textSize="24sp" android:layout_marginTop="20dip"/> 
+			-->		
 	</LinearLayout>
-	
+	<!-- 
 	<LinearLayout android:orientation="horizontal"
 		android:paddingTop="5dip" android:layout_width="fill_parent"
 		android:layout_height="350dip" android:layout_weight="1">
@@ -54,4 +56,5 @@
 				android:layout_width="fill_parent" android:layout_height="wrap_content" />
 		</ScrollView>
 	</LinearLayout>	
+	-->
 </LinearLayout>

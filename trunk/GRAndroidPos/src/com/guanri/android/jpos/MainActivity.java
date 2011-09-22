@@ -30,7 +30,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private EditText comm_state;
 	private EditText pos_to_pad,pad_to_server;
 	
-	Button btn_stop;
+	Button btn_stop=null;
 	Button btn_modify_server,btn_view_order,btn_modify_pwd;
 	final Logger logger = new Logger(MainActivity.class);
 	StringBuffer result = new StringBuffer();
@@ -62,7 +62,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		//初始化按钮
 		btn_modify_server  = (Button)findViewById(R.id.btn_modify_server);
 		btn_modify_pwd  = (Button)findViewById(R.id.btn_modify_pwd);
-		btn_view_order = (Button)findViewById(R.id.btn_view_order);
+		//btn_view_order = (Button)findViewById(R.id.btn_view_order);
 		btn_modify_pwd.setOnClickListener(this);
 		btn_modify_server.setOnClickListener(this);
 		btn_view_order.setOnClickListener(this);
@@ -113,10 +113,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		case R.id.btn_modify_pwd:
 			new UpdateUserDialog(this).displayDlg();
 			break;
+		/**	
 		case R.id.btn_view_order:
 			Intent intent = new Intent(this, QueryDateActivity.class);
 			startActivity(intent);
 			break;
+		*/
 		default:
 			break;
 		}
@@ -184,7 +186,9 @@ public class MainActivity extends Activity implements OnClickListener {
         	}
         	if(msg.what==1){
         		comm_state.setText((String)msg.obj);
-        	}else if(msg.what==2){
+        	}
+        	/**
+        	else if(msg.what==2){
         		if(pos_to_pad!=null&&!((String)msg.obj).equals(pos_to_pad.getText().toString())){
             		pos_to_pad.setText((String)msg.obj);
             		pos_to_pad.setSelection(pos_to_pad.length());//将光标移至文字末尾
@@ -194,7 +198,7 @@ public class MainActivity extends Activity implements OnClickListener {
         			pad_to_server.setText((String)msg.obj);
         			pad_to_server.setSelection(pad_to_server.length());//将光标移至文字末尾
         		}
-        	}
+        	}*/
         	
         }
     };

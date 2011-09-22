@@ -65,11 +65,11 @@ public class MainActivity extends Activity implements OnClickListener {
 		//btn_view_order = (Button)findViewById(R.id.btn_view_order);
 		btn_modify_pwd.setOnClickListener(this);
 		btn_modify_server.setOnClickListener(this);
-		btn_view_order.setOnClickListener(this);
+		//btn_view_order.setOnClickListener(this);
 		
 		//获取日志信息框对象
-		pos_to_pad = (EditText)findViewById(R.id.edt_pos_to_pad);
-		pad_to_server = (EditText)findViewById(R.id.edt_pad_to_server);
+//		pos_to_pad = (EditText)findViewById(R.id.edt_pos_to_pad);
+//		pad_to_server = (EditText)findViewById(R.id.edt_pad_to_server);
 		
 		logTask = new LogTask();
 		logTask.start();

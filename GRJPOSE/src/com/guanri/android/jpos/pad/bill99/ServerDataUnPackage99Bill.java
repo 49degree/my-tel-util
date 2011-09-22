@@ -88,8 +88,12 @@ public class ServerDataUnPackage99Bill {
 						}
 					}
 				}
-			} else
-				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + str);
+			} else{
+				if(getMap.containsKey(44))
+					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + (String)getMap.get(44));
+				else
+					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + str);
+			}
 
 		}
 		return tTransaction;
@@ -122,8 +126,12 @@ public class ServerDataUnPackage99Bill {
 				double dou = Long.valueOf(am.getAmount().trim()) / 100.0;
 				DecimalFormat df1 = new DecimalFormat("###0.00");
 				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + "可用余额为:" + df1.format(dou));
-			} else
-				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
+			} else{
+				if(getMap.containsKey(44))
+					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + (String)getMap.get(44));
+				else
+					tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
+			}
 		}
 
 		return tTransaction;
@@ -177,8 +185,12 @@ public class ServerDataUnPackage99Bill {
 			upDataState(rtTransaction.SerialNumber().GetAsString(),
 					TypeConversion.byte2hex(rtTransaction.MAC().GetData()),params);
 			
-		} else
-			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
+		} else{
+			if(getMap.containsKey(44))
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + (String)getMap.get(44));
+			else
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
+		}
 		String strr = (String) getMap.get(44);
 		logger.debug("返回结果" + strr + "\n");
 		TreeMap<Integer, JposSelfFieldLeaf> datalist = (TreeMap<Integer, JposSelfFieldLeaf>) getMap.get(61);
@@ -233,7 +245,10 @@ public class ServerDataUnPackage99Bill {
 
 			logger.debug(result.toString());
 		} else {
-			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
+			if(getMap.containsKey(44))
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + (String)getMap.get(44));
+			else
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 		}
 		return tTransaction;
 	}
@@ -336,7 +351,10 @@ public class ServerDataUnPackage99Bill {
 			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39)+JposConstant.result((String) getMap.get(39)));
 			
 		} else {
-			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
+			if(getMap.containsKey(44))
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + (String)getMap.get(44));
+			else
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 		}
 
 		return tTransaction;
@@ -415,7 +433,10 @@ public class ServerDataUnPackage99Bill {
 			
 			bdOperator.del(DBBean.TB_SALE_RECORD,null);
 		} else {
-			tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
+			if(getMap.containsKey(44))
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + (String)getMap.get(44));
+			else
+				tTransaction.ProcessList.Response().SetAsString((String) getMap.get(39) + JposConstant.result((String) getMap.get(39)));
 		}
 
 		return tTransaction;

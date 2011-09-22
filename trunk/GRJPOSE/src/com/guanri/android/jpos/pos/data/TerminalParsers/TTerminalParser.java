@@ -80,6 +80,7 @@ public class TTerminalParser {
 		TStream Stream = new TStream(null);
 		WorkingStatus.SaveToBytes(Stream);
 		FTerminalLink.SendPackage(Stream.Bytes);
+		PutLog("更新工作状态" + AStatus);
 	}
 
 	protected boolean CheckWorkingStatus(byte AStatus) {// 检测回送的工作状态
@@ -88,8 +89,11 @@ public class TTerminalParser {
 		if (Common.Length(Bytes) <= 0)
 			return false;
 		TStream Stream = new TStream(Bytes);
-		if (WorkingStatus.LoadFormBytes(Stream) != TResult_LoadFromBytes.rfll_NoError)
+		if (WorkingStatus.LoadFormBytes(Stream) != TResult_LoadFromBytes.rfll_NoError) {
+			//PutLog("没有收到回送的工作状态");
 			return false;
+		}
+			
 		return WorkingStatus.Status().GetAsInteger() == (AStatus & 0xFF);
 	}
 

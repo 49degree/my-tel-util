@@ -143,7 +143,12 @@ public class Logger {
 			File f=new File(logPath,fileName); 
 			if(!f.exists()){//检查fileName是否存在
 				f.createNewFile();//在当前目录下建立一个名为fileName的文件 
-				deleteFile(logPath,30);//删除历史记录
+				try{
+					deleteFile(logPath,30);//删除历史记录
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
 			}
 			//定义一个类RandomAccessFile的对象，并实例化 
 			java.io.RandomAccessFile rf=new java.io.RandomAccessFile(logPath + "/"+fileName,"rw"); 

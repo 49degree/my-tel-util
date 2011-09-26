@@ -133,6 +133,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 			  TerminalID = (String)getMap.get(41);
 			  MerchantID = (String)getMap.get(42);
 			  PosNo = (String)getMap.get(11);
+			  
+
 			
 			if((TerminalID.equals(rtTransaction.ProcessList.TerminalID().GetAsString()))
 				&&(MerchantID.equals(rtTransaction.ProcessList.MerchantID().GetAsString()))
@@ -774,7 +776,7 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		// 域57 显示信息 充保险公司后台查询得到的保单信息
 		sendMap.put(57, posMessageBean.ProcessList.ReturnDisplayMessage().GetAsString());
 		//---------------------------------------------------------------------
-		// 自定义域 60 将来用于存放保单号  待完善
+		// 自定义域 60 将来用于存放保单号  待完善  
 		sendMap.put(60, posMessageBean.ProcessList.ReturnOrderNumber().GetAsString());
 		saleDataLogBean.setOrderNo(posMessageBean.ProcessList.ReturnOrderNumber().GetAsString());
 		// 处理61 域

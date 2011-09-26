@@ -55,14 +55,22 @@ public abstract class JposUnPackageFather {
 		//解析基本位图数据
 		for(int i=1;i<64;i++){
 			if(jposBitMap.getBitmapBaseValue(i)){
-				mReturnMap.put(i+1, parseBitValue(i+1));
+				Object o = parseBitValue(i+1);
+				if(o!=null){
+					mReturnMap.put(i+1, o);
+				}
+				
 			}
 		}
 		//解析扩展位图数据
 		if(jposBitMap.getBitmapBaseValue(0)){
 			for(int i=0;i<64;i++){
 				if(jposBitMap.getBitmapExtendValue(i)){
-					mReturnMap.put(i+65, parseBitValue(i+65));
+					Object o = parseBitValue(i+65);
+					if(o!=null){
+						mReturnMap.put(i+65, o);
+					}
+					
 				}
 			}
 		}

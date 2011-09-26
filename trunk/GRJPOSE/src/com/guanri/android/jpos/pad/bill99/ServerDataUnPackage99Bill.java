@@ -193,12 +193,16 @@ public class ServerDataUnPackage99Bill {
 		}
 		String strr = (String) getMap.get(44);
 		logger.debug("返回结果" + strr + "\n");
-		TreeMap<Integer, JposSelfFieldLeaf> datalist = (TreeMap<Integer, JposSelfFieldLeaf>) getMap.get(61);
-		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
-		leaf = datalist.get(4);
-		logger.debug(leaf.getValue() + "\n");
-		leaf = datalist.get(5);
-		logger.debug(leaf.getValue() + "\n");
+		
+		
+		
+//		TreeMap<Integer, JposSelfFieldLeaf> datalist = (TreeMap<Integer, JposSelfFieldLeaf>) getMap.get(61);
+//		
+//		JposSelfFieldLeaf leaf = new JposSelfFieldLeaf();
+//		leaf = datalist.get(4);
+//		logger.debug(leaf.getValue() + "\n");
+//		leaf = datalist.get(5);
+//		logger.debug(leaf.getValue() + "\n");
 		return tTransaction;
 	}
 

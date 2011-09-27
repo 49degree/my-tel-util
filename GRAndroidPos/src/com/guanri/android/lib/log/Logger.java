@@ -195,9 +195,7 @@ public class Logger {
 	 */
 	private void deleteFile(String filePath,int leaveDay){
 		Calendar time = Calendar.getInstance();
-		System.out.println(fileTimeFormat.format(time.getTime()));
 		time.set(Calendar.DAY_OF_MONTH, time.get(Calendar.DAY_OF_MONTH)-leaveDay);
-		System.out.println(fileTimeFormat.format(time.getTime()));
 		long endTime = time.getTimeInMillis();
 		File fileDir = new File(filePath); // 生成文件流对象
 		File[] files = fileDir.listFiles();

@@ -28,8 +28,9 @@
 				<action android:name="android.intent.action.ACTION_SHUTDOWN" />
 			</intent-filter>
 		</receiver>
-		<!-- 自动运行服务 -->
+		<!-- 自动运行服务 
 		<service android:enabled="true" android:name=".services.AutoRunService"></service>
+		-->
 		<!-- 提供其他服务调用服务 -->
 		<service android:name=".services.AidlRunService"
 			android:process=":remote">

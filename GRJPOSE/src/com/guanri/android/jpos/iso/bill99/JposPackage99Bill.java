@@ -728,8 +728,8 @@ public class JposPackage99Bill extends JposPackageFather{
 	/**
 	 * 汇率信息
 	 * 位图位置: 59
-	 * 格式: 定长
-	 * 类型: N24,压缩时使用右靠BCD吗表示最大12个字节的定长域.
+	 * 格式：变长，LLLVAR 
+	 * 类型：ANS..28，最大28个字节的ASCII 
 	 * 描述: 汇率信息域
 	 * @param o
 	 * @return
@@ -738,10 +738,10 @@ public class JposPackage99Bill extends JposPackageFather{
 	public byte[] parseFeild59(Object o) throws FieldTooLongException{
 		String acount = (String)o;
 		//logger.debug("汇率信息："+acount);
-		if(acount!=null&&acount.length()>24){
+		if(acount!=null&&acount.length()>28){
 			throw new FieldTooLongException("Feild59 to long");
 		}
-		byte[] temp = fixLengthStr2cbcd(acount,24,true);
+		byte[] temp = floatLengthstr2ASCII(acount,3);
 		//logger.debug("结果："+temp.length+":"+TypeConversion.byte2hex(temp));
 		return temp;
 	}

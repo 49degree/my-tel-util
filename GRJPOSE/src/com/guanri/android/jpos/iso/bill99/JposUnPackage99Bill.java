@@ -753,8 +753,8 @@ public class JposUnPackage99Bill extends JposUnPackageFather{
 	/**
 	 * 汇率信息
 	 * 位图位置: 59
-	 * 格式: 定长
-	 * 类型: N24,压缩时使用右靠BCD吗表示最大12个字节的定长域.
+	 * 格式：变长，LLLVAR 
+	 * 类型：ANS..28，最大28个字节的ASCII 
 	 * 描述: 汇率信息域
 	 * @param o
 	 * @return

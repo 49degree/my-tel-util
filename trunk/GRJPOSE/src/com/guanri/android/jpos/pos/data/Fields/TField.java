@@ -298,7 +298,7 @@ public abstract class TField {
 				} else {
 					if (bBIN & Stream.Compress
 							& (FDataType == TDataType.dt_BCD))
-						Len /= 2;
+						Len = (Len + 1) >> 1;
 
 					for (i = 0; i < d; i++) {
 						k--;

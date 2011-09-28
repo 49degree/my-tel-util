@@ -180,12 +180,14 @@ public class TTerminalParser {
 		return MAC_Recv.MAC().GetData();
 	}
 
+	
 	public void ParseRequest() {
 		if (FTerminalLink == null)
 			return;
 
 		byte[] Bytes = null;
-
+		
+		
 		Bytes = FTerminalLink.RecvPackage();
 		if (Common.Length(Bytes) < 3)
 			return;

@@ -37,12 +37,15 @@ public class TTerminalParser {
 
 	final Logger logger = new Logger(TTerminalParser.class);
 
+	/*
 	protected enum TTermState {
 		Offline, Online
 	};
 
+	
 	protected TTermState TermState;
-
+//*/
+	
 	public void SetTerminalLink(TTerminalLink Value) {
 		FTerminalLink = Value;
 	}
@@ -61,7 +64,7 @@ public class TTerminalParser {
 
 	public TTerminalParser() {
 		// GetNewIdent();
-		TermState = TTermState.Offline;
+		//TermState = TTermState.Offline;
 	}
 
 	private static final byte ws_WillConnect = 1;  //

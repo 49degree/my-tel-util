@@ -50,7 +50,7 @@ public class JposConstant {
 	//初始值
 	public final static String SUPER_PWD = "201109";//超级密码
 	public final static String POS_PWD_INIT_VALUE = "000000";	//初始密码
-	public final static String SERVERIP_INIT_VALUE = "211.148.7.252";//初始服务器IP	
+	public final static String SERVERIP_INIT_VALUE = "61.152.114.138";//初始服务器IP	
 	public final static String SERVERPORT_INIT_VALUE = "7001";//初始服务器端口
 	
 	static{

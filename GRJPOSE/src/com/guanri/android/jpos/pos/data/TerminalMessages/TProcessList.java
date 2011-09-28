@@ -111,8 +111,8 @@ public class TProcessList extends TFieldList {
 		  
 		  
 		//下列字段是需要传给终端的
-		  AddField(0x8E, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 100, "Response"); // 应答信息
-		  AddField(0xAC, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 50, "MerchantName"); //商户名称
+		  AddField(0x8E, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 200, "Response"); // 应答信息
+		  AddField(0xAC, TDataType.dt_ASC, TLengthType.lt_VarBIN1, 40, "MerchantName"); //商户名称
 		  
 		 
 		//下列字段是互相传送的  

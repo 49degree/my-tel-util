@@ -59,11 +59,13 @@ public class AidlRunService extends Service{
     	}catch(Exception e){
     		e.printStackTrace();
     	}
+    	/*不需要管网络状态
     	try{
     		MainApplication.getInstance().startNetWorkListen(new NetWorkBlthStateHandler());//开始监听网络状态
     	}catch(Exception e){
     		e.printStackTrace();
     	}
+    	*/
     	
     }
     
@@ -99,12 +101,13 @@ public class AidlRunService extends Service{
     	}catch(Exception e){
     		e.printStackTrace();
     	}
+    	/*不需要管网络状态
     	try{
     		MainApplication.getInstance().stopNetWorkListen();//停止监听网络情况
     	}catch(Exception e){
     		e.printStackTrace();
     	}
-    	
+    	*/
     	
     	logger.error("end onDestroy~~~"); 
     	super.onDestroy();

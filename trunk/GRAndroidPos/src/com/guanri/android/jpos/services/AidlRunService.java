@@ -22,7 +22,7 @@ import com.guanri.android.lib.context.MainApplication;
 import com.guanri.android.lib.log.LogInfo;
 import com.guanri.android.lib.log.Logger;
 
-public class AidlRunService extends Service{
+public class AidlRunService extends Service{ 
     //定义个一个Tag标签   
 	static Logger logger = Logger.getLogger(PosCenterThread.class);
     private static final String TAG = "AidlRunService"; 

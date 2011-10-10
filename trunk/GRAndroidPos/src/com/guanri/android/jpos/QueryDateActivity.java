@@ -20,7 +20,7 @@ public class QueryDateActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dbcontent);
+		setContentView(R.layout.jpos_dbcontent);
 		querydata();
 		edtdb = (EditText) findViewById(R.id.db_edt);
 		edtdb.setText(strbuf.toString());

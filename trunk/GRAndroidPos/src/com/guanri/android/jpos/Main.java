@@ -35,7 +35,7 @@ public class Main extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-        setContentView(R.layout.main); 
+        setContentView(R.layout.jpos_main); 
 //        info = (EditText)this.findViewById(R.id.info);
 //        read_info = (EditText)this.findViewById(R.id.read_info);
 //        send = (Button)this.findViewById(R.id.send); 

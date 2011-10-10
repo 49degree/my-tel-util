@@ -45,7 +45,7 @@ public class SystemSettingDialog extends Dialog
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);// 去掉信息栏
 
-		setContentView(R.layout.sys_server_setting_dialog);// 设置对话框的布局
+		setContentView(R.layout.jpos_sys_server_setting_dialog);// 设置对话框的布局
 
 		mOkBtn = (Button) findViewById(R.id.setting_in);
 		mCancelBtn = (Button) findViewById(R.id.setting_out);

@@ -417,7 +417,7 @@ public class TTerminalParser {
 	public void PutLog(String s) {
 		System.out.println(s);
 
-		LogInfo.instance.pos_to_pad.append(s + "\n");
+		LogInfo.instance.append("pos_to_pad",s + "\n");
 	}
 
 	public void PutLog_Request(TTransaction Transaction) {

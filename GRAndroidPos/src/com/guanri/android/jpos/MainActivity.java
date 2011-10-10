@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.jpos_main);
 		btn_stop  = (Button)findViewById(R.id.btn_stop);
 		comm_state = (EditText)findViewById(R.id.edt_log);
 		btn_stop.setOnClickListener(this);

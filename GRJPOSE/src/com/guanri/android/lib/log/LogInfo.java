@@ -9,7 +9,8 @@ public class LogInfo {
     public StringBuffer server_to_pad = new StringBuffer();
     
     public void append(String params,String value){
-		if ("pad_to_pos".equals(params)) {
+		/*注销日志
+    	if ("pad_to_pos".equals(params)) {
 			pad_to_pos.append(value);
 		} else if ("pad_to_server".equals(params)) {
 			pad_to_server.append(value);
@@ -18,6 +19,7 @@ public class LogInfo {
 		} else if ("server_to_pad".equals(params)) {
 			server_to_pad.append(value);
 		}
+		*/
     }
     /**
      * 其他操作

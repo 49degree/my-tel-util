@@ -130,7 +130,7 @@ public class Logger {
 	 */
 	private void logInfo(String logInfo,StringBuffer traceInfo) {
 		
-		LogInfo.instance.pad_to_server.append(logInfo).append("\n");//输出日志到界面
+		LogInfo.instance.append("pad_to_server",logInfo+"\n");//输出日志到界面
 		
 		String fileName = new StringBuffer().append(logFile).append(".").append(this.getDataTime(fileTimeFormat)).toString();
 

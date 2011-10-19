@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/widget28"
+	android:layout_width="fill_parent" android:layout_height="50dip"
+	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:background="@drawable/pf_tableview_bg">
+	<LinearLayout android:id="@+id/widget29"
+		android:layout_width="fill_parent" android:layout_height="50dip" android:layout_gravity="center_vertical">
+		<TextView android:id="@+id/mets_urine_record_time" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginLeft="20dip" 
+			android:layout_gravity="center" style="@style/mets_listText"
+			android:text="TextView">
+		</TextView>
+		<TextView android:id="@+id/mets_urine_record_info" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="TextView"
+			android:layout_weight="1" style="@style/mets_listText"
+			android:layout_gravity="center" android:layout_marginLeft="30dip">
+		</TextView>
+		<ImageView android:id="@+id/mets_urine_record_rete_pic" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:focusableInTouchMode="false" android:layout_gravity="center" 
+			android:focusable="false" android:layout_marginRight="10dip">
+		</ImageView>		
+	</LinearLayout>
+</LinearLayout>

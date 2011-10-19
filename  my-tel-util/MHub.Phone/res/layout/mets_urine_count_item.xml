@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:orientation="horizontal"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<TextView android:id="@+id/mets_urine_count_header_date"
+		android:layout_width="20dip" android:background="@drawable/pf_tableview_bg"
+		android:layout_height="fill_parent" android:gravity="center"
+		android:textSize="17sp" android:textColor="#000"
+		android:layout_weight="1" />
+	<TextView android:id="@+id/mets_urine_count_header_times"
+		android:layout_width="30dip" android:background="@drawable/pf_tableview_bg1"
+		android:layout_height="fill_parent" android:gravity="center"
+		android:textSize="17sp" android:padding="10dip" android:textColor="#000"
+		android:layout_weight="1" />
+	<TextView android:id="@+id/mets_urine_count_header_value"
+		android:layout_width="30dip" android:background="@drawable/pf_tableview_bg"
+		android:layout_height="fill_parent" android:gravity="center"
+		android:textSize="17sp" android:padding="10dip" android:textColor="#000" android:layout_weight="1"/>
+	<TextView android:id="@+id/mets_urine_count_header_night_rate"
+		android:layout_width="20dip" android:background="@drawable/pf_tableview_bg1"
+		android:layout_height="fill_parent" android:gravity="center"
+		android:textSize="17sp" android:padding="10dip" android:textColor="#000"
+		android:layout_weight="1" />
+	<TextView android:id="@+id/mets_urine_count_header_urgency"
+		android:layout_width="20dip" android:background="@drawable/pf_tableview_bg"
+		android:layout_height="fill_parent" android:gravity="center"
+		android:textSize="17sp" android:padding="10dip" android:textColor="#000" android:layout_weight="1"/>
+	<TextView android:id="@+id/mets_urine_count_header_rincontinence"
+		android:layout_width="20dip" android:background="@drawable/pf_tableview_bg1"
+		android:layout_height="fill_parent" android:gravity="center"
+		android:textSize="17sp" android:padding="10dip" android:textColor="#000"
+		android:layout_weight="1" />
+</LinearLayout>

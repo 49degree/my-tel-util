@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="translucent">
+        <item name="android:windowBackground">@color/translucent_background</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+    </style>
+    
+    <!-- abpms style for phone -->
+    <style name="abpms_style_measuretime">
+    	<item name="android:textSize">25sp</item>
+    	<item name="android:textColor">#EC9237</item>
+    </style>
+    <style name="abpms_style_bpdatacategory">
+    	<item name="android:textSize">30sp</item>
+    	<item name="android:textColor">#EC9237</item>
+    </style>
+	<style name="abpms_style_bpdata">
+    	<item name="android:textSize">50sp</item>
+    	<item name="android:textColor">#EC9237</item>
+    </style>
+    <style name="abpms_style_page">
+    	<item name="android:textSize">25sp</item>
+    	<item name="android:textColor">#EC9237</item>
+    </style>
+    <style name="abpms_style_btnpage">
+    	<item name="android:textSize">25sp</item>
+    </style>
+    
+    <style name="abpms_style_sysinfo_category">
+    	<item name="android:textSize">25sp</item>
+    </style>
+    <style name="abpms_style_sysinfo_content">
+    	<item name="android:textSize">25sp</item>
+    </style>
+    
+</resources>

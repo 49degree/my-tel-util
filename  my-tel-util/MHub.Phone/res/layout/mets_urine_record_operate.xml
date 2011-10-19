@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:background="@drawable/mets_urine_record_operate_back">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="2dip">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:text="@string/mets_oprator_title" style="@style/mets_titleFont"
+			android:layout_marginLeft="40dip">
+		</TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_gravity="left"
+		android:layout_weight="1" android:orientation="vertical" 
+		android:layout_marginLeft="10dip" android:layout_marginTop="40dip" 
+		android:layout_marginRight="10dip" android:layout_marginBottom="10dip">
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="50dip" android:id="@+id/mets_urine_record_operate_modify"
+			android:gravity="left|center_vertical" android:paddingLeft="50dip" android:text="@string/mets_modify_btn_text"
+			style="@style/mets_ButtonFont" android:background="@drawable/mets_background_text_button">
+		</TextView>
+		<ImageView android:background="@drawable/mets_urine_record_split" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:focusableInTouchMode="false" android:layout_gravity="center" 
+			android:focusable="false">
+		</ImageView>
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="50dip" android:id="@+id/mets_urine_record_operate_delete"
+			android:gravity="left|center_vertical" android:paddingLeft="50dip" android:text="@string/mets_delete_btn_text"
+			style="@style/mets_ButtonFont" android:background="@drawable/mets_background_text_button">
+		</TextView>
+		<ImageView android:background="@drawable/mets_urine_record_split" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:focusableInTouchMode="false" android:layout_gravity="center" 
+			android:focusable="false">
+		</ImageView>		
+	</LinearLayout>
+</LinearLayout>

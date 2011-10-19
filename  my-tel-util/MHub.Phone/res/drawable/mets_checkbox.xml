@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_window_focused="false" android:state_enabled="true" android:state_checked="true" android:drawable="@drawable/mets_checkbox_on_background" />
+    <item android:state_window_focused="false" android:state_enabled="true" android:state_checked="false" android:drawable="@drawable/mets_checkbox_off_background" />
+    <item android:state_enabled="true" android:state_checked="true" android:state_pressed="true" android:drawable="@drawable/mets_check_on_press" />
+    <item android:state_enabled="true" android:state_checked="false" android:state_pressed="true" android:drawable="@drawable/mets_check_off_press" />
+    <item android:state_focused="true" android:state_enabled="true" android:state_checked="true" android:drawable="@drawable/mets_check_on_press" />
+    <item android:state_focused="true" android:state_enabled="true" android:state_checked="false" android:drawable="@drawable/mets_check_off_press" />
+    <item android:state_enabled="true" android:state_checked="false" android:drawable="@drawable/mets_checkbox_off_background" />
+    <item android:state_enabled="true" android:state_checked="true" android:drawable="@drawable/mets_checkbox_on_background" />
+</selector>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="#FFFFFF">
+	<Button  android:id="@+id/btn_delerror_message" android:layout_width="wrap_content"
+	android:layout_height="wrap_content" android:layout_alignParentRight="true"
+	android:layout_marginRight="12dip" android:text="删除信息" android:background="@anim/pfphone_btndelete_style"></Button>
+		<TextView android:layout_below="@+id/btn_delerror_message"
+			android:layout_width="fill_parent" android:layout_height="1dip"
+			android:id="@+id/txt_line" android:background="#B3B3B3" />
+		<ListView android:id="@+id/android:list"
+			android:layout_below="@+id/txt_line" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:divider="#B3B3B3"
+			android:dividerHeight="1px" />
+		<TextView android:layout_below="@+id/android:list"
+			android:layout_width="fill_parent" android:layout_height="1dip"
+			android:background="#B3B3B3" />
+		<TextView android:id="@+id/android:empty"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textColor="#000000" android:textSize="18sp" />
+</RelativeLayout>

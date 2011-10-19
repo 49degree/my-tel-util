@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:orientation="vertical"
+	android:layout_height="fill_parent" android:background="#00fb06">
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" 
+		android:background="#00000000" android:orientation="horizontal"
+		android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp">
+		
+		<TextView android:id="@+id/user_name" android:text="当前用户："
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_weight="1" android:gravity="center_horizontal"
+			android:textColor="#ffffff" android:textSize="18dp">
+		</TextView>
+		<TextView android:id="@+id/name" android:text="Peng"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_weight="1" android:gravity="center_horizontal"
+			android:textColor="#ffffff" android:textSize="18dp">
+		</TextView>
+		
+	</LinearLayout>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" 
+		android:background="#00000000" android:orientation="horizontal"
+		android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp">
+		
+		<TextView android:id="@+id/phone_version" android:text="手机端版本："
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_weight="1" android:gravity="center_horizontal"
+			android:textColor="#ffffff" android:textSize="18dp">
+		</TextView>
+		<TextView android:id="@+id/phoneVersion" android:text="V2.1.0.1"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_weight="1" android:gravity="center_horizontal"
+			android:textColor="#ffffff" android:textSize="18dp">
+		</TextView>
+		
+	</LinearLayout>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" 
+		android:background="#00000000" android:orientation="horizontal"
+		android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp" android:layout_marginBottom="10dp">
+		
+		<TextView android:id="@+id/collection_version" android:text="采集器版本："
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_weight="1" android:gravity="center_horizontal"
+			android:textColor="#ffffff" android:textSize="18dp">
+		</TextView>
+		<TextView android:id="@+id/collectionVersion" android:text="V2.0.0.1"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_weight="1" android:gravity="center_horizontal"
+			android:textColor="#ffffff" android:textSize="18dp">
+		</TextView>
+		
+	</LinearLayout>
+
+</LinearLayout>

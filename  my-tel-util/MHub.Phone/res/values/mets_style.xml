@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="mets_Title">
+		<item name="android:textColor">#FFFF66</item>
+		<item name="android:textSize">20sp</item>
+	</style>
+	
+	<style name="mets_SubTitle">
+		<item name="android:textColor">#FFFFFF</item>
+		<item name="android:textSize">16sp</item>
+	</style>
+	<style name="mets_whiteText">
+		<item name="android:textColor">#FFFFFF</item>
+		<item name="android:textSize">20dip</item>
+	</style>
+	<style name="mets_blackText">
+		<item name="android:textColor">#000000</item>
+		<item name="android:textSize">20dip</item>
+	</style>
+	<style name="mets_listText">
+		<item name="android:textColor">#000000</item>
+		<item name="android:textSize">16dip</item>
+	</style>	
+	<style name="mets_titleFont">
+		<item name="android:textColor">#000000</item>
+		<item name="android:textSize">14dip</item>
+	</style>
+	<style name="mets_deleteFont">
+		<item name="android:textColor">#000000</item>
+		<item name="android:textSize">18dip</item>
+	</style>	
+	<style name="mets_ButtonFont">
+		<item name="android:textColor">#000000</item>
+		<item name="android:textSize">30dip</item>
+	</style>
+	
+	<style name="mets_UrineStatFont">
+		<item name="android:textColor">#FFFFFF</item>
+		<item name="android:textSize">18sp</item>
+	</style>
+	
+	<style name="mets_feature_LinearLayout">
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:orientation">horizontal</item>
+		<item name="android:layout_weight">5</item>
+	</style>
+	
+	<style name="mets_feature_icon">	
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:orientation">vertical</item>
+		<item name="android:gravity">center_horizontal</item>
+		<item name="android:layout_weight">1</item>
+	</style>
+	
+	<style name="mets_feature_tv">
+		<item name="android:textSize">16sp</item>
+		<item name="android:clickable">true</item>
+		<item name="android:layout_height">fill_parent</item>
+		<item name="android:layout_width">fill_parent</item>		
+		<item name="android:layout_weight">1</item>
+	</style>
+	
+	<style name="mets_drink_urine_title">
+		<item name="android:textSize">16sp</item>
+		<item name="android:clickable">true</item>
+		<item name="android:textColor">#000000</item>
+	</style>
+	
+	<style name="mets_drink_urine_content">
+		<item name="android:textSize">16sp</item>
+		<item name="android:clickable">true</item>
+		<item name="android:textColor">#000000</item>
+	</style>
+	<style name="mets_drink_urine_content_time">
+		<item name="android:textSize">14sp</item>
+		<item name="android:clickable">true</item>
+		<item name="android:textColor">#000000</item>
+	</style>
+	
+	<style name="mets_time_modify_title">
+		<item name="android:textSize">16sp</item>
+		<item name="android:clickable">true</item>
+		<item name="android:textColor">#000000</item>
+	</style>
+	<style name="mets_time_modify_content">
+		<item name="android:textSize">16sp</item>
+		<item name="android:clickable">true</item>
+		<item name="android:textColor">#000000</item>
+	</style>
+	
+</resources>
+

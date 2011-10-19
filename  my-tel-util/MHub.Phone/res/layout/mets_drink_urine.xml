@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/mets_drink_urine_bg"
+	android:orientation="vertical">
+	<LinearLayout 
+	android:layout_width="fill_parent" 
+		android:layout_gravity="left" 
+		android:layout_marginTop="0dip"
+		android:layout_height="20dip" 
+		android:orientation="vertical">
+		<TextView 
+			android:id="@+id/mets_drink_urine_toptitle"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			style="@style/mets_drink_urine_title" 
+			>
+		</TextView>
+	</LinearLayout>
+	
+	<LinearLayout 
+		android:id="@+id/urine_urgency_hide"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:layout_marginTop="50dip"
+		android:gravity="center_horizontal"
+		android:orientation="horizontal">
+		<TextView 
+			android:id="@+id/mets_drink_urine_quantity"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			style="@style/mets_drink_urine_content"
+			>
+		</TextView>
+		<EditText
+			android:id="@+id/mets_drink_urine_quantity_ed"
+			android:layout_width="100dip"
+			android:layout_height="wrap_content"
+			android:hint="@string/mets_prompt_input"
+			style="@style/mets_drink_urine_content"
+			>
+		</EditText>
+		<TextView 
+			android:id="@+id/mets_drink_urine_quantity_unit"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/mets_drink_urine_unit"
+			style="@style/mets_drink_urine_content"
+			>
+		</TextView>
+	</LinearLayout>
+		
+	<View
+		android:id="@+id/urine_urgency_hide_view"
+		android:layout_width="fill_parent"
+		android:layout_marginLeft="12dip"
+		android:layout_marginRight="12dip"
+		android:layout_marginTop="12dip"
+		android:layout_marginBottom="12dip"
+		android:layout_height="1dip"
+		android:background="@drawable/mets_drink_urine_line"
+		>
+	</View>
+        
+	<LinearLayout 
+		android:layout_width="fill_parent" 
+		android:orientation="horizontal"
+		android:layout_height="wrap_content" 
+		android:layout_gravity="center_horizontal" >
+		
+		<TextView 
+			android:id="@+id/mets_drink_urine_time_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="20dip"
+			style="@style/mets_drink_urine_content"
+			>
+		</TextView>
+		<Button
+			android:id="@+id/mets_bt_modify"
+			android:background="@drawable/mets_style_drink_urine_selecttime"
+			android:layout_width="wrap_content"
+			android:minWidth="200dip"
+			android:layout_marginRight="20dip"
+			android:gravity="left"
+			android:layout_height="wrap_content"
+			style="@style/mets_drink_urine_content_time"
+				>
+		</Button>
+		
+	</LinearLayout>	
+	<View
+		android:layout_width="fill_parent"
+		android:layout_marginLeft="12dip"
+		android:layout_marginRight="12dip"
+		android:layout_marginTop="12dip"
+		android:layout_marginBottom="12dip"
+		android:layout_height="1dip"
+		android:background="@drawable/mets_drink_urine_line"
+		>
+	</View>
+		
+	<LinearLayout 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:layout_marginBottom="20dip"
+		android:layout_weight="1"
+		android:layout_marginTop="10dip"
+		android:gravity="bottom|center_horizontal"
+		android:orientation="horizontal">
+		
+		<Button
+			android:id="@+id/mets_bt_save"
+			android:background="@drawable/mets_style_drink_urine_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/mets_save_btn_text"
+			>
+		</Button>
+		
+		<Button
+			android:id="@+id/mets_bt_cancel"
+			android:background="@drawable/mets_style_drink_urine_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="20dip"
+			android:text="@string/mets_cancel_btn_text"
+			>
+		</Button>
+		
+	</LinearLayout>
+	
+</LinearLayout>

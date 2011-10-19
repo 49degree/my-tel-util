@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.szxys.mhub" android:versionCode="1" android:versionName="1.0">
+	<uses-sdk android:minSdkVersion="7" />
+
+	<application
+		android:name=".app.MhubApplication" 
+		android:icon="@drawable/icon" 
+		android:label="@string/app_name">
+		
+<!--activity for test begin -->		
+		<activity 
+			android:label="@string/app_name" 
+			android:name=".test.ECGSubSystemActivity"
+			>
+			
+			<!--  <intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>-->
+		</activity>
+<!--activity for test end -->	
+
+
+
+		<activity android:name=".ui.base.TableViewActivity" android:label="@string/app_name" android:screenOrientation="portrait">
+
+		</activity>
+ 平台主界面相关Activity开始
+		<activity android:name=".ui.main.LoadingActivity" android:label="@string/app_name" android:screenOrientation="portrait">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter> 
+		</activity> 
+		<activity android:name=".ui.main.UserChooseActivity" android:label="@string/app_name" android:screenOrientation="portrait"></activity>	
+		<activity android:name=".ui.main.MHubMainActivity" android:label="@string/app_name"></activity>		
+		<activity android:name=".ui.main.TestActivity" android:label="@string/app_name"></activity>		
+<!-- 平台主界面相关Activity结束 -->
+
+
+<!-- 平台互动消息异常消息界面开始 -->
+		<!-- 异常消息 -->
+		<activity android:name=".ui.virtualui.ErrorMessageActivity" 
+			android:screenOrientation="portrait" android:label="@string/error_message"></activity>
+		<activity android:name=".ui.virtualui.DelErrorMessageActivity"></activity>
+		<!-- 互动消息 -->
+		<activity android:name=".ui.virtualui.MessageInerationActivity" 
+			android:screenOrientation="portrait" android:label="@string/interation"></activity>
+		<!-- 我要主诉 -->
+		<activity android:name=".ui.virtualui.ComplainActivity" 
+			android:screenOrientation="portrait" android:label="@string/interation"></activity>	
+<!-- 平台互动消息异常消息界面结束 -->	
+		
+<!-- 平台服务开始 -->		
+		<service android:name=".app.PlatformGuardService">
+    		<intent-filter>    			
+    			<action android:name="com.szxys.mhub.app.PlatformGuardService" />
+    		</intent-filter>
+		</service>
+<!-- 平台服务结束 -->	
+
+		<!--以下为排尿日记（mets）模块ACTIVITY -->
+        <activity android:name=".ui.mets.main.MetsMainActivity">
+        		<!-- 	<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter> -->
+		</activity>	
+        <activity android:name=".ui.mets.activity.GetupSleepActivity"/>
+        <activity android:name=".ui.mets.activity.DrinkUrineActivity"/>
+        <activity android:name=".ui.mets.activity.ModifyTimeActivity"/>
+        <activity android:name=".ui.mets.activity.ModifyTimeActivity"/>
+        <activity android:name=".ui.mets.activity.ConfigInfoActivity"/>
+        <activity android:name=".ui.mets.activity.UrineRecordActivity"/>
+        <activity android:name=".ui.mets.activity.UrineRecordCountActivity"/>
+        <activity android:name=".ui.mets.activity.SystemManagementVerifyActivity"/>
+        <activity android:name=".ui.mets.activity.SystemManagementMainActivity"/>
+        <activity android:name=".ui.mets.activity.GatherNowActivity"/>
+        <activity android:name=".ui.mets.activity.SendNowActivity"/>
+        <activity android:name=".ui.mets.activity.ModifyDrinkUrineActivity"/>
+        <activity android:name=".ui.mets.activity.UrineCountActivity"/>
+        <activity android:name=".ui.mets.activity.UrineRateActivity"/>
+        <activity android:name=".ui.mets.components.PromptMessageActivity"/>	
+        <activity android:name=".ui.mets.activity.QuestionnaireActivity"/>
+        <activity android:name=".ui.mets.activity.QuestionnaireTopicActivity"/>
+        <activity android:name=".ui.mets.activity.UrineRecordOperateActivity"/>
+        <activity android:name=".ui.mets.activity.UrinePromptActivity"/>
+        <activity android:name=".ui.mets.activity.UrineCountDateChoiceActivity"/>
+        
+        
+</application>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> 
+	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+	<uses-permission android:name="android.permission.INTERNET" /> 
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />	
+	
+	<uses-sdk android:targetSdkVersion="7"></uses-sdk>
+	<supports-screens android:anyDensity="true"></supports-screens>
+</manifest>

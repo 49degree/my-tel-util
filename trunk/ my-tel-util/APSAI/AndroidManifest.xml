@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.guanri.android.insurance" android:versionCode="1"
+	android:versionName="V1.0">
+	<application android:name="com.guanri.android.lib.context.MainApplication"
+		android:theme="@style/apsai_window_title_theme" android:icon="@drawable/icon"
+		android:label="@string/app_name">
+		<activity android:name=".activity.InitBussIdActivity" android:screenOrientation="portrait">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".activity.LoginAcvitity" android:screenOrientation="portrait"/>
+
+		<activity android:name=".activity.OperateLogActivity" android:screenOrientation="portrait"/>
+
+		<activity android:name=".activity.MainActivity" android:screenOrientation="portrait"/>
+		<activity android:name=".activity.InsuPlanManagerActivity" android:screenOrientation="portrait"/>
+		<activity android:name=".activity.SystemConfigActivity" android:screenOrientation="portrait"/> 
+		<activity android:name=".activity.SystemUpdateActivity"/>
+		<activity android:name=".activity.SaleQueryAcvitity"/>
+		<activity android:name=".activity.InsuSalePlanListActivity" android:screenOrientation="portrait"/>
+		<activity android:name=".activity.UserManagerActivity"/>
+		<activity android:name=".activity.SaleCheckedRecordActivity" android:screenOrientation="portrait"/>
+		<activity android:name=".activity.SaleCheckActivity" android:screenOrientation="portrait"/>
+		<activity android:name=".activity.InsuSaleOrderActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustResize"/>
+		<activity android:name=".activity.InsuQueryActivity" android:screenOrientation="portrait"/>
+		<activity android:name=".activity.InsuBackQueryAcvitity" android:screenOrientation="portrait"/>
+		<activity android:name=".activity.InsuUselessQueryAcvitity" android:screenOrientation="portrait"/>
+		<activity android:name=".activity.SystemVersionActivity" android:screenOrientation="portrait"/>
+		
+		
+		
+	</application>
+
+	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
+	<uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+	<uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	
+
+	<uses-sdk android:targetSdkVersion="7"></uses-sdk>
+	<supports-screens android:anyDensity="true"></supports-screens>
+</manifest>

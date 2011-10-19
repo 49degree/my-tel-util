@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/run_config_bg">
+  
+  <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="220dp"
+  android:background="#00000000">
+  
+    <LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:orientation="vertical"
+     android:layout_width="fill_parent"
+     android:layout_height="50dp"
+     android:background="#00000000">
+     <TextView android:text="@string/run_info"
+         android:id="@+id/Text_run_info"
+         android:textSize="18dp"
+         android:textColor="#35a5f3"
+         android:layout_marginLeft="25dp"
+         android:layout_marginTop="25dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+    </LinearLayout>
+    
+     <LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:orientation="horizontal"
+     android:layout_width="fill_parent"
+     android:layout_height="35dp"
+     android:background="#00000000">
+     <TextView android:text="@string/font"
+         android:id="@+id/Text_font"
+         android:textColor="#35a5f3"
+         android:layout_marginLeft="25dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+      <EditText android:text="15"
+          android:id="@+id/xml_font"
+          android:layout_width="130dp"
+          android:layout_height="35dip"
+          android:textSize="12sp"
+          >
+      </EditText>
+    </LinearLayout>
+    
+     <LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:orientation="horizontal"
+     android:layout_width="fill_parent"
+     android:layout_height="35dp"
+     android:background="#00000000">
+     <TextView android:text="@string/analyse_lead"
+         android:id="@+id/Text_lead"
+         android:textColor="#35a5f3"
+         android:layout_marginLeft="25dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+      <EditText android:text="1"
+          android:id="@+id/xml_lead"
+          android:layout_width="130dp"
+          android:layout_height="35dip"
+          android:textSize="12sp"
+          >
+      </EditText>
+    </LinearLayout>
+  
+       <LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:orientation="horizontal"
+     android:layout_width="fill_parent"
+     android:layout_height="35dp"
+     android:background="#00000000">
+     <TextView android:text="@string/save_electric"
+         android:id="@+id/Text_save"
+         android:textColor="#35a5f3"
+         android:layout_marginLeft="25dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+      <EditText android:text="不使用"
+          android:id="@+id/xml_save"
+          android:layout_width="130dp"
+          android:layout_height="35dip"
+          android:textSize="12sp"
+          >
+      </EditText>
+    </LinearLayout>
+  
+         <LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:orientation="horizontal"
+     android:layout_width="fill_parent"
+     android:layout_height="35dp"
+     android:background="#00000000">
+     <TextView android:text="@string/tips_left"
+         android:id="@+id/Text_tips_left"
+         android:textColor="#35a5f3"
+         android:layout_marginLeft="25dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+     <EditText android:text="10"
+          android:id="@+id/xml_store"
+          android:layout_width="wrap_content"
+          android:layout_height="35dip"
+          android:textSize="12sp"
+          >
+      </EditText>
+      <TextView android:text="@string/tips_right"
+         android:id="@+id/Text_tips_right"
+         android:textColor="#35a5f3"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+    </LinearLayout>
+    
+  </LinearLayout>
+  
+  
+  
+  <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="70dp"
+  android:background="#00000000">
+  
+   <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:background="#00000000">
+  
+  <TextView android:text="@string/ecg"
+         android:id="@+id/Text_ecg"
+         android:textSize="20dp"
+         android:textColor="#35a5f3"
+         android:layout_marginLeft="25dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+  </LinearLayout>
+  
+   <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:background="#00000000">
+  
+  <CheckBox android:id="@+id/xml_flatten"
+      android:text="@string/flatten"
+      android:layout_marginLeft="15dp"
+      android:layout_marginRight="60dp"
+      android:textColor="#35a5f3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      ></CheckBox>
+      
+    <CheckBox android:id="@+id/xml_smoothing"
+      android:text="@string/smoothing"
+      android:layout_width="wrap_content"
+      android:textColor="#35a5f3"
+      android:layout_height="wrap_content"
+      ></CheckBox>
+  
+  
+  </LinearLayout>
+  
+    
+  </LinearLayout>
+
+
+  <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="70dp"
+  android:background="#00000000">
+
+
+  <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="30dp"
+  android:background="#00000000">
+  
+  <TextView android:text="@string/warning"
+         android:id="@+id/Text_warning"
+         android:textSize="20dp"
+         android:textColor="#35a5f3"
+         android:layout_marginLeft="25dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+  </LinearLayout>
+  
+   <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="40dp"
+  android:background="#00000000">
+  
+  <CheckBox android:id="@+id/xml_sound"
+      android:text="@string/sound"
+      android:layout_marginLeft="15dp"
+      android:layout_marginRight="60dp"
+      android:textColor="#35a5f3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      ></CheckBox>
+      
+    <CheckBox android:id="@+id/xml_shock"
+      android:text="@string/shock"
+      android:textColor="#35a5f3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      ></CheckBox>
+  
+  
+  </LinearLayout>
+ 
+  </LinearLayout>  
+  
+  
+  
+    <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="40dp"
+  android:layout_marginTop="30dp"
+  android:background="@drawable/notifybtnbg">
+  
+   <Button android:id="@+id/Btn_back" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/back"
+    android:layout_marginLeft="200px"  
+    android:background="#00000000"
+    android:textSize="18dp"
+    ></Button>
+  
+</LinearLayout>
+  
+</LinearLayout>

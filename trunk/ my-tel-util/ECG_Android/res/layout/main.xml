@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/Main"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/ecg_bg"
+    >
+    
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="32dp"
+    android:background="#00000000">
+  
+   <Button android:id="@+id/ImgView_msg" 
+    android:layout_width="24dp"
+    android:layout_height="19dp"
+    android:background="@drawable/msg"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="1dip"
+    android:layout_marginTop="5dp"
+    ></Button> 
+   <TextView android:id="@+id/Msg_count"
+    android:text="(0)"
+    android:textColor="#000000"
+    android:layout_width="35dip" 
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dip"
+    android:layout_marginRight="140dip"
+    ></TextView>   
+  
+    <ImageView android:id="@+id/ImgView_monitoring" 
+       android:layout_width="25dip" 
+       android:layout_height="25dip"
+       android:background="@drawable/unmonitoring"
+       android:layout_marginTop="5dip"
+       android:layout_marginRight="5dip"
+    ></ImageView>  
+    <ImageView android:id="@+id/ImgView_devconn" 
+       android:layout_width="25dip" 
+       android:layout_height="25dip"
+       android:background="@drawable/devdisconn"
+       android:layout_marginRight="5dip"
+       android:layout_marginTop="5dp"
+    ></ImageView>    
+   <ImageView android:id="@+id/ImgView_batthigh" 
+       android:layout_width="25dip" 
+       android:layout_height="25dip"
+       android:background="@drawable/battunknown"
+       android:layout_marginRight="10dip"
+       android:layout_marginTop="5dp"
+    ></ImageView>   
+    
+    
+    
+ </LinearLayout>   
+    
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="36dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:background="#00000000"
+    >  
+   <ImageButton android:id="@+id/ImgBtn_tips" 
+    android:layout_width="20dip" 
+    android:layout_height="35dip"
+    android:src="@drawable/tip"
+    android:layout_marginLeft="12dip"
+    android:layout_marginRight="5dip"
+    android:layout_marginTop="1dip"
+    android:background="#00000000"
+    ></ImageButton>   
+    
+<EditText android:text="" 
+    android:id="@+id/Edit_tips" 
+    android:textSize="15dp"
+    android:layout_width="270dip" 
+    android:layout_height="35dip"
+    android:layout_marginTop="4dip"
+    android:cursorVisible="false"
+    android:gravity="center_vertical"
+    android:editable="false"
+    android:focusable="false"
+    android:singleLine="true"
+    android:ellipsize="end"
+   ></EditText>   
+    
+     
+ </LinearLayout>       
+    
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="32dp"
+    android:background="#00000000"
+    >
+  <Button android:id="@+id/ImgBtn_ecg" 
+    android:text="ECG"  
+    android:textSize="18dp"
+    android:layout_width="98dip" 
+    android:layout_height="29dip"
+    android:background="@drawable/ecg_down"
+    android:layout_weight="1"
+    android:layout_marginTop="8dip"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="0dip"
+    ></Button>   
+        
+   <Button android:id="@+id/ImgBtn_acc" 
+    android:text="ACC"  
+    android:textSize="18dp"
+    android:layout_width="98dip" 
+    android:layout_height="29dip"
+    android:background="@drawable/acc"
+    android:layout_weight="1"
+    android:layout_marginTop="8dip"
+    android:layout_marginRight="0dip"
+    ></Button>  
+    
+     <Button android:id="@+id/ImgBtn_hr" 
+    android:text="心率"  
+    android:textSize="18dp"
+    android:layout_width="98dip" 
+    android:layout_height="29dip"
+    android:background="@drawable/hr"
+    android:layout_weight="1"
+    android:layout_marginTop="8dip"
+    android:layout_marginRight="10dip"
+    
+    ></Button>      
+    
+ </LinearLayout>
+ 
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/Layout_draw"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="195dip" 
+    android:layout_marginLeft="9dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="3dp"
+	android:background="#00000000"
+    >   
+  <ImageButton android:id="@+id/Btn_start" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/imgbtn_start"
+    android:layout_weight="1"
+    android:background="#00000000"
+    android:layout_marginTop="10dip"
+    android:layout_marginLeft="115dp"
+    android:gravity="center"
+    
+    ></ImageButton>    
+ <cn.szxys.CurveChart
+    android:id="@+id/DRAW_ECG"
+    android:layout_width="fill_parent"
+    android:layout_height="190dp"
+    android:visibility="gone"
+ >
+</cn.szxys.CurveChart>
+
+
+
+
+<cn.szxys.CurveChart
+    android:id="@+id/DRAW_ACC_X"
+    android:layout_width="fill_parent"
+    android:layout_height="64dp"
+    android:visibility="gone"
+ >
+</cn.szxys.CurveChart>
+<cn.szxys.CurveChart
+    android:id="@+id/DRAW_ACC_Y"
+    android:layout_width="fill_parent"
+    android:layout_height="64dp"
+    android:visibility="gone"
+ >
+</cn.szxys.CurveChart>
+
+<cn.szxys.CurveChart
+    android:id="@+id/DRAW_ACC_Z"
+    android:layout_width="fill_parent"
+    android:layout_height="64dp"
+    android:visibility="gone"
+ >
+</cn.szxys.CurveChart>
+
+<cn.szxys.CurveChart
+    android:id="@+id/DRAW_HR"
+    android:layout_width="fill_parent"
+    android:layout_height="190dp"
+    android:visibility="gone"
+ >
+</cn.szxys.CurveChart>
+
+  
+ </LinearLayout>
+ 
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="80dp"
+    android:background="#00000000"
+    >
+  <ImageButton android:id="@+id/Btn_record" 
+    android:layout_width="70px" 
+    android:layout_height="60px"
+    android:text="@string/record"
+    android:background="#00000000"
+    android:layout_weight="1"
+    android:layout_marginTop="5dip"
+    android:src="@drawable/imgbtn_record"
+    ></ImageButton> 
+  
+  <ImageButton android:id="@+id/Btn_advice" 
+    android:layout_width="70px" 
+    android:layout_height="60px"
+    android:text="@string/advice"
+    android:layout_weight="1"
+    android:adjustViewBounds="true"
+    android:background="#00000000"
+    android:layout_marginTop="5dip"
+    android:src="@drawable/imgbtn_advice"
+    ></ImageButton>
+      
+ <ImageButton android:id="@+id/Btn_config" 
+    android:layout_width="70px" 
+    android:layout_height="60px"
+    android:text="@string/config"
+    android:layout_weight="1"
+    android:adjustViewBounds="true"
+    android:background="#00000000"
+    android:src="@drawable/imgbtn_config"
+    android:layout_marginTop="5dip"
+  ></ImageButton>
+
+    
+ </LinearLayout>  
+
+</LinearLayout>

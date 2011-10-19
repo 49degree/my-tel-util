@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/equip_bg">
+  
+  <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="170dp"
+  android:background="#00000000">
+  
+  <TextView android:text="@string/equip_dispense"
+         android:id="@+id/Text_dispense"
+         android:textSize="18dp"
+         android:textColor="#0000ff"
+         android:layout_marginLeft="20dp"
+         android:layout_marginTop="40dp"
+         android:layout_marginBottom="10dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+  </TextView>
+   
+   <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="10dp"
+  android:background="#00000000">   
+  
+  <TextView android:text="@string/dispense_state"
+         android:textColor="#0000ff"
+         android:id="@+id/Text_dispense"
+         android:textSize="16dp"
+         android:layout_marginLeft="20dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+  </TextView>
+  
+  <TextView android:text="@string/state_true"
+         android:id="@+id/Text_state"
+         android:textColor="#0000ff"
+         android:textSize="16dp"
+         android:layout_marginLeft="20dp"
+         android:layout_width="110dp"
+         android:layout_height="wrap_content">
+  </TextView>
+     
+  </LinearLayout>  
+    
+   <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="60dp"
+  android:layout_marginBottom="8dp"
+  android:background="#00000000">   
+  
+  <TextView android:text="@string/current_user"
+         android:id="@+id/Text_current_user"
+         android:layout_marginLeft="20dp"
+         android:textSize="16dp"
+         android:layout_width="wrap_content"
+         android:textColor="#0000ff"
+         android:layout_height="wrap_content">
+  </TextView>
+  
+  <TextView android:text="Pengshiping"
+         android:id="@+id/Text_user"
+         android:layout_marginLeft="20dp"
+         android:textSize="16dp"
+         android:layout_width="110dp"
+         android:textColor="#0000ff"
+         android:layout_height="wrap_content">
+  </TextView>
+  
+    </LinearLayout>  
+      
+      
+</LinearLayout>
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="170dp"
+  android:background="#00000000">
+  
+ <TextView android:text="@string/collec_equip"
+         android:id="@+id/Text_equip"
+         android:textSize="18dp"
+         android:textColor="#0000ff"
+         android:layout_marginLeft="20dp"
+         android:layout_marginTop="35dp"
+         android:layout_width="wrap_content"
+         android:layout_height="45dp">
+      </TextView>
+   
+   <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="35dp"
+  android:background="#00000000">   
+  
+  <TextView android:text="@string/equip_name"
+         android:id="@+id/Text_equip"
+         android:layout_marginLeft="20dp"
+         android:textColor="#0000ff"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+  </TextView>
+  
+  <TextView android:text="XYS_ECG_1"
+         android:id="@+id/Text_equip_name"
+         android:layout_marginLeft="20dp"
+         android:textColor="#0000ff"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+  </TextView> 
+    </LinearLayout>  
+   
+   
+   <LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:orientation="horizontal"
+      android:layout_width="fill_parent"
+      android:layout_height="35dp"
+      android:background="#00000000">    
+    
+     <TextView android:text="@string/bt_address"
+         android:id="@+id/Text_address"
+         android:layout_marginLeft="20dp"
+         android:textColor="#0000ff"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+    
+      <TextView android:text="00:1F:B7:02:7B:39"
+         android:id="@+id/Text_bt_address"
+         android:layout_marginLeft="20dp"
+         android:textColor="#0000ff"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      </TextView>
+    </LinearLayout>  
+   
+    
+   <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="35dp"
+  android:background="#00000000">   
+  
+  <TextView android:text="@string/version"
+         android:id="@+id/TextVersion"
+         android:layout_marginLeft="20dp"
+         android:textColor="#0000ff"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+  </TextView>
+  
+  <TextView android:text="V2.0.1"
+         android:id="@+id/Text_version"
+         android:layout_marginLeft="20dp"
+         android:textColor="#0000ff"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+  </TextView>
+ 
+</LinearLayout>
+
+</LinearLayout>
+  
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="40px"
+    android:background="@drawable/notifybtnbg"
+    >
+    
+     <Button android:id="@+id/Btn_back" 
+      android:layout_width="fill_parent"
+      android:layout_height="32px"
+      android:layout_marginLeft="160px"  
+      android:text="@string/back"
+      android:background="#00000000"
+      android:textSize="18dp"
+    ></Button>
+    
+ </LinearLayout>
+
+</LinearLayout>
+

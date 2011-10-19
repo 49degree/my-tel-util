@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/about">
+
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="335dp"
+  android:background="#00000000">
+  
+  <TextView android:id="@+id/Ecg"
+  android:text="@string/ecgmornitor"
+  android:textColor="#ffffff"
+  android:textSize="18dp"
+  android:layout_marginLeft="100dp"
+  android:layout_marginTop="180dp"
+   android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  ></TextView>
+    <TextView android:id="@+id/Version"
+  android:text="V1.0.0"
+    android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginLeft="100dp"
+  android:textColor="#ffffff"
+  android:textSize="16dp"
+  ></TextView>
+  
+   <TextView android:id="@+id/Banquan"
+  android:text="CopyRight"
+     android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginLeft="50dp"
+  android:layout_marginTop="10dp"
+  android:textColor="#ffffff"
+  android:textSize="16dp"
+  ></TextView>
+   <TextView android:id="@+id/Banquan"
+  android:text="@string/xys"
+   android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginLeft="50dp"
+  android:layout_marginTop="5dp"
+  android:textColor="#ffffff"
+  android:textSize="16dp"
+  ></TextView>
+  
+  <TextView android:id="@+id/Banquan"
+  android:text="All rights Reserved"
+   android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginLeft="50dp"
+  android:layout_marginTop="5dp"
+  android:textColor="#ffffff"
+  android:textSize="16dp"
+  ></TextView>
+</LinearLayout>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="40px"
+    android:background="@drawable/notifybtnbg"
+    >
+    
+     <Button android:id="@+id/Btn_back" 
+      android:layout_width="fill_parent"
+      android:layout_height="32px"
+      android:layout_marginLeft="160px"  
+      android:text="@string/back"
+      android:background="#00000000"
+      android:textSize="18dp"
+    ></Button>
+    
+ </LinearLayout>
+
+
+  
+  
+</LinearLayout>
+

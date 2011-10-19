@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/parambg">
+  
+  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="250px"
+   >
+    
+  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    android:layout_width="fill_parent"    android:layout_height="fill_parent">
+   <Button android:id="@+id/Btn_run_config" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft ="60dp"
+    android:layout_marginTop="25dp"
+    android:background="@drawable/paramconfig"
+    android:text="@string/run_config"
+    android:gravity="bottom"
+    android:textColor="@color/text_white"
+  />
+
+ 
+    <Button android:id="@+id/Btn_info" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@id/Btn_run_config"
+    android:layout_alignTop="@id/Btn_run_config"
+    android:layout_marginLeft ="90dp"
+    android:text="@string/equip_info"
+    android:background="@drawable/abouttwo"
+    android:gravity="bottom"
+    android:textColor="@color/text_white"
+    ></Button>
+   
+    <Button android:id="@+id/Btn_contact" 
+    android:text="@string/contact"
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/Btn_run_config" 
+    android:layout_below="@+id/Btn_run_config" 
+    android:background="@drawable/emergency"
+    android:layout_marginTop="40dp"
+    android:gravity="bottom"
+    android:textColor="@color/text_white"
+    >
+    </Button>
+ 
+    <Button android:id="@+id/Btn_about" 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:background="@drawable/device"
+    android:text="@string/about"
+    android:layout_alignLeft="@+id/Btn_info" 
+    android:layout_below="@+id/Btn_info" 
+    android:layout_marginTop="40dp"
+   
+    android:gravity="bottom"
+    android:textColor="@color/text_white"
+    ></Button>
+    <Button android:id="@+id/Btn_Eqiup_Config"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/equipconfig"
+    android:layout_below="@+id/Btn_contact"
+    android:layout_alignLeft="@+id/Btn_contact" 
+    android:layout_marginTop="40dp">
+    </Button>
+ </RelativeLayout>   
+</LinearLayout>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="40px"
+    android:background="@drawable/notifybtnbg"
+    >
+    
+     <Button android:id="@+id/Btn_back" 
+      android:layout_width="fill_parent"
+      android:layout_height="32px"
+      android:layout_marginLeft="160px"  
+      android:text="@string/back"
+      android:textSize="18dp"
+      android:background="#00000000"
+    ></Button>
+    
+ </LinearLayout>
+
+  
+</LinearLayout>

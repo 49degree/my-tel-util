@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/parambg"
+	android:orientation="vertical">
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="40px"
+    android:background="#00000000"
+    android:layout_marginTop="20dp"
+   >
+		<TextView android:id="@+id/BTAddress" android:text="蓝牙地址:"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textColor="#0000ff" android:textSize="20dp" 
+			android:layout_marginLeft="20dp" android:gravity="center_vertical">
+		</TextView>
+		
+		<EditText android:id="@+id/ET_BTAddress" android:text=""
+			android:layout_width="185dp" android:layout_marginLeft="10dp"
+            android:layout_height="40dp" android:gravity="center_vertical"
+		    android:textSize="20dp" android:layout_marginTop="5dp"
+		   >
+		</EditText>
+
+  </LinearLayout>
+  
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="40px"
+    android:background="#00000000"
+   >
+		<TextView android:id="@+id/Commision" android:text="业务授权码:"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textColor="#0000ff" android:textSize="20dp" 
+			android:layout_marginLeft="2dp" android:gravity="center_vertical">
+		</TextView>
+		
+		<EditText android:id="@+id/ET_Commision" android:text=""
+			android:layout_width="185dp" android:layout_marginLeft="10dp"
+            android:layout_height="40dp" android:gravity="center_vertical"
+		    android:textSize="20dp" android:layout_marginTop="5dp"
+		   >
+		</EditText>
+
+  </LinearLayout>
+  
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="135px"
+    android:background="#00000000"
+   >
+		<TextView android:id="@+id/OutWebAddress" android:text="网络地址:"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textColor="#0000ff" android:textSize="20dp" 
+			android:layout_marginLeft="20dp" android:gravity="center_vertical">
+		</TextView>
+		
+		<EditText android:id="@+id/ET_OutWebAddress" android:text=""
+			android:layout_width="fill_parent" android:layout_marginLeft="20dp"
+			android:layout_marginRight="20dp"
+            android:layout_height="100px" android:gravity="center_vertical"
+		    android:textSize="18dp" android:layout_marginTop="10dp"
+		   >
+		</EditText>
+
+  </LinearLayout>
+  
+  
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="40px"
+    android:background="#00000000"
+   >
+		<Button android:id="@+id/OK" android:text="确定"
+			android:layout_width="120dp" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:textSize="20dp" 
+			android:layout_marginLeft="25dp">
+		</Button>
+		
+		<Button android:id="@+id/Cancel" android:text="取消"
+			android:layout_width="120dp" android:layout_marginLeft="20dp"
+            android:layout_height="wrap_content" 
+		    android:textSize="20dp" android:layout_marginTop="5dp"
+		   >
+		</Button>
+
+  </LinearLayout>
+  
+  <Button android:id="@+id/Btn_back" android:layout_width="fill_parent"
+			android:layout_height="32px" android:layout_marginLeft="160px"
+			android:text="@string/back" android:background="#00000000"
+			android:layout_marginTop="15px" android:textSize="18dp">
+		</Button>
+</LinearLayout>

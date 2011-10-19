@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/parambg">
+ 
+ <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="290dip"
+  android:layout_height="370dip"> 
+  
+    <ListView android:id="@+id/List_contact_head" 
+     android:layout_marginTop="10dip"
+     android:layout_height="30dip"  
+     android:layout_marginLeft="15dip"
+     android:layout_width="fill_parent"
+    
+    ></ListView>  
+   
+  
+  <ListView android:id="@+id/List_contact_body" 
+     android:layout_height="350dip"  
+     android:layout_width="fill_parent"
+     android:layout_marginLeft="15dip"
+     
+  ></ListView>   
+   
+  </LinearLayout>
+ 
+  <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="40px"
+  android:background="@drawable/notifybtnbg">
+ <Button android:id="@+id/Back" 
+    android:text="@string/back"
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="260dip"
+    android:background="#00000000"
+    android:textSize="18dp">
+    </Button>
+ </LinearLayout>
+   
+  
+</LinearLayout>
+

@@ -1,0 +1,99 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/apsai_main_bg"
+    >
+
+		
+		<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip" android:gravity="left|center"
+		android:paddingLeft="5dip" android:textSize="20sp"
+		android:background="@drawable/apsai_layout_title_bg" 		
+		android:text="@string/apsai_systeminfo_titile"
+		android:layout_alignParentTop="true" />
+
+
+	<LinearLayout 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_alignParentBottom="true"
+		android:background="@drawable/sys_setting_button_ground">
+		<LinearLayout
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_weight="1"
+			android:gravity="center">
+		<ImageButton
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:id="@+id/imgbtn_server"
+			android:background="@drawable/sys_server_imgbtn"
+			/>
+		<TextView
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:text="@string/apsai_systeminfo_server"
+			/>
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="1dip" 
+			android:layout_height="fill_parent"
+			android:background="#69696D"
+		/>
+		<LinearLayout
+			android:layout_width="1dip" 
+			android:layout_height="fill_parent"
+			android:background="#292929"
+		/>
+		<LinearLayout
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_weight="1"
+			android:gravity="center">
+			<ImageButton
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:id="@+id/imgbtn_printer"
+			android:background="@drawable/sys_printer_imgbtn"
+			/>
+			<TextView
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:text="@string/apsai_systeminfo_printer"
+			/>
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="1dip" 
+			android:layout_height="fill_parent"
+			android:background="#69696D"
+		/>
+		<LinearLayout
+			android:layout_width="1dip" 
+			android:layout_height="fill_parent"
+			android:background="#292929"
+		/>
+		<LinearLayout
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_weight="1"
+			android:gravity="center">
+		<ImageButton
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:id="@+id/imgbtn_posinfo"
+			android:background="@drawable/sys_posinfo_imgbtn"
+			/>
+			<TextView
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:text="@string/apsai_systeminfo_posinfo"
+			/>
+		</LinearLayout>
+	</LinearLayout>
+</RelativeLayout>

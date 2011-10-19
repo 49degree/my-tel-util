@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@color/white">
+	<LinearLayout
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:layout_weight="1"
+	android:background="@drawable/apsai_dialog_title"
+	>
+	<TextView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+	 		android:layout_marginLeft="43dip"
+	 		android:layout_marginTop="10dip"
+	 		style="@style/apsai_dialog_title_text_style"
+			android:text="@string/apsai_base_query"/>
+	</LinearLayout>
+	<LinearLayout
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1">
+		<CheckBox
+			android:id="@+id/query_no_name_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/apsai_log_query_optno_name"
+			android:gravity="center_vertical|center_horizontal"
+			android:textColor="@color/black"
+			/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1">
+		>
+		<TextView android:layout_width="80dip"
+		android:layout_height="wrap_content" 
+		android:layout_marginLeft="20dip" 
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"
+		android:text="@string/apsai_log_operate_no"
+		style="@style/apsai_dialog_text_style" />
+		<EditText style="@style/apsai_edittext_style" 
+		android:id="@+id/edt_no"
+		android:layout_width="170dip" android:layout_height="wrap_content"
+	 	android:layout_marginLeft="10dip"
+	 	android:layout_marginTop="10dip"
+	 	android:layout_marginBottom="10dip"
+	 	android:maxLines="1"
+		android:text="" android:textSize="18sp"/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="1dip"
+		android:orientation="horizontal"
+		android:background="@color/dialog_line"
+		/>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1">
+		<TextView android:layout_width="80dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/apsai_log_operate_name"
+		style="@style/apsai_dialog_text_style" 
+		android:layout_marginLeft="20dip" 
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"/>
+		<EditText style="@style/apsai_edittext_style" 
+		android:id="@+id/edt_name"
+		android:layout_width="170dip" android:layout_height="wrap_content"
+	 	android:layout_marginLeft="10dip"
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"
+	 	android:numeric="integer"
+	 	android:maxLines="1"
+		android:text="" android:textSize="18sp"/>
+	</LinearLayout>
+		<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="1dip"
+		android:orientation="horizontal"
+		android:background="@color/dialog_line"
+		/>
+	<LinearLayout
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1">
+		<CheckBox
+			android:id="@+id/query_date_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/apsai_log_query_date"
+			android:gravity="center_vertical|center_horizontal"
+			android:textColor="@color/black"
+			/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="1dip"
+		android:orientation="horizontal"
+		android:background="@color/dialog_line"
+		/>
+	<LinearLayout
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1">
+		<TextView android:layout_width="80dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/apsai_log_query_begin_date"
+		style="@style/apsai_dialog_text_style" 
+		android:layout_marginLeft="20dip" 
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"/>
+		<Button  
+		android:id="@+id/query_begin_date_btn"
+		android:layout_width="170dip" 
+		android:layout_height="wrap_content"
+	 	android:layout_marginLeft="10dip"
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"
+		android:text="2011-07-12" android:textSize="18sp"/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="1dip"
+		android:orientation="horizontal"
+		android:background="@color/dialog_line"
+		/>
+	<LinearLayout
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1">
+		<TextView android:layout_width="80dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/apsai_log_query_begin_time"
+		style="@style/apsai_dialog_text_style" 
+		android:layout_marginLeft="20dip" 
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"/>
+		<Button  
+		android:id="@+id/query_begin_time_btn"
+		android:layout_width="170dip" 
+		android:layout_height="wrap_content"
+	 	android:layout_marginLeft="10dip"
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"
+		android:text="08:30" android:textSize="18sp"/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="1dip"
+		android:orientation="horizontal"
+		android:background="@color/dialog_line"
+		/>
+	<LinearLayout
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1">
+		<TextView android:layout_width="80dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/apsai_log_query_end_date"
+		style="@style/apsai_dialog_text_style" 
+		android:layout_marginLeft="20dip" 
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"/>
+		<Button  
+		android:id="@+id/query_end_date_btn"
+		android:layout_width="170dip" 
+		android:layout_height="wrap_content"
+	 	android:layout_marginLeft="10dip"
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"
+		android:text="2011-07-10" android:textSize="18sp"/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="1dip"
+		android:orientation="horizontal"
+		android:background="@color/dialog_line"
+		/>
+	<LinearLayout
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1">
+		<TextView android:layout_width="80dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/apsai_log_query_end_time"
+		style="@style/apsai_dialog_text_style" 
+		android:layout_marginLeft="20dip" 
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"/>
+		<Button  
+		android:id="@+id/query_end_time_btn"
+		android:layout_width="170dip" 
+		android:layout_height="wrap_content"
+	 	android:layout_marginLeft="10dip"
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="10dip"
+		android:text="18:30" android:textSize="18sp"/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:gravity="center_horizontal|center_vertical"
+		android:background="@drawable/apsai_dialog_button">
+	<Button android:id="@+id/setting_in" 
+		android:layout_width="120dip"
+		android:layout_height="35dip" 
+		android:background="@drawable/login_button"
+		android:text="@string/apsai_common_sure"
+		style="@style/apsai_dialog_btn_style" />
+	<Button android:id="@+id/setting_out" 
+		android:layout_width="120dip"
+		android:layout_height="35dip"
+		android:layout_marginLeft="10dip"
+		style="@style/apsai_dialog_btn_style"
+		android:text="@string/apsai_common_cancall"
+		android:background="@drawable/login_button" />
+	</LinearLayout>
+</LinearLayout>

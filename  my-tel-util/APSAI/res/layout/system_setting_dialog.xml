@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  >
+     
+  <LinearLayout
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:layout_weight="1"
+	android:background="@drawable/apsai_dialog_title"
+	>
+	<TextView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+	 		android:layout_marginLeft="43dip"
+	 		android:layout_marginTop="10dip"
+	 		style="@style/apsai_dialog_title_text_style"
+			android:text="@string/apsai_insu_manager_system_setting"/>
+	</LinearLayout>
+	<LinearLayout
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:layout_weight="2"
+	android:background="@drawable/init_login_logo"
+	/>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:gravity="center_horizontal|center_vertical"
+		android:background="@drawable/init_login_edit">
+		
+		<TextView android:layout_width="85dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/apsai_insu_manager_server_ip" 
+		style="@style/apsai_dialog_init_style"/>
+		
+		<EditText style="@style/apsai_edittext_small_style" android:id="@+id/edt_serverip1"
+		android:layout_width="44dip" android:layout_height="wrap_content"
+	 	android:layout_marginLeft="2dip"
+	 	android:maxLines="1"
+	 	android:numeric="integer"
+		android:text="223" android:textSize="18sp"/>
+		<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:layout_marginTop="15dip"
+		android:layout_marginBottom="10dip"
+		android:text="."
+		android:textColor="#fff" />
+		<EditText style="@style/apsai_edittext_small_style" android:id="@+id/edt_serverip2"
+		android:layout_width="44dip" android:layout_height="wrap_content"
+	 	android:maxLines="1"
+	 	android:numeric="integer"
+		android:text="223" android:textSize="18sp"/>
+		<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:layout_marginTop="15dip"
+		android:layout_marginBottom="10dip"
+		android:text="."
+		android:textColor="#fff" />
+		<EditText style="@style/apsai_edittext_small_style" android:id="@+id/edt_serverip3"
+		android:layout_width="44dip" android:layout_height="wrap_content"
+	 	android:maxLines="1"
+	 	android:numeric="integer"
+		android:text="5" android:textSize="18sp"/>
+		<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:layout_marginTop="15dip"
+		android:layout_marginBottom="10dip"
+		android:text="."
+		android:textColor="#fff" />
+		<EditText style="@style/apsai_edittext_small_style" 
+		android:id="@+id/edt_serverip4"
+		android:layout_width="44dip" android:layout_height="wrap_content"
+	 	android:maxLines="1"
+	 	android:numeric="integer"
+		android:text="249" android:textSize="18sp"/>
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:gravity="center_horizontal|center_vertical"
+		android:background="@drawable/init_login_edit">
+		<TextView android:layout_width="85dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/apsai_insu_manager_server_port" 
+		style="@style/apsai_dialog_init_style"/>
+		<EditText style="@style/apsai_edittext_style"
+		android:id="@+id/server_port_id"
+		android:layout_width="176dip" 
+		android:layout_height="wrap_content"
+	 	android:layout_marginLeft="10dip"
+	 	android:numeric="integer"
+	 	android:maxLines="1"
+	 	android:text="5552"
+		android:textSize="18sp"/>
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:gravity="center_horizontal|center_vertical"
+		android:background="@drawable/init_login_edit">
+		<TextView android:layout_width="90dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/apsai_insu_manager_post_check" 
+		style="@style/apsai_dialog_init_style"/>
+		<EditText style="@style/apsai_edittext_style"
+		android:id="@+id/post_check_id"
+		android:layout_width="176dip" 
+		android:layout_height="wrap_content"
+	 	android:layout_marginLeft="10dip"
+	 	android:maxLines="1"
+	 	android:text="11111111"
+		android:textSize="18sp"/>
+	</LinearLayout>
+	
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:gravity="center_horizontal|center_vertical"
+		android:background="@drawable/init_login_edit">
+		<TextView android:layout_width="90dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/apsai_insu_manager_sim_card" 
+		style="@style/apsai_dialog_init_style"/>
+		<EditText style="@style/apsai_edittext_style"
+		android:id="@+id/sim_card_id"
+		android:layout_width="176dip" android:layout_height="wrap_content"
+	 	android:layout_marginLeft="10dip"
+	 	android:numeric="integer"
+	 	android:maxLines="1"
+	 	android:text="013800138000"
+		android:textSize="18sp"/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:gravity="center_horizontal|center_vertical"
+		android:background="@drawable/apsai_dialog_button">
+	<Button android:id="@+id/setting_in" 
+		android:layout_width="120dip"
+		android:layout_height="35dip" 
+		android:background="@drawable/login_button"
+		android:text="@string/apsai_common_sure"
+		style="@style/apsai_dialog_btn_style" />
+	<Button android:id="@+id/setting_out" 
+		android:layout_width="120dip"
+		android:layout_height="35dip"
+		android:layout_marginLeft="10dip"
+		android:text="@string/apsai_common_cancall"
+		android:background="@drawable/login_button"
+		style="@style/apsai_dialog_btn_style" />
+	</LinearLayout>
+</LinearLayout>

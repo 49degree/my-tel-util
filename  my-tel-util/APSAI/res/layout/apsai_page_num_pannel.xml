@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content"
+	android:gravity="center" android:background="@drawable/apsai_page_pannel_bg">
+	<LinearLayout android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:gravity="center"
+		android:layout_weight="2">
+		<ImageButton android:id="@+id/apsai_page_front_btn"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:background="@drawable/apsai_page_front_btn" />
+	</LinearLayout>
+	<LinearLayout android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:gravity="center"
+		android:layout_weight="1" android:focusable="true" android:focusableInTouchMode="true">
+		<EditText android:id="@+id/apsai_page_num_curent_page"
+			android:singleLine="true" android:numeric="integer"
+			android:layout_width="25sp" android:layout_height="wrap_content"
+			android:gravity="center" android:text="1" android:background="@drawable/apsai_edittext_item" />
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			style="@style/apsai_page_num_text_style" android:text="@string/apsai_page_nun_all_page" />
+		<TextView android:id="@+id/apsai_page_num_count"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:gravity="center" style="@style/apsai_page_text_style"
+			android:text="0" />
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			style="@style/apsai_page_num_text_style" android:text="@string/apsai_page_nun_unit"
+			android:layout_marginRight="10dip" />
+		<EditText android:id="@+id/apsai_page_num_per_page"
+			android:singleLine="true" android:numeric="integer"
+			android:layout_width="25sp" android:layout_height="wrap_content"
+			android:gravity="center" android:text="20" android:background="@drawable/apsai_edittext_item" />
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			style="@style/apsai_page_num_text_style" android:text="@string/apsai_page_nun_per_page" />
+	</LinearLayout>
+	<LinearLayout android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:gravity="center"
+		android:layout_weight="2">
+		<ImageButton android:id="@+id/apsai_page_next_btn"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:background="@drawable/apsai_page_next_btn" />
+	</LinearLayout>
+</LinearLayout>

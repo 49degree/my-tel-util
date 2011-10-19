@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="#FFFFFFFF"
+	android:gravity="center" android:id="@+id/apsai_page_frame">
+	<ScrollView android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:gravity="top"
+		android:orientation="vertical">
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:gravity="top"
+			android:orientation="vertical">
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="45dip" android:gravity="center"
+				android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="left"
+					android:layout_marginLeft="5dip" android:layout_weight="1"
+					android:text="@string/apsai_insu_manager_business_id" style="@style/apsai_sale_check_list_text_style" />
+				<TextView android:id="@+id/sale_check_business_id"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:gravity="right" android:layout_marginRight="5dip"
+					android:layout_weight="1" style="@style/apsai_sale_check_list_text_style" />
+			</LinearLayout>
+			<View style="@style/apsai_sale_check_split_line_style" />
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="45dip" android:gravity="center"
+				android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="left"
+					android:layout_marginLeft="5dip" android:layout_weight="1"
+					android:text="@string/apsai_user_manager_user_id" style="@style/apsai_sale_check_list_text_style" />
+				<TextView android:id="@+id/sale_check_user_id"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:gravity="right" android:layout_marginRight="5dip"
+					android:layout_weight="1" style="@style/apsai_sale_check_list_text_style" />
+			</LinearLayout>
+			<View style="@style/apsai_sale_check_split_line_style" />
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="45dip" android:gravity="center"
+				android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="left"
+					android:layout_marginLeft="5dip" android:layout_weight="1"
+					android:text="@string/apsai_sale_check_list_order_time" style="@style/apsai_sale_check_list_text_style" />
+				<TextView android:id="@+id/sale_check_time"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:gravity="right" android:layout_marginRight="5dip"
+					android:layout_weight="1" style="@style/apsai_sale_check_list_text_style" />
+			</LinearLayout>
+			<View style="@style/apsai_sale_check_split_line_style" />
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="45dip" android:gravity="center"
+				android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="left"
+					android:layout_marginLeft="5dip" android:layout_weight="1"
+					android:text="@string/apsai_sale_check_list_batch" style="@style/apsai_sale_check_list_text_style" />
+				<TextView android:id="@+id/sale_check_id"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:gravity="right" android:layout_marginRight="5dip"
+					android:layout_weight="1" style="@style/apsai_sale_check_list_text_style" />
+			</LinearLayout>
+			<View style="@style/apsai_sale_check_split_line_style" />
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="45dip" android:gravity="center"
+				android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="left"
+					android:layout_marginLeft="5dip" android:layout_weight="1"
+					android:text="@string/apsai_sale_check_list_orders" style="@style/apsai_sale_check_list_text_style" />
+				<TextView android:id="@+id/sale_check_orders"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:gravity="right" android:layout_marginRight="5dip"
+					android:layout_weight="1" style="@style/apsai_sale_check_list_text_style" />
+			</LinearLayout>
+			<View style="@style/apsai_sale_check_split_line_style" />
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="45dip" android:gravity="center"
+				android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="left"
+					android:layout_marginLeft="5dip" android:layout_weight="1"
+					android:text="@string/apsai_sale_check_list_order_price" style="@style/apsai_sale_check_list_text_style" />
+				<TextView android:id="@+id/sale_check_order_price"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:gravity="right" android:layout_marginRight="5dip"
+					android:layout_weight="1" style="@style/apsai_sale_check_list_text_style" />
+			</LinearLayout>
+			<View style="@style/apsai_sale_check_split_line_style" />
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="45dip" android:gravity="center"
+				android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="left"
+					android:layout_marginLeft="5dip" android:layout_weight="1"
+					android:text="@string/apsai_sale_check_list_back_orders" style="@style/apsai_sale_check_list_text_style" />
+				<TextView android:id="@+id/sale_check_back_orders"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:gravity="right" android:layout_marginRight="5dip"
+					android:layout_weight="1" style="@style/apsai_sale_check_list_text_style" />
+			</LinearLayout>
+			<View style="@style/apsai_sale_check_split_line_style" />
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="45dip" android:gravity="center"
+				android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="left"
+					android:layout_marginLeft="5dip" android:layout_weight="1"
+					android:text="@string/apsai_sale_check_list_back_price" style="@style/apsai_sale_check_list_text_style" />
+				<TextView android:id="@+id/sale_check_back_price"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:gravity="right" android:layout_marginRight="5dip"
+					android:layout_weight="1" style="@style/apsai_sale_check_list_text_style" />
+			</LinearLayout>
+			<View style="@style/apsai_sale_check_split_line_style" />
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="45dip" android:gravity="center"
+				android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="left"
+					android:layout_marginLeft="5dip" android:layout_weight="1"
+					android:text="@string/apsai_sale_check_list_usless_orders" style="@style/apsai_sale_check_list_text_style" />
+				<TextView android:id="@+id/sale_check_usless_orders"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:gravity="right" android:layout_marginRight="5dip"
+					android:layout_weight="1" style="@style/apsai_sale_check_list_text_style" />
+			</LinearLayout>
+			<View style="@style/apsai_sale_check_split_line_style" />
+
+		</LinearLayout>
+	</ScrollView>
+
+
+	<LinearLayout android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_gravity="bottom|center_horizontal"
+		android:orientation="horizontal" android:layout_marginBottom="2dip"
+		android:gravity="center" android:background="@drawable/user_sale_check_bt_bg">
+		<LinearLayout android:id="@+id/user_sale_check_sure_layout" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:orientation="vertical" android:layout_weight="1">
+			<ImageButton android:id="@+id/user_sale_check_sure_btn"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:background="@drawable/user_sale_check_sure_btn" />
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/apsai_sale_check_text"
+				style="@style/apsai_sale_check_btn_style" />
+		</LinearLayout>
+		<LinearLayout android:id="@+id/user_sale_check_print_layout" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:orientation="vertical" android:layout_weight="1">
+			<ImageButton android:id="@+id/user_sale_check_print_btn"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:background="@drawable/user_sale_check_print_btn" />
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/apsai_common_print_text"
+				style="@style/apsai_sale_check_btn_style" />
+		</LinearLayout>
+		<LinearLayout android:id="@+id/ser_sale_check_cancel_layout" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:orientation="vertical" android:layout_weight="1">
+			<ImageButton android:id="@+id/user_sale_check_cancel_btn"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:background="@drawable/user_sale_check_cancel_btn" />
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/apsai_common_cancall"
+				style="@style/apsai_sale_check_btn_style" />
+		</LinearLayout> 
+	</LinearLayout>
+</FrameLayout>

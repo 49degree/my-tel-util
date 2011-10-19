@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@color/white">
+	<!-- 
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center_vertical" android:layout_weight="1">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginLeft="30dip"
+			android:textColor="@color/black" android:text="@string/apsai_system_version_text"/>
+		<TextView android:id="@+id/tv_verid" android:layout_width="wrap_content" android:layout_marginLeft="20dip"
+			android:layout_height="fill_parent" android:textColor="@color/black"
+			android:textSize="18sp" android:text="@string/apsai_system_version_text"
+			android:gravity="center_vertical|center_horizontal" />
+	</LinearLayout> -->
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="1dip" android:orientation="horizontal"
+		android:background="@color/dialog_line" />
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center_vertical" android:layout_weight="1">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginLeft="30dip"
+			android:textColor="@color/black" android:text="@string/apsai_system_version"/>
+		<TextView android:id="@+id/tv_verinfo" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginLeft="20dip"
+			android:textColor="@color/black" android:layout_weight="1" />
+		<ImageButton android:id="@+id/soft_update_btn"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:src="@drawable/sys_soft_update_imgbtn"
+			android:layout_marginRight="20dip" />
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="1dip" android:orientation="horizontal"
+		android:background="@color/dialog_line" />
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center_vertical" android:layout_weight="1">
+
+	</LinearLayout>
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center_vertical" android:layout_weight="1">
+
+	</LinearLayout>
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center_vertical" android:layout_weight="1">
+
+	</LinearLayout>
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center_vertical" android:layout_weight="1">
+
+	</LinearLayout>
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center_vertical" android:layout_weight="1">
+
+	</LinearLayout>
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center_vertical" android:layout_weight="1">
+
+	</LinearLayout>
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center_vertical" android:layout_weight="1">
+
+	</LinearLayout>
+</LinearLayout>

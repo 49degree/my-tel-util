@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    >
+<EditText android:id="@+id/show_info"
+    android:layout_width="fill_parent" 
+    android:layout_height="60dip" 
+    android:text="@string/hello"
+    />
+    
+<TextView
+    android:layout_width="fill_parent" 
+    android:layout_height="30dip"
+    />    
+<Button android:id="@+id/connect"
+         android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="connect bluetooth  printer1"/>
+<TextView
+    android:layout_width="fill_parent" 
+    android:layout_height="30dip"
+    />         
+<Button android:id="@+id/connect2"
+         android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="connect bluetooth printer2"/>     
+<TextView
+    android:layout_width="fill_parent" 
+    android:layout_height="30dip"
+    />
+<Button android:id="@+id/disconnect"
+         android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="disconnect bluetooth"/> 
+<TextView
+    android:layout_width="fill_parent" 
+    android:layout_height="30dip"
+    />
+<Button android:id="@+id/print"
+         android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="print test"/>     
+<TextView
+    android:layout_width="fill_parent" 
+    android:layout_height="30dip"
+    />
+<Button android:id="@+id/network_connect"
+         android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="network connect"/>       
+</LinearLayout>

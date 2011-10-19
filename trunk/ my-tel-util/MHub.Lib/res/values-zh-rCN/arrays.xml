@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="abpms_arr_case"> 
+        <item>运动</item> 
+        <item>吃饭</item> 
+        <item>吃药</item> 
+        <item>如厕</item> 
+        <item>情绪波动</item> 
+        <item>劳动</item>
+        <item>睡眠不好</item> 
+        <item>其他</item> 
+	</string-array>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<system>
+	<subsystem name="子业务1" img_name="sub_icon" />
+	<subsystem name="子业务2" img_name="sub_icon" />
+	<subsystem name="子业务3" img_name="sub_icon" />
+	<subsystem name="子业务4" img_name="sub_icon" />
+	<subsystem name="子业务5" img_name="sub_icon" />
+	<subsystem name="子业务6" img_name="sub_icon" />
+	<subsystem name="子业务7" img_name="sub_icon" />
+	<subsystem name="子业务8" img_name="sub_icon" />
+	<subsystem name="子业务9" img_name="sub_icon" />
+	<subsystem name="子业务10" img_name="sub_icon" />
+	<subsystem name="子业务11" img_name="sub_icon" />
+	<subsystem name="子业务12" img_name="sub_icon" />
+</system>

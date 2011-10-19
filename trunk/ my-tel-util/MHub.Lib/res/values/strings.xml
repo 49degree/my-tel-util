@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Main!</string>
+    <string name="loading">系统正在初始化，请稍候...</string>
+    <string name="exit">退出系统</string>
+    
+    <string name="intercommunion">互动信息</string>
+	<string name="error_message">异常消息</string>
+	<string name="system_setting">系统设置</string>
+	<string name="app_name">健康监护平台演示版</string>
+	<string name="Inc_name">新元素</string>
+	<string name="ver_name">V1.0</string>
+	<string name="status_load_data">数据加载中...</string>
+	<string name="status_starting">启动中...</string>
+</resources>

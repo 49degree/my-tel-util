@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="35dip"
+	android:orientation="horizontal" android:paddingLeft="10dip"
+	android:paddingRight="20dip" android:paddingTop="5dip"
+	android:paddingBottom="2dip"
+	android:background="@color/white"
+	android:gravity="center_vertical">
+	<TextView android:id="@+id/apsai_insu_manager_code"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:text="dddddd"
+			android:textColor="@color/black"
+			android:textSize="18sp" android:layout_weight="4" android:gravity="center_vertical|center_horizontal"
+			/>
+	<TextView android:id="@+id/apsai_insu_manager_planno"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:text="dddddd"
+			android:textColor="@color/black"
+			android:textSize="18sp" android:layout_weight="4" android:gravity="center_vertical|center_horizontal"/>
+	<TextView android:id="@+id/apsai_insu_manager_name"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:text="dddddd"
+			android:textColor="@color/black"
+			android:textSize="18sp" android:layout_weight="2" android:gravity="center_vertical|center_horizontal"/>			
+
+</LinearLayout>

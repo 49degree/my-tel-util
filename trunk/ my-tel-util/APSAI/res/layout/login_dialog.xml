@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:background="@drawable/login"
+  >
+  
+  <EditText
+  	style="@style/apsai_edittext_style"
+	android:id="@+id/user_name"
+  	android:layout_width="250px"
+  	android:layout_height="60px"
+  	android:layout_marginTop="250px"
+  	android:layout_marginLeft="157px"
+  	android:maxLength="6"
+	android:text=""
+	android:textSize="18sp"
+>
+</EditText>
+  
+  
+  <EditText
+  	style="@style/apsai_edittext_style"
+	android:id="@+id/password"
+  	android:layout_width="250px"
+  	android:layout_height="60px"
+	android:text=""
+	android:maxLength="6"
+	
+	android:textSize="18sp"
+	android:layout_marginTop="20px"
+	android:layout_below="@id/user_name"
+	android:layout_alignLeft ="@id/user_name"
+>
+</EditText>
+  
+  
+    <TextView 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:text="@string/apsai_insu_manager_user_login"    
+    android:textColor="#fff"
+    android:textSize="23sp"
+    android:layout_marginLeft="61px"
+    android:layout_marginTop="15px"
+
+	/>
+  
+      <TextView 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:text="@string/apsai_insu_manager_user_name"    
+    android:textColor="#fff"
+    
+    android:layout_marginTop="262px"
+  	android:layout_marginLeft="58px"
+	/>
+  
+  
+  <TextView 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:text="@string/apsai_insu_manager_password"    
+    android:textColor="#fff"
+    android:layout_marginTop="347px"
+  	android:layout_marginLeft="60px"
+  	android:password="true" 
+/>
+  
+  
+  
+  <Button
+  	android:id="@+id/login_in"
+  	android:layout_width="138px"
+  	android:layout_height="43px"
+  	android:background="@drawable/login_button"
+  	android:layout_marginTop="80px"
+  	android:layout_marginLeft="73px"
+  	
+  	android:layout_below="@id/password"
+  	android:text="@string/apsai_common_sure"
+  />
+  
+  <Button
+  	android:id="@+id/login_out"
+  	android:layout_width="138px"
+  	android:layout_height="43px"
+  	android:layout_marginLeft="30px"
+  	android:background="@drawable/login_button"
+  	android:text="@string/apsai_common_cancall"
+  	android:layout_alignTop ="@id/login_in"
+  	android:layout_toRightOf="@id/login_in"
+  />
+
+</RelativeLayout>

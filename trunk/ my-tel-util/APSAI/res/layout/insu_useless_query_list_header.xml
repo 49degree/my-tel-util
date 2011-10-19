@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" 
+	android:layout_height="fill_parent" 
+	android:orientation="vertical"
+	android:paddingTop="2dip" android:scrollbarAlwaysDrawHorizontalTrack="true">
+    <View style="@style/apsai_list_split_hline_style" />
+	<TableLayout android:id="@+id/table" android:layout_width="wrap_content"
+		android:layout_height="30dip">
+		<TableRow android:gravity="center">
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:layout_width="170dip"
+				style="@style/apsai_list_header_text_style" android:text="@string/apsai_sale_useless_query_beign_no"/>
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:layout_width="80dip"
+				style="@style/apsai_list_header_text_style" android:text="@string/apsai_sale_useless_query_number"/>
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:layout_width="90dip"
+				style="@style/apsai_list_header_text_style" android:text="@string/apsai_sale_query_opt_no"/>
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:layout_width="170dip"
+				style="@style/apsai_list_header_text_style" android:text="@string/apsai_sale_query_time"/>
+			<View style="@style/apsai_list_split_vline_style" />
+		</TableRow>
+	</TableLayout>
+	<View style="@style/apsai_list_split_hline_style" />	
+</LinearLayout>

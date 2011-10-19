@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" 
+	android:layout_height="fill_parent" 
+	android:orientation="vertical"
+	android:scrollbarAlwaysDrawHorizontalTrack="true">
+	<TableLayout android:id="@+id/table" android:layout_width="wrap_content"
+		android:layout_height="30dip">
+		<TableRow android:gravity="center">
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:id="@+id/apsai_sale_check_list_batch" android:layout_width="85dip"
+				style="@style/apsai_list_item_text_style"/>
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:id="@+id/apsai_sale_check_list_orders" android:layout_width="85dip"
+				style="@style/apsai_list_item_text_style"/>
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:id="@+id/apsai_sale_check_list_order_price" android:layout_width="85dip"
+				style="@style/apsai_list_item_text_style"/>
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:id="@+id/apsai_sale_check_list_back_orders" android:layout_width="85dip"
+				style="@style/apsai_list_item_text_style"/>
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:id="@+id/apsai_sale_check_list_back_price" android:layout_width="85dip"
+				style="@style/apsai_list_item_text_style"/>
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:id="@+id/apsai_sale_check_list_usless_orders" android:layout_width="85dip"
+				style="@style/apsai_list_item_text_style"/>
+			<View style="@style/apsai_list_split_vline_style" />
+			<TextView android:id="@+id/apsai_sale_check_list_order_time" android:layout_width="135dip"
+				style="@style/apsai_list_item_text_style"/>
+			<View style="@style/apsai_list_split_vline_style" />
+		</TableRow>
+	</TableLayout>
+	<View style="@style/apsai_list_split_hline_style" />	
+</LinearLayout>

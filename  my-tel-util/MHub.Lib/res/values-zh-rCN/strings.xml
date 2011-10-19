@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="abpms_title_appname">血压监护</string>
+		
+	<string name="abpms_title_main">血压监护</string>
+	<string name="abpms_title_sysinfo">系统信息</string>
+	
+	<string name="abpms_com_ok">确定</string>
+	<string name="abpms_com_cancel">取消</string>
+	
+	<string name="abpms_com_lastpage">上一页</string>
+	<string name="abpms_com_nextpage">下一页</string>
+	
+	<string name="abpms_com_lastitem">上一条</string>
+	<string name="abpms_com_nextitem">下一条</string>
+	
+	<string name="abpms_com_sysp">收缩压</string>
+    <string name="abpms_com_diap">舒张压</string>
+    <string name="abpms_com_pulserate">脉率</string>
+    
+    <string name="abpms_info_selectcase">请选择异常原因：</string>
+    <string name="abpms_info_mtime">测量时间:</string>
+    
+    <string name="abpms_info_bpcolinfo">血压采集器信息</string>
+    <string name="abpms_info_blueads">蓝牙地址</string>
+    
+    <string name="abpms_info_states">状           态</string>
+    <string name="abpms_info_bind">绑定</string>
+    <string name="abpms_info_ybind">已绑定</string>
+    <string name="abpms_info_nbind">未绑定</string>
+    
+    
+    
+    
+    <string name="abpms_info_abpmsver">血压监护版本信息</string>
+    
+    <string name="abpms_info_subver">子系统版本</string>
+    <string name="abpms_info_colver">采集器版本</string>
+    
+    
+    
+    
+    
+    
+    
+    
+</resources>

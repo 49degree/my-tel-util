@@ -1,0 +1,12 @@
+editcode	cardname															
+CYX_HUB0	平安湖北乘客意外伤害险															
+editcode	TSChar	BegCol	EndCol	MaxInputCnt	InputEnAble	DefaultType	SecretFlag	ShowInputArea	NullEnable	MaxInputMust	JudgeCntAtonce	ClearFill	FirstFill	HelpChar	Attribute	FillType
+CYX_HUB0	单证:	5	20	20	17	0	0	1	0	1	0	0			1	255
+CYX_HUB0	客票:	5	20	12	17	0	0	1	0	1	0	1			23	255
+CYX_HUB0	发车日期:	9	20	8	1	0	0	1	1	0	0	1			2	8
+CYX_HUB0	发车时间:	9	20	4	1	0	0	1	1	0	0	1			3	4
+CYX_HUB0	投 保 人:	9	20	30	55	1	0	1	1	0	0	1			6	0
+CYX_HUB0	被 保 人:	9	20	30	55	1	0	1	1	0	0	1			11	0
+CYX_HUB0	证件类型:	9	20	1	128	7	0	1	1	0	0	1	1	1=身份证;2=护照;3=军人证;4=驾驶证;5=港澳回乡证或台胞证;0=其它	14	0
+CYX_HUB0	ID:	3	20	18	17	0	0	1	1	0	0	1			15	0
+===B15																

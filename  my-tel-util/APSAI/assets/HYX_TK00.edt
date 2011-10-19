@@ -1,0 +1,19 @@
+editcode	cardname															
+HYX_TK00	泰康航空旅客意外伤害险															
+editcode	TSChar	BegCol	EndCol	MaxInputCnt	InputEnAble	DefaultType	SecretFlag	ShowInputArea	NullEnable	MaxInputMust	JudgeCntAtonce	ClearFill	FirstFill	HelpChar	Attribute	FillType
+HYX_TK00	单证:	5	20	0	0	0	0	1	1	0	0	1			0	0
+HYX_TK00		0	20	20	17	0	0	1	0	1	0	0			1	255
+HYX_TK00	组合:	5	20	2	128	7	0	1	0	0	0	1	1		49	2
+HYX_TK00	保险起期:	9	20	8	1	0	0	1	0	1	0	0			2	8
+HYX_TK00	保险止期:	9	20	8	1	0	0	1	0	1	0	0			4	8
+HYX_TK00	投 保 人:	9	20	10	55	1	0	1	0	0	0	1			6	0
+HYX_TK00	被 保 人:	9	20	10	55	1	0	1	0	0	0	1			11	0
+HYX_TK00	证件类型:	9	20	1	128	7	0	1	0	0	0	1	1	1=身份证;2=护照;3=军官证;4=驾照;5=户口本;6=学生证;7=工作证;8=社保号;0=其他	14	0
+HYX_TK00	ID	3	20	18	55	0	0	1	0	0	0	1			15	0
+HYX_TK00	性    别:	9	20	1	128	7	0	1	0	0	0	1	1	1=男;2=女	12	0
+HYX_TK00	出生日期:	9	20	8	1	0	0	1	0	1	0	1			13	0
+HYX_TK00	受 益 人:	9	20	30	55	1	0	1	0	0	0	1	法定		17	0
+HYX_TK00	出发日期:	9	20	8	1	0	0	1	1	0	0	1			255	8
+HYX_TK00	出发时间:	9	20	4	1	0	0	1	1	0	0	1			255	4
+HYX_TK00	班    次:	9	20	10	17	4	0	1	1	0	0	1			22	10
+===B15																

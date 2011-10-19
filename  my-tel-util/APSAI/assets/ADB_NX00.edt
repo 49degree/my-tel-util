@@ -1,0 +1,18 @@
+editcode	cardname															
+ADB_NX00	平安宁夏借款人意外伤害险															
+editcode	TSChar	BegCol	EndCol	MaxInputCnt	InputEnAble	DefaultType	SecretFlag	ShowInputArea	NullEnable	MaxInputMust	JudgeCntAtonce	ClearFill	FirstFill	HelpChar	Attribute	FillType
+ADB_NX00	单证:	5	20	20	17	0	0	1	0	1	0	0			1	255
+ADB_NX00	保险起期:	9	20	8	1	0	0	1	0	1	0	1			2	8
+ADB_NX00	保险止期:	9	20	8	1	0	0	1	0	1	0	1			4	8
+ADB_NX00		0	20	0	0	0	0	1	1	0	0	1			0	0
+ADB_NX00	合同编号:	9	20	18	55	0	0	1	0	0	0	1			58	0
+ADB_NX00	贷款金额:	9	20	8	1	0	0	1	0	0	0	1			59	8
+ADB_NX00	保额(元):	9	20	8	1	0	0	1	0	0	0	1			19	8
+ADB_NX00		0	20	0	0	0	0	1	1	0	0	1			0	0
+ADB_NX00	投 保 人:	9	20	30	55	1	0	1	0	0	0	1			6	0
+ADB_NX00	被 保 人:	9	20	30	55	1	0	1	0	0	0	1			11	0
+ADB_NX00	证件类型:	9	20	1	128	7	0	1	0	1	0	1	1	1=身份证	14	0
+ADB_NX00	ID	2	20	18	55	0	0	1	0	0	0	1			15	0
+ADB_NX00	联系电话:	9	20	14	55	0	0	1	0	0	0	1			255	0
+ADB_NX00	受 益 人:	9	20	30	55	1	0	1	1	0	0	1	法定		17	0
+===B15																

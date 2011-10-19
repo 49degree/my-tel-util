@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.xys.ecg.activity"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <application android:name=".ECGApplication" android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true" >
+        <activity android:name=".ECG_Android" android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Config"
+                  android:label="@string/sys_config">
+        </activity>
+        <activity android:name=".Advice"
+                  android:label="@string/advice">
+        </activity>
+        <activity android:name=".Record"
+                  android:label="@string/record_manage">
+        </activity>
+        <activity android:name=".Run_Config"
+                  android:label="@string/run_config">
+        </activity>
+        <activity android:name=".Equip_Info"
+                  android:label="@string/equip_info">
+        </activity>
+        <activity android:name=".Contact"
+                  android:label="@string/contact">
+        </activity>
+        <activity android:name=".About"
+                  android:label="@string/about">
+        </activity>
+        <activity android:name=".Equip_Config"
+                  android:label="@string/equipconfig">
+        </activity>
+        
+    </application>
+    <uses-sdk android:minSdkVersion="7" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission> 
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
+    <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 注册发送短信的权限,必须加，否则没有权限发短信 -->
+    <uses-permission android:name="android.permission.SEND_SMS" /> 
+    
+
+</manifest> 

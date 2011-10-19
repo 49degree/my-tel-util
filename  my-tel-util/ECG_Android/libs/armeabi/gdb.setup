@@ -1,0 +1,3 @@
+set solib-search-path /cygdrive/e/eclipsecppwk/ECG_Android/obj/local/armeabi
+directory /cygdrive/e/dev_util/Android/android-ndk-r4-crystax/build/platforms/android-5/arch-arm/usr/include
+directory /cygdrive/e/eclipsecppwk/ECG_Android/jni

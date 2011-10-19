@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/bg" android:orientation="vertical">
+    <LinearLayout android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/linearLayout1">
+    
+        <TableLayout android:id="@+id/tableLayout1" android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_weight="1"
+         android:stretchColumns="0,1,2">
+        
+            <TableRow android:layout_width="fill_parent" android:id="@+id/tableRow1" android:layout_height="fill_parent">
+                <TextView style="@style/abpms_style_measuretime" android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/abpms_id_tv_time" 
+                android:layout_span="3" android:text="@string/abpms_title_appname" android:layout_gravity="center"></TextView>
+                
+            </TableRow>
+            
+            <TableRow android:id="@+id/tableRow2" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                <TextView  style="@style/abpms_style_bpdatacategory" android:id="@+id/textView1" android:layout_width="wrap_content" 
+                android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:text="@string/abpms_com_sysp"></TextView>
+                <TextView  style="@style/abpms_style_bpdata" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/abpms_id_tv_sysp" android:text="TextView" android:layout_gravity="center_vertical"></TextView>
+                <ImageButton android:src="@drawable/icon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/abpms_id_imgbtn_case"></ImageButton>
+            
+            
+            </TableRow>
+            
+            <TableRow android:id="@+id/tableRow3" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                <TextView style="@style/abpms_style_bpdatacategory" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="bottom" android:id="@+id/textView3" android:layout_gravity="center_vertical" android:text="@string/abpms_com_diap"></TextView>
+                <TextView style="@style/abpms_style_bpdata" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/abpms_id_tv_diap" android:text="TextView" android:layout_gravity="center_vertical|clip_horizontal"></TextView>
+                <ImageButton android:src="@drawable/icon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/abpms_id_imgbtn_case2"></ImageButton>
+            
+            
+            </TableRow>
+            
+            <TableRow android:id="@+id/tableRow4" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                <TextView style="@style/abpms_style_bpdatacategory" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/textView6" android:text="@string/abpms_com_pulserate"></TextView>
+                <TextView style="@style/abpms_style_bpdata" android:text="TextView" android:id="@+id/abpms_id_tv_pulserate" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+            
+            
+            </TableRow>
+      
+      		<TableRow android:id="@+id/tableRow5" android:layout_height="fill_parent" android:layout_width="wrap_content">
+      			<Button style="@style/abpms_style_btnpage" android:id="@+id/abpms_id_btn_lastpage" android:gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/abpms_com_lastitem"></Button>
+  
+      			<TextView style="@style/abpms_style_page" android:layout_width="fill_parent" android:id="@+id/abpms_id_tv_page" android:text="TextView" android:layout_height="fill_parent" android:gravity="center"></TextView>
+      			<Button style="@style/abpms_style_btnpage" android:id="@+id/abpms_id_btn_nextpage" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/abpms_com_nextitem"></Button>
+      		
+      		</TableRow>
+        
+        </TableLayout>
+    
+   
+    </LinearLayout>
+    
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/linearLayout2">
+        
+    
+    
+    </LinearLayout>
+
+</LinearLayout>

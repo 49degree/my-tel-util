@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical">
+	<LinearLayout android:layout_width="fill_parent" android:gravity="center" 
+		android:layout_height="20dip" android:orientation="vertical">
+		<TextView android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" android:text="@string/mets_urine_record_top_info">
+		</TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical" android:layout_weight="1">
+		<LinearLayout android:layout_width="fill_parent" android:orientation="horizontal"
+			android:layout_height="wrap_content" android:layout_gravity="left">
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/mets_urine_record_date_info">
+			</TextView>
+			<EditText android:layout_width="120dip" android:textSize="15dip" android:layout_height="wrap_content" android:id="@+id/mets_urine_record_date_edit">
+			</EditText>
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/mets_urine_count_link_info" android:id="@+id/mets_urine_count_link">
+			</TextView>
+		</LinearLayout>
+		<com.szxys.mhub.ui.mets.components.DataGridView android:layout_width="fill_parent" android:layout_height="fill_parent"
+				 android:id="@+id/mets_urine_record_list_view" android:layout_weight="1"/>			
+
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center" android:layout_marginTop="5dip">
+			<Button android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/mets_urine_record_modify_btn"
+				android:text="@string/mets_modify_btn_text">
+			</Button>
+			<Button android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/mets_urine_record_delete_btn"
+				android:text="@string/mets_delete_btn_text">
+			</Button>
+			<Button android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/mets_urine_record_return_btn"
+				android:text="@string/mets_return_btn_text">
+			</Button>
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

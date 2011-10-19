@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical">
+	<LinearLayout android:layout_width="fill_parent"
+		android:gravity="center" android:id="@+id/mets_urine_rate_lin_top"
+		android:layout_height="20dip" android:orientation="vertical">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/mets_urine_rate_top_info">
+		</TextView>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/mets_urine_rate_lin_bottom"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_marginBottom="5dip" android:gravity="right"
+		android:layout_alignParentBottom="true">
+		<TextView android:id="@+id/mets_urine_rate_return_text"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="right" android:text="@string/mets_return_btn_text"
+			style="@style/mets_SubTitle"></TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_above="@id/mets_urine_rate_lin_bottom"
+		android:layout_below="@id/mets_urine_rate_lin_top"
+		android:orientation="vertical">
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/mets_urine_rate_pic_btn"
+				android:layout_weight="1" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:gravity="center|right"
+				android:background="@drawable/mets_subtitle_selector" android:text="@string/mets_urine_rate_pic_text"
+				style="@style/mets_SubTitle">
+			</Button>
+			<Button android:id="@+id/mets_urine_rate_count_btn"
+				android:layout_weight="1" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:gravity="center|right"
+				android:text="@string/mets_urine_rate_count_text"
+				android:background="@drawable/mets_subtitle_selector" style="@style/mets_SubTitle">
+			</Button>
+		</LinearLayout>
+
+		<FrameLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<LinearLayout android:id="@+id/mets_urine_rate_pic_layout"
+				android:layout_width="fill_parent" android:layout_height="fill_parent"
+				android:orientation="vertical" android:layout_gravity="top">
+				<com.szxys.mhub.ui.mets.components.CurveChart
+					android:id="@+id/mets_urine_rate_pic_draw" android:layout_width="fill_parent"
+					android:layout_height="fill_parent">
+				</com.szxys.mhub.ui.mets.components.CurveChart>
+			</LinearLayout>
+			<LinearLayout android:id="@+id/mets_urine_rate_count_layout"
+				android:layout_width="fill_parent" android:layout_height="fill_parent"
+				android:orientation="vertical" android:layout_gravity="top">
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:orientation="horizontal"
+					android:layout_gravity="top">
+					<TextView android:layout_width="100dip" android:layout_gravity="left"
+						android:layout_height="wrap_content" android:text="@string/mets_urine_rate_max_rate_text">
+					</TextView>
+					<TextView android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:id="@+id/mets_urine_rate_max_rate_value">
+					</TextView>
+					<TextView android:layout_width="70dip" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:text="mL/S">
+					</TextView>
+				</LinearLayout>
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:orientation="horizontal"
+					android:layout_gravity="top">
+					<TextView android:layout_width="100dip" android:layout_gravity="left"
+						android:layout_height="wrap_content" android:text="@string/mets_urine_rate_aver_rate_text">
+					</TextView>
+					<TextView android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:id="@+id/mets_urine_rate_aver_rate_value">
+					</TextView>
+					<TextView android:layout_width="70dip" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:text="mL/S">
+					</TextView>
+				</LinearLayout>
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:orientation="horizontal"
+					android:layout_gravity="top">
+					<TextView android:layout_width="100dip" android:layout_gravity="left"
+						android:layout_height="wrap_content" android:text="@string/mets_urine_rate_urine_time_text">
+					</TextView>
+					<TextView android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:id="@+id/mets_urine_rate_urine_time_value">
+					</TextView>
+					<TextView android:layout_width="70dip" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:text="S">
+					</TextView>
+				</LinearLayout>
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:orientation="horizontal"
+					android:layout_gravity="top">
+					<TextView android:layout_width="100dip" android:layout_gravity="left"
+						android:layout_height="wrap_content" android:text="@string/mets_urine_rate_urinary_time_text">
+					</TextView>
+					<TextView android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:id="@+id/mets_urine_rate_urinary_time_value">
+					</TextView>
+					<TextView android:layout_width="70dip" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:text="S">
+					</TextView>
+				</LinearLayout>
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:orientation="horizontal"
+					android:layout_gravity="top">
+					<TextView android:layout_width="100dip" android:layout_gravity="left"
+						android:layout_height="wrap_content" android:text="@string/mets_urine_rate_max_time_text">
+					</TextView>
+					<TextView android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:id="@+id/mets_urine_rate_max_time_value">
+					</TextView>
+					<TextView android:layout_width="70dip" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:text="S">
+					</TextView>
+				</LinearLayout>
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:orientation="horizontal"
+					android:layout_gravity="top">
+					<TextView android:layout_width="100dip" android:layout_gravity="left"
+						android:layout_height="wrap_content" android:text="@string/mets_urine_rate_urine_value_text">
+					</TextView>
+					<TextView android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:id="@+id/mets_urine_rate_urine_value_value">
+					</TextView>
+					<TextView android:layout_width="70dip" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:text="mL">
+					</TextView>
+				</LinearLayout>
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:orientation="horizontal"
+					android:layout_gravity="top">
+					<TextView android:layout_width="100dip" android:layout_gravity="left"
+						android:layout_height="wrap_content" android:text="@string/mets_urine_rate_2s_rate_text">
+					</TextView>
+					<TextView android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:id="@+id/mets_urine_rate_2s_rate_value">
+					</TextView>
+					<TextView android:layout_width="70dip" android:layout_gravity="right" android:gravity="right"
+						android:layout_height="wrap_content" android:text="mL/S">
+					</TextView>
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</FrameLayout>
+	</LinearLayout>
+</RelativeLayout>

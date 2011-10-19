@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent" android:orientation="vertical">
+    <LinearLayout android:id="@+id/linearLayout2" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1"></LinearLayout>
+    <LinearLayout android:id="@+id/linearLayout3" android:layout_width="fill_parent" android:orientation="horizontal" android:layout_height="wrap_content">
+        <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/LinearLayout09" android:layout_weight="1" android:layout_width="fill_parent"></LinearLayout>
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:id="@+id/ll_sub1" android:background="@drawable/pfphone_icon_bg">
+            <ImageView android:id="@+id/img_sub" android:clickable="true" android:focusable="true" android:layout_height="100dip" android:layout_width="100dip"></ImageView>
+            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/tv_sub" android:textColor="#FFF" android:textSize="20sp"></TextView>
+        </LinearLayout>
+        <LinearLayout android:layout_height="fill_parent" android:id="@+id/linearLayout6" android:layout_width="fill_parent" android:layout_weight="1" android:orientation="vertical"></LinearLayout>
+        <LinearLayout android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content" android:gravity="center" android:id="@+id/ll_sub2" android:background="@drawable/pfphone_icon_bg">
+            <ImageView android:id="@+id/img_sub" android:layout_height="100dip" android:layout_width="100dip"></ImageView>
+            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/tv_sub" android:textColor="#FFF" android:textSize="20sp"></TextView>
+        </LinearLayout>
+        <LinearLayout android:layout_height="fill_parent" android:id="@+id/linearLayout7" android:orientation="vertical" android:layout_width="wrap_content">
+            <LinearLayout android:layout_height="fill_parent" android:id="@+id/LinearLayout01" android:layout_weight="1" android:layout_width="fill_parent">
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout android:layout_height="fill_parent" android:id="@+id/linearLayout8" android:layout_width="fill_parent" android:layout_weight="1"></LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:layout_height="fill_parent" android:id="@+id/LinearLayout04" android:layout_weight="1" android:layout_width="fill_parent"></LinearLayout>
+    <LinearLayout android:layout_height="wrap_content" android:orientation="horizontal" android:id="@+id/LinearLayout06" android:layout_width="fill_parent">
+        <LinearLayout android:layout_height="fill_parent" android:id="@+id/LinearLayout05" android:layout_weight="1" android:layout_width="fill_parent" android:orientation="vertical"></LinearLayout>
+        <LinearLayout android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content" android:gravity="center" android:id="@+id/ll_sub3" android:background="@drawable/pfphone_icon_bg">
+            <ImageView android:id="@+id/img_sub" android:layout_height="100dip" android:layout_width="100dip"></ImageView>
+            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/tv_sub" android:textColor="#FFF" android:textSize="20sp"></TextView>
+        </LinearLayout>
+        <LinearLayout android:layout_height="fill_parent" android:id="@+id/LinearLayout02" android:layout_weight="1" android:layout_width="fill_parent" android:orientation="vertical"></LinearLayout>
+        <LinearLayout android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content" android:gravity="center" android:id="@+id/ll_sub4" android:background="@drawable/pfphone_icon_bg">
+            <ImageView android:id="@+id/img_sub" android:layout_height="100dip" android:layout_width="100dip"></ImageView>
+            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/tv_sub" android:textColor="#FFF" android:textSize="20sp"></TextView>
+        </LinearLayout>
+        <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/LinearLayout03" android:layout_width="wrap_content">
+            <LinearLayout android:layout_height="fill_parent" android:id="@+id/LinearLayout07" android:layout_weight="1" android:layout_width="fill_parent"></LinearLayout>
+        </LinearLayout>
+        <LinearLayout android:layout_height="fill_parent" android:id="@+id/LinearLayout08" android:layout_weight="1" android:layout_width="fill_parent"></LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:layout_height="fill_parent" android:id="@+id/linearLayout1" android:layout_width="wrap_content" android:layout_weight="1"></LinearLayout>
+</LinearLayout>

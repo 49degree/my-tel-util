@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:orientation="vertical">
+	
+	<LinearLayout
+		android:id="@+id/topic_type"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:orientation="vertical">
+		
+		<TextView 
+			android:id="@+id/mets_questionnaire_subtitle"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:layout_gravity="center" 
+			>
+		</TextView>
+		<ImageView
+			android:layout_width="fill_parent"
+			android:layout_height="3px"
+			android:background="@drawable/icon"
+			>
+		</ImageView>
+		
+		<TextView 
+			android:id="@+id/mets_questionnaire_topic"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="还没有设置题目" >
+		</TextView>
+		
+		<TextView 
+			android:id="@+id/mets_questionnaire_content"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="还没有设置内容" 
+			 >
+		</TextView>
+		
+	</LinearLayout>
+	
+	<LinearLayout 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:layout_below="@id/toptitle"
+		android:gravity="left"
+		android:orientation="horizontal">
+		
+		<ListView
+			android:id="@+id/mets_options_lv"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			>
+		</ListView>
+		
+	</LinearLayout>
+	
+	<LinearLayout 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:layout_marginBottom="10px"
+		android:orientation="horizontal"
+		android:gravity="bottom|center_horizontal"
+		>
+		<Button 
+			android:id="@+id/mets_questionnaire_last_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:text="@string/mets_questionnaire_last_btn_text"
+			>
+		</Button>
+		<TextView 
+			android:id="@+id/mets_questionnaire_page_info"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:gravity="center_horizontal"
+			android:minWidth="30px"
+			>
+		</TextView>
+		<Button 
+			android:id="@+id/mets_questionnaire_next_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:text="@string/mets_questionnaire_next_btn_text"
+			>
+		</Button>
+	</LinearLayout>
+</LinearLayout>

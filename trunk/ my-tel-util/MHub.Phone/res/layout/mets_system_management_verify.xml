@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+	
+	<LinearLayout 
+		android:orientation="vertical"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" >
+		<TextView 
+			android:id="@+id/mets_system_management_toptitle_tv" 
+			android:text="@string/mets_system_management_toptitle"
+			android:layout_gravity="center_horizontal"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" />
+		
+	</LinearLayout>
+	
+	<LinearLayout 
+		android:orientation="horizontal"
+		android:layout_marginTop="30px"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" >
+		<TextView 
+			android:id="@+id/mets_system_management_verification_tv" 
+			android:text="@string/mets_system_management_verification_code"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" />
+		<EditText 
+			android:id="@+id/mets_system_management_verification_et" 
+			android:layout_width="80px" 
+			android:layout_height="wrap_content" />
+		
+	</LinearLayout>
+	
+	<LinearLayout 
+		android:orientation="horizontal"
+		android:layout_alignParentBottom="true"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" >
+		<Button 
+			android:id="@+id/mets_system_management_ok" 
+			android:text="@string/mets_ok_btn_text"
+			android:layout_marginLeft="60px"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" />
+		<Button 
+			android:id="@+id/mets_system_management_cancel" 
+			android:text="@string/mets_cancel_btn_text"
+			android:layout_marginRight="60px"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" />
+		
+	</LinearLayout>
+	
+	
+	
+</RelativeLayout >

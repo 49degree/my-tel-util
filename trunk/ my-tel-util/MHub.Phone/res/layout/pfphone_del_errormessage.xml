@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="#FFFFFF">
+	<RelativeLayout  android:layout_width="fill_parent" android:layout_height="wrap_content">
+	  <ListView android:id="@+id/android:list" android:layout_below="@+id/txt_id"
+		android:layout_width="fill_parent" android:cacheColorHint="#FFFFFF"
+		android:layout_height="fill_parent" android:divider="#B3B3B3"    
+             android:dividerHeight="1px"/>
+        <TextView  android:layout_below="@+id/android:list"
+		android:layout_width="fill_parent"
+		android:layout_height="1dip"
+		android:background="#B3B3B3" android:id="@+id/line"/>
+		<TextView android:id="@+id/android:empty" android:layout_below="@+id/line"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="暂无异常信息" 
+		android:textColor="#000000" android:textSize="18sp"/>
+	</RelativeLayout>
+		<Button android:id="@+id/btn_delMessage" android:layout_alignParentBottom="true"
+		android:text="删除" android:layout_marginLeft="12dip" android:textColor="#000000"
+		android:textSize="15sp"  android:layout_width="110dip" android:layout_alignParentLeft="true"
+		android:layout_height="38dip" android:layout_marginTop="5dip"></Button>
+		<Button android:id="@+id/btn_cancel" android:layout_alignParentBottom="true"
+		android:text="取消" android:layout_alignParentRight="true" android:textColor="#000000"
+		android:textSize="15sp"  android:layout_width="110dip" android:layout_marginRight="12dip"
+		android:layout_height="38dip" android:layout_marginTop="5dip"></Button>
+	</RelativeLayout>

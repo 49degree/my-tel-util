@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:background="@drawable/mets_urine_record_operate_back">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="2dip">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:text="@string/mets_urine_count_choice_time" style="@style/mets_titleFont"
+			android:layout_marginLeft="40dip">
+		</TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_gravity="left"
+		android:layout_weight="1" android:orientation="vertical"
+		android:layout_marginLeft="10dip" android:layout_marginTop="40dip"
+		android:layout_marginRight="10dip" android:layout_marginBottom="1dip">
+		<RadioGroup android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:orientation="vertical"
+			android:checkedButton="@+id/mets_urine_count_time_radio5" android:id="@+id/mets_urine_count_time_radio">
+			
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="45dip" android:layout_weight="1"
+					android:gravity="left|center_vertical" android:paddingLeft="40dip"
+					android:text="@string/mets_urine_count_time_radio1_text" style="@style/mets_blackText">
+				</TextView>
+				<RadioButton android:id="@+id/mets_urine_count_time_radio1" 
+				   android:layout_width="wrap_content" android:layout_height="wrap_content"
+				    android:text="" android:layout_marginRight="40dip"  android:button="@drawable/mets_radio_button"/>
+			</LinearLayout>
+			<ImageView android:background="@drawable/mets_urine_record_split"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:focusableInTouchMode="false" android:layout_gravity="center"
+				android:focusable="false">
+			</ImageView>
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="45dip" android:layout_weight="1"
+					android:gravity="left|center_vertical" android:paddingLeft="40dip"
+					android:text="@string/mets_urine_count_time_radio2_text" style="@style/mets_blackText">
+				</TextView>
+				<RadioButton android:id="@+id/mets_urine_count_time_radio2" 
+				   android:layout_width="wrap_content" android:layout_height="wrap_content"
+				    android:text="" android:layout_marginRight="40dip"  android:button="@drawable/mets_radio_button"/>
+			</LinearLayout>
+			<ImageView android:background="@drawable/mets_urine_record_split"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:focusableInTouchMode="false" android:layout_gravity="center"
+				android:focusable="false">
+			</ImageView>
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="45dip" android:layout_weight="1"
+					android:gravity="left|center_vertical" android:paddingLeft="40dip"
+					android:text="@string/mets_urine_count_time_radio3_text" style="@style/mets_blackText">
+				</TextView>
+				<RadioButton android:id="@+id/mets_urine_count_time_radio3" 
+				   android:layout_width="wrap_content" android:layout_height="wrap_content"
+				    android:text="" android:layout_marginRight="40dip"  android:button="@drawable/mets_radio_button"/>
+			</LinearLayout>
+			<ImageView android:background="@drawable/mets_urine_record_split"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:focusableInTouchMode="false" android:layout_gravity="center"
+				android:focusable="false">
+			</ImageView>
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="45dip" android:layout_weight="1"
+					android:gravity="left|center_vertical" android:paddingLeft="40dip"
+					android:text="@string/mets_urine_count_time_radio4_text" style="@style/mets_blackText">
+				</TextView>
+				<RadioButton android:id="@+id/mets_urine_count_time_radio4" 
+				   android:layout_width="wrap_content" android:layout_height="wrap_content"
+				    android:text="" android:layout_marginRight="40dip"  android:button="@drawable/mets_radio_button"/>
+			</LinearLayout>
+			<ImageView android:background="@drawable/mets_urine_record_split"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:focusableInTouchMode="false" android:layout_gravity="center"
+				android:focusable="false">
+			</ImageView>
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:orientation="horizontal">
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="45dip" android:layout_weight="1"
+					android:gravity="left|center_vertical" android:paddingLeft="40dip"
+					android:text="@string/mets_urine_count_time_radio5_text" style="@style/mets_blackText">
+				</TextView>
+				<RadioButton android:id="@+id/mets_urine_count_time_radio5" 
+				   android:layout_width="wrap_content" android:layout_height="wrap_content"
+				    android:text="" android:layout_marginRight="40dip"  android:button="@drawable/mets_radio_button"/>
+			</LinearLayout>
+		</RadioGroup>
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="horizontal"
+		android:layout_marginTop="5dip" android:layout_marginBottom="30dip">
+		<Button android:id="@+id/mets_urine_count_date_sure_btn"
+			android:layout_weight="1" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:background="@drawable/mets_background_button" android:text="@string/mets_ok_btn_text"
+			style="@style/mets_blackText" android:layout_marginLeft="30dip">
+		</Button>
+		<Button android:id="@+id/mets_urine_count_date_cannel_btn"
+			android:layout_weight="1" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:text="@string/mets_cancel_btn_text" android:background="@drawable/mets_background_button"
+			style="@style/mets_blackText" android:layout_marginLeft="20dip"
+			android:layout_marginRight="30dip">
+		</Button>
+	</LinearLayout>
+</LinearLayout>

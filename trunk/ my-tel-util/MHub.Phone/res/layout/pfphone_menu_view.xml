@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout android:id="@+id/linearLayout1"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:layout_weight="1"></LinearLayout>
+	<LinearLayout android:id="@+id/linearLayout2"
+		android:background="@drawable/pfphone_menu_background_fill_parent_width"
+		android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="4">
+		<LinearLayout android:id="@+id/ll_intercommunion"
+			android:layout_width="fill_parent" android:layout_weight="1"
+			android:orientation="vertical" android:gravity="center"
+			android:layout_height="fill_parent" android:background="@drawable/pfphone_menuitem_bg">
+			<ImageView android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:id="@+id/image_in" android:background="@drawable/pfphone_intercommunion"></ImageView>
+			<TextView android:id="@+id/textView1" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/intercommunion"
+				android:textColor="#000"></TextView>
+		</LinearLayout>
+		<LinearLayout android:layout_height="fill_parent"
+			android:id="@+id/linearLayout5" android:orientation="vertical"
+			android:gravity="center" android:layout_width="1dip"
+			android:background="#CCC">
+		</LinearLayout>
+		<LinearLayout android:id="@+id/ll_error_message"
+			android:layout_width="fill_parent" android:layout_weight="1"
+			android:orientation="vertical" android:gravity="center"
+			android:layout_height="fill_parent" android:background="@drawable/pfphone_menuitem_bg">
+			<ImageView android:layout_height="wrap_content" android:id="@+id/ImageView01"
+				android:layout_width="wrap_content" android:src="@drawable/pfphone_error_message"></ImageView>
+			<TextView android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:id="@+id/TextView01"
+				android:text="@string/error_message" android:textColor="#000"></TextView>
+		</LinearLayout>
+		<LinearLayout android:layout_height="fill_parent"
+			android:id="@+id/linearLayout5" android:orientation="vertical"
+			android:gravity="center" android:layout_width="1dip"
+			android:background="#CCC">
+		</LinearLayout>
+		<LinearLayout android:id="@+id/ll_system_setting"
+			android:layout_width="fill_parent" android:layout_weight="1"
+			android:orientation="vertical" android:gravity="center"
+			android:layout_height="fill_parent" android:background="@drawable/pfphone_menuitem_bg">
+			<ImageView android:layout_height="wrap_content" android:id="@+id/ImageView02"
+				android:layout_width="wrap_content" android:src="@drawable/pfphone_system_setting"></ImageView>
+			<TextView android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:id="@+id/TextView02"
+				android:text="@string/system_setting" android:textColor="#000"></TextView>
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

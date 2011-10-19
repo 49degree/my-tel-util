@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<system package="com.szxys.mhub">
+	<subsystem name="ecg" img_name="pfphone_ecg" activity_name=".test.ECGSubSystemActivity"/>
+	<subsystem name="eeg" img_name="pfphone_eeg" activity_name=".ui.main.TestActivity"/>
+	<subsystem name="glucose" img_name="pfphone_glucose" activity_name=".ui.main.TestActivity"/>
+	<subsystem name="urination" img_name="pfphone_urination" activity_name=".ui.mets.main.MetsMainActivity"/>
+	<subsystem name="glucose" img_name="pfphone_glucose" activity_name=".ui.main.TestActivity"/>
+	<subsystem name="urination" img_name="pfphone_urination" activity_name=".ui.main.TestActivity"/>
+	<subsystem name="glucose" img_name="pfphone_glucose" activity_name=".ui.main.TestActivity"/>
+	
+</system>

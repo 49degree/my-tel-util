@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Main!</string>
+    <string name="loading">系统正在初始化，请稍候...</string>
+    <string name="exit">Xindi soft capsule退出系统</string>
+    
+    <string name="health_record">健康档案</string>
+    <string name="intercommunion">互动信息</string>
+	<string name="error_message">异常消息</string>
+	<string name="system_setting">系统设置</string>
+	<string name="app_name">健康监护平台演示版</string>
+	<string name="inc_name">新元素</string>
+	<string name="ver_name">V1.0</string>
+	<string name="status_load_data">数据加载中...</string>
+	<string name="status_starting">启动中...</string>
+
+	<string name="eeg">脑电监护</string>
+	<string name="ecg">心电监护</string>
+	<string name="urination">排尿日志</string>
+	<string name="glucose">血糖监护</string>
+	<string name="testsub">测试子业务</string>
+	
+	<string name="user_info">个人信息</string>
+	<string name="server_record">服务记录</string>
+	<string name="case_record">病历记录</string>
+	<string name="medication_record">用药记录</string>
+	<string name="health_report">健康管理报告</string>
+	<string name="health_examination">健康体检</string>
+	
+	<string name="member_info">会员信息</string>
+	<string name="family_info">家庭信息</string>
+	<string name="health_info">健康信息</string>
+	<string name="insurance_info">保险信息</string>	
+
+	<string name="quit">退出</string>
+	<string name="quit_msg">确定退出健康监护平台？</string>
+	<string name="ok">确定</string>
+	<string name="cancel">取消</string>
+	<string name="interation">  e+医 互动信息</string>
+	<string-array name="SubSystemID">
+	<item>心电监护</item>
+	<item>排尿管理</item>
+	<item>血压监护</item>
+	<item>睡眠监护</item>
+	<item>健康管理</item>
+	<item>胎心监护</item>
+	<item>睡眠呼吸管理</item>
+	<item>尿动力监测</item>
+	<item>糖尿病随访</item>
+	<item>膀胱癌随访</item>
+	<item>前列腺炎随访</item>
+	<item>前列腺增生随访</item>
+	<item>健康档案</item>
+	</string-array>
+	<!-- 健康管理 -->
+    <string name="hmapp_name">健康管理</string>
+    <string name="hmboold">血型</string>
+    
+    
+    <!--个人信息 -->
+    <string name="hmaccountinfo">会员信息</string>
+    <string name="hmhomeinfo">家庭成员</string>
+    <string name="hmheadinfo">健康信息</string>
+    <string name="hminsurance">保险信息</string>
+    
+   
+    <string name="hmgrugallergy">药物过敏史</string>
+   
+    <string name="hmbuildExamine">体格检查</string>
+   
+    <string name="hmailment">疾病史</string>
+    <string name="hmnowAilment">.现病史</string>
+    <string name="hmanamnesis">.既往史</string>
+    <string name="hmfamilyhistory">.家族史</string>
+    <string name="hmheredopathia">.遗传病史</string>
+   
+    <!-- 健康信息 -->
+    <string name="hmstature">身高：</string>
+    <string name="hmavoirdupois">体重：</string>
+    <string name="hmwaistline">腰围：</string>
+    <string name="hmpygal">臀围：</string>
+    <string name="hmbloodpressure">血压：</string>
+    <string name="hmheartrate">心率：</string>
+    <string name="hmpulse">脉搏:</string>
+    <string name="hmailmentname">疾病名称：</string>
+    <string name="hmlapseto">转归：</string>
+    <string name="hmretrialtime">复诊时间：</string>
+    <string name="hmfather">父亲：</string>
+    <string name="hmmater">母亲：</string>
+    <string name="hmbrotherandssisters">兄弟姐妹：</string>
+    <string name="hmfamily">子女</string>
+	<string name="hmretrial">复诊：</string>
+	<string name="hmreturn_visit_claim">复诊要求：</string>
+	<string name="hmyes">是</string>
+	<string name="hmno">否</string>
+	
+	<!-- 用药记录 -->
+    <string name="hmnowaday_spharmacy">现今用药史</string>
+    <string name="hmpast_spharmacy">既往用药史</string>
+    
+    <!-- 现今用药   与 既往用药-->
+    <string name="hmspharmacy_name">药物名称：</string>
+    <string name="hmailment_name">疾病名称：</string>
+    <string name="hmstarting_time">用药开始时间：</string>
+    <string name="hmmajor_adverse_reaction">主要不良反应：</string>
+    <string name="hmendding_time">用药结束时间：</string>  
+
+    <!-- 健康管理报告  -->
+    <string name="hmillness_risk_notify">疾病风险评估报告</string>
+    <string name="hmcondition_notify">健康状况评估报告</string>
+    <string name="hminterim_report_notify">阶段报告</string>
+    <string name="hmmajor_adverse_reaction">慢病指导报告</string>
+    <string name="hmannual_bulletin">年度报告</string>  
+    
+    <!-- 病历记录 -->
+    <string name="hmoutpatient_annal">门诊记录</string>
+    <string name="hmhospitalized_annal">住院记录</string>  
+    <!--门诊记录  -->
+    <string name="hmdoctor_name">就诊医生：</string>
+    <string name="hmsubject">主诉：</string>
+    <string name="hmcheck_up">体格检查：</string>
+    <string name="hmdiagnose">诊断：</string>
+    <string name="hmdisposal">处理：</string>  
+    <string name="hmmedicaladvice">医生建议：</string>
+    <string name="hmrecommended_dietary">饮食建议：</string>
+    <string name="hmexercise_advised">运动建议：</string>
+    <string name="hmdrug_usage">用药指导：</string>
+    <string name="hmsubsequent_visit_remind">复诊提醒：</string> 
+     <!-- 查看住院记录 -->
+    <string name="hminhospitalized_time">入院时间：</string>
+    <string name="hmouthospitalized_time">出院时间：</string>
+    <string name="hmhospitalized_days">住院天数：</string>
+    <string name="hmadmitting_diagnosis">入院诊断：</string>
+    <string name="hmhospitalization_process">住院治疗过程：</string> 
+    <string name="hmmostly_accessory_examination">主要辅助检查：</string>
+    <string name="hmdischarge_diagnosis">出院诊断：</string> 
+
+   <!-- 查看服务记录 -->
+   <string name="hmoutpatient_service">就医服务</string>
+    <string name="hmreturn_telephone">电话回访</string>
+    <string name="hmStraight">上门服务</string>
+    <!-- 就医服务 -->
+    <string name="hmusername">姓名：</string>
+    <string name="hmusersex">性别：</string>
+    <string name="hmcard_no">卡号：</string>
+    <string name="hmtelephone">联系电话：</string>
+    
+    
+    <string name="hmjean_pierre_meersseman">健康顾问：</string> 
+    <string name="hmreturn_visit_time">复诊日期：</string>
+    <string name="hmhospitalize_type">就医类型：</string> 
+    
+    <!--电话回访记录 -->
+    
+    <string name="hmreturn_visit_date">回访日期：</string>
+    <string name="hmreturn_visit_man">回访人：</string>
+    <string name="hmreturn_visit_aim">回访目的：</string>
+    <string name="hmreturn_visit_annal ">回访记录：</string> 
+    <string name="hmfollow_up_matters">后续事项：</string>
+    <string name="hmreturn_the_date_next">下次回访日期：</string> 
+    
+     <!--上门服务记录 -->
+    
+    <string name="hmreturn_visit_date">回访日期：</string>
+    <string name="hmreturn_visit_spot">回访日期：</string>
+    <string name="hmreturn_visit_man">回访人：</string>
+    <string name="hmreturn_visit_aim">回访目的：</string>
+    <string name="hmreturn_visit_content">回访内容：</string> 
+    <string name="hmfollow_up_matters">后续事项：</string>
+    <string name="hmdrop_in_date_next">下次上门日期：</string> 
+    
+    
+</resources>

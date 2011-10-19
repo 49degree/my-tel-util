@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:background="@color/mets_white">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="5dip">
+		<Button android:id="@+id/mets_urine_record_pic_btn"
+			android:layout_weight="1" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:background="@drawable/mets_phone_tab_lable_press"
+			android:text="@string/mets_urine_record_link_info"
+			android:layout_marginLeft="1dip">
+		</Button>
+		<Button android:id="@+id/mets_urine_count_pic_btn"
+			android:layout_weight="1" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:text="@string/mets_urine_count_link_info" android:background="@drawable/mets_phone_tab_lable"
+			android:layout_marginRight="1dip">
+		</Button>
+	</LinearLayout>
+
+	<FrameLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<LinearLayout android:id="@+id/mets_urine_record_layout"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:orientation="vertical" android:layout_gravity="top">
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="35dip" android:orientation="horizontal"
+				android:layout_gravity="center" android:id="@+id/mets_urine_record_time_layout"
+				android:background="@drawable/mets_background_text_button">
+				<TextView android:layout_width="wrap_content"
+					android:layout_gravity="left|center_vertical"
+					android:layout_height="wrap_content" android:id="@+id/mets_urine_record_time"
+					style="@style/mets_blackText" android:layout_marginLeft="5dip">
+				</TextView>
+				<TextView android:layout_width="fill_parent"
+					android:layout_gravity="left|center_vertical"
+					android:layout_height="wrap_content" android:layout_weight="1"
+					android:id="@+id/mets_urine_record_week" style="@style/mets_blackText"
+					android:layout_marginLeft="10dip">
+				</TextView>
+				<ImageView android:layout_width="wrap_content"
+					android:layout_gravity="right|center_vertical" android:id="@+id/mets_urine_record_round"
+					android:layout_height="wrap_content" android:background="@drawable/mets_round_button"
+					android:layout_marginLeft="2dip" android:layout_marginRight="5dip">
+				</ImageView>
+			</LinearLayout>
+			<ListView android:id="@+id/mets_urine_record_list"
+				android:layout_height="fill_parent" android:layout_width="fill_parent"
+				android:divider="@drawable/mets_urine_record_split"
+				android:dividerHeight="1dip"></ListView>
+		</LinearLayout>
+		<LinearLayout android:id="@+id/mets_urine_count_layout"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:orientation="vertical" android:layout_gravity="top"
+			android:visibility="invisible">
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:orientation="horizontal"
+				android:layout_gravity="top" android:layout_marginTop="2dip">
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:layout_gravity="left"
+					android:layout_weight="1">
+					<TextView android:layout_width="125dip"
+						android:layout_height="wrap_content" android:id="@+id/mets_urine_count_start_time"
+						android:gravity="left|center_vertical"
+						android:background="@drawable/mets_phone_drop_down"
+						android:layout_marginLeft="1dip" android:paddingLeft="5dip" style="@style/mets_listText">
+					</TextView>
+					<TextView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:layout_gravity="center"
+						android:text="@string/mets_view_to_text"
+						android:layout_marginLeft="5dip" style="@style/mets_deleteFont">
+					</TextView>
+					<TextView android:layout_width="125dip"
+						android:layout_height="wrap_content" android:gravity="left|center_vertical"
+						android:id="@+id/mets_urine_count_end_time" android:background="@drawable/mets_phone_drop_down"
+						android:layout_marginLeft="5dip" android:paddingLeft="5dip" style="@style/mets_listText">
+					</TextView>
+				</LinearLayout>
+				<LinearLayout android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_gravity="right|center_vertical"
+					android:layout_marginRight="5dip">
+					<ImageButton android:layout_width="wrap_content" android:id="@+id/mets_urine_count_change_time"
+						android:layout_height="wrap_content" android:background="@drawable/mets_round_button">
+					</ImageButton>
+				</LinearLayout>
+			</LinearLayout>
+
+			<ListView android:id="@+id/mets_urine_count_list"
+				android:layout_height="wrap_content" android:layout_width="fill_parent"></ListView>
+		</LinearLayout>
+	</FrameLayout>
+</LinearLayout>

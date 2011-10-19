@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical">
+	<LinearLayout android:layout_width="fill_parent" 
+		android:layout_gravity="center" 
+		android:layout_height="60dip" 
+		android:orientation="vertical">
+		<TextView 
+			android:id="@+id/mets_config_toptitle"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@string/mets_config_toptitle"
+			>
+		</TextView>
+	</LinearLayout>
+	
+	<LinearLayout 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:orientation="vertical">
+	
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<TextView 
+				android:id="@+id/mets_hospital_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mets_hospital_name_text">
+			</TextView>
+			<TextView
+				android:id="@+id/mets_hospital_name_content"
+				android:layout_width="100px"
+				android:layout_height="wrap_content">
+			</TextView>
+		</LinearLayout>
+		
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<TextView 
+				android:id="@+id/mets_doctor_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mets_doctor_name_text">
+			</TextView>
+			<TextView
+				android:id="@+id/mets_doctor_name_content"
+				android:layout_width="100px"
+				android:layout_height="wrap_content">
+			</TextView>
+		</LinearLayout>
+		
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<TextView 
+				android:id="@+id/mets_patient_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mets_patient_name_text">
+			</TextView>
+			<TextView
+				android:id="@+id/mets_patient_name_content"
+				android:layout_width="100px"
+				android:layout_height="wrap_content">
+			</TextView>
+		</LinearLayout>
+		
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<TextView 
+				android:id="@+id/mets_pad_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mets_pad_name_text">
+			</TextView>
+			<TextView
+				android:id="@+id/mets_pad_name_content"
+				android:layout_width="100px"
+				android:layout_height="wrap_content">
+			</TextView>
+		</LinearLayout>
+		
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<TextView 
+				android:id="@+id/mets_urineGather_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mets_urineGather_name_text">
+			</TextView>
+			<TextView
+				android:id="@+id/mets_urineGather_name_content"
+				android:layout_width="100px"
+				android:layout_height="wrap_content">
+			</TextView>
+		</LinearLayout>
+		
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<TextView 
+				android:id="@+id/mets_communicationtime_interval"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mets_communicationtime_interval_text">
+			</TextView>
+			<TextView
+				android:id="@+id/mets_communicationtime_interval_content"
+				android:layout_width="100px"
+				android:layout_height="wrap_content">
+			</TextView>
+		</LinearLayout>
+		
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<TextView 
+				android:id="@+id/mets_closebluetooth_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mets_closebluetooth_text">
+			</TextView>
+			<TextView
+				android:id="@+id/mets_closebluetooth_content"
+				android:layout_width="100px"
+				android:layout_height="wrap_content">
+			</TextView>
+		</LinearLayout>
+		
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<TextView 
+				android:id="@+id/mets_default_getuptime"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mets_default_getuptime_text">
+			</TextView>
+			<TextView
+				android:id="@+id/mets_default_getuptime_content"
+				android:layout_width="100px"
+				android:layout_height="wrap_content">
+			</TextView>
+		</LinearLayout>
+		
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<TextView 
+				android:id="@+id/mets_default_gotobedtime"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mets_default_gotobedtime_text">
+			</TextView>
+			<TextView
+				android:id="@+id/mets_default_gotobedtime_content"
+				android:layout_width="100px"
+				android:layout_height="wrap_content">
+			</TextView>
+			
+		</LinearLayout>
+	</LinearLayout>		
+	
+	<LinearLayout 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:orientation="horizontal">
+		
+		<Button
+			android:id="@+id/mets_bt_return"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/mets_return_btn_text"
+			>
+		</Button>
+		
+	</LinearLayout>
+	
+</LinearLayout>

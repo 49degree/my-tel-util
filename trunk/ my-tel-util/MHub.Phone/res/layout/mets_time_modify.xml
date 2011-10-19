@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/mets_time_modify_bg">
+  	<LinearLayout 
+  		android:id="@+id/toptitle"
+  		android:layout_width="fill_parent"
+		android:layout_gravity="center" 
+		android:layout_height="60dip"
+		android:orientation="vertical">
+		
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:text="@string/mets_please_select_time"
+		style="@style/mets_time_modify_title"
+		>
+		</TextView>
+	</LinearLayout>
+	
+	
+	<RelativeLayout android:id="@+id/datetime_linBottom"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="30dip"
+		android:layout_gravity="center_horizontal"
+		android:layout_alignParentBottom="true">
+		
+		<Button android:id="@+id/mets_ok_btn" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:text="@string/mets_ok_btn_text"
+			android:layout_marginLeft="20dip"
+			android:background="@drawable/mets_style_drink_urine_btn"
+			style="@style/mets_time_modify_title"
+			>
+		</Button>
+		
+		<Button android:id="@+id/mets_cancel_btn" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:layout_marginLeft="20dip"
+			android:layout_marginRight="20dip"
+			android:text="@string/mets_cancel_btn_text"
+			android:background="@drawable/mets_style_drink_urine_btn"
+			style="@style/mets_time_modify_title"
+			>
+		</Button>
+	</RelativeLayout>	
+	
+	<LinearLayout android:layout_width="fill_parent"
+  		android:layout_height="wrap_content"
+  		android:orientation="vertical"
+        android:layout_above="@id/datetime_linBottom"
+        android:layout_below="@id/toptitle">	
+		<LinearLayout android:layout_width="fill_parent"
+	  		android:layout_height="wrap_content"
+  			android:gravity="center_vertical">
+	  		
+	  		<TextView android:layout_width="wrap_content"
+	  			android:layout_height="wrap_content"
+	  			android:text="@string/mets_date_text"
+	  			android:layout_marginLeft="20dip"
+	  			style="@style/mets_time_modify_title"
+	  			>
+	  		</TextView>
+	  		
+	  		<com.szxys.mhub.ui.mets.components.SelectDateTime
+				android:id="@+id/selectdate"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="1">
+			</com.szxys.mhub.ui.mets.components.SelectDateTime>
+	  	</LinearLayout>
+	  	
+	  	<LinearLayout android:layout_width="fill_parent"
+	  		android:layout_height="wrap_content"
+	  		android:gravity="center_vertical">
+	  		<TextView android:layout_width="wrap_content"
+	  			android:layout_height="wrap_content"
+	  			android:text="@string/mets_time_text"
+	  			style="@style/mets_time_modify_title"
+	  			android:layout_marginLeft="20dip"
+	  			>
+	  		</TextView>
+	  		
+	  		<com.szxys.mhub.ui.mets.components.ShowTime
+				android:id="@+id/showtime"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:layout_gravity="center">
+			</com.szxys.mhub.ui.mets.components.ShowTime>
+	  	</LinearLayout>
+	  	
+	 </LinearLayout>
+  	
+</RelativeLayout>

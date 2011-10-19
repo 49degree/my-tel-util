@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/reLayout"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<ImageView android:layout_marginLeft="3dip" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/imgView"
+		android:layout_marginTop="10dip"></ImageView>
+		<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginLeft="12dip" android:id="@+id/txt_doctorName"
+		android:layout_toRightOf="@+id/imgView" android:textSize="15sp"
+		android:textColor="#000000" android:layout_marginTop="10dip"/>
+
+		<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/txt_Time"
+		android:textSize="15sp" android:textColor="#000000" android:layout_marginRight ="10dip"
+		android:layout_alignParentRight="true" android:layout_marginTop="10dip"/>
+		
+		<TextView android:layout_width="wrap_content" android:layout_marginTop="10dip"
+		android:layout_height="wrap_content" android:id="@+id/txt_context" android:layout_marginRight ="10dip"
+		android:textSize="15sp" android:textColor="#000000" android:layout_marginLeft="12dip"
+		android:layout_alignParentLeft="true" android:layout_below="@+id/txt_doctorName" />
+	</RelativeLayout>
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Main!</string>
+    <string name="loading">系统正在初始化，请稍候...</string>
+    <string name="exit">退出系统</string>
+    
+    <string name="intercommunion">互动信息</string>
+	<string name="error_message">异常消息</string>
+	<string name="system_setting">系统设置</string>
+	<string name="app_name">健康监护平台演示版</string>
+	<string name="Inc_name">新元素</string>
+	<string name="ver_name">V1.0</string>
+	<string name="status_load_data">数据加载中...</string>
+	<string name="status_starting">启动中...</string>
+	 <string name="interation">e+医 互动信息</string>
+	<string name="eeg">脑电监护</string>
+	<string name="ecg">心电监护</string>
+	<string name="urination">排尿日志</string>
+	<string name="glucose">血糖监护</string>
+	<string name="testsub">测试子业务</string>
+	<string name="abpms">血压监护</string>
+	
+
+	<string name="quit">退出</string>
+	<string name="quit_msg">确定退出健康监护平台？</string>
+	<string name="ok">确定</string>
+	<string name="cancel">取消</string>
+	
+	<!-- 心电开始 -->
+	<string name="device">设备信息</string>
+	<string name="record">记录管理</string>
+	<string name="about">版权信息</string>
+	<!-- 心电结束 -->
+	
+	<string-array name="SubSystemID">
+	<item>心电监护</item>
+	<item>排尿管理</item>
+	<item>血压监护</item>
+	<item>睡眠监护</item>
+	<item>健康管理</item>
+	<item>胎心监护</item>
+	<item>睡眠呼吸管理</item>
+	<item>尿动力监测</item>
+	<item>糖尿病随访</item>
+	<item>膀胱癌随访</item>
+	<item>前列腺炎随访</item>
+	<item>前列腺增生随访</item>
+	<item>健康档案</item>
+	</string-array>
+	
+</resources>

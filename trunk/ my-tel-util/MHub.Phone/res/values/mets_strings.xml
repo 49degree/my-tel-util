@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mets_app_name">排尿日记</string>
+    <string name="mets_getup_button_text">起床了</string>
+    <string name="mets_sleep_button_text">睡觉了</string>
+    <string name="mets_drink_button_text">饮水量输入</string>
+    <string name="mets_urine_button_text">尿量输入</string>
+    <string name="mets_urinary_urgency_button_text">尿急</string>
+    <string name="mets_urinary_incontinence_button_text">尿失禁</string>
+    <string name="mets_config_info_button_text">配置信息</string>
+    <string name="mets_urina_record_button_text">查看记录</string>
+    <string name="mets_system_management_button_text">系统管理</string>
+    <string name="mets_gatherNow_button_text">即时采集</string>
+    <string name="mets_sendNow_button_text">即时发送</string>
+    <string name="mets_cancelLogin_button_text">注销登录</string>
+    <string name="mets_questionnaire_button_text">问卷调查</string>
+    
+    <!-- 起床睡觉时间 --> 
+    <string name="mets_set_getup_time">设置今天起床时间</string>
+    <string name="mets_set_sleep_time">设置今天睡觉时间</string>
+    <string name="mets_taday_getup_time">今天起床时间:</string>
+    <string name="mets_taday_sleep_time">今天睡觉时间:</string>
+    <string name="mets_getup_sleep_change_btn_text">修改</string>
+ 	<string name="mets_cancel_save_getup_time_text">您还没有记录今天起床时间，确定要取消吗？</string>
+ 	<string name="mets_cancel_save_sleep_time_text">您还没有记录今天睡觉时间，确定要取消吗？</string>
+ 	<string name="mets_null_getup_time_text">没有起床时间记录，请设置</string>
+ 	<string name="mets_null_sleep_time_text">没有睡觉时间记录，请设置</string>
+ 	
+ 	
+ 	<string name="mets_getup_earlier_than_YesSleep">起床时间必须晚于昨天的睡觉时间</string>
+ 	<string name="mets_getup_later_than_TodaySleep">起床时间不能晚于今天的睡觉时间</string>
+ 	<string name="mets_notToday_orLater_thanNow">起床时间必须是今天且不能晚于现在</string>
+ 	<string name="mets_sleep_earlier_than_TodayGetup">睡觉时间不能早于今天的起床时间</string>
+ 	<string name="mets_sleep_later_thanNow">睡觉时间不能晚于现在</string>
+ 	<string name="mets_sleep_earlier_than_TodayZerotime">睡觉时间不能早于今天</string>
+
+ 	  	<!-- 提示 -->
+ 	<string name="mets_promptmessage_toptitle">提示</string>
+ 	<string name="mets_promptmessage_ok">是</string>
+ 	<string name="mets_promptmessage_negative">否</string>
+ 	<string name="mets_promptmessage_sure">确定</string>
+ 	
+ 	<!-- 提示消息组件 -->
+ 	<string name="mets_promptmessage_getup_content">您还没有记录今天起床时间，确定要取消吗？</string>
+ 	<string name="mets_promptmessage_sleep_content">您还没有记录今天睡觉时间，确定要取消吗？</string>
+ 	<string name="mets_promptmessage_urine_content">没有采集器或采集器损坏时，才使用此功能，确定要输入尿量吗？</string>
+ 	<string name="mets_promptmessage_gatherNow_content">请打开尿量采集器的蓝牙设备进行数据采集！</string>
+ 	<string name="mets_promptmessage_sendNow_content">数据发送成功!</string>
+ 	<string name="mets_promptmessage_questionnaire_content">暂时没有可以使用的问卷！</string>
+ 	<string name="mets_promptmessage_cancel_login_content">您确定要注销登录吗？</string>
+ 	<string name="mets_promptmessage_questionnaire_save_content">您确定要保存问卷调查吗？</string>
+ 	
+ 	<!-- 公用字符 -->
+ 	<string name="mets_test_btn_text">测试</string>
+ 	<string name="mets_date_text">日期:</string>
+ 	<string name="mets_time_text">时间:</string>
+ 	<string name="mets_time_houre_text">时</string>
+ 	<string name="mets_time_minute_text">分</string>
+ 	<string name="mets_time_second_text">秒</string>
+ 	
+ 	<string name="mets_time_atday_text">白天</string>
+ 	<string name="mets_time_atnight_text">夜晚</string>
+ 	<string name="mets_urine_emergent">尿急</string>
+ 	<string name="mets_urine_loss">(失)</string>
+ 	<string name="mets_delete_ok">删除成功</string>
+ 	<string name="mets_delete_failed">删除失败</string>
+ 	<string name="mets_modify_ok">修改成功</string>
+ 	<string name="mets_modify_failed">修改失败</string>
+ 	
+ 	<string name="mets_submit_ok">提交成功</string>
+ 	<string name="mets_submit_failed">提交失败</string>
+ 	<string name="mets_valid_number_required">请输入正确的数值</string>
+ 	<string name="mets_submit_time_laterThanNow">保存时间不能晚于现在</string>
+ 	<string name="mets_submit_earlier_than_DeviceGrant">保存时间不能早于设备发放时间</string>
+ 	
+ 	<string name="mets_oprator_title">操作选项</string>
+ 	
+ 	
+ 	
+ 	
+ 	<string name="mets_please_select_time">请您选择时间</string>
+ 	<string name="mets_ok_btn_text">确定</string> 
+ 	<string name="mets_cancel_btn_text">取消</string>
+ 	<string name="mets_save_btn_text">保存</string>
+ 	<string name="mets_modify_btn_text">修改</string>
+ 	<string name="mets_delete_btn_text">删除</string>
+ 	<string name="mets_return_btn_text">返回</string>
+ 	<string name="mets_settings_btn_text">设置</string>
+ 	<string name="mets_view_to_text">至</string>
+ 	<string name="mets_no_checked_line">没有选中的行</string>
+ 	
+ 	<string name="mets_submit_Later_thanNow">提交时间不能比现在晚</string>
+ 	<string name="mets_quantity_morethan65535">数量输入太大,请重新输入</string>
+ 	<string name="mets_not_quantity_number">数量输入不正确</string>
+ 	<string name="mets_required_number">请输入数值</string>
+ 	
+ 	<!-- 饮水量输入 -->
+ 	<string name="mets_drink_text">饮水</string>
+ 	<string name="mets_drink_toptitle">请输入饮水量</string>
+ 	<string name="mets_drink_time_text">饮水时间：</string>
+ 	<string name="mets_drink_quantity_text">饮水量：</string>
+ 	<string name="mets_modify_drink_toptitle">修改饮水量信息</string>
+ 	
+ 	<!-- 尿量输入 -->
+ 	<string name="mets_urine_text">排尿</string>
+ 	<string name="mets_urine_toptitle">请输入尿量</string>
+ 	<string name="mets_urine_time_text">排尿时间：</string>
+ 	<string name="mets_urine_quantity_text">尿量：</string>
+ 	<string name="mets_modify_urine_toptitle">修改尿量信息</string>
+ 	<!-- 尿急输入 -->
+ 	<string name="mets_urinary_urgency_toptitle">请输入尿急信息</string>
+ 	<string name="mets_urinary_urgency_time_text">尿急时间：</string>
+ 	<string name="mets_urinary_urgency_quantity_text">尿急量：</string>
+ 	<string name="mets_modify_urinary_urgency_toptitle">修改尿急信息</string>	
+ 	<!-- 尿失禁输入 -->
+ 	<string name="mets_urinary_incontinence_text">尿失禁</string>
+ 	<string name="mets_urinary_incontinence_toptitle">请输入尿失禁信息</string>
+ 	<string name="mets_urinary_incontinence_time_text">尿失禁时间：</string>
+ 	<string name="mets_urinary_incontinence_quantity_text">尿量：</string>
+ 	<string name="mets_modify_urinary_incontinence_toptitle">修改尿失禁信息</string>
+ 	
+ 	<!-- 配置信息 -->
+ 	<string name="mets_config_toptitle">配置信息</string>
+ 	<string name="mets_hospital_name_text">医院名称：</string>
+ 	<string name="mets_doctor_name_text">医护人员：</string>
+ 	<string name="mets_patient_name_text">病人姓名：</string>
+ 	<string name="mets_pad_name_text">Pad：</string>
+ 	<string name="mets_urineGather_name_text">尿量采集器：</string>
+ 	<string name="mets_communicationtime_interval_text">通信时间间隔：</string>
+ 	<string name="mets_closebluetooth_text">通信结束后自动关闭蓝牙：</string>
+ 	<string name="mets_default_getuptime_text">默认起床时间：</string>
+ 	<string name="mets_default_gotobedtime_text">默认睡觉时间：</string>
+ 	
+ 	<!-- 排尿日记信息 -->
+ 	<string name="mets_urine_record_top_info">排尿日记信息</string>
+ 	<string name="mets_urine_record_date_info">请选择日期</string>
+ 	<string name="mets_urine_count_link_info">排尿统计</string>
+ 	<string name="mets_urine_record_header_choice">请选择</string>
+ 	<string name="mets_urine_record_header_type">类型</string>
+ 	<string name="mets_urine_record_header_time">时间</string>
+ 	<string name="mets_urine_record_header_in">入量</string>
+ 	<string name="mets_urine_record_header_out">尿量</string>
+ 	<string name="mets_urine_record_header_rate"></string> 	
+ 	<string name="mets_urine_record_delete_text">您确定要删除此条记录吗？</string>
+ 	
+ 	<!-- 排尿统计信息 -->
+ 	<string name="mets_urine_record_link_info">排尿日记</string>
+ 	<string name="mets_urine_count_top_info">排尿统计信息</string>
+ 	<string name="mets_urine_count_header_date">日期</string>
+ 	<string name="mets_urine_count_header_times">尿次(白/夜)</string>
+ 	<string name="mets_urine_count_header_value">尿量(白/夜)</string>
+ 	<string name="mets_urine_count_header_night_rate">夜尿指数</string>
+ 	<string name="mets_urine_count_header_urgency">尿急(总次)</string>
+ 	<string name="mets_urine_count_header_rincontinence">尿失禁(总次)</string>
+ 	<string name="mets_urine_count_choice_time">选择时间段</string>
+ 	
+ 	<string name="mets_urine_count_time_radio1_text">最近7天</string>
+ 	<string name="mets_urine_count_time_radio2_text">最近10天</string>
+ 	<string name="mets_urine_count_time_radio3_text">最近15天</string>
+ 	<string name="mets_urine_count_time_radio4_text">最近1个月</string>
+ 	<string name="mets_urine_count_time_radio5_text">自定义时段</string>
+ 	
+ 	<!-- 尿流率信息 -->
+ 	<string name="mets_urine_rate_top_info">尿流率</string>
+ 	<string name="mets_urine_rate_pic_text">图表</string>
+ 	<string name="mets_urine_rate_count_text">统计</string>
+ 	<string name="mets_urine_rate_continu_time">时长</string>
+ 	
+ 	<string name="mets_urine_rate_max_rate_text">最大尿流率</string>
+ 	<string name="mets_urine_rate_aver_rate_text">平均尿流率</string>
+ 	<string name="mets_urine_rate_urine_time_text">排尿时间</string>
+ 	<string name="mets_urine_rate_urinary_time_text">尿流时间</string>
+ 	<string name="mets_urine_rate_max_time_text">达峰时间</string>
+ 	<string name="mets_urine_rate_urine_value_text">尿流量</string>
+ 	<string name="mets_urine_rate_2s_rate_text">2秒尿流率</string>
+ 		
+ 	
+ 	<!-- 系统管理 -->
+ 	<string name="mets_system_management_toptitle">远程无线排尿日记监测系统</string>
+ 	<string name="mets_system_management_verification_code">验证码:</string>
+ 	
+ 	<!-- 即时采集 -->
+ 	<string name="mets_gatherNow_toptitle">请打开尿量采集器的蓝牙设备进行数据采集！</string>
+ 	
+ 	<!-- 即时发送 -->
+ 	<string name="mets_sendNow_info_text">开始发送数据...</string>
+ 	<string name="mets_sendNow_success_info_text">数据发送成功！</string>
+ 	
+ 	<!-- 注销登录 -->
+ 	<string name="mets_cancelLogin_toptitle">您确定要注销登录吗？</string>
+ 	
+ 	<!-- 问卷调查 -->
+ 	<string name="mets_questionnaire_toptitle">问卷调查</string>
+ 	<string name="mets_questionnaire_subtitle_oabss">OABSS问卷答题</string>
+ 	<string name="mets_questionnaire_subtitle_ipss">IPSS问卷调查</string>
+ 	<string name="mets_questionnaire_getNew_btn_text">获取新问卷调查</string>
+ 	<string name="mets_questionnaire_return_btn_text">返回</string>
+ 	<string name="mets_questionnaire_next_btn_text">下一步</string>
+ 	<string name="mets_questionnaire_last_btn_text">上一步</string>
+ 	<string name="mets_questionnaire_finish_btn_text">完成</string>
+ 	
+ 	<!-- 单位 -->
+ 	<string name="mets_drink_urine_unit">ml</string>
+ 	<string name="mets_prompt_input">点此输入</string>
+ 	
+ 	<!-- 星期 -->
+ 	<string name="mets_weekly_day0">星期天</string>
+ 	<string name="mets_weekly_day1">星期一</string>
+ 	<string name="mets_weekly_day2">星期二</string>
+ 	<string name="mets_weekly_day3">星期三</string>
+ 	<string name="mets_weekly_day4">星期四</string>
+ 	<string name="mets_weekly_day5">星期五</string>
+ 	<string name="mets_weekly_day6">星期六</string>
+ 	
+ 	
+ 	
+</resources>

@@ -1,0 +1,14 @@
+editcode	cardname															
+JTX_PA00	平安交通工具意外伤害险															
+editcode	TSChar	BegCol	EndCol	MaxInputCnt	InputEnAble	DefaultType	SecretFlag	ShowInputArea	NullEnable	MaxInputMust	JudgeCntAtonce	ClearFill	FirstFill	HelpChar	Attribute	FillType
+JTX_PA00	单证:	5	20	20	17	0	0	1	0	1	0	0			1	255
+JTX_PA00	保险起期:	9	20	8	1	0	0	1	0	1	0	1			2	8
+JTX_PA00	保险止期:	9	20	8	1	0	0	1	0	1	0	1			4	8
+JTX_PA00		0	20	0	0	0	0	1	1	0	0	1			0	0
+JTX_PA00	投 保 人:	9	20	30	55	1	0	1	0	0	0	1			6	0
+JTX_PA00	被 保 人:	9	20	30	55	1	0	1	0	0	0	1			11	0
+JTX_PA00	证件类型:	9	20	1	128	7	0	1	0	1	0	1	1	1=身份证;2=护照;3=军人证;4=驾驶证;5=港澳回乡证或台胞证;0=其它	14	0
+JTX_PA00	ID	2	20	18	55	0	0	1	0	0	0	1			15	0
+JTX_PA00	受 益 人:	9	20	30	55	1	0	1	1	0	0	1	法定		17	0
+JTX_PA00	受益人与被保人关系:	13	20	20	55	1	0	1	1	0	0	1			255	0
+===B15																

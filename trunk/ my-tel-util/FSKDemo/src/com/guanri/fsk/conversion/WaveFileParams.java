@@ -36,11 +36,23 @@ public class WaveFileParams {
 		
 		data = new byte[data_cksize];
 		System.arraycopy(fskEnCodeResult.code, 0, data, 0, data_cksize);
+	}
+	
+	
+	public WaveFileParams(FskCodeParams fskCodeParams){
+		this.fskCodeParams = fskCodeParams;
+		riff_cksize = 36;
+		fmt_nSamplesPerSec = fskCodeParams.getSampleF();
+		//先计算采样精度,再计算采样大小，再计算传输速率
+		fmt_wBitsPerSample =  (short)(fskCodeParams.getSampleByteLength()*8);
+		fmt_nBlockAlign = (short)(fmt_wBitsPerSample*fmt_nChannels/8);
+		fmt_nAvgBytesPerSec = fmt_nSamplesPerSec*fmt_nBlockAlign;
+		data_cksize = 0;
 		
 	}
 	
 	public byte[] parseWaveToByte(){
-		byte[] waveByte = new byte[44+data.length];
+		byte[] waveByte = new byte[44+data_cksize];
 		int index = 0;
 		byte [] riff_ckidByte = riff_ckid.getBytes();
 		System.arraycopy(riff_ckidByte, 0, waveByte, index, riff_ckidByte.length);
@@ -86,10 +98,10 @@ public class WaveFileParams {
 		
 		System.arraycopy(TypeConversion.intToBytes(data_cksize), 0, waveByte, index, 4);
 		index +=4;
-		
-		System.arraycopy(data, 0, waveByte, index, data.length);
-		index +=4;
-		
+		if(data!=null&&data.length>0){
+			System.arraycopy(data, 0, waveByte, index, data.length);
+			index +=data.length;
+		}
 		return waveByte;
 	}
 	

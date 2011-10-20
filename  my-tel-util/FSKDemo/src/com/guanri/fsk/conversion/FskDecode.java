@@ -183,7 +183,7 @@ public class FskDecode {
 	    	fskDecodeResult.addSourceValue(sampleValue, singleFilterValue, boundFilterValue, Math.round(averageMaxValue*splitParmats));
 	    }
 	    
-	    boolean isZero = com.guanri.fsk.utils.Demo.decode(sampleValue);
+	    //boolean isZero = com.guanri.fsk.utils.Demo.decode(sampleValue);
 	    
 	    double splitValue = averageMaxValue*splitParmats;
 	    if (! started) {
@@ -316,7 +316,7 @@ public class FskDecode {
 		
 		new Thread(){
 			public void run(){
-				String fileName = "E:/workgroup/FSKDemo/test.wav";
+				String fileName = "E:/workgroup/FSKDemo/record.wav";
 				byte[] read = new byte[5292]; 
 				try{
 					File waveFile = new File(fileName);

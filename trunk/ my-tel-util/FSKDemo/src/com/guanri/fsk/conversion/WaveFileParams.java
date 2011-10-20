@@ -1,5 +1,9 @@
 package com.guanri.fsk.conversion;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
+
 import com.guanri.fsk.utils.TypeConversion;
 
 public class WaveFileParams {
@@ -48,9 +52,67 @@ public class WaveFileParams {
 		fmt_nBlockAlign = (short)(fmt_wBitsPerSample*fmt_nChannels/8);
 		fmt_nAvgBytesPerSec = fmt_nSamplesPerSec*fmt_nBlockAlign;
 		data_cksize = 0;
-		
 	}
 	
+	/**
+	 * 保存文件
+	 * @param filePath
+	 */
+	String filePath = null;
+	public void createFile(String filePath){
+		this.filePath = filePath;
+		byte[] waveByte = parseWaveToByte();
+		
+		try{
+			File waveFile = new File(this.filePath);
+			if(!waveFile.exists()){
+				waveFile.createNewFile();
+			}
+			
+			FileOutputStream fout = new FileOutputStream(waveFile);
+			fout.write(waveByte);
+			fout.flush();
+			fout.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void appendData(byte[] data){
+		if(filePath!=null){
+			
+			FileOutputStream fout = null;
+			try{
+				File waveFile = new File(this.filePath);
+				if(!waveFile.exists()){
+					waveFile.createNewFile();
+					byte[] waveByte = parseWaveToByte();
+					fout = new FileOutputStream(waveFile);
+					fout.write(waveByte);
+				}else{
+					fout = new FileOutputStream(waveFile);
+				}
+				fout.write(data);
+				FileChannel ch = fout.getChannel();
+				ch.position(4);
+				int size = (int) ch.size();
+				fout.write(TypeConversion.intToBytes(size - 8));
+				ch.position(40);
+				fout.write(TypeConversion.intToBytes(size - 44));
+				
+				fout.flush();
+				fout.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
+	}
+	
+	/**
+	 * 构造数据
+	 * @return
+	 */
 	public byte[] parseWaveToByte(){
 		byte[] waveByte = new byte[44+data_cksize];
 		int index = 0;

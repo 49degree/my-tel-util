@@ -749,7 +749,12 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//if(posMessageBean.)
 		//	sendMap.put(14, cardPeriod);
 		// 域22 POS输入方式  
-		sendMap.put(22, "022");
+		//sendMap.put(22, "022");
+		if(posMessageBean.ProcessList.GetIsExistPINData())
+			sendMap.put(22, "021");
+		else
+			sendMap.put(22, "022");
+		
 		// 域24 NII
 		sendMap.put(24, "009");
 		// 域25 服务点条件码

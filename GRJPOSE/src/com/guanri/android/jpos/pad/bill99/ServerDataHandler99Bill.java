@@ -635,8 +635,11 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 	public JposPackageFather createSale(TTransaction posMessageBean){
 		//String CardNo = Trank.substring(0, 19);
 		//判断POS输入类型
-		String inputtype = "022";
-		
+		String inputtype ;
+		if (posMessageBean.ProcessList.GetIsExistPINData()) 
+			inputtype = "021";
+		else
+			inputtype = "022";
 		//构造签到所需各域
 		TreeMap<Integer,Object> sendMap = new TreeMap<Integer,Object>();
 		//System.out.println("主帐号："+ posMessageBean.ProcessList.GetPAN());

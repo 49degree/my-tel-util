@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="40.0dip"
+	android:gravity="center" android:orientation="horizontal">
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 姓名 -->
+	<TextView android:id="@+id/txtName" android:singleLine="true"
+		android:gravity="center" android:textColor="@color/lightblack"
+		android:textSize="22.0sp" android:layout_height="40.0dip"
+		android:layout_width="150.0dip" />
+	<View android:layout_width="1.dip" android:layout_height="40.0dip"
+		android:background="#cecdcd" />
+	<!-- 性别 -->
+	<TextView android:id="@+id/txtGender" android:singleLine="true"
+		android:gravity="center" android:textColor="@color/lightblack"
+		android:textSize="22.0sp" android:layout_height="40.0dip"
+		android:layout_width="120.0dip" />
+	<View android:layout_width="1.dip" android:layout_height="40.0dip"
+		android:background="#cecdcd" />
+	<!-- 与投保人关系 -->
+	<TextView android:id="@+id/txtRelation" android:singleLine="true"
+		android:gravity="center" android:textColor="@color/lightblack"
+		android:textSize="22.0sp" android:layout_height="40.0dip"
+		android:layout_width="200.0dip" />
+	<View android:layout_width="1.dip" android:layout_height="40.0dip"
+		android:background="#cecdcd" />
+	<!-- 证件类型 -->
+	<TextView android:id="@+id/txtCardType" android:singleLine="true"
+		android:gravity="center" android:textColor="@color/lightblack"
+		android:textSize="22.0sp" android:layout_height="40.0dip"
+		android:layout_width="160.0dip" />
+	<View android:layout_width="1.dip" android:layout_height="40.0dip"
+		android:background="#cecdcd" />
+	<!-- 证件号码 -->
+	<TextView android:id="@+id/txtCardId" android:singleLine="true"
+		android:gravity="center" android:textColor="@color/lightblack"
+		android:textSize="22.0sp" android:layout_height="40.0dip"
+		android:layout_width="280.0dip" />
+	<View android:layout_width="1.dip" android:layout_height="40.0dip"
+		android:background="#cecdcd" />
+	<!-- 收益比例 -->
+	<TextView android:id="@+id/txtScale" android:singleLine="true"
+		android:gravity="center" android:textColor="@color/lightblack"
+		android:textSize="22.0sp" android:layout_height="40.0dip"
+		android:layout_width="150.0dip" />
+	<View android:layout_width="1.dip" android:layout_height="40.0dip" android:id="@+id/txtScaleLine"
+		android:background="#cecdcd" />
+	<LinearLayout android:gravity="center"
+		android:layout_height="40dip" android:layout_width="wrap_content" android:layout_weight="1.0">
+		<ImageView android:src="@drawable/icon_edit" android:id="@+id/editAnnuitantUI"
+			android:layout_height="fill_parent" android:layout_width="wrap_content" />
+		<ImageView android:src="@drawable/delete" android:id="@+id/removeAnnuitant"
+			android:layout_marginLeft="5dip" android:layout_height="fill_parent"
+			android:layout_width="wrap_content" />
+	</LinearLayout>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+</LinearLayout>

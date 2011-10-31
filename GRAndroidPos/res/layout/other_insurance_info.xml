@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 附加险信息 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="match_parent">
+	<ImageView android:layout_alignParentLeft="true" android:id="@+id/body_left"
+		android:layout_marginLeft="25.0dip" android:layout_marginTop="30.0dip"
+		android:src="@drawable/other_insurance" android:layout_height="wrap_content"
+		android:layout_width="wrap_content"/>
+	
+	<TextView android:id="@+id/otherInsuranceIntroduce" android:text="为子女高中学习储备教育金，可选择在子女15、16、17周岁时领取教育金，或在子女15周岁时一次性领取教育金。"
+		android:layout_width="wrap_content"  android:layout_height="wrap_content"
+		android:layout_marginLeft="40px" android:layout_toRightOf="@id/body_left"  android:layout_alignTop="@id/body_left" android:layout_marginTop="20px"
+		android:textColor="@color/lightblack" android:textSize="24px"  android:layout_marginRight="20px"/>		
+	
+	<TextView android:id="@+id/otherInsuranceFeature"  android:text="产品特色"  android:layout_width="wrap_content"  android:layout_height="wrap_content"  
+	android:layout_below="@id/otherInsuranceIntroduce"   android:layout_alignLeft="@id/otherInsuranceIntroduce"  
+	android:layout_marginTop="20px" android:textColor="@color/pink"  android:textSize="32px"   android:layout_marginRight="20px" />
+	
+	<TextView  android:text="为子女高中学习储备教育金，可选择在子女15、16、17周岁时领取教育金，或在子女15周岁时一次性领取教育金" 
+			android:layout_below="@id/otherInsuranceFeature"  android:layout_width="wrap_content"  android:layout_height="wrap_content"
+			android:textColor="@color/tell_normal" android:textSize="24px" android:layout_marginLeft="40px" android:layout_marginTop ="40px"
+			android:layout_alignLeft="@id/otherInsuranceFeature"/>
+ 
+	<ImageView  android:id="@+id/otherGuaranteeId"   android:layout_height="wrap_content" android:src="@drawable/other"
+		android:textStyle="bold" android:layout_marginRight="60.0dip" android:layout_marginBottom="20.0dip" android:layout_alignParentRight="true" android:layout_alignBottom="@id/body_left"
+		android:layout_width="wrap_content" /> 
+</RelativeLayout>

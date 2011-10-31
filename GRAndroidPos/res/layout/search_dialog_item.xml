@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" android:layout_width="match_parent" android:background="#D0EBFF"
+	android:layout_height="match_parent">
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<TextView android:gravity="center" android:id="@+id/code"
+		android:layout_height="fill_parent" android:layout_width="180px"
+		android:textColor="@color/tell_normal" android:textSize="20px" />
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<TextView android:gravity="center" android:id="@+id/name"
+		android:layout_height="fill_parent" android:layout_width="305px"
+		android:textColor="@color/tell_normal" android:textSize="20px" />
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+</LinearLayout>

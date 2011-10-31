@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:paddingLeft="151dip" android:paddingRight="42dip"
+	android:background="@drawable/pay_bg" android:layout_height="wrap_content">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_marginTop="20.0dip" android:layout_height="wrap_content">
+		<ImageView android:src="@drawable/pay_smile"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		<TextView android:layout_marginLeft="32px" android:textSize="26.0dip"
+			android:id="@+id/msg" android:textColor="@color/tell_normal"
+			android:layout_marginTop="15px" android:layout_width="850.0dip"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+	<RadioGroup android:id="@+id/radioGroup_payment_way" android:layout_marginLeft="120dip"
+		android:layout_marginTop="20dip" android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<RadioButton android:id="@+id/radio_kuaiqian_pos"
+			android:layout_width="300.0dip" style="@style/Custom.CheckBox.Pay.Pos"
+			android:layout_height="218.0dip" />
+		<!--
+			<RadioButton android:id="@+id/radio_uniconcom_pos"
+			android:visibility="invisible" android:layout_marginLeft="31px"
+			android:layout_width="300.0dip"
+			style="@style/Custom.CheckBox.Pay.Pos2"
+			android:layout_height="218.0dip" />
+		-->
+		<RadioButton android:id="@+id/radio_bank_transfer_pos"
+			android:layout_width="300.0dip" android:layout_height="218.0dip"
+			style="@style/Custom.CheckBox.Pay.Net" android:layout_marginLeft="95dip"/>
+	</RadioGroup>
+	<com.ihandy.xgx.ui.widget.LineTableLayout
+		android:id="@+id/pay_table" android:visibility="invisible"
+		android:background="@drawable/pay_table_bg" android:layout_width="967px"
+		android:layout_height="wrap_content" android:layout_marginTop="29px">
+		<TableRow android:layout_marginTop="13px">
+			<TextView android:layout_width="0px" android:layout_height="wrap_content" />
+			<TextView android:text="产品名称" android:layout_width="149px"
+				android:textSize="18px" android:textColor="#666666"
+				android:paddingLeft="33px" android:layout_height="21px" />
+			<TextView android:textSize="18px" android:textColor="#333333"
+				android:paddingLeft="29px" android:id="@+id/productName"
+				android:layout_width="380px" android:layout_height="21px" />
+			<TextView android:text="保险单支付号" android:layout_width="154px"
+				android:textSize="18px" android:textColor="#666666"
+				android:paddingLeft="26px" android:layout_height="21px" />
+			<LinearLayout android:layout_height="21px"
+				android:orientation="horizontal" android:layout_width="wrap_content">
+				<TextView android:layout_width="wrap_content" android:id="@+id/pay_no"
+					android:layout_height="21px" android:textSize="18px"
+					android:textStyle="bold" android:textColor="@color/red"
+					android:paddingLeft="29px" />
+				<TextView android:text="(请牢记)" android:layout_width="wrap_content"
+					android:layout_height="21px" android:textSize="18px"
+					android:textColor="#333333" android:paddingLeft="2px" />
+			</LinearLayout>
+		</TableRow>
+		<TableRow android:layout_marginTop="15px">
+			<TextView android:layout_width="0px" android:layout_height="wrap_content" />
+			<TextView android:text="付款方式" android:layout_width="149px"
+				android:textSize="18px" android:textColor="#666666"
+				android:paddingLeft="33px" android:layout_height="21px" />
+			<TextView android:id="@+id/choosedPayMethod"
+				android:layout_width="380px" android:textSize="18px"
+				android:textColor="#333333" android:paddingLeft="29px"
+				android:layout_height="21px" />
+			<TextView android:text="交费方式" android:layout_width="154px"
+				android:textSize="18px" android:textColor="#666666"
+				android:paddingLeft="26px" android:layout_height="21px" />
+			<TextView android:layout_width="280px" android:id="@+id/payMode"
+				android:layout_height="21px" android:textSize="18px"
+				android:textColor="#333333" android:layout_marginLeft="29px" />
+		</TableRow>
+		<TableRow android:layout_marginTop="15px">
+			<TextView android:layout_width="0px" android:layout_height="wrap_content" />
+			<TextView android:text="投保人姓名" android:layout_width="149px"
+				android:textSize="18px" android:textColor="#666666"
+				android:paddingLeft="33px" android:layout_height="wrap_content" />
+			<TextView android:layout_width="380px" android:textSize="18px"
+				android:textColor="#333333" android:id="@+id/policyOwnerName"
+				android:paddingLeft="29px" android:layout_height="wrap_content" />
+			<TextView android:text="本次支付保费" android:layout_width="154px"
+				android:textSize="18px" android:textColor="#666666"
+				android:paddingLeft="26px" android:layout_height="21px" />
+			<LinearLayout android:layout_height="21px"
+				android:orientation="horizontal" android:layout_width="wrap_content">
+				<TextView android:layout_width="wrap_content" android:id="@+id/payPremiums"
+					android:layout_height="21px" android:textSize="18px"
+					android:textStyle="bold" android:textColor="@color/red"
+					android:paddingLeft="29px" />
+				<TextView android:text="元\n" android:layout_width="wrap_content"
+					android:layout_height="21px" android:textSize="18px"
+					android:textColor="#333333" android:paddingLeft="2px" />
+			</LinearLayout>
+		</TableRow>
+
+		<!-- 开户行信息 -->
+		<TableRow android:id="@+id/bankAccountInfo"
+			android:layout_marginTop="15px" android:layout_marginBottom="13px">
+			<TextView android:layout_width="0px" android:layout_height="wrap_content" />
+			<TextView android:text="开户行\n" android:layout_width="149px"
+				android:textSize="18px" android:textColor="#666666"
+				android:paddingLeft="33px" android:layout_height="21px" />
+			<TextView android:layout_width="380px" android:id="@+id/bank"
+				android:textSize="18px" android:textColor="#333333"
+				android:paddingLeft="29px" android:layout_height="21px" />
+			<TextView android:text="账号\n" android:layout_width="154px"
+				android:textSize="18px" android:textColor="#666666"
+				android:paddingLeft="26px" android:layout_height="21px" />
+			<TextView android:id="@+id/accountNumber"
+				android:layout_width="280px" android:layout_height="21px"
+				android:textSize="18px" android:textColor="#333333"
+				android:layout_marginLeft="29px" />
+		</TableRow>
+	</com.ihandy.xgx.ui.widget.LineTableLayout>
+	<TextView android:layout_width="fill_parent" android:gravity="center"
+		android:visibility="invisible" android:layout_marginTop="16px"
+		android:id="@+id/pay_wait" android:layout_height="wrap_content"
+		android:textColor="#f4ac16" android:textSize="24px" />
+</LinearLayout>	

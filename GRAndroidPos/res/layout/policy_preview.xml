@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="match_parent">
+	<LinearLayout android:id="@+id/top"
+		android:layout_alignParentTop="true" android:layout_width="match_parent"
+		android:background="@drawable/title_bar" android:gravity="center"
+		android:layout_height="wrap_content">
+		<TextView android:id="@+id/title" android:textColor="@color/white"
+			android:layout_width="wrap_content" android:textSize="32.0sp"
+			android:text="@string/title_product_preview" android:textStyle="bold"
+			android:layout_height="wrap_content"></TextView>
+	</LinearLayout>
+	<WebView android:id="@+id/web" android:background="@drawable/bg" 
+		android:layout_below="@+id/top" android:layout_width="fill_parent"
+		android:layout_height="629.0dip"></WebView>
+	<ImageView android:src="@drawable/main_bottom"
+		android:layout_height="wrap_content" android:layout_alignParentBottom="true"
+		android:layout_width="match_parent"></ImageView>
+	<Button android:id="@+id/btn_middle" android:layout_width="wrap_content"
+		android:layout_alignParentBottom="true" android:onClick="onClick"
+		android:layout_centerHorizontal="true" android:textSize="20.0sp"
+		android:layout_marginBottom="10.0dip" android:text="@string/btn_back_label"
+		android:background="@drawable/middle_selector" android:layout_height="wrap_content"></Button>
+</RelativeLayout>

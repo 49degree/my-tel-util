@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" android:layout_width="match_parent"
+	android:background="@drawable/survey" android:layout_height="match_parent">
+	<!-- <ImageView android:layout_width="fill_parent" android:src="@drawable/survey" 
+		android:layout_gravity="center_horizontal" android:layout_marginTop="80.0dip" 
+		android:layout_height="wrap_content"></ImageView> <LinearLayout android:layout_width="wrap_content" 
+		android:layout_gravity="center_horizontal" android:layout_height="wrap_content" 
+		android:orientation="horizontal" android:layout_marginTop="96.0dip"> -->
+	<ImageView android:layout_width="wrap_content" android:src="@drawable/user_video1"
+		android:layout_marginLeft="604.0dip" android:layout_marginTop="302.0dip"
+		android:layout_height="wrap_content" android:id="@+id/love_video"></ImageView>
+	<ImageView android:id="@+id/around_video" android:layout_width="wrap_content" android:src="@drawable/user_video2"
+		android:layout_marginTop="302.0dip" android:layout_marginLeft="106.0dip"
+		android:layout_height="wrap_content"></ImageView>
+	<!-- </LinearLayout> -->
+</LinearLayout>
+
+<!-- <ImageView android:layout_width="fill_parent" android:src="@drawable/survey" 
+	android:layout_gravity="center_horizontal" android:layout_marginTop="80.0dip" 
+	android:layout_height="wrap_content"></ImageView> <LinearLayout android:layout_width="wrap_content" 
+	android:layout_gravity="center_horizontal" android:layout_height="wrap_content" 
+	android:orientation="horizontal" android:layout_marginTop="96.0dip"> <ImageView 
+	android:layout_width="wrap_content" android:src="@drawable/user_video1" android:layout_height="wrap_content"></ImageView> 
+	<ImageView android:layout_width="wrap_content" android:src="@drawable/user_video2" 
+	android:layout_marginLeft="100.0dip" android:layout_height="wrap_content"></ImageView> 
+	</LinearLayout> -->

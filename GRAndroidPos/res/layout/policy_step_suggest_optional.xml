@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 自选保障方案 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:background="@drawable/bg" android:layout_height="match_parent">
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_marginTop="40.0dip" android:layout_width="wrap_content">
+		<TextView android:text="提示："
+			android:textColor="@color/black" android:textSize="20.0sp"
+			android:gravity="right" android:layout_height="wrap_content"
+			android:layout_width="248.0dip" />
+		<TextView  android:text="*为必填项"
+			android:layout_marginTop="2.0dip" android:textColor="@color/black"
+			android:textSize="20.0sp" android:layout_height="wrap_content"
+			android:gravity="left" android:layout_width="wrap_content" />
+	</LinearLayout>
+	
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_marginTop="46.0dip" android:layout_width="wrap_content">
+		<TextView android:text="*险种名称："
+			android:textColor="@color/black" android:textSize="24.0sp"
+			android:gravity="right" android:layout_height="wrap_content"
+			android:layout_width="238.0dip" />
+		<EditText style="@style/Common_EditText" android:id="@+id/productName" android:textColor="@color/black" 
+			android:textSize="24.0sp" android:layout_height="wrap_content"  android:enabled="false" android:focusable="false"
+			 android:layout_width="580px" />
+	</LinearLayout>
+	
+	<LinearLayout android:layout_width="match_parent" android:orientation="horizontal"
+		android:layout_height="wrap_content">
+		<LinearLayout android:layout_height="wrap_content"
+			android:gravity="right" android:layout_width="238.0dip"
+			android:orientation="vertical">
+			<TextView android:text="*基本/标准保费：" android:layout_marginTop="28.0dip"
+				android:textColor="@color/black" android:textSize="24.0sp"
+				android:layout_height="wrap_content" android:layout_width="wrap_content" />
+			<TextView android:text="*保险期间：" android:layout_marginTop="28.0dip"
+				android:textColor="@color/black" android:textSize="24.0sp"
+				android:layout_height="wrap_content" android:layout_width="wrap_content" />
+			 <TextView android:text="生存金领取时间：" android:layout_marginTop="28.0dip"
+				android:textColor="@color/black" android:textSize="24.0sp" android:id="@+id/lab_birthdayGetTime"
+				android:layout_height="wrap_content" android:layout_width="wrap_content" /> 
+		</LinearLayout>
+		<LinearLayout android:layout_height="wrap_content"
+			android:gravity="left" android:layout_width="180.0dip"
+			android:orientation="vertical">
+			<!-- 基本标准保费 -->
+			<EditText android:layout_height="wrap_content"
+				android:enabled="false" android:focusable="false" style="@style/Common_EditText"
+				android:layout_marginTop="28.0dip" android:layout_width="fill_parent"
+				android:id="@+id/insuranceAmount" />
+			<!-- 保险期间 -->
+			<com.ihandy.xgx.ui.widget.SpinnerWidget android:id="@+id/policyPeriod"
+				android:layout_marginTop="20.0dip" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:prompt="@string/prompt_payme_coverage_periods" />
+			<!-- 生存金领取时间 -->
+			<com.ihandy.xgx.ui.widget.DateWidget
+				android:layout_marginTop="20.0dip" style="@style/Common_EditText"
+				android:layout_width="fill_parent" android:drawableRight="@drawable/calendar"
+				android:layout_height="wrap_content" android:id="@+id/birthdayGetTime" />
+		</LinearLayout>
+		<LinearLayout android:layout_height="wrap_content"
+			android:gravity="right" android:layout_width="220.0dip"
+			android:orientation="vertical">
+			<TextView android:text="*交费方式：" android:layout_marginTop="28.0dip"
+				android:textColor="@color/black" android:textSize="24.0sp"
+				android:layout_height="wrap_content" android:layout_width="wrap_content" />
+			<TextView android:text="*红利领取方式：" android:layout_marginTop="28.0dip"
+				android:textColor="@color/black" android:textSize="24.0sp"
+				android:id="@+id/labBonusGetWay" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" />
+			<TextView android:text="*职业加费：" android:layout_marginTop="28.0dip"
+				android:textColor="@color/black" android:textSize="24.0sp"  android:id="@+id/labCareerAddPremium"
+				android:layout_height="wrap_content" android:layout_width="wrap_content" />
+		</LinearLayout>
+		<LinearLayout android:layout_height="wrap_content"
+			android:gravity="left" android:layout_width="180.0dip"
+			android:orientation="vertical">
+			<!-- 交费方式 -->
+			<com.ihandy.xgx.ui.widget.SpinnerWidget
+				android:prompt="@string/prompt_pay_mode"
+				android:layout_height="wrap_content" android:layout_width="fill_parent"
+				android:layout_marginTop="28.0dip" android:id="@+id/payMode" />
+			<!-- 红利领取方式 -->
+			<com.ihandy.xgx.ui.widget.SpinnerWidget
+				android:prompt="@string/prompt_bonus_get_types"
+				android:layout_marginTop="20.0dip" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:id="@+id/bonusGetWay" />
+			<!-- 职业加费 --> 
+			<EditText android:layout_height="wrap_content" style="@style/Common_EditText"
+				android:layout_marginTop="20.0dip" android:layout_width="fill_parent"
+				android:enabled="false" android:focusable="false" android:id="@+id/careerAddPremium" />
+		</LinearLayout>
+		<LinearLayout android:layout_height="wrap_content"
+			android:gravity="right" android:layout_width="220.0dip"
+			android:orientation="vertical">
+			<TextView android:text="*交费年限：" android:layout_marginTop="28.0dip"
+				android:textColor="@color/black" android:textSize="24.0sp"
+				android:layout_height="wrap_content" android:layout_width="wrap_content" />
+			<TextView android:text="*年金领取方式：" android:layout_marginTop="28.0dip"
+				android:textColor="@color/black" android:textSize="24.0sp"
+				android:id="@+id/labAnnuityGetWay" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" />
+			<TextView android:text="*年金领取年龄：" android:layout_marginTop="28.0dip"
+				android:textColor="@color/black" android:textSize="24.0sp"
+				android:id="@+id/txtAnnuityGetAge" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" />
+		</LinearLayout>
+		<LinearLayout android:layout_height="wrap_content"
+			android:gravity="left" android:layout_width="180.0dip"
+			android:orientation="vertical">
+			<!-- 交费年限 -->
+			<com.ihandy.xgx.ui.widget.SpinnerWidget
+				android:id="@+id/payYears"
+				android:layout_marginTop="28.0dip" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:prompt="@string/prompt_pay_years" />
+			<!-- 年金领取方式 -->
+			<com.ihandy.xgx.ui.widget.SpinnerWidget
+				android:layout_marginTop="20.0dip"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:prompt="@string/prompt_annuity_get_types" android:id="@+id/annuityGetWay" />
+				
+			<!-- 年金领取年龄 -->
+			<com.ihandy.xgx.ui.widget.SpinnerWidget
+				android:prompt="@string/prompt_sttlmnt_pymnt_age"
+				android:layout_marginTop="20.0dip" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:id="@+id/annuityGetAge" />
+		</LinearLayout>
+	</LinearLayout>
+	
+   <!-- 保费小计、份数 -->
+	<LinearLayout android:layout_width="match_parent" android:orientation="horizontal"
+		android:layout_height="wrap_content" android:layout_marginTop="28.0dip">
+		<TextView android:text="*份数："	android:textColor="@color/black" android:textSize="24.0sp"
+				android:layout_height="wrap_content" android:gravity="right" android:layout_width="238.0dip" />
+		<!-- 份数 -->
+		<EditText android:layout_height="wrap_content" style="@style/Common_EditText"
+		android:layout_width="180.0dip" android:id="@+id/policyCopies" android:numeric="signed"  
+		android:maxLength="5"/>
+		
+		<TextView android:text="*保费小计：" 
+			android:textColor="@color/black" android:textSize="24.0sp"
+			android:layout_height="wrap_content" android:layout_width="220.0dip" android:gravity="right"/>
+		<!-- 保费小计 -->
+			<EditText android:layout_height="wrap_content" style="@style/Common_EditText"
+			 android:layout_width="180.0dip"
+				android:enabled="false" android:focusable="false" android:id="@+id/amount" />		
+	</LinearLayout>
+</LinearLayout>

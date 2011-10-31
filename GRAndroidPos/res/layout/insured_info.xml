@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:orientation="horizontal"
+	android:layout_height="match_parent">
+	
+	<LinearLayout android:layout_width="260px" android:orientation="vertical"  android:layout_marginTop="30.0dip"
+	android:layout_height="wrap_content">
+		
+		<TextView android:id="@+id/txtRelation" android:text="与被保人关系：" android:textColor="@color/black"
+				android:textSize="24.0sp" android:layout_height="wrap_content"
+			android:layout_width="fill_parent"  android:gravity="right"/>  
+	   
+		<TextView  android:id="@+id/insure_buyer_id" android:text="投保人姓名：" android:layout_width="fill_parent" android:layout_height="wrap_content" 
+		android:gravity="right"  android:textColor="@color/black" android:textSize="28px"  android:layout_marginTop="12dip" />
+		
+		<TextView android:text="出生年月：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip" />
+		
+		<TextView android:text="证件号：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="国籍：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="联系地址：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="邮编：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="手机号码：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="职业：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+	</LinearLayout>
+	
+	
+	<LinearLayout android:layout_width="372px" android:orientation="vertical"  android:layout_marginTop="30.0dip"
+	android:layout_height="wrap_content" android:layout_marginLeft="2px">
+		<TextView android:id="@+id/relationWithBuyerId" android:text="父子" android:textColor="@color/black"
+				android:textSize="24.0sp" android:layout_height="wrap_content"
+			 android:layout_width="wrap_content" />
+		
+		<TextView android:text="曹严" android:layout_width="fill_parent" android:layout_height="wrap_content" 
+		android:gravity="left"  android:textColor="@color/black" android:textSize="28px"  android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="1988年12月12日" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="left" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip" />
+		
+		<TextView android:text="3501221988121201182" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="left" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="中国" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="left" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="福建省福州市某某街某某号" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="left" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="351133" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="left" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="15022123131" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="left" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="医生" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="left" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+	</LinearLayout>
+	
+	
+	<LinearLayout android:layout_width="260px" android:orientation="vertical"  android:layout_marginTop="30.0dip"
+	android:layout_height="wrap_content">
+		<TextView android:text="性别：" android:layout_width="fill_parent" android:layout_height="wrap_content" 
+		android:gravity="right"  android:textColor="@color/black" android:textSize="28px" />
+		
+		<TextView android:text="证件类型：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip" />
+		
+		<TextView android:text="婚姻状况：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="户籍所在地：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="学历：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="固定电话：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="E-MAIL：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="工作/学习单位：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		<TextView android:text="兼职：" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="right" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+	</LinearLayout>
+
+		<LinearLayout android:layout_width="260px" android:orientation="vertical"  android:layout_marginTop="30.0dip"
+	android:layout_height="wrap_content" android:layout_marginLeft="2px">
+		<TextView android:text="男" android:layout_width="fill_parent" android:layout_height="wrap_content" 
+		 android:textColor="@color/black" android:textSize="28px" />
+		<TextView android:text="身份证" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip" />
+		
+		<TextView android:text="未婚" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="福建省福州市" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		 android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="本科" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="left" android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="0591-12131231" android:layout_width="fill_parent" android:layout_height="wrap_content"
+	 android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="zyaaa123@163.com" android:layout_width="fill_parent" android:layout_height="wrap_content"
+	 android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="某某医院" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		 android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+		
+		<TextView android:text="卫生护士" android:layout_width="fill_parent" android:layout_height="wrap_content"
+		 android:textColor="@color/black" android:textSize="28px" android:layout_marginTop="12dip"/>
+	</LinearLayout>
+</LinearLayout>

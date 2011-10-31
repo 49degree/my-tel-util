@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:orientation="horizontal"
+	android:layout_height="wrap_content">
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<TextView android:gravity="center" android:layout_height="50dip"
+		android:layout_width="78px" android:textColor="@color/lightblack"
+		android:textSize="22px" android:id="@+id/policyQuerySeqId" />
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 投保单号 -->
+	<TextView android:gravity="center" android:layout_height="50dip"
+		android:layout_width="230px" android:textColor="@color/lightblack"
+		android:textSize="22px" android:id="@+id/policyQueryPolicyId" />
+
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 投保人 -->
+	<TextView android:gravity="center" android:layout_height="50dip"
+		android:layout_width="115px" android:textColor="@color/lightblack"
+		android:textSize="22px" android:id="@+id/policyQueryBuyerId" />
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 险种 -->
+	<TextView android:gravity="center" android:layout_height="50dip"
+		android:singleLine="true" android:layout_width="418px"
+		android:textColor="@color/lightblack" android:textSize="22px"
+		android:id="@+id/policyQueryPolicyNameId" />
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 状态 -->
+	<TextView android:gravity="center" android:layout_height="50dip"
+		android:singleLine="true" android:layout_width="253px"
+		android:textColor="@color/lightblack" android:textSize="22px"
+		android:id="@+id/policyQueryPolicyStatusId" />
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<LinearLayout android:layout_width="129px"
+		android:gravity="center" android:layout_height="50dip">
+		<ImageView android:layout_height="50dip" android:id="@+id/edit"
+			android:layout_width="wrap_content" android:src="@drawable/icon_edit"
+			android:gravity="center"/>
+		<ImageView android:layout_height="50dip" android:id="@+id/pay"
+			android:layout_width="wrap_content" android:src="@drawable/pay"
+			android:gravity="center"/>
+	</LinearLayout>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+</LinearLayout>

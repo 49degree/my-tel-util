@@ -2,14 +2,15 @@ package com.guanri.android.jpos;
 
 import java.util.List;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.EditText;
+
 import com.guanri.android.jpos.bean.SaleDataLogBean;
 import com.guanri.android.jpos.db.DBBean;
 import com.guanri.android.jpos.db.DBOperator;
 import com.guanri.android.lib.log.Logger;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.widget.EditText;
+import com.ihandy.xgx.R;
 
 public class QueryDateActivity extends Activity {
 	private EditText edtdb;

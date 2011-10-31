@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="fill_parent"
+	android:background="@drawable/login_bg" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent">
+	<RelativeLayout android:layout_width="wrap_content"
+		android:layout_marginLeft="385.0dip" android:layout_marginTop="345.0dip"
+		android:layout_height="wrap_content">
+		<TextView android:text="@string/username" android:textColor="#f3f3f3"
+			android:textSize="26.0sp" android:id="@+id/labUsername"
+			android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
+			android:layout_height="wrap_content" android:layout_width="wrap_content" />
+		<EditText android:layout_alignParentTop="true" 
+			android:background="@drawable/login_text_bg" android:paddingLeft="6.0dip" android:singleLine="true"
+			android:layout_marginLeft="5.0dip" android:layout_toRightOf="@+id/labUsername"
+			android:id="@+id/txtUsername" android:layout_height="wrap_content"
+			android:layout_width="203.0dip"></EditText>
+		<TextView android:text="@string/password" android:textColor="#f3f3f3"
+			android:textSize="26.0sp" android:layout_marginTop="18.0dip"
+			android:id="@+id/labPassword" android:layout_alignParentLeft="true"
+			android:layout_below="@+id/labUsername" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" />
+		<EditText android:layout_toRightOf="@+id/labPassword"
+			android:password="true"  android:singleLine="true"
+			android:background="@drawable/login_text_bg" android:paddingLeft="6.0dip"
+			android:layout_marginLeft="5.0dip" android:layout_marginTop="12.0dip"
+			android:id="@+id/txtPassword" android:layout_below="@+id/txtUsername"
+			android:layout_height="wrap_content" android:layout_width="203.0dip"></EditText>
+		<ImageView android:src="@drawable/login_selector" android:id="@+id/btnLogin"
+			android:layout_alignParentTop="true" android:layout_toRightOf="@+id/txtUsername"
+			android:onClick="onClick" android:layout_marginLeft="35.0dip"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"></ImageView>
+	</RelativeLayout>
+</LinearLayout>
+

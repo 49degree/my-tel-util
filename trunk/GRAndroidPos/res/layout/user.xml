@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 我的名片 -->
+<!-- <ImageView android:layout_height="match_parent" android:src="@drawable/user_bg" 
+	android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android"> 
+	</ImageView> -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" android:layout_width="match_parent"
+	android:background="@drawable/bg" android:layout_height="match_parent">
+	<RelativeLayout android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+		<!-- 员工证书 -->
+		<ImageView android:src="@drawable/zhengshu" android:id="@+id/zhengshu_bg"
+			android:layout_marginTop="41dip" android:layout_marginLeft="90dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		<!-- 员工相片 -->
+		<ImageView android:id="@+id/user_face"
+			android:layout_marginTop="112dip" android:layout_marginLeft="223dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		<!-- 员工姓名 -->
+		<TextView android:id="@+id/agent_name"
+			android:layout_marginTop="340dip" android:layout_marginLeft="210dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 员工性别 -->
+		<TextView android:id="@+id/person_sex"
+			android:layout_marginTop="380dip" android:layout_marginLeft="210dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 员工出生年月 -->
+		<TextView android:id="@+id/birthday"
+			android:layout_marginTop="420dip" android:layout_marginLeft="250dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 员工身份证号 -->
+		<TextView android:id="@+id/cer_number"
+			android:layout_marginTop="460dip" android:layout_marginLeft="250dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 员工姓名 -->
+		<TextView android:id="@+id/agent_name1" android:layout_marginTop="107dip"
+			android:layout_marginLeft="495dip" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 证件生效开始年 -->
+		<TextView android:id="@+id/start_year"
+			android:layout_marginTop="107dip" android:layout_marginLeft="590dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			 android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 证件生效开始月 -->
+		<TextView android:id="@+id/start_mouth"
+			android:layout_marginTop="107dip" android:layout_marginLeft="667dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			 android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 证件生效开始日 -->
+		<TextView android:id="@+id/start_day"
+			android:layout_marginTop="107dip" android:layout_marginLeft="724dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 证件失效日期年 -->
+		<TextView android:id="@+id/end_year"
+			android:layout_marginTop="460dip" android:layout_marginLeft="590dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 证件失效日期月 -->
+		<TextView android:id="@+id/end_mouth"
+			android:layout_marginTop="460dip" android:layout_marginLeft="680dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textSize="18.0sp" android:textColor="@color/black" />
+		<!-- 证件失效日期日 -->
+		<TextView android:id="@+id/end_day" android:layout_marginTop="460dip"
+			android:layout_marginLeft="742dip" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:textSize="18.0sp" android:textColor="@color/black" />
+
+		<!-- 员工信息 -->
+
+		<!-- 所属机构 -->
+		<LinearLayout android:layout_width="wrap_content"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="90dip"
+				android:layout_width="wrap_content" android:layout_marginLeft="860dip"
+				android:layout_height="wrap_content" android:text="@string/organization_txt"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/organization"
+				android:layout_marginTop="90dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textSize="20.0sp"
+				android:textColor="@color/black" />
+		</LinearLayout>
+		<!-- 所属部门 -->
+		<LinearLayout android:layout_width="wrap_content"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="120dip"
+				android:layout_marginLeft="860dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/bumen"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/department"
+				android:layout_marginTop="120dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textSize="20.0sp"
+				android:textColor="@color/black" />
+		</LinearLayout>
+		<!-- 业务团队 -->
+		<LinearLayout android:layout_width="wrap_content"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="150dip"
+				android:layout_marginLeft="860dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/tuandui"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/team" android:layout_marginTop="150dip"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:textSize="20.0sp" android:textColor="@color/black" />
+		</LinearLayout>
+		<!-- @@@@@@@@ -->
+		<!-- 职级 -->
+		<LinearLayout android:layout_width="wrap_content"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="250dip"
+				android:layout_marginLeft="860dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/job_code_txt"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/job_code"
+				android:layout_marginTop="250dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textSize="20.0sp"
+				android:textColor="@color/black" />
+		</LinearLayout>
+
+		<!-- 营销工号 -->
+		<LinearLayout android:layout_width="wrap_content"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:id="@+id/name" android:layout_marginTop="280dip"
+				android:layout_marginLeft="860dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/yingxiao"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/emp_no" android:layout_marginTop="280dip"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:textSize="20.0sp" android:textColor="@color/black" />
+		</LinearLayout>
+		<!-- 资格证号 -->
+		<LinearLayout android:layout_width="wrap_content"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="310dip"
+				android:layout_marginLeft="860dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/insurance_agency_no_txt"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/insurance_agency_no"
+				android:layout_marginTop="310dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textSize="20.0sp"
+				android:textColor="@color/black" />
+		</LinearLayout>
+		<!-- @@@@@@@@ -->
+		<!-- 展业证号 -->
+		<LinearLayout android:layout_width="wrap_content"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="410dip"
+				android:layout_marginLeft="860dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/qualification_no_txt"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/qualification_no"
+				android:layout_marginTop="410dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textSize="20.0sp"
+				android:textColor="@color/black" />
+		</LinearLayout>
+
+
+		<!-- 联系电话 -->
+		<LinearLayout android:layout_width="wrap_content"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="440dip"
+				android:layout_marginLeft="860dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/lianxitel"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/phone_number"
+				android:layout_marginTop="440dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textSize="20.0sp"
+				android:textColor="@color/black" />
+		</LinearLayout>
+		<!-- 手机号码 -->
+		<LinearLayout android:layout_width="wrap_content"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="470dip"
+				android:layout_marginLeft="860dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/tel"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/moblie_number"
+				android:layout_marginTop="470dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textSize="20.0sp"
+				android:textColor="@color/black" />
+		</LinearLayout>
+		<!-- 传真号码 -->
+		<LinearLayout android:layout_width="wrap_content" android:visibility="gone"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="400dip"
+				android:layout_width="wrap_content" android:layout_marginLeft="860dip"
+				android:layout_height="wrap_content" android:text="@string/chuanzhen"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/fax_number"
+				android:layout_marginTop="400dip" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textSize="20.0sp"
+				android:textColor="@color/black" />
+		</LinearLayout>
+
+		<!-- 公司地址 -->
+		<LinearLayout android:layout_width="wrap_content" android:visibility="gone"
+			android:orientation="horizontal" android:layout_height="wrap_content">
+			<TextView android:layout_marginTop="460dip"
+				android:layout_width="wrap_content" android:layout_marginLeft="860dip"
+				android:layout_height="wrap_content" android:text="@string/address"
+				android:textSize="20.0sp" android:textColor="@color/lightblack" />
+			<TextView android:id="@+id/company_address"
+				android:layout_marginTop="460dip" android:layout_width="270dip"
+				android:layout_height="wrap_content" android:textSize="20.0sp"
+				android:textColor="@color/black" />
+		</LinearLayout>
+
+	</RelativeLayout>
+</LinearLayout> 

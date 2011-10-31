@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" android:layout_width="match_parent"
+	android:layout_gravity="center_horizontal" android:layout_height="50.0dip">
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 险种名称 -->
+	<TextView android:singleLine="true" android:gravity="center"
+		android:id="@+id/product_name" android:textColor="@color/black"
+		android:textSize="24.0sp" android:layout_height="fill_parent"
+		android:layout_width="390.0dip"></TextView>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 份数/档次/保额 -->
+	<TextView android:singleLine="true" android:gravity="center"
+		android:id="@+id/level" android:textColor="@color/black"
+		android:textSize="24.0sp" android:layout_height="fill_parent"
+		android:layout_width="80.0dip"></TextView>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd"/>
+	<!-- 缴费方式 -->
+	<TextView android:singleLine="true" android:gravity="center"
+		android:id="@+id/pay_mode" android:textColor="@color/black"
+		android:textSize="24.0sp" android:layout_height="fill_parent"
+		android:layout_width="120.0dip"></TextView>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 缴费年限 -->
+	<TextView android:singleLine="true" android:gravity="center"
+		android:id="@+id/pay_years" android:textColor="@color/black"
+		android:textSize="24.0sp" android:layout_height="fill_parent"
+		android:layout_width="120.0dip"></TextView>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 430602198604290515 -->
+	<!-- 保险期间 -->
+	<TextView android:singleLine="true" android:gravity="center"
+		android:id="@+id/payme_coverage_periods" android:textColor="@color/black"
+		android:textSize="24.0sp" android:layout_height="fill_parent"
+		android:layout_width="120.0dip"></TextView>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<!-- 职业加费 -->
+	<TextView android:singleLine="true" android:gravity="center" android:id="@+id/career_add_premium"
+		android:textColor="@color/black" android:textSize="24.0sp"
+		android:layout_height="fill_parent" android:layout_width="120.0dip"></TextView>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" android:id="@+id/career_add_premium_line"/>
+	<!-- 保险费 -->
+	<TextView android:singleLine="true" android:gravity="center"
+		android:id="@+id/amount" android:textColor="@color/black"
+		android:textSize="24.0sp" android:layout_height="fill_parent"
+		android:layout_width="150.0dip"></TextView>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+	<LinearLayout android:layout_width="wrap_content" android:layout_weight="1.0"
+		android:layout_height="fill_parent" android:orientation="horizontal"
+		android:gravity="center">
+		<ImageView android:layout_height="50dip" android:id="@+id/edit"
+			android:layout_width="wrap_content" android:src="@drawable/icon_edit"
+			android:gravity="center" />
+		<ImageView android:layout_height="50dip" android:id="@+id/delete"
+			android:layout_width="wrap_content" android:src="@drawable/delete"
+			android:gravity="center" android:layout_marginLeft="8px" />
+	</LinearLayout>
+	<View android:layout_width="1.dip" android:layout_height="fill_parent"
+		android:background="#cecdcd" />
+</LinearLayout>

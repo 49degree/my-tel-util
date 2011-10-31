@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="Panel">
+       <attr name="animationDuration" format="integer" />
+       <attr name="position" format="integer"/>
+          <!--   <enum name="top" value="0" />
+            <enum name="bottom" value="1" />
+            <enum name="left" value="2" />
+            <enum name="right" value="3" />
+        </attr>-->
+       <attr name="handle" format="reference" />
+        <attr name="content" format="reference" />
+        <attr name="linearFlying" format="boolean" />
+        <attr name="weight" format="fraction" />
+        <attr name="openedHandle" format="reference|color" />
+        <attr name="closedHandle" format="reference|color" />
+    </declare-styleable>
+   <!--    
+    <declare-styleable name="SmoothButton">
+        <attr name="transitionDrawable" format="reference" />
+        <attr name="transitionDrawableLength" format="integer" />
+        <attr name="transitionTextColorUp" format="color" />
+        <attr name="transitionTextColorDown" format="color" />
+    </declare-styleable>
+ 
+    <declare-styleable name="Switcher">
+        <attr name="animationDuration" />
+        <attr name="idleTimeout" format="integer" />
+        <attr name="decreaseButton" format="reference" />
+        <attr name="increaseButton" format="reference" />
+    </declare-styleable> 
+    -->
+</resources>

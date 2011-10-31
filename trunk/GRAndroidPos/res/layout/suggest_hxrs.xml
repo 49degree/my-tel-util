@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 鸿鑫人生两全 （分红型） 建议保障下方的table -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<com.ihandy.xgx.ui.widget.TellTableLayout android:layout_marginTop="35.0dip"
+		android:background="@drawable/table_head" android:id="@+id/table1"
+		android:layout_marginLeft="115.0dip" android:layout_marginRight="100.0dip"
+		android:gravity="center_vertical" android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<TableRow android:orientation="horizontal">
+			<TextView android:text="保险利益" android:gravity="center"
+				android:layout_width="572.0dip" android:textColor="@color/tell_normal"
+				android:textSize="24px" />
+			<TextView android:text="投保人义务" android:gravity="center"
+				android:layout_weight="1.0" android:textColor="@color/tell_normal"
+				android:textSize="24px" />
+		</TableRow>
+	</com.ihandy.xgx.ui.widget.TellTableLayout>
+	<com.ihandy.xgx.ui.widget.TellTableLayout
+		android:background="@drawable/table_body1" android:id="@+id/table2"
+		android:layout_marginLeft="116.0dip" android:layout_marginRight="99.0dip"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<TableRow android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<TextView style="@style/suggest_th1" android:text="祝福金" />
+			<TextView style="@style/suggest_td1" android:id="@+id/zfjpremium" />
+			<TextView style="@style/suggest_th2" android:text="保费" />
+			<TextView style="@style/suggest_td2" android:id="@+id/jypremium" />
+		</TableRow>
+		<TableRow android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<TextView style="@style/suggest_th1" android:text="祝寿金" />
+			<TextView style="@style/suggest_td1" android:text="20万/70岁领取" />
+			<TextView style="@style/suggest_th2" android:text="交费方式" />
+			<TextView style="@style/suggest_td2" android:text="每年交1次"
+				android:id="@+id/customerBirthdy" />
+		</TableRow>
+		<TableRow android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<TextView style="@style/suggest_th1" android:text="身故保障" />
+			<TextView style="@style/suggest_td1" android:text="最高达20万元（详见条款）" />
+			<TextView style="@style/suggest_th2" android:text="交费年限" />
+			<TextView style="@style/suggest_td2" android:text="共交10年"
+				android:id="@+id/customerIdCardNo" />
+		</TableRow>
+		<TableRow android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<TextView style="@style/suggest_th1" android:text="红利" />
+			<TextView style="@style/suggest_td1" android:text="我公司每年根据业务经营状况确定" />
+			<TextView style="@style/suggest_th2" />
+			<TextView style="@style/suggest_td2" />
+		</TableRow>
+	</com.ihandy.xgx.ui.widget.TellTableLayout>
+</LinearLayout>

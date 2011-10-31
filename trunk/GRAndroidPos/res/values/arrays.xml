@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="pages">
+		<item>请选择</item>
+		<item>建议保障方案</item>
+		<item>自选保障方案</item>
+		<item>本次购买保障一览表</item>
+		<item>投保人基本信息</item>
+		<item>被保险人基本信息</item>
+		<item>身故保险金受益人基本信息</item>
+		<item>如实告知</item>
+		<item>告知补充说明</item>
+		<item>保费代扣帐户</item>
+		<item>签署《投保确认书》</item>
+	</string-array>
+
+	<string-array name="gender">
+		<item>男</item>
+		<item>女</item>
+	</string-array>
+	<string-array name="card_type">
+		<item>身份证</item>
+		<item>军人证</item>
+		<item>护照</item>
+		<item>其它</item>
+	</string-array>
+	<string-array name="relationship_with_insured">
+		<item>本人</item>
+		<item>法定</item>
+		<item>母女</item>
+	</string-array>
+	<string-array name="relationship">
+		<item>兄弟</item>
+	</string-array>
+	<string-array name="marray_status">
+		<item>已婚</item>
+		<item>未婚</item>
+		<item>离婚</item>
+	</string-array>
+	<string-array name="nationality">
+		<item>中国</item>
+		<item>美国</item>
+		<item>英国</item>
+	</string-array>
+	<string-array name="education">
+		<item>博士</item>
+		<item>硕士</item>
+		<item>本科</item>
+		<item>专科</item>
+		<item>高中</item>
+		<item>初中</item>
+		<item>小学</item>
+	</string-array>
+	<string-array name="address_province">
+		<item>上海</item>
+		<item>北京</item>
+		<item>江苏</item>
+		<item>吉林</item>
+		<item>黑龙江</item>
+		<item>江西</item>
+		<item>浙江</item>
+		<item>广东</item>
+	</string-array>
+
+	<string-array name="address_city">
+		<item>浦东新区</item>
+		<item>卢湾区</item>
+		<item>徐汇区</item>
+		<item>黄浦区</item>
+		<item>长宁区</item>
+		<item>杨浦区</item>
+		<item>虹口区</item>
+		<item>闸北区</item>
+		<item>普陀区</item>
+		<item>松江区</item>
+	</string-array>
+	<string-array name="area_code">
+		<item>CHS0305</item>
+		<item>CHS0306</item>
+		<item>CHS0307</item>
+		<item>CHS0308</item>
+		<item>CHS0309</item>
+	</string-array>
+	<string-array name="career">
+		<item>销售人员【交通运输业航运】</item>
+		<item>领航员【交通运输业航运】</item>
+		<item>关务人员【交通运输业航运】</item>
+		<item>播音员【交通运输业空运】</item>
+		<item>运务人员【交通运输业空运】</item>
+		<item>采购人员【餐旅业餐饮业】</item>
+	</string-array>
+
+	<string-array name="bank">
+		<item>中国工商银行</item>
+		<item>中国建设银行</item>
+		<item>中国农业银行</item>
+	</string-array>
+	<string-array name="contact_days">
+		<item>请选择</item>
+		<item>周一至周五</item>
+		<item>双休日</item>
+		<item>不区分</item>
+	</string-array>
+	<string-array name="contact_type">
+		<item>手机</item>
+		<item>固定电话</item>
+	</string-array>
+	<string-array name="premium">
+		<item>请选择</item>
+		<item>30000</item>
+		<item>50000</item>
+		<item>80000</item>
+	</string-array>
+
+	<string-array name="pay_years">
+		<item>10年</item>
+		<item>5年</item>
+	</string-array>
+
+	<string-array name="annuity_get_types">
+		<item>一次给付</item>
+		<item>2月</item>
+	</string-array>
+	<string-array name="payme_coverage_periods">
+		<item>终身</item>
+		<item>定期年</item>
+		<item>定期岁</item>
+	</string-array>
+
+	<string-array name="birthday_get_time">
+		<item>01月01日</item>
+	</string-array>
+
+	<string-array name="pay_mode">
+		<item>期缴</item>
+	</string-array>
+	
+	<!-- 年金领取年龄 -->
+	<string-array name="sttlmnt_pymnt_age">
+		<item>70岁</item>
+	</string-array>
+	
+	<string-array name="bonus_get_types">
+		<item>现金领取</item>
+	</string-array>
+	
+</resources>

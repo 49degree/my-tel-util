@@ -1,4 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">支付平台转发器V1.1</string>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<string name="hello">Hello World, StartActivity!</string>
+	<string name="app_name">神行太保</string>
+	<string name="username">用户名：</string>
+	<string name="password">密　码：</string>
+	<string name="query">查询</string>
+	<string name="birthday_annuity">祝寿金</string>	
+	<string name="live_annuity">生存金</string>	
+	
+	<string name="policy_buyer">投保人:</string>
+	<string name="policy_insured">被保险人:</string>
+	<string name="policy_date">投保日期:</string>
+	<string name="policy_order_status">投保单状态:</string>
+	<string name="insurance_name">险种名称:</string>
+	<string name="policy_order_no">投保单号:</string>
+	
+	<string name="bottom_reinsure">重新投保</string>
+	<string name="bottom_identity">我的身份</string>
+	<string name="bottom_insure_query">投保查询</string>
+	<string name="bottom_review">投保预览</string>
+	
+	<!-- 按钮 上的label -->
+	<string name="btn_previous_label">上一步</string>
+	<string name="btn_next_label">下一步</string>
+	<string name="btn_add_label">添加</string>
+	<string name="btn_back_label">返回</string>
+	<string name="btn_submit_label">确定</string>
+	<string name="btn_otherpolicy_label">其他保障</string>
+	<string name="btn_customer_preview_label">信息一览</string>
+	<string name="btn_pay_label">立即支付</string>
+	<string name="btn_buy_finish_label">购买完成</string>
+	<string name="btn_policy_query_label">投保查询</string>
+	
+	<string name="prompt_gender">选择性别</string>
+	<string name="prompt_education">请选择学历</string>
+	<string name="prompt_relationship">请选择与被保人的关系</string>
+	<string name="prompt_cardtype">请选择证件类型</string>
+	<string name="prompt_marray_status">请选择婚姻状态</string>
+	<string name="prompt_nationality">请选择国籍</string>
+	<string name="prompt_province">请选择省</string>
+	<string name="prompt_city">请选择市</string>
+	<string name="prompt_areacode">请选择区域编码</string>
+	<string name="prompt_career">请选择职业</string>
+	<string name="prompt_bank">请选择开户行</string>
+	<string name="prompt_contact_day">请选择方便联系时间</string>
+	<string name="prompt_premium">请选择保费</string>
+	<string name="prompt_policy_status">请选择投保单状态</string>
+	<string name="prompt_pay_years">请选择缴费年限</string>
+	<string name="prompt_annuity_get_types">请选择年金领取方式</string>
+	<string name="prompt_payme_coverage_periods">请选择保险期间</string>
+	<string name="prompt_pay_mode">请选择交费方式</string>
+	<string name="prompt_bonus_get_types">请选择红利领取方式</string>
+	<string name="prompt_sttlmnt_pymnt_age">请选择年金领取年龄</string>
+	<string name="prompt_contact_type">请选择主要联系方式</string>
+	<string name="prompt_contact_days">请选择联系时间</string>
+	<string name="prompt_back_page">请选择要返回的页面</string>
+	<string name="prompt_payment_company">请选择第三方支付公司</string>
+	<string name="third_company">请选择</string>
+	
+	<string name="money_unit">元</string>
+	<string name="body_high">身高 </string>
+	<string name="body_high_unit">厘米</string>
+	<string name="body_weight">体重</string>
+	<string name="body_weight_unit">公斤</string>
+	<string name="tell_mark">备注栏：</string>
+	
+	<string name="verify_ok">恭喜您，你的投保已核保通过，投保单号%1$s，保费<font color="#ff0000">%2$s</font>元。</string>
+	<string name="error_network">请检查网络或稍后再试</string> 
+	<string name="pay_wait">支付处理中......：%1$s秒</string> 
+	
+	<string name="product_preview_amount">本次保费合计：%1$s元</string>
+	
+	<string name="title_user">我的名片</string>
+	<string name="title_product">产品信息</string>
+	<string name="title_product_preview">本次购买保障一览表</string>
+	<string name="title_insurance_preview">投保预览</string>
+	<string name="title_addition">其他保障列表</string>
+	<string name="title_suggest">建议保障方案</string>
+	<string name="title_suggest_optional">自选保障方案</string>
+	<string name="title_suggest_required">必选附加险</string>
+	<string name="title_pay">支付保险费</string>
+	<string name="title_manual_pay">人工核保可收费</string>
+	<string name="title_pay_confirm">支付信息确认</string>
+	<string name="title_pay_pos_wait">支付等待</string>
+	<string name="title_pay_pos_succeed">投保成功</string>
+	<string name="title_tell">如实告知</string>
+	<string name="title_tell_instruction">告知补充说明</string>
+	<string name="title_associate">签署《投保确认书》</string>
+	<!-- <string name="title_female_tell">女性补充告知(共2项,1页)</string> -->
+	<string name="title_verify">审核通过</string>
+	<string name="title_link">联系方式与联系时间</string>
+	<string name="title_query">销售业绩</string>
+	<string name="title_login">重新登录</string>
+	<string name="title_interest">利益演示</string>
+	<string name="title_product_feature">产品特色</string>
+	<string name="title_insurant">被保险人基本信息</string>
+	<string name="title_applicant">投保人基本信息</string>
+	<string name="title_benefit_preview">身故保险金受益人基本信息</string>
+	<string name="title_pos_payment">POS支付查询</string>
+	<string name="title_pos_payment_item">保单附加险信息</string>
+	
+	<!-- 员工信息页面内容 -->
+	<string name="organization_txt">所属机构：</string>
+	<string name="bumen">所属部门：</string>
+	<string name="tuandui">业务团队：</string>
+	<string name="job_code_txt">职\t\t级：</string>
+	<string name="yingxiao">营销工号：</string>
+	<string name="insurance_agency_no_txt">资格证号：</string>
+	<string name="qualification_no_txt">展业证号：</string>
+	<string name="lianxitel">联系电话：</string>
+	<string name="tel">手机号码：</string>
+	<string name="chuanzhen">传真号码：</string>
+	<string name="address">公司地址：</string>
+	
+	<string name="associate_message">请将投保单号%1$s填写\n在投保确认书中</string>
+	<string name="pay_timeout">POS机支付超时，请重新支付，谢谢！</string>
+	<string name="pay_error">POS机支付失败，请重新支付或选择其他支付方式，谢谢！</string>
+	<string name="underwriting_over">您的投保单%1$s已进入人工核保流程。</string>
+	<string name="auto_checkpolicy_pay">恭喜您，您购买的%1$s等产品已经核保通过，投保单号%2$s，保费为%3$s元。</string>
+	<string name="manual_checkpolicy_pay">您的投保单%1$s已转人工核保，您现在可以预付保费。</string>
+	<string name="buy_sucess">%1$s 保单号%2$s。自%3$s起，您和被保险人开始享有本保单的各项权益。</string>
+	<string name="pre_pay_buy_success">您的保单号%1$s已转人工核保，核保通过后您和被保险人开始享有本保单的各项权益。</string>
+	<string name="edit_main_risk_tips">修改主险时原选定附加险将自动删除，需重新添加</string>
 </resources>

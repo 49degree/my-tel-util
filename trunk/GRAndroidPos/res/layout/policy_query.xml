@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!-- 投保查询 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="30.0dip">
+		<TextView android:text="@string/policy_date"
+			android:layout_gravity="right" android:layout_width="130px"
+			android:layout_height="wrap_content" android:gravity="right"
+			android:textSize="24px" android:textColor="@color/black" />
+
+		<!-- 投保日期 -->
+		<com.ihandy.xgx.ui.widget.DateWidget
+			android:drawableRight="@drawable/calendar" style="@style/Common_EditText"
+			android:id="@+id/date" android:layout_width="165px"
+			android:layout_height="wrap_content" android:layout_marginLeft="5px" />
+		<TextView android:text="至" android:layout_width="wrap_content"
+			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:textSize="24px" android:textColor="@color/black" />
+		<com.ihandy.xgx.ui.widget.DateWidget
+			android:drawableRight="@drawable/calendar" style="@style/Common_EditText"
+			android:id="@+id/end_date" android:layout_width="165px"
+			android:layout_height="wrap_content" />
+		<TextView android:text="@string/policy_order_status"
+			android:gravity="right" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:textSize="24px"
+			android:textColor="@color/black"  android:layout_marginLeft="30dip"/>
+			
+			<!-- 投保单状态 -->
+		<com.ihandy.xgx.ui.widget.SpinnerWidget
+			android:layout_marginLeft="5px" android:layout_height="wrap_content"
+			android:layout_width="240px" android:id="@+id/status"
+			android:prompt="@string/prompt_policy_status" />
+		<TextView android:text="更多条件" android:layout_width="wrap_content"
+			android:id="@+id/expand" android:textSize="26px"
+			android:layout_gravity="right" android:drawableLeft="@drawable/collapse"
+			android:textColor="@color/black" android:layout_marginLeft="30px"
+			android:layout_height="wrap_content" />
+		<ImageView android:layout_width="wrap_content" android:id="@+id/search"
+			android:onClick="onClick" android:layout_height="wrap_content"
+			android:src="@drawable/query_selector" android:layout_marginLeft="50px" />
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:visibility="gone" android:id="@+id/ly_collapse"
+		android:layout_height="160px" android:layout_marginTop="5dip">
+		<LinearLayout android:layout_width="130px"
+			android:layout_height="wrap_content" android:layout_marginTop="5dip"
+			android:orientation="vertical" android:gravity="right">
+			<TextView android:text="@string/policy_buyer"
+				android:layout_gravity="right" android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:gravity="right"
+				android:textColor="@color/black" android:textSize="24px" />
+			<TextView android:text="@string/policy_insured"
+				android:layout_gravity="right" android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:gravity="right"
+				android:textColor="@color/black" android:textSize="24px"
+				android:layout_marginTop="33px" />
+		</LinearLayout>
+		<LinearLayout android:layout_width="240px"
+			android:layout_height="wrap_content" android:layout_marginTop="5dip"
+			android:orientation="vertical" android:gravity="left"
+			android:layout_marginLeft="5px">
+		
+			<!-- 投保人 -->
+			<EditText android:background="@drawable/text_bg" android:id="@+id/policyHolderInfoName"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:singleLine="true" android:textSize="24px" android:maxLength="10"
+				 />
+			<!-- 被保人姓名 -->
+			<EditText android:id="@+id/insuredInfo"
+				android:layout_height="wrap_content" android:layout_width="fill_parent"
+				android:singleLine="true" android:maxLines="10" style="@style/Common_EditText"
+				android:layout_marginTop="25px" />
+		</LinearLayout>
+		<LinearLayout android:layout_width="218px" android:layout_marginLeft="53dip"
+			android:layout_height="wrap_content" android:layout_marginTop="5dip"
+			android:orientation="vertical" android:gravity="right">
+			<TextView android:text="@string/insurance_name"
+				android:layout_gravity="right" android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:gravity="right"
+				android:textColor="@color/black" android:textSize="24px" />
+			<TextView android:text="@string/policy_order_no"
+				android:layout_gravity="right" android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:gravity="right"
+				android:textColor="@color/black" android:textSize="24px"
+				android:layout_marginTop="33px" />
+		</LinearLayout>
+		<LinearLayout android:layout_width="240px"
+			android:layout_height="wrap_content" android:layout_marginTop="5dip"
+			android:orientation="vertical" android:gravity="left"
+			android:layout_marginLeft="5px">
+			<!-- 险种名称 -->
+			<EditText android:background="@drawable/text_bg" android:id="@+id/productName"
+				android:layout_height="wrap_content" android:layout_width="fill_parent"
+				android:textSize="24px" android:singleLine="true" />
+			<!-- 投保单号 -->
+			<EditText android:background="@drawable/text_bg" android:id="@+id/policyCode"
+				android:layout_height="wrap_content" android:layout_width="fill_parent"
+				android:textSize="24px" android:layout_marginTop="25px"
+				android:inputType="number" android:singleLine="true" />
+		</LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_width="wrap_content"
+		android:layout_gravity="center_horizontal" android:background="@drawable/table_head"
+		android:layout_height="58.0dip" android:layout_marginTop="5dip">
+		<TextView android:text="序号" android:gravity="center"
+			android:layout_height="fill_parent" android:layout_width="76px"
+			android:textColor="@color/tell_normal" android:textSize="24px" />
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="投保单号" android:gravity="center"
+			android:layout_width="230px" android:layout_height="fill_parent"
+			android:textColor="@color/tell_normal" android:textSize="24px" />
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="投保人" android:gravity="center"
+			android:layout_height="wrap_content" android:layout_width="115px"
+			android:textColor="@color/tell_normal" android:textSize="24px" />
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="险种 " android:gravity="center"
+			android:layout_height="fill_parent" android:layout_width="418px"
+			android:textColor="@color/tell_normal" android:textSize="24px" />
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="状态" android:gravity="center"
+			android:layout_height="fill_parent" android:layout_width="253px"
+			android:textColor="@color/tell_normal" android:textSize="24px" />
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="操作" android:gravity="center"
+			android:layout_height="fill_parent" android:layout_width="128px"
+			android:textColor="@color/tell_normal" android:textSize="24px" />
+	</LinearLayout>
+	<ListView android:id="@android:id/list" android:layout_width="fill_parent"
+		android:layout_marginBottom="26.0dip" android:layout_height="wrap_content"
+		android:dividerHeight="1.0dip" android:layout_marginLeft="24.0dip"
+		android:layout_marginRight="26.0dip" android:divider="#BEC8D1"
+		android:drawSelectorOnTop="false" android:fadingEdge="none"
+		android:layout_weight="1.0">
+	</ListView>
+</LinearLayout>

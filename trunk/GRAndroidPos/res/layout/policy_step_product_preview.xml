@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 本次投保产品一览 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<LinearLayout android:layout_width="wrap_content"
+		android:layout_marginLeft="30.0dip" android:layout_height="wrap_content"
+		android:layout_marginTop="20.0dip" android:orientation="horizontal"
+		android:gravity="top">
+		<ImageView android:src="@drawable/cart"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		<TextView android:id="@+id/amount" android:layout_width="wrap_content"
+			android:layout_marginTop="10.0dip" android:gravity="left"
+			android:textColor="@color/red" android:textSize="26.0sp"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+	<LinearLayout
+		android:background="@drawable/table_head_bg" android:layout_marginTop="5.0dip"
+		android:layout_height="58.0dip" android:layout_width="fill_parent" android:layout_marginLeft="24.0dip"
+			android:layout_marginRight="24.0dip"
+		android:orientation="horizontal">
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="险种名称" android:singleLine="true"
+			android:gravity="center" android:textColor="@color/tell_normal"
+			android:textSize="24.0sp" android:layout_height="fill_parent"
+			android:layout_width="390.0dip"></TextView>
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="份数" android:singleLine="true"
+			android:id="@+id/level_text" android:gravity="center"
+			android:textColor="@color/tell_normal" android:textSize="24.0sp"
+			android:layout_height="fill_parent" android:layout_width="80.0dip"></TextView>
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="交费方式" android:singleLine="true"
+			android:gravity="center" android:textColor="@color/tell_normal"
+			android:textSize="24.0sp" android:layout_height="fill_parent"
+			android:layout_width="120.0dip"></TextView>
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="交费年限" android:singleLine="true"
+			android:gravity="center" android:textColor="@color/tell_normal"
+			android:textSize="24.0sp" android:layout_height="fill_parent"
+			android:layout_width="120.0dip"></TextView>
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<!-- 430602198604290515 -->
+		<TextView android:text="保险期间" android:singleLine="true"
+			android:gravity="center" android:textColor="@color/tell_normal"
+			android:textSize="24.0sp" android:layout_height="fill_parent"
+			android:layout_width="120.0dip"></TextView>
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="职业加费" android:singleLine="true"
+			android:gravity="center" android:textColor="@color/tell_normal"
+			android:textSize="24.0sp" android:layout_height="fill_parent"
+			android:layout_width="120.0dip" android:id="@+id/career_text"></TextView>
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" android:id="@+id/career_line" />
+		<TextView android:text="保险费" android:singleLine="true"
+			android:gravity="center" android:textColor="@color/tell_normal"
+			android:textSize="24.0sp" android:layout_height="fill_parent"
+			android:layout_width="150.0dip"></TextView>
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+		<TextView android:text="操作" android:singleLine="true"
+			android:gravity="center" android:textColor="@color/tell_normal"
+			android:textSize="24.0sp" android:layout_height="fill_parent"
+			android:layout_width="wrap_content" android:layout_weight="1.0"></TextView>
+		<View android:layout_width="1.dip" android:layout_height="fill_parent"
+			android:background="#cecdcd" />
+	</LinearLayout>
+	<ListView android:layout_width="match_parent" android:id="@android:id/list"
+		android:dividerHeight="1.0dip" android:drawSelectorOnTop="false"
+		android:fadingEdge="none" android:layout_height="wrap_content"
+		android:divider="#BEC8D1" android:layout_marginLeft="24.0dip"
+		android:layout_marginRight="24.0dip" android:layout_weight="1.0" />
+	<LinearLayout android:layout_width="fill_parent"
+		android:gravity="center_vertical" android:layout_marginLeft="30.0dip"
+		android:layout_marginRight="30.0dip" android:orientation="horizontal"
+		android:layout_height="wrap_content">
+		<TextView android:text="一年期意外险是否自动续保：" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:textColor="@color/black"
+			android:textSize="24.0sp" android:id="@+id/one_year_accident_plan_txt" />
+
+
+		<CheckBox android:id="@+id/radio_autoInsured_yes" style="@style/Custom.CheckBox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text=" 是" android:textSize="24.0sp" android:textColor="@color/black" />
+		<CheckBox android:id="@+id/radio_autoInsured_no" style="@style/Custom.CheckBox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text=" 否" android:textSize="24.0sp" android:textColor="@color/black"
+			android:layout_marginLeft="30.0dip" />
+
+		<TextView android:text="是否自动垫交：" android:textColor="@color/black"
+			android:textSize="24.0sp" android:layout_marginLeft="228.0dip"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		<CheckBox android:id="@+id/radio_advancePayment_yes" style="@style/Custom.CheckBox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text=" 是" android:textSize="24.0sp" android:textColor="@color/black" />
+
+		<CheckBox android:id="@+id/radio_advancePayment_no" style="@style/Custom.CheckBox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text=" 否" android:textSize="24.0sp" android:textColor="@color/black"
+			android:layout_marginLeft="30.0dip" />
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_marginTop="10.0dip" android:layout_marginBottom="55.0dip"
+		android:layout_marginLeft="30.0dip" android:gravity="center_vertical"
+		android:layout_marginRight="30.0dip" android:orientation="horizontal"
+		android:layout_height="wrap_content">
+		<TextView android:text="争议处理方式：协商，协商不成" android:textColor="@color/black"
+			android:textSize="24.0sp" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+		<CheckBox android:id="@+id/radio_debate_judge" style="@style/Custom.CheckBox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="提交" android:textSize="24.0sp" android:textColor="@color/black"
+			android:layout_marginLeft="50.0dip" />
+		<EditText android:layout_width="160.0dip" android:id="@+id/arbitrate"
+			android:fitsSystemWindows="true" android:layout_height="wrap_content"
+			style="@style/Common_EditText" android:layout_marginLeft="5.0dip"
+			android:layout_marginRight="5.0dip" />
+		<TextView android:text="仲裁委员会仲裁 " android:textColor="@color/black"
+			android:textSize="24.0sp" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+
+		<CheckBox style="@style/Custom.CheckBox"
+			android:layout_width="wrap_content" android:layout_marginLeft="40px"
+			android:text=" 提起诉讼" android:textSize="24.0sp" android:id="@+id/radio_debate_suit"
+			android:textColor="@color/black" android:layout_height="wrap_content" />
+	</LinearLayout>
+</LinearLayout>

@@ -8,9 +8,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.guanri.android.jpos.R;
 import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.lib.utils.DialogUtils;
+import com.ihandy.xgx.R;
 
 /**
  * 服务器设置对话框

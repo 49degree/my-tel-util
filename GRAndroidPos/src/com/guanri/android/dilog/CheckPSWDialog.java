@@ -1,5 +1,6 @@
 package com.guanri.android.dilog;
 
+
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
@@ -8,11 +9,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.guanri.android.jpos.R;
 import com.guanri.android.jpos.common.SharedPreferencesUtils;
 import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.lib.utils.DialogUtils;
 import com.guanri.android.lib.utils.TypeConversion;
+import com.ihandy.xgx.R;
 
 public class CheckPSWDialog extends Dialog implements
 		android.view.View.OnClickListener {

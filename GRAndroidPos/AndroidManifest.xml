@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.ihandy.xgx" android:versionName="1.1" android:versionCode="1">
+	package="com.guanri.android.jpos" android:versionName="1.1" android:versionCode="1">
 
 	<application android:name="com.guanri.android.lib.context.MainApplication"
 		android:icon="@drawable/icon" android:label="@string/app_name">
-		<activity android:name="com.guanri.android.jpos.MainActivity" android:launchMode="singleInstance"
+		<activity android:name=".MainActivity" android:launchMode="singleInstance"
 			android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name="com.guanri.android.jpos.Main" android:label="@string/app_name">
+		<activity android:name="Main" android:label="@string/app_name">
 		</activity>
-		<activity android:name="com.guanri.android.jpos.QueryDateActivity" android:label="@string/app_name">
+		<activity android:name=".QueryDateActivity" android:label="@string/app_name">
 		</activity>
 		<!-- 开机接收广播 -->
-		<receiver android:name="com.guanri.android.jpos.broadcast.BootBroadcastReceiver">
+		<receiver android:name=".broadcast.BootBroadcastReceiver">
 			<intent-filter>
 				<action android:name="android.intent.action.BOOT_COMPLETED" />
 			</intent-filter>
 		</receiver>
 		<!-- 关机接收广播 -->
-		<receiver android:name="com.guanri.android.jpos.broadcast.ShutdownReceiver">
+		<receiver android:name=".broadcast.ShutdownReceiver">
 			<intent-filter>
 				<action android:name="android.intent.action.ACTION_SHUTDOWN" />
 			</intent-filter>
 		</receiver>
 		<!-- 自动运行服务 
-		<service android:enabled="true" android:name="com.guanri.android.jpos.services.AutoRunService"></service>
+		<service android:enabled="true" android:name=".services.AutoRunService"></service>
 		-->
 		<!-- 提供其他服务调用服务 -->
-		<service android:name="com.guanri.android.jpos.services.AidlRunService"
+		<service android:name=".services.AidlRunService"
 			android:process=":remote">
 			<intent-filter>
 				<action android:name="com.guanri.android.jpos.services.GrPosService" />

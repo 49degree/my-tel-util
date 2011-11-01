@@ -18,7 +18,6 @@ import com.guanri.android.jpos.pos.PosCommandControlImp;
 import com.guanri.android.jpos.pos.PosCommandControlImp.SendDataResultListener;
 import com.guanri.android.lib.log.Logger;
 import com.guanri.android.lib.utils.TypeConversion;
-import com.ihandy.xgx.R;
 
 public class Main extends Activity {
 	Logger logger = Logger.getLogger(Main.class);

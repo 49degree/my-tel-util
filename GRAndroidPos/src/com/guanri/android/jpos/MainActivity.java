@@ -21,7 +21,6 @@ import com.guanri.android.dilog.UpdateUserDialog;
 import com.guanri.android.jpos.services.AidlRunService;
 import com.guanri.android.jpos.services.GrPosService;
 import com.guanri.android.lib.log.Logger;
-import com.ihandy.xgx.R;
 
 
 public class MainActivity extends Activity implements OnClickListener {

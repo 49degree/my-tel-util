@@ -783,6 +783,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		//---------------------------------------------------------------------
 		// 域57 显示信息 充保险公司后台查询得到的保单信息
 		sendMap.put(57, posMessageBean.ProcessList.ReturnDisplayMessage().GetAsString());
+		
+		saleDataLogBean.setRemark(posMessageBean.ProcessList.ReturnDisplayMessage().GetAsString());
 		//---------------------------------------------------------------------
 		// 自定义域 60 将来用于存放保单号  待完善  
 		sendMap.put(60, posMessageBean.ProcessList.ReturnOrderNumber().GetAsString());
@@ -800,6 +802,8 @@ public class ServerDataHandler99Bill implements ServerDataHandlerImp{
 		leaf.setValue(posBatchNo);
 		//保存批次号
 		saleDataLogBean.setBatchNo(posBatchNo);
+		
+		
 		data1.put(1,leaf);
 		leaf = new JposSelfFieldLeaf();
 		leaf.setTag("2");

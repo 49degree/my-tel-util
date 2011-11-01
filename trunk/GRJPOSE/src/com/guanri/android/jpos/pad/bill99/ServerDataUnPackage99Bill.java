@@ -305,12 +305,24 @@ public class ServerDataUnPackage99Bill {
 			String authorizeStr = "";
 			if (getMap.containsKey(38))
 				authorizeStr = (String) getMap.get(38);
+			
+			// 域61.4 卡别信息
+			String CodeType = "";
+			if(getMap.containsKey(61)){
+				TreeMap<Integer,JposSelfFieldLeaf> data = (TreeMap<Integer,JposSelfFieldLeaf>)getMap.get(61);
+				if (data.containsKey(4)) {
+					JposSelfFieldLeaf jpos = (JposSelfFieldLeaf)data.get(4);
+					CodeType = jpos.getValue();
+				}
+			}
+				
 			// 更新 数据, --------------------------------------------------
 			// 更新 单据状态为1 更新服务器下发的 参考号,授权码
 			Map<String,String> value = new HashMap<String,String>();
 			value.put("TransactionState", "2");
 			value.put("SearchNo", ReferenceStr);
 			value.put("AuthorizationNo=", authorizeStr);
+			value.put("CodeType=", CodeType);
 			
 			logger.error("更新参考号:"+ReferenceStr);
 			logger.error("更新授权码:"+authorizeStr);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry excluding="com/guanri/android/jpos/common/SharedPreferencesUtils.java|com/guanri/android/jpos/db/|com/guanri/android/jpos/pos/data/Demo.java|com/guanri/android/jpos/pos/data/TerminalLinks/TCommTerminalLink.java|com/guanri/android/jpos/pos/test/SeriolPortTest.java|com/guanri/android/lib/log/Logger.java|com/guanri/android/lib/utils/" kind="src" path="GRJpos"/>
+	<classpathentry excluding="com/guanri/android/jpos/common/SharedPreferencesUtils.java|com/guanri/android/jpos/db/|com/guanri/android/jpos/pos/data/Demo.java|com/guanri/android/jpos/pos/data/TerminalLinks/TCommTerminalLink.java|com/guanri/android/jpos/pos/test/SeriolPortTest.java|com/guanri/android/lib/" kind="src" path="GRJPOS"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="output" path="bin"/>

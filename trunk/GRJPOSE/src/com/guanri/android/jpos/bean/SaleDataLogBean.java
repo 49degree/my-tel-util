@@ -35,6 +35,26 @@ public class SaleDataLogBean {
 	// 服务器消息处理码
 	public String ProcessCode;
 	
+	
+	
+	// 备注信息　
+	public String remark;
+	// 卡别
+	public String CodeType;
+	
+	public String getCodeType() {
+		return CodeType;
+	}
+	public void setCodeType(String codeType) {
+		CodeType = codeType;
+	}
+	
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 	public String getMsgTypeCode() {
 		return MsgTypeCode;
 	}

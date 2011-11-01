@@ -78,8 +78,8 @@ public class FskEncode {
 	 * @return
 	 */
 	public int getFskLength(int sourceLength){
-		float codeLength = fskCodeParams.getSampleF()*sourceLength*10*fskCodeParams.getSampleByteLength()/new Float(fskCodeParams.getBoundRate());
-		return Math.round(new Float(codeLength+0.5));
+		float codeLength = fskCodeParams.getSampleF()*sourceLength*10/new Float(fskCodeParams.getBoundRate());
+		return Math.round(new Float(codeLength+0.5))*fskCodeParams.getSampleByteLength();
 	}
 	
 	

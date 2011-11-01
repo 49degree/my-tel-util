@@ -1,21 +1,37 @@
 package com.guanri.fsk.pc;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import javax.sound.sampled.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.TargetDataLine;
+
+import com.guanri.fsk.conversion.FskCodeParams;
+import com.guanri.fsk.conversion.FskEnCodeResult;
+import com.guanri.fsk.conversion.FskEncode;
+import com.guanri.fsk.conversion.WaveFileParams;
+import com.guanri.fsk.view.CureLineBean;
+import com.guanri.fsk.view.RecordPlayView.ImagePanel;
 
 public class AudioOperator{
 	protected boolean running = false;
-	public AudioOperator(){
-		
+	ImagePanel receiveImagePanel = null;
+	ImagePanel playImagePanel = null;
+	public AudioOperator(ImagePanel playImagePanel,ImagePanel receiveImagePanel){
+		this.receiveImagePanel = receiveImagePanel;
+		this.playImagePanel = playImagePanel;
 	}
 
-	public void start(){
+	public void start(byte[] data){
 		if(!running){
 			captureAudio();
-			playAudio();
+			//playAudio(data);
 			running = true;
 		}
 	}
@@ -27,28 +43,66 @@ public class AudioOperator{
 	}
 	private void captureAudio(){
 		try{
+
+			
 			final AudioFormat format = getFormat();
+			
+			FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,(int)format.getSampleRate(),format.getSampleSizeInBits()/8,1200);
+			final WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams);
+			waveFileParams.createFile(System.getProperty("user.dir")+"/in_record_"+new Date().getTime()+".wav");
+			
 			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-			final TargetDataLine line = (TargetDataLine) AudioSystem
-					.getLine(info);
-			line.open(format);
+			
+            //判断参数是否正确
+			if (!AudioSystem.isLineSupported(info)) {
+                System.out.println("Line matching " + info + " not supported.");
+                return;
+            }			
+
+	                        
+            // get and open the target data line for capture.
+			final TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
+            try {
+                line.open(format, line.getBufferSize());
+            } catch (LineUnavailableException ex) { 
+            	System.out.println("Unable to open the line: " + ex);
+                return;
+            } catch (SecurityException ex) { 
+                ex.printStackTrace();
+                return;
+            } catch (Exception ex) { 
+            	ex.printStackTrace();
+                return;
+            }
+			
 			line.start();
 			Runnable runner = new Runnable(){
-				int bufferSize = (int) format.getSampleRate()* format.getFrameSize();
-				byte buffer[] = new byte[bufferSize];
-
+				//计算读取缓存大小
+				int frameSizeInBytes = format.getFrameSize();
+	            int bufferLengthInFrames = line.getBufferSize() / 8;
+	            int bufferLengthInBytes = bufferLengthInFrames * frameSizeInBytes;
+	            byte[] data = new byte[bufferLengthInBytes];
+				
+				byte[] saveData = null;
 				public void run(){
-					out = new ByteArrayOutputStream();
 					running = true;
 					try{
 						while (running){
-							int count = line.read(buffer, 0, buffer.length);
+							int count = line.read(data, 0, data.length);
 							if (count > 0){
-								out.write(buffer, 0, count);
+								saveData = new byte[count];
+								System.arraycopy(data, 0, saveData, 0, count);
+								//绘图
+								List<CureLineBean> list = new ArrayList<CureLineBean>();
+								CureLineBean cureLineBean = new CureLineBean(saveData,Color.RED);
+								list.add(cureLineBean);
+								receiveImagePanel.setCureLineBean(list);
+								receiveImagePanel.repaint();
+								waveFileParams.appendData(saveData);
 							}
 						}
-						out.close();
-					}catch (IOException e){
+						waveFileParams.closeFile();
+					}catch (Exception e){
 						System.err.println("I/O problems: " + e);
 						System.exit(-1);
 					}
@@ -62,35 +116,50 @@ public class AudioOperator{
 		}
 	}
 
-	private void playAudio(){
+	private void playAudio(byte[] data){
 		try{
-			byte audio[] = out.toByteArray();
-			InputStream input = new ByteArrayInputStream(audio);
+
+
+			
+			
 			final AudioFormat format = getFormat();
-			final AudioInputStream ais = new AudioInputStream(input, format,
-					audio.length / format.getFrameSize());
+			
+			FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,(int)format.getSampleRate(),format.getSampleSizeInBits()/8,1200);
+			final WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams);
+			waveFileParams.createFile(System.getProperty("user.dir")+"/out_record_"+new Date().getTime()+".wav");
+			final FskEncode fskEncode = new FskEncode(fskCodeParams);
+			
 			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-			final SourceDataLine line = (SourceDataLine) AudioSystem
-					.getLine(info);
+			final SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
 			line.open(format);
 			line.start();
 
+			
 			Runnable runner = new Runnable(){
 				int bufferSize = (int) format.getSampleRate()
 						* format.getFrameSize();
-				byte buffer[] = new byte[bufferSize];
-
 				public void run(){
 					try{
-						int count;
-						while ((count = ais.read(buffer, 0, buffer.length)) != -1){
-							if (count > 0){
-								line.write(buffer, 0, count);
-							}
-						}
+						//while (running){
+							FskEnCodeResult  fskEnCodeResult = fskEncode.encode(String.valueOf(new Date().getTime()).getBytes());
+							
+							line.write(fskEnCodeResult.code,0,fskEnCodeResult.code.length);
+							//line.drain();
+							waveFileParams.appendData(fskEnCodeResult.code);
+							waveFileParams.closeFile();
+							
+							//绘图
+							List<CureLineBean> list = new ArrayList<CureLineBean>();
+							CureLineBean cureLineBean = new CureLineBean(fskEnCodeResult.code,Color.RED);
+							list.add(cureLineBean);
+							playImagePanel.setCureLineBean(list);
+							playImagePanel.repaint();
+							Thread.sleep(1000);
+						//}
 						line.drain();
 						line.close();
-					}catch (IOException e){
+					}catch (Exception e){
+						e.printStackTrace();
 						System.err.println("I/O problems: " + e);
 						System.exit(-3);
 					}
@@ -105,13 +174,25 @@ public class AudioOperator{
 	}
 
 	private AudioFormat getFormat(){
-		float sampleRate = 8000;
-		int sampleSizeInBits = 8;
-		int channels = 1;
-		boolean signed = true;
-		boolean bigEndian = true;
-		return new AudioFormat(sampleRate, sampleSizeInBits, channels, signed,
-				bigEndian);
+//		float sampleRate = 11025;
+//		int sampleSizeInBits = 16;
+//		int channels = 1;
+//		boolean signed = true;
+//		boolean bigEndian = true;
+		
+		AudioFormat.Encoding encoding = AudioFormat.Encoding.PCM_SIGNED;
+        float rate = 110250;
+        int sampleSize = 16;
+        boolean bigEndian = false;
+        int channels = 1;
+
+
+        return new AudioFormat(encoding, rate, sampleSize, 
+                       channels, (sampleSize/8)*channels, rate, bigEndian);
+		 
+		
+//		return new AudioFormat(sampleRate, sampleSizeInBits, channels, signed,
+//				bigEndian);
 	}
 
 	public static void main(String args[]){

@@ -57,7 +57,7 @@ public class Test {
 		//保存wave文件
 		WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams,fskEnCodeResult);
 		byte[] waveByte = waveFileParams.parseWaveToByte();
-		String fileName = "E:\\workgroup\\FSKDemo\\in_1312514081585.wav";
+		String fileName = System.getProperty("user.dir")+"/in_record_1319252344687.wav";
 		try{
 			File waveFile = new File(fileName);
 			if(!waveFile.exists()){

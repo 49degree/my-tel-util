@@ -59,6 +59,7 @@ public class WaveFileParams {
 	 * @param filePath
 	 */
 	String filePath = null;
+	FileOutputStream fout = null;
 	public void createFile(String filePath){
 		this.filePath = filePath;
 		byte[] waveByte = parseWaveToByte();
@@ -69,10 +70,9 @@ public class WaveFileParams {
 				waveFile.createNewFile();
 			}
 			
-			FileOutputStream fout = new FileOutputStream(waveFile);
+			fout = new FileOutputStream(waveFile);
 			fout.write(waveByte);
 			fout.flush();
-			fout.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -80,8 +80,6 @@ public class WaveFileParams {
 	
 	public void appendData(byte[] data){
 		if(filePath!=null){
-			
-			FileOutputStream fout = null;
 			try{
 				File waveFile = new File(this.filePath);
 				if(!waveFile.exists()){
@@ -89,24 +87,33 @@ public class WaveFileParams {
 					byte[] waveByte = parseWaveToByte();
 					fout = new FileOutputStream(waveFile);
 					fout.write(waveByte);
-				}else{
+				}else if(fout==null){
 					fout = new FileOutputStream(waveFile);
 				}
 				fout.write(data);
-				FileChannel ch = fout.getChannel();
-				ch.position(4);
-				int size = (int) ch.size();
-				fout.write(TypeConversion.intToBytes(size - 8));
-				ch.position(40);
-				fout.write(TypeConversion.intToBytes(size - 44));
-				
 				fout.flush();
-				fout.close();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 
+	}
+	
+	public void closeFile(){
+		try{
+
+			FileChannel ch = fout.getChannel();
+			ch.position(4);
+			int size = (int) ch.size();
+			fout.write(TypeConversion.intToBytes(size - 8));
+			ch.position(40);
+			fout.write(TypeConversion.intToBytes(size - 44));
+			fout.flush();
+			fout.close();
+			fout = null;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	/**

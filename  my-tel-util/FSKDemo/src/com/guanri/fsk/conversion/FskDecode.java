@@ -316,7 +316,7 @@ public class FskDecode {
 		
 		new Thread(){
 			public void run(){
-				String fileName = "E:/workgroup/FSKDemo/record.wav";
+				String fileName = "F:/eclipse3.5/FSKDemo/test1.wav";
 				byte[] read = new byte[5292]; 
 				try{
 					File waveFile = new File(fileName);

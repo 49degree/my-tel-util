@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -16,12 +15,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.TargetDataLine;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -31,13 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-import com.guanri.fsk.conversion.FskCodeParams;
-import com.guanri.fsk.conversion.FskDecode;
-import com.guanri.fsk.conversion.FskDecodeResult;
-import com.guanri.fsk.conversion.FskEnCodeResult;
-import com.guanri.fsk.conversion.FskEncode;
-import com.guanri.fsk.conversion.SourceQueue;
-import com.guanri.fsk.conversion.WaveFileParams;
+import com.guanri.fsk.pc.AudioOperator;
 
 
 
@@ -49,7 +47,7 @@ public class RecordPlayView extends  JFrame{
     private int scringWidth=0;
     private int scringHeight=0;
 
-	public RecordPlayView(List<CureLineBean> lineList) {
+	public RecordPlayView() {
 		super("录音&放音");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
@@ -64,11 +62,11 @@ public class RecordPlayView extends  JFrame{
 		// 设置为BorderLayout布局方式
 		BorderLayout lay = new BorderLayout();
 		this.setLayout(lay);
-		ImagePanel playImagePanel = new ImagePanel(1000, lineList);
+		ImagePanel playImagePanel = new ImagePanel(1000);
 		JScrollPane pane = new JScrollPane(playImagePanel,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		ImagePanel recordImagePanel = new ImagePanel(1000, lineList);
+		ImagePanel recordImagePanel = new ImagePanel(1000);
 		JScrollPane pane2 = new JScrollPane(recordImagePanel,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -193,7 +191,7 @@ public class RecordPlayView extends  JFrame{
 	}
 	
 
-	public class ImagePanel extends JPanel{
+	public static class ImagePanel extends JPanel{
 
 		float xPxPerPoint = 1f;//曲线点之间的X轴的像素
 		int xBeginIndex = 0;//
@@ -202,7 +200,7 @@ public class RecordPlayView extends  JFrame{
 		int width = 1200;//控件宽
 		int height = 250;//控件高
 		
-		int borderLength = 20;//边经
+		int borderLength = 30;//边经
 		int pointLength = 15;
 		
 		int yMaxWeight = 0;
@@ -211,10 +209,12 @@ public class RecordPlayView extends  JFrame{
 		
 		List<CureLineBean> mLineList = null;
 		
-		public ImagePanel(int pointXLength,List<CureLineBean> lineList){
+		public void setCureLineBean(List<CureLineBean> lineList){
+			this.mLineList = lineList;
+		}
+		public ImagePanel(int pointXLength){
 			super();
 			this.setPreferredSize(new Dimension(width,height));
-			this.mLineList = lineList;
 			this.addMouseMotionListener(new MouseMotionListener(){
 				private int startX,curX;
 				
@@ -289,7 +289,7 @@ public class RecordPlayView extends  JFrame{
 			dash = new BasicStroke();
 			g2.setStroke(dash);
 			if(mLineList!=null&&mLineList.size()>0){
-				System.out.println("yMaxWeight:"+yMaxWeight);
+				//System.out.println("yMaxWeight:"+yMaxWeight);
 				for(CureLineBean cureLine:mLineList){
 					int[] pointHeight = cureLine.getPointHeight();
 					g.setColor(cureLine.lineColor);
@@ -314,10 +314,10 @@ public class RecordPlayView extends  JFrame{
 		}
 	}
 	
-	
+
 	public class AudioPanel extends JPanel{
 		ImagePanel mPlayImagePanel=null, mRecordImagePanel = null;
-		public AudioPanel(ImagePanel playImagePanel,ImagePanel recordImagePanel) {
+		public AudioPanel(ImagePanel playImagePanel,final ImagePanel recordImagePanel) {
 			super();
 			mPlayImagePanel=playImagePanel;
 			mRecordImagePanel = recordImagePanel;
@@ -326,9 +326,9 @@ public class RecordPlayView extends  JFrame{
 			//this.setSize(800, 200);
 			this.setPreferredSize(new Dimension(400,80));
 			JLabel sendmsgL = new JLabel("发送信息：");
-			JTextField sendmsgT= new JTextField(15);
+			final JTextField sendmsgT= new JTextField(15);
 			sendmsgT.setSize(50, 10);
-			JLabel recmsgL = new JLabel("接收的信息：");
+			final JLabel recmsgL = new JLabel("接收的信息：");
 			JTextField recmsgT= new JTextField(15);
 			
 			JLabel sendWavFile = new JLabel("发送WAV数据文件：");
@@ -338,7 +338,7 @@ public class RecordPlayView extends  JFrame{
 			JLabel recWavFile = new JLabel("接收的WAV数据文件：");
 			JTextField recWav= new JTextField(15);
 			
-
+			final AudioOperator audioOperator = new AudioOperator(playImagePanel,recordImagePanel);
 			
 			final JButton begin = new JButton("开始");
 			final JButton stop = new JButton("停止");
@@ -348,12 +348,15 @@ public class RecordPlayView extends  JFrame{
 				public void actionPerformed(ActionEvent e) {
 					stop.setEnabled(true);
 					begin.setEnabled(false);
+					audioOperator.start(sendmsgT.getText().getBytes());
+					
 				}
 			});
-			begin.addActionListener(new ActionListener(){
+			stop.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
 					stop.setEnabled(false);
 					begin.setEnabled(true);
+					audioOperator.stop();
 					
 				}
 			});
@@ -387,77 +390,7 @@ public class RecordPlayView extends  JFrame{
 	}
 	public static void main(String[] args)
 	{
-		FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,11025,2,1200);
-		FskEncode fskEncode = new FskEncode(fskCodeParams);
-		//进行编码
-		byte[] s = "  hello world".getBytes();
-		byte[] bu = new byte[2+s.length];
-		System.arraycopy(s, 0, bu, 0, s.length);
-		FskEnCodeResult fskEnCodeResult = fskEncode.encode(bu);
-		//编码结束
-		//保存wave文件
-		WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams,fskEnCodeResult);
-		byte[] waveByte = waveFileParams.parseWaveToByte();
-		String fileName = "E:\\workgroup\\FSKDemo\\in_1312514081585.wav";
-		try{
-			File waveFile = new File(fileName);
-			if(!waveFile.exists()){
-				waveFile.createNewFile();
-			}
-			FileOutputStream fout = new FileOutputStream(waveFile);
-			fout.write(waveByte);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		//进行解码
-		byte[] read = null; 
-		try{
-			File waveFile = new File(fileName);
-			FileInputStream inf = new FileInputStream(waveFile);
-			read = new byte[(int)waveFile.length()-44];
-			inf.read(read, 0, 44);
-			inf.read(read,0,(int)waveFile.length()-44);
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		//进行解码
-		SourceQueue sourceQueue = new SourceQueue();
-		sourceQueue.put(read);
-		FskDecodeResult fskDecodeResult = new FskDecodeResult(true);
-		final FskDecode fskDecode = new FskDecode(fskCodeParams,sourceQueue,fskDecodeResult);
-		new Thread(){
-			public void run(){
-				fskDecode.beginDecode();
-			}
-		}.start();
-		try{
-			Thread.sleep(1000);
-		}catch(InterruptedException e){
-			e.printStackTrace();
-		}
-		fskDecode.isContinue = false;
-		System.out.println(new String(fskDecodeResult.data,0,fskDecodeResult.dataIndex));
-
-		//绘图
-		List<CureLineBean> list = new ArrayList<CureLineBean>();
-
-		CureLineBean cureLineBean = new CureLineBean(fskDecodeResult.sourceValue,Color.RED);
-		list.add(cureLineBean);
-
-		cureLineBean = new CureLineBean(fskDecodeResult.singleFilter,Color.green);
-		list.add(cureLineBean);
-
-
-		cureLineBean = new CureLineBean(fskDecodeResult.boundFilter,Color.yellow);
-		list.add(cureLineBean);
-
-		cureLineBean = new CureLineBean(fskDecodeResult.maxAverage,Color.darkGray);
-		list.add(cureLineBean);
-		
-		RecordPlayView test = new RecordPlayView(list);
+		RecordPlayView test = new RecordPlayView();
 		test.setVisible(true);	
 	}
 }

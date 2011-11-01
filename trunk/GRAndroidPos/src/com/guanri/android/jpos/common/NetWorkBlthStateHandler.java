@@ -10,9 +10,9 @@ import android.os.Message;
 import android.provider.Settings;
 import android.widget.Toast;
 
+import com.guanri.android.jpos.R;
 import com.guanri.android.lib.context.HandlerWhat;
 import com.guanri.android.lib.context.MainApplication;
-import com.ihandy.xgx.R;
 
 public class NetWorkBlthStateHandler extends Handler {
 	public final int NETWORK_NOTIFY_ID = 123456;

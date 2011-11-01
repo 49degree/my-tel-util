@@ -11,6 +11,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 
 import com.guanri.android.jpos.MainActivity;
+import com.guanri.android.jpos.R;
 import com.guanri.android.jpos.constant.JposConstant;
 import com.guanri.android.jpos.pos.SerialPortAndroid;
 import com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink;
@@ -18,7 +19,6 @@ import com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser;
 import com.guanri.android.lib.context.MainApplication;
 import com.guanri.android.lib.log.LogInfo;
 import com.guanri.android.lib.log.Logger;
-import com.ihandy.xgx.R;
 
 public class AidlRunService extends Service{
     //定义个一个Tag标签   

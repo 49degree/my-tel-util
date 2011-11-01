@@ -10,7 +10,6 @@ import com.guanri.android.jpos.bean.SaleDataLogBean;
 import com.guanri.android.jpos.db.DBBean;
 import com.guanri.android.jpos.db.DBOperator;
 import com.guanri.android.lib.log.Logger;
-import com.ihandy.xgx.R;
 
 public class QueryDateActivity extends Activity {
 	private EditText edtdb;

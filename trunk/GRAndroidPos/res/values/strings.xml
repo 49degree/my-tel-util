@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<string name="hello">Hello World, StartActivity!</string>
-	<string name="app_name">神行太保</string>
+<resources>
+    <string name="app_name">支付平台转发器V1.1</string>
 </resources>

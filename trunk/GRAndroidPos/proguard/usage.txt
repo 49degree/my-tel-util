@@ -1,0 +1,339 @@
+com.guanri.android.dilog.SystemConfigService:
+    32:32:public void setServerInfo()
+    39:39:public void setPrinterInfo()
+com.guanri.android.jpos.Main:
+    122:131:private void displayError(int)
+com.guanri.android.jpos.Main$4
+com.guanri.android.jpos.MainActivity:
+    private android.widget.EditText pos_to_pad
+    private android.widget.EditText pad_to_server
+    android.widget.Button btn_view_order
+    207:215:private void displayMsg(java.lang.String,java.lang.String)
+com.guanri.android.jpos.MainActivity$3
+com.guanri.android.jpos.R
+com.guanri.android.jpos.R$attr
+com.guanri.android.jpos.R$drawable
+com.guanri.android.jpos.R$id
+com.guanri.android.jpos.R$layout
+com.guanri.android.jpos.R$string
+com.guanri.android.jpos.bean.AdditionalAmounts
+com.guanri.android.jpos.bean.OperateLogBean
+com.guanri.android.jpos.bean.PosCommandParse
+com.guanri.android.jpos.bean.PosMessageBean
+com.guanri.android.jpos.bean.SaleDataLogBean:
+    public int logid
+    45:45:public java.lang.String getBatchNo()
+    57:57:public java.lang.String getPosMac()
+    63:63:public java.lang.String getTransactionType()
+    69:69:public int getTransactionState()
+    81:81:public java.lang.String getOrderNo()
+    87:87:public java.lang.String getCardNo()
+    96:97:public void setSearchNo(java.lang.String)
+    99:99:public java.lang.String getAuthorizationNo()
+    102:103:public void setAuthorizationNo(java.lang.String)
+    105:105:public java.lang.String getDataStr()
+    111:111:public java.lang.String getTimeStr()
+    117:117:public int getLogid()
+    120:121:public void setLogid(int)
+com.guanri.android.jpos.common.SharedPreferencesUtils:
+    public static final java.lang.String SERVERIP
+    public static final java.lang.String SERVERPORT
+    public static final java.lang.String SERVERCONNTIMEOUT
+    public static final java.lang.String SERVERREADTIMEOUT
+    public static final java.lang.String POSID
+    public static final java.lang.String POSMERCHANT
+    public static final java.lang.String POSMERCHANTNAME
+    public static final java.lang.String POSBATCHNO
+    public static final java.lang.String LASTQUERY
+    public static final java.lang.String POS_PWD
+    public static final java.lang.String IS_POS_INIT
+    public static final java.lang.String COMFIG_INFO
+    public static final java.lang.String SERVER_INFO
+    53:54:public static boolean getConfigBoolean(java.lang.String,java.lang.String)
+    59:63:public static void setConfigBoolean(java.lang.String,java.lang.String,boolean)
+com.guanri.android.jpos.constant.JposConstant:
+    public static final int POS_TRANCE_CODE_QUERY_BALANCE
+    public static final int POS_TRANCE_CODE_PAY
+    public static final int POS_TRANCE_CODE_BACK_ORDER
+    public static final int POS_TRANCE_CODE_LOGIN
+    public static final int POS_TRANCE_CODE_PAYCANEL
+    public static final int POS_TRANCE_CODE_QUERY_ORDER
+    public static final int POS_TRANCE_CODE_QUERY_SALE
+    public static final int POS_TRANCE_CODE_AUTO_RECEIPT
+    public static final int POS_TRANCE_CODE_MAN_RECEIPT
+    public static final java.lang.String SUPER_PWD
+    public static final java.lang.String POS_PWD_INIT_VALUE
+    public static final java.lang.String SERVERIP_INIT_VALUE
+    public static final java.lang.String SERVERPORT_INIT_VALUE
+com.guanri.android.jpos.constant.JposConstant$MessageTypeDefine99Bill
+com.guanri.android.jpos.constant.JposConstant$MessageTypeDefineUnionpay
+com.guanri.android.jpos.constant.JposConstant$PosCommandCode
+com.guanri.android.jpos.constant.JposConstant$PosMessageType
+com.guanri.android.jpos.db.DBBean:
+    public static final java.lang.String TB_OPERATE_LOG
+    public static final java.lang.String TB_SALE_RECORD
+com.guanri.android.jpos.db.DBOperator:
+    161:164:public int queryRowNum(java.lang.String,java.util.Map)
+    177:193:public java.util.List queryArrayList(java.lang.String,java.lang.String[],java.util.Map)
+    205:221:public java.util.List queryMapList(java.lang.String,java.lang.String[],java.util.Map)
+com.guanri.android.jpos.iso.JposBitMap:
+    48:48:public byte[] getBitmapBaseByte()
+    52:52:public byte[] getBitmapExtendByte()
+    76:82:public java.util.List getBitmapBase()
+    90:99:public static void main(java.lang.String[])
+com.guanri.android.jpos.iso.JposMessageType:
+    private java.lang.String transactionCode
+    27:27:public java.lang.String getTransactionCode()
+    32:33:public void setTransactionCode(java.lang.String)
+com.guanri.android.jpos.iso.JposPackageFather:
+    59:59:public java.lang.Object getSendMapValue(java.lang.Integer)
+    199:222:public byte[] floatLengthstr2ASCII(java.lang.String,int)
+com.guanri.android.jpos.iso.JposSelfFieldLeaf:
+    27:27:public int getLengthType()
+    30:31:public void setLengthType(int)
+    33:33:public int getMaxLength()
+    36:37:public void setMaxLength(int)
+    39:39:public com.guanri.android.jpos.constant.JposConstant$DataEncodeType getEncodeType()
+    42:43:public void setEncodeType(com.guanri.android.jpos.constant.JposConstant$DataEncodeType)
+    45:45:public java.lang.String getMemo()
+    48:49:public void setMemo(java.lang.String)
+com.guanri.android.jpos.iso.JposUnPackageFather:
+    177:178:protected java.lang.String asciiToString(int)
+    188:194:protected java.lang.String fixBcdToInt(int)
+    205:222:protected java.lang.String floatbytetoint(int)
+    231:248:protected java.lang.String floatASCIItoStr(int)
+    261:262:public void setMReturnMap(java.util.TreeMap)
+    267:267:public com.guanri.android.jpos.iso.JposBitMap getJposBitMap()
+    273:274:public void setJposBitMap(com.guanri.android.jpos.iso.JposBitMap)
+    285:286:public void setMMessageType(com.guanri.android.jpos.iso.JposMessageType)
+com.guanri.android.jpos.iso.bill99.JposMessageType99Bill:
+    38:38:public byte getId()
+com.guanri.android.jpos.iso.bill99.JposPackage99Bill:
+    public static final java.lang.String PARSE_METHOD
+    196:203:public byte[] parseFeild14(java.lang.Object)
+    217:225:public byte[] parseFeild19(java.lang.Object)
+    239:246:public byte[] parseFeild20(java.lang.Object)
+    261:268:public byte[] parseFeild22(java.lang.Object)
+    282:289:public byte[] parseFeild23(java.lang.Object)
+    304:311:public byte[] parseFeild24(java.lang.Object)
+    328:335:public byte[] parseFeild25(java.lang.Object)
+    351:358:public byte[] parseFeild34(java.lang.Object)
+    374:381:public byte[] parseFeild35(java.lang.Object)
+    396:403:public byte[] parseFeild36(java.lang.Object)
+    417:424:public byte[] parseFeild37(java.lang.Object)
+    498:505:public byte[] parseFeild42(java.lang.Object)
+    520:527:public byte[] parseFeild44(java.lang.Object)
+    542:564:public byte[] parseFeild46(java.lang.Object)
+    580:587:public byte[] parseFeild48(java.lang.Object)
+    626:626:public byte[] parseFeild52(java.lang.Object)
+    640:647:public byte[] parseFeild53(java.lang.Object)
+    661:667:public byte[] parseFeild54(java.lang.Object)
+    681:687:public byte[] parseFeild55(java.lang.Object)
+    700:706:public byte[] parseFeild56(java.lang.Object)
+    719:725:public byte[] parseFeild57(java.lang.Object)
+    739:746:public byte[] parseFeild59(java.lang.Object)
+    760:768:public byte[] parseFeild60(java.lang.Object)
+    780:795:public void insertFeild(byte[],byte[],int,int)
+    809:853:public byte[] parseFeild61(java.lang.Object)
+    869:903:public byte[] parseFeild62(java.lang.Object)
+    920:963:public byte[] parseFeild63(java.lang.Object)
+    978:980:public byte[] parseFeild64(java.lang.Object)
+    1092:1157:public static void main(java.lang.String[])
+com.guanri.android.jpos.iso.bill99.JposUnPackage99Bill:
+    public static final java.lang.String PARSE_METHOD
+    29:40:public static void main(java.lang.String[])
+    103:104:public java.lang.Object parseFeild2()
+    122:134:public java.lang.Object parseFeild3()
+    151:158:public java.lang.Object parseFeild4()
+    172:179:public java.lang.Object parseFeild11()
+    192:199:public java.lang.Object parseFeild12()
+    212:219:public java.lang.Object parseFeild13()
+    231:238:public java.lang.Object parseFeild14()
+    253:254:public java.lang.Object parseFeild19()
+    268:275:public java.lang.Object parseFeild20()
+    290:297:public java.lang.Object parseFeild22()
+    311:318:public java.lang.Object parseFeild23()
+    333:340:public java.lang.Object parseFeild24()
+    358:365:public java.lang.Object parseFeild25()
+    382:383:public java.lang.Object parseFeild34()
+    400:401:public java.lang.Object parseFeild35()
+    417:418:public java.lang.Object parseFeild36()
+    434:440:public java.lang.Object parseFeild37()
+    457:463:public java.lang.Object parseFeild38()
+    480:486:public java.lang.Object parseFeild39()
+    504:510:public java.lang.Object parseFeild41()
+    524:530:public java.lang.Object parseFeild42()
+    546:547:public java.lang.Object parseFeild44()
+    562:584:public java.lang.Object parseFeild46()
+    601:602:public java.lang.Object parseFeild48()
+    622:628:public java.lang.Object parseFeild49()
+    644:644:public java.lang.Object parseFeild52()
+    660:666:public java.lang.Object parseFeild53()
+    681:707:public java.lang.Object parseFeild54()
+    721:722:public java.lang.Object parseFeild55()
+    735:736:public java.lang.Object parseFeild56()
+    749:750:public java.lang.Object parseFeild57()
+    764:765:public java.lang.Object parseFeild59()
+    779:780:public java.lang.Object parseFeild60()
+    795:837:public java.lang.Object parseFeild61()
+    852:884:public java.lang.Object parseFeild62()
+    899:936:public java.lang.Object parseFeild63()
+    950:952:public java.lang.Object parseFeild64()
+    964:995:public com.guanri.android.jpos.iso.bill99.TLVType parseTLV(byte[])
+com.guanri.android.jpos.iso.bill99.TLVType
+com.guanri.android.jpos.iso.unionpay.JposMessageTypeUnionPay
+com.guanri.android.jpos.iso.unionpay.JposPackageUnionPay
+com.guanri.android.jpos.iso.unionpay.JposUnPackageUnionPay
+com.guanri.android.jpos.network.CryptionControl
+com.guanri.android.jpos.network.test.ReadFile
+com.guanri.android.jpos.network.test.ServerTest
+com.guanri.android.jpos.pad.PosDataHandlerFactory
+com.guanri.android.jpos.pad.PosDataHandlerImp
+com.guanri.android.jpos.pad.ServerDownDataParse:
+    68:68:public boolean saveOrder()
+    73:73:public byte[] getReturnData()
+    76:77:public void setReturnData(byte[])
+    79:79:public com.guanri.android.jpos.iso.JposUnPackageFather getJposUnPackage()
+    82:83:public void setJposUnPackage(com.guanri.android.jpos.iso.JposUnPackageFather)
+com.guanri.android.jpos.pad.ServerUpDataParse:
+    40:40:public boolean setMac(byte[])
+com.guanri.android.jpos.pad.bill99.PosDataHandler99Bill
+com.guanri.android.jpos.pad.bill99.ServerDataHandler99Bill:
+    286:339:public com.guanri.android.jpos.iso.JposPackageFather createQueryBalanceTest(com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction)
+    487:530:public com.guanri.android.jpos.iso.JposPackageFather createLogin99Test(com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction)
+    551:626:public com.guanri.android.jpos.iso.JposPackageFather createSaleTest(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+com.guanri.android.jpos.pad.bill99.ServerDataUnPackage99Bill:
+    114:137:public static com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction UnPackageQuery(com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction,java.util.TreeMap,com.guanri.android.jpos.iso.JposMessageType)
+    269:327:public static com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction UnPackageQueryOQSSale(com.guanri.android.jpos.pos.data.TerminalMessages.TTransaction,java.util.TreeMap,com.guanri.android.jpos.iso.JposMessageType)
+com.guanri.android.jpos.pos.PosCommandControlFSKPort
+com.guanri.android.jpos.pos.PosCommandControlSerialPort:
+    private static final int TIME_OUT
+com.guanri.android.jpos.pos.PosCommandControlSerialPortBak
+com.guanri.android.jpos.pos.PosCommandControlSerialPortBak$ReturnDataTask
+com.guanri.android.jpos.pos.PosCommandControlSerialPortBak$SerialPortThread
+com.guanri.android.jpos.pos.PosCommandParse
+com.guanri.android.jpos.pos.SerialPortAndroid:
+    private static final java.lang.String TAG
+com.guanri.android.jpos.pos.SerialPortPC
+com.guanri.android.jpos.pos.data.Common:
+    120:122:public static int Length(java.lang.String)
+com.guanri.android.jpos.pos.data.Fields.TASCField:
+    231:249:public void Test()
+com.guanri.android.jpos.pos.data.Fields.TBCDField:
+    329:365:public void Test()
+com.guanri.android.jpos.pos.data.Fields.TBINField:
+    231:305:public boolean Test()
+com.guanri.android.jpos.pos.data.TerminalLinks.DataLink:
+    public int ConnectTimeout
+    public abstract void Connect()
+    public abstract void Disconnect()
+    public abstract boolean GetConnected()
+com.guanri.android.jpos.pos.data.TerminalLinks.TAndroidCommTerminalLink:
+    private java.util.Enumeration portList
+    80:88:public byte[] readbyte()
+com.guanri.android.jpos.pos.data.TerminalMessages.TBufferList:
+    19:19:public com.guanri.android.jpos.pos.data.Fields.TField PAN()
+    23:23:public com.guanri.android.jpos.pos.data.Fields.TField DateOfExpired()
+    31:31:public com.guanri.android.jpos.pos.data.Fields.TField Track2Data()
+    35:35:public com.guanri.android.jpos.pos.data.Fields.TField Track3Data()
+    39:39:public com.guanri.android.jpos.pos.data.Fields.TField AuthCode()
+com.guanri.android.jpos.pos.data.TerminalMessages.THandshake_Request
+com.guanri.android.jpos.pos.data.TerminalParsers.TTerminalParser:
+    private static final byte ws_WillConnect
+    private static final byte ws_ErrorIdent
+    private static final byte ws_ErrorConnect
+    private static final byte ws_NoOrderNumber
+    private static final byte ws_ErrorBuild
+    private static final byte ws_ErrorRecv
+com.guanri.android.jpos.pos.test.PosCenterThread
+com.guanri.android.jpos.pos.test.SerialPortAndroid
+com.guanri.android.jpos.pos.test.Test
+com.guanri.android.jpos.services.AidlRunService:
+    private static final java.lang.String TAG
+    public static final int NOTIFY_ID
+com.guanri.android.jpos.services.GrPosService$Stub:
+    private static final java.lang.String DESCRIPTOR
+    static final int TRANSACTION_startPos
+    static final int TRANSACTION_stopPos
+    static final int TRANSACTION_hasCommPort
+    static final int TRANSACTION_operate
+com.guanri.android.jpos.services.GrPosService$Stub$Proxy:
+    95:95:public java.lang.String getInterfaceDescriptor()
+com.guanri.android.lib.context.HandlerWhat
+com.guanri.android.lib.context.MainApplication:
+    34:38:public void setScreenW2H(android.app.Activity)
+    44:44:public int getScreenHeight()
+    51:51:public int getScreenWidth()
+com.guanri.android.lib.log.LogInfo:
+    static final int keepLength
+    12:21:public void append(java.lang.String,java.lang.String)
+com.guanri.android.lib.log.Logger:
+    60:63:public Logger(java.lang.Class,int)
+    99:106:public void warn(java.lang.String)
+    230:230:public int getLocalLevel()
+    233:234:public void setLocalLevel(int)
+com.guanri.android.lib.log.Logger$Level
+com.guanri.android.lib.network.NetWorkTools:
+    public static final int NET_TYPE_NONE
+    public static final int NET_TYPE_WIFI
+    public static final int NET_TYPE_GPRS
+    public static final int STATUS_CONNECTED
+    public static final int STATUS_CONNECT_NO
+    public static final int STATUS_DIS_CONNECTED
+    public static final java.lang.String ACTION_CONNECTION_STATUS_CHANGE
+    public static final java.lang.String EXTRA_STATUS_INFO
+    private static final int GPRS_TYPE_UNKOWN
+    private static final int GPRS_TYPE_UNICOM_2G
+    private static final int GPRS_TYPE_UNICOM_3G
+    private static final int GPRS_TYPE_MOBIL_2G
+    private static final int GPRS_TYPE_MOBIL_3G
+    private static final int GPRS_TYPE_TELECOM_2G
+    private static final int GPRS_TYPE_TELECOM_3G
+    private static final java.lang.String TAG
+    private static final int APN_ID
+    private static final java.lang.String APN_PROXY_TELECOM
+    private static final java.lang.String APN_PORT_TELECOM
+    private static final int TIME_OUT
+    265:270:public boolean DeleteGprsConnection(boolean)
+    417:436:public static boolean checkInternet(android.content.Context)
+com.guanri.android.lib.network.NetWorkTools$LogCat:
+    public static final boolean DEBUG
+com.guanri.android.lib.utils.DialogUtils$OnAlertDlgCancelBtn
+com.guanri.android.lib.utils.NetAddressCheck:
+    50:68:public static boolean isValidMACAddress(java.lang.String)
+    80:95:public static boolean isNetworkAvailable(android.app.Activity)
+com.guanri.android.lib.utils.TypeConversion:
+    public static final java.lang.String DEFAULT_ENCODE
+    46:51:public static short bytesToShort(byte[],int)
+    66:71:public static int bytesToIntEx(byte[],int)
+    85:90:public static int bytesToInt(byte[],int)
+    105:110:public static long bytesToLongEX(byte[],int)
+    123:128:public static long bytesToLong(byte[],int)
+    154:158:public static byte[] shortToBytes(short)
+    172:176:public static byte[] intToBytesEx(int)
+    188:192:public static byte[] intToBytes(int)
+    204:210:public static byte[] longToBytesEx(long)
+    220:224:public static byte[] longToBytes(long)
+    243:246:public static long bytesToSingleNum(byte[],int,int)
+    260:262:public static byte[] getSomeBytesFromSource(byte[],int,int)
+    271:279:public static byte[] getBytes(char[])
+    288:293:public static char[] getChars(byte[])
+    302:308:public static byte[] charToByte(char)
+    317:329:public static char bytesToChar(byte[])
+    339:346:public static byte[] stringToBytes(java.lang.String)
+    355:371:public static char[] bytesToChars(byte[])
+    384:384:public static java.lang.String asciiToString(byte[])
+    396:398:public static java.lang.String asciiToString(byte[],int,int)
+    482:482:public static java.lang.String byteTo0XString(byte[],int)
+    491:491:public static java.lang.String byteTo0XString(byte[])
+    500:506:public static java.lang.String getASCString(byte[],int)
+    546:546:public static java.lang.String bcd2string(byte[])
+    571:578:public static byte[] hexStringToByte(java.lang.String)
+    584:598:public static void main(java.lang.String[])
+com.guanri.android.lib.utils.Utils:
+    14:14:public static float fengToYuan(int)
+com.guanri.android.update.HttpRequest
+com.guanri.android.update.HttpRequest$1
+com.guanri.android.update.HttpRequest$1$1
+com.guanri.android.update.HttpRequest$1$2
+com.guanri.android.update.UpdateUtil

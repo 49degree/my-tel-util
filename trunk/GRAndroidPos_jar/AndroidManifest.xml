@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.ihandy.xgx" android:versionName="1.1" android:versionCode="1">
+
+	<application android:name="com.guanri.android.lib.context.MainApplication"
+		android:icon="@drawable/icon" android:label="@string/app_name">
+		<activity android:name="com.guanri.android.ui.jpos.MainActivity" android:launchMode="singleInstance"
+			android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name="com.guanri.android.ui.jpos.QueryDateActivity" android:label="@string/app_name">
+		</activity>
+		<!-- 开机接收广播 -->
+		<receiver android:name="com.guanri.android.ui.jpos.broadcast.BootBroadcastReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+			</intent-filter>
+		</receiver>
+		<!-- 关机接收广播 -->
+		<receiver android:name="com.guanri.android.ui.jpos.broadcast.ShutdownReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.ACTION_SHUTDOWN" />
+			</intent-filter>
+		</receiver>
+		<!-- 提供其他服务调用服务 -->
+		<service android:name="com.guanri.android.jpos.services.AidlRunService"
+			android:process=":remote">
+			<intent-filter>
+				<action android:name="com.guanri.android.ui.jpos.services.GrPosService" />
+			</intent-filter>
+		</service>
+	</application>
+	<uses-sdk android:minSdkVersion="3" />
+	<!-- 接受系统启动完毕的 Broadcast 的权限 -->
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+	
+	<!-- 获得修改移动数据状态的权限，但是暂时无效，WRITE_SECURE_SETTINGS普通应用无法获取权限 -->
+	<uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+	<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+	<uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+	
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<!-- 获取系统CPU运行锁权限，可设置休眠情况下得CPU运行情况 -->
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+	<uses-permission android:name="android.permission.DEVICE_POWER"/>
+	
+</manifest>

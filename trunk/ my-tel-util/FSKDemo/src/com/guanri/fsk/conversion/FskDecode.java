@@ -20,7 +20,7 @@ public class FskDecode {
 	private int[] singleMaxArray = null;//固定数量的最大值数组
 	private int[] singleMinArray = null;//固定数量的最小值数组
 	private int singleMaxArrayLength = 40;//固定数量的最大值数组长度
-	private float splitParmats = 0.58f;//0，1分割参数
+	private float splitParmats = 0.52f;//0，1分割参数
 	
 	private int singleTlength0 = 0;//0信号在一个周期内的采样点数 
 	private int singleTlength1 = 0;//1信号在一个周期内的采样点数 

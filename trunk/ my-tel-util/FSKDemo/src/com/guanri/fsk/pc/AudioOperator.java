@@ -13,8 +13,11 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
 import com.guanri.fsk.conversion.FskCodeParams;
+import com.guanri.fsk.conversion.FskDecode;
+import com.guanri.fsk.conversion.FskDecodeResult;
 import com.guanri.fsk.conversion.FskEnCodeResult;
 import com.guanri.fsk.conversion.FskEncode;
+import com.guanri.fsk.conversion.SourceQueue;
 import com.guanri.fsk.conversion.WaveFileParams;
 import com.guanri.fsk.view.CureLineBean;
 import com.guanri.fsk.view.RecordPlayView.ImagePanel;
@@ -23,9 +26,13 @@ public class AudioOperator{
 	protected boolean running = false;
 	ImagePanel receiveImagePanel = null;
 	ImagePanel playImagePanel = null;
-	public AudioOperator(ImagePanel playImagePanel,ImagePanel receiveImagePanel){
+	SourceQueue sourceQueue = null;
+	FskCodeParams fskCodeParams = null;
+	public AudioOperator(ImagePanel playImagePanel,ImagePanel receiveImagePanel,SourceQueue sourceQueue,FskCodeParams fskCodeParams){
 		this.receiveImagePanel = receiveImagePanel;
 		this.playImagePanel = playImagePanel;
+		this.sourceQueue =  sourceQueue;
+		this.fskCodeParams = fskCodeParams;
 	}
 
 	public void start(byte[] data){
@@ -47,7 +54,6 @@ public class AudioOperator{
 			
 			final AudioFormat format = getFormat();
 			
-			FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,(int)format.getSampleRate(),format.getSampleSizeInBits()/8,1200);
 			final WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams);
 			waveFileParams.createFile(System.getProperty("user.dir")+"/in_record_"+new Date().getTime()+".wav");
 			
@@ -92,13 +98,15 @@ public class AudioOperator{
 							if (count > 0){
 								saveData = new byte[count];
 								System.arraycopy(data, 0, saveData, 0, count);
+								waveFileParams.appendData(saveData);
+								sourceQueue.put(saveData);
 								//绘图
 								List<CureLineBean> list = new ArrayList<CureLineBean>();
 								CureLineBean cureLineBean = new CureLineBean(saveData,Color.RED);
 								list.add(cureLineBean);
 								receiveImagePanel.setCureLineBean(list);
 								receiveImagePanel.repaint();
-								waveFileParams.appendData(saveData);
+
 							}
 						}
 						waveFileParams.closeFile();
@@ -113,18 +121,17 @@ public class AudioOperator{
 		}catch (LineUnavailableException e){
 			System.err.println("Line unavailable: " + e);
 			System.exit(-2);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 
+
+	
 	private void playAudio(byte[] data){
 		try{
-
-
-			
-			
 			final AudioFormat format = getFormat();
 			
-			FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,(int)format.getSampleRate(),format.getSampleSizeInBits()/8,1200);
 			final WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams);
 			waveFileParams.createFile(System.getProperty("user.dir")+"/out_record_"+new Date().getTime()+".wav");
 			final FskEncode fskEncode = new FskEncode(fskCodeParams);
@@ -170,6 +177,8 @@ public class AudioOperator{
 		}catch (LineUnavailableException e){
 			System.err.println("Line unavailable: " + e);
 			System.exit(-4);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 
@@ -181,8 +190,8 @@ public class AudioOperator{
 //		boolean bigEndian = true;
 		
 		AudioFormat.Encoding encoding = AudioFormat.Encoding.PCM_SIGNED;
-        float rate = 110250;
-        int sampleSize = 16;
+        float rate = fskCodeParams.getSampleF();
+        int sampleSize = fskCodeParams.getSampleByteLength()*8;
         boolean bigEndian = false;
         int channels = 1;
 

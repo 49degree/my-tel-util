@@ -15,17 +15,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -35,13 +29,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
+import com.guanri.fsk.conversion.FskCodeParams;
+import com.guanri.fsk.conversion.FskDecode;
+import com.guanri.fsk.conversion.FskDecodeResult;
+import com.guanri.fsk.conversion.SourceQueue;
 import com.guanri.fsk.pc.AudioOperator;
 
 
 
 public class RecordPlayView extends  JFrame{
 
-
+	FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,11025,2,1200);
+	
+	
+	
 	static final int WIDTH=1400;
     static final int HEIGHT=800;
     private int scringWidth=0;
@@ -285,7 +286,6 @@ public class RecordPlayView extends  JFrame{
 					g.drawLine(borderLength+i*pointLength,borderLength,borderLength+i*pointLength,height-borderLength);
 				}
 			}
-			
 			dash = new BasicStroke();
 			g2.setStroke(dash);
 			if(mLineList!=null&&mLineList.size()>0){
@@ -337,8 +337,8 @@ public class RecordPlayView extends  JFrame{
 			
 			JLabel recWavFile = new JLabel("接收的WAV数据文件：");
 			JTextField recWav= new JTextField(15);
-			
-			final AudioOperator audioOperator = new AudioOperator(playImagePanel,recordImagePanel);
+			final SourceQueue sourceQueue = new SourceQueue();
+			final AudioOperator audioOperator = new AudioOperator(playImagePanel,recordImagePanel,sourceQueue,fskCodeParams);
 			
 			final JButton begin = new JButton("开始");
 			final JButton stop = new JButton("停止");
@@ -349,6 +349,9 @@ public class RecordPlayView extends  JFrame{
 					stop.setEnabled(true);
 					begin.setEnabled(false);
 					audioOperator.start(sendmsgT.getText().getBytes());
+					
+					//读取文件
+					decode(begin,sourceQueue);
 					
 				}
 			});
@@ -388,6 +391,37 @@ public class RecordPlayView extends  JFrame{
 	        add(c,constraints);
 	    } 
 	}
+	
+
+	/**
+	 * 解码
+	 * @param begin
+	 * @param sourceQueue
+	 */
+	public  void decode(final JButton begin,SourceQueue sourceQueue){
+		final FskDecodeResult fskDecodeResult = new FskDecodeResult(true);
+		final FskDecode fskDecode = new FskDecode(fskCodeParams,sourceQueue,fskDecodeResult);
+		new Thread(){
+			public void run(){
+				fskDecode.beginDecode();
+				while(!begin.isEnabled()){
+					if(fskDecodeResult.dataIndex>0){
+						System.out.println("解码结果："+new String(fskDecodeResult.data,0,fskDecodeResult.dataIndex));
+					}else{
+						System.out.println("无结果：");
+					}
+					try{
+						Thread.sleep(100);
+					}catch(InterruptedException e){
+						e.printStackTrace();
+					}
+				}
+				fskDecode.isContinue = false;
+			}
+		}.start();	
+	}
+	
+	
 	public static void main(String[] args)
 	{
 		RecordPlayView test = new RecordPlayView();

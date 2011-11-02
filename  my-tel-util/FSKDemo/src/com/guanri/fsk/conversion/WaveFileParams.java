@@ -1,8 +1,7 @@
 package com.guanri.fsk.conversion;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
+import java.io.RandomAccessFile;
 
 import com.guanri.fsk.utils.TypeConversion;
 
@@ -59,39 +58,23 @@ public class WaveFileParams {
 	 * @param filePath
 	 */
 	String filePath = null;
-	FileOutputStream fout = null;
-	public void createFile(String filePath){
+	RandomAccessFile randomAccessWriter = null;
+	public void createFile(String filePath) throws Exception {
 		this.filePath = filePath;
 		byte[] waveByte = parseWaveToByte();
 		
-		try{
-			File waveFile = new File(this.filePath);
-			if(!waveFile.exists()){
-				waveFile.createNewFile();
-			}
-			
-			fout = new FileOutputStream(waveFile);
-			fout.write(waveByte);
-			fout.flush();
-		}catch(Exception e){
-			e.printStackTrace();
+		if(new File(filePath).exists()){
+			throw new Exception("file is exists"); 
 		}
+		randomAccessWriter = new RandomAccessFile(filePath, "rw");
+		randomAccessWriter.write(waveByte);
 	}
 	
 	public void appendData(byte[] data){
-		if(filePath!=null){
+		if(randomAccessWriter!=null){
 			try{
-				File waveFile = new File(this.filePath);
-				if(!waveFile.exists()){
-					waveFile.createNewFile();
-					byte[] waveByte = parseWaveToByte();
-					fout = new FileOutputStream(waveFile);
-					fout.write(waveByte);
-				}else if(fout==null){
-					fout = new FileOutputStream(waveFile);
-				}
-				fout.write(data);
-				fout.flush();
+				randomAccessWriter.seek(randomAccessWriter.length());
+				randomAccessWriter.write(data);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -101,16 +84,11 @@ public class WaveFileParams {
 	
 	public void closeFile(){
 		try{
-
-			FileChannel ch = fout.getChannel();
-			ch.position(4);
-			int size = (int) ch.size();
-			fout.write(TypeConversion.intToBytes(size - 8));
-			ch.position(40);
-			fout.write(TypeConversion.intToBytes(size - 44));
-			fout.flush();
-			fout.close();
-			fout = null;
+            randomAccessWriter.seek(4); // Write size to RIFF header
+            randomAccessWriter.writeInt(Integer.reverseBytes((int)randomAccessWriter.length()-8));
+            randomAccessWriter.seek(40); // Write size to Subchunk2Size field
+            randomAccessWriter.writeInt((int)randomAccessWriter.length()-44);
+            randomAccessWriter.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}

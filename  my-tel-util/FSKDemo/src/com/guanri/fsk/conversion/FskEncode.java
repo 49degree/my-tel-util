@@ -58,12 +58,31 @@ public class FskEncode {
 		*/
 		fskEnCodeResult.signal0Degree = 2*Math.PI*fskCodeParams.getF0()/fskCodeParams.getBoundRate();//表示0信号区间的角度
 		fskEnCodeResult.signal1Degree = 2*Math.PI*fskCodeParams.getF1()/fskCodeParams.getBoundRate();//表示1信号区间的角度
+		
+		//发送前导码
+		encodeHeader(fskEnCodeResult);
+
 		//对数据进行编码
 		for(byte sourceData:source){
 			encodeByte(sourceData,fskEnCodeResult);
 		}
 		return fskEnCodeResult;
 	}
+	
+	public void encodeHeader(FskEnCodeResult fskEnCodeResult){
+		//发送前导码80对01
+		for(int i=0;i<80;i++){
+			encode(fskEnCodeResult,FskEncode.SINGLE_ZERO);
+			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
+		}
+		
+		//发送前导码40个1
+		for(int i=0;i<40;i++){
+			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
+		}
+		
+	}
+	
 	
 	/**
 	 * 计算 编码以后的数据长度
@@ -78,7 +97,8 @@ public class FskEncode {
 	 * @return
 	 */
 	public int getFskLength(int sourceLength){
-		float codeLength = fskCodeParams.getSampleF()*sourceLength*10/new Float(fskCodeParams.getBoundRate());
+		float codeLength = fskCodeParams.getSampleF()*(sourceLength*10+80*2+40)/new Float(fskCodeParams.getBoundRate());//80*2+40前导码长度80对01 40个1
+		
 		return Math.round(new Float(codeLength+0.5))*fskCodeParams.getSampleByteLength();
 	}
 	

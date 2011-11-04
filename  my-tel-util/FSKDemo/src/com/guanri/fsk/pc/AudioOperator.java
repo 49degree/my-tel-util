@@ -1,10 +1,5 @@
 package com.guanri.fsk.pc;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -13,49 +8,38 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
 import com.guanri.fsk.conversion.FskCodeParams;
-import com.guanri.fsk.conversion.FskDecode;
-import com.guanri.fsk.conversion.FskDecodeResult;
-import com.guanri.fsk.conversion.FskEnCodeResult;
-import com.guanri.fsk.conversion.FskEncode;
-import com.guanri.fsk.conversion.SourceQueue;
-import com.guanri.fsk.conversion.WaveFileParams;
-import com.guanri.fsk.view.CureLineBean;
-import com.guanri.fsk.view.RecordPlayView.ImagePanel;
+
 
 public class AudioOperator{
 	protected boolean running = false;
-	ImagePanel receiveImagePanel = null;
-	ImagePanel playImagePanel = null;
-	SourceQueue sourceQueue = null;
 	FskCodeParams fskCodeParams = null;
-	public AudioOperator(ImagePanel playImagePanel,ImagePanel receiveImagePanel,SourceQueue sourceQueue,FskCodeParams fskCodeParams){
-		this.receiveImagePanel = receiveImagePanel;
-		this.playImagePanel = playImagePanel;
-		this.sourceQueue =  sourceQueue;
+	AudioReceiveDataHandler audioReceiveDataHandler = null;
+	public AudioOperator(FskCodeParams fskCodeParams){
 		this.fskCodeParams = fskCodeParams;
 	}
+	
+	public void setAudioReceiveDataHandler(AudioReceiveDataHandler audioReceiveDataHandler){
+		this.audioReceiveDataHandler = audioReceiveDataHandler;
+	}
 
-	public void start(byte[] data){
+	public void start(){
 		if(!running){
 			captureAudio();
-			//playAudio(data);
+			initPlay();
 			running = true;
 		}
 	}
 	
 	public void stop(){
 		if(running){
+			closetPlay();
 			running = false;
 		}
 	}
 	private void captureAudio(){
 		try{
 
-			
 			final AudioFormat format = getFormat();
-			
-			final WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams);
-			waveFileParams.createFile(System.getProperty("user.dir")+"/in_record_"+new Date().getTime()+".wav");
 			
 			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
 			
@@ -71,7 +55,7 @@ public class AudioOperator{
             try {
                 line.open(format, line.getBufferSize());
             } catch (LineUnavailableException ex) { 
-            	System.out.println("Unable to open the line: " + ex);
+            	ex.printStackTrace();
                 return;
             } catch (SecurityException ex) { 
                 ex.printStackTrace();
@@ -98,27 +82,28 @@ public class AudioOperator{
 							if (count > 0){
 								saveData = new byte[count];
 								System.arraycopy(data, 0, saveData, 0, count);
-								waveFileParams.appendData(saveData);
-								sourceQueue.put(saveData);
-								//绘图
-								List<CureLineBean> list = new ArrayList<CureLineBean>();
-								CureLineBean cureLineBean = new CureLineBean(saveData,Color.RED);
-								list.add(cureLineBean);
-								receiveImagePanel.setCureLineBean(list);
-								receiveImagePanel.repaint();
+								
+								audioReceiveDataHandler.handler(saveData);
+
 
 							}
 						}
-						waveFileParams.closeFile();
+
 					}catch (Exception e){
+						e.printStackTrace();
 						System.err.println("I/O problems: " + e);
 						System.exit(-1);
 					}
+					System.err.println("begin close++++++: ");
+					line.drain();
+					line.close();
+					System.err.println("end close++++++: ");
 				}
 			};
 			Thread captureThread = new Thread(runner);
 			captureThread.start();
 		}catch (LineUnavailableException e){
+			e.printStackTrace();
 			System.err.println("Line unavailable: " + e);
 			System.exit(-2);
 		}catch(Exception e){
@@ -126,59 +111,44 @@ public class AudioOperator{
 		}
 	}
 
-
-	
-	private void playAudio(byte[] data){
+	SourceDataLine line = null;
+//	WaveFileParams wavePlayFileParams = null;
+	private void initPlay(){
 		try{
-			final AudioFormat format = getFormat();
+
 			
-			final WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams);
-			waveFileParams.createFile(System.getProperty("user.dir")+"/out_record_"+new Date().getTime()+".wav");
-			final FskEncode fskEncode = new FskEncode(fskCodeParams);
-			
+			AudioFormat format = getFormat();
 			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-			final SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
+			line = (SourceDataLine) AudioSystem.getLine(info);
 			line.open(format);
 			line.start();
-
-			
-			Runnable runner = new Runnable(){
-				int bufferSize = (int) format.getSampleRate()
-						* format.getFrameSize();
-				public void run(){
-					try{
-						//while (running){
-							FskEnCodeResult  fskEnCodeResult = fskEncode.encode(String.valueOf(new Date().getTime()).getBytes());
-							
-							line.write(fskEnCodeResult.code,0,fskEnCodeResult.code.length);
-							//line.drain();
-							waveFileParams.appendData(fskEnCodeResult.code);
-							waveFileParams.closeFile();
-							
-							//绘图
-							List<CureLineBean> list = new ArrayList<CureLineBean>();
-							CureLineBean cureLineBean = new CureLineBean(fskEnCodeResult.code,Color.RED);
-							list.add(cureLineBean);
-							playImagePanel.setCureLineBean(list);
-							playImagePanel.repaint();
-							Thread.sleep(1000);
-						//}
-						line.drain();
-						line.close();
-					}catch (Exception e){
-						e.printStackTrace();
-						System.err.println("I/O problems: " + e);
-						System.exit(-3);
-					}
-				}
-			};
-			Thread playThread = new Thread(runner);
-			playThread.start();
 		}catch (LineUnavailableException e){
 			System.err.println("Line unavailable: " + e);
 			System.exit(-4);
 		}catch(Exception e){
 			e.printStackTrace();
+		}		
+	}
+	
+	private void closetPlay(){
+		try{
+			line.drain();
+			line.close();
+		}catch (Exception e){
+			e.printStackTrace();
+			System.err.println("I/O problems: " + e);
+			System.exit(-3);
+		}	
+	}	
+	
+	
+	public void playAudio(byte[] data,int length){
+		try{
+			line.write(data,0,length);
+		}catch (Exception e){
+			e.printStackTrace();
+			System.err.println("I/O problems: " + e);
+			System.exit(-3);
 		}
 	}
 
@@ -204,6 +174,11 @@ public class AudioOperator{
 //				bigEndian);
 	}
 
+	public interface AudioReceiveDataHandler{
+		public void handler(byte[] data);
+	}
+	
+	
 	public static void main(String args[]){
 
 	}

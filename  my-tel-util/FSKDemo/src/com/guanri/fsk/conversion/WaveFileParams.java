@@ -66,15 +66,19 @@ public class WaveFileParams {
 		if(new File(filePath).exists()){
 			throw new Exception("file is exists"); 
 		}
+		if(randomAccessWriter!=null){
+			closeFile();
+		}
+		
 		randomAccessWriter = new RandomAccessFile(filePath, "rw");
 		randomAccessWriter.write(waveByte);
 	}
 	
-	public void appendData(byte[] data){
+	public void appendData(byte[] data,int length){
 		if(randomAccessWriter!=null){
 			try{
 				randomAccessWriter.seek(randomAccessWriter.length());
-				randomAccessWriter.write(data);
+				randomAccessWriter.write(data, 0, length);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -89,6 +93,7 @@ public class WaveFileParams {
             randomAccessWriter.seek(40); // Write size to Subchunk2Size field
             randomAccessWriter.writeInt((int)randomAccessWriter.length()-44);
             randomAccessWriter.close();
+            randomAccessWriter = null;
 		}catch(Exception e){
 			e.printStackTrace();
 		}

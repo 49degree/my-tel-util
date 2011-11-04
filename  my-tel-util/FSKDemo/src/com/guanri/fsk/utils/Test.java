@@ -35,7 +35,7 @@ public class Test {
 		
 		FskEncode fskEncode = new FskEncode(fskCodeParams);
 		//进行编码
-		byte[] s = "FskEncode fskEncode = new FskEncode(fskCodeParams)".getBytes();
+		byte[] s = "hello world".getBytes();
 
 		FskEnCodeResult fskEnCodeResult = fskEncode.encode(s);
 		//编码结束
@@ -101,7 +101,7 @@ public class Test {
 		fskDecode.isContinue = false;
 		
 		if(fskDecodeResult.dataIndex>0){
-			System.out.println("解码结果："+new String(fskDecodeResult.data,0,fskDecodeResult.dataIndex));
+			System.out.println("解码结果："+TypeConversion.byteTo0XString(fskDecodeResult.data,0,fskDecodeResult.dataIndex));//,0,fskDecodeResult.dataIndex));
 			putASC(fskDecodeResult.data);
 			
 		}else{
@@ -128,7 +128,7 @@ public class Test {
 	}
 	static FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,11025,2,1200);
 	public static void main(String[] args){
-		String fileName = System.getProperty("user.dir")+"/out_record_1320398196967.wav";//"/"+new Date().getTime()+".wav";
+		String fileName = System.getProperty("user.dir")+"/in_record_1320418813953.wav";//"/"+new Date().getTime()+".wav";
 		//String fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
 		//encode(fileName);
 		decode(fileName);

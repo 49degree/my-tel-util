@@ -1,5 +1,6 @@
 package com.guanri.fsk.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -13,20 +14,135 @@ import java.nio.charset.Charset;
  */
 public class TypeConversion {
 	/**
+	 * byte[]转换成short数 高位在前
+	 * 
+	 * @param data
+	 *            包括short的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return short数
+	 */
+	
+	public static short bytesToShortEx(byte[] data, int offset) {
+		short num = 0;
+		for (int i = offset; i < offset + 2; i++) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+   	
+	/**
+	 * byte[]转换成short数
+	 * 
+	 * @param data
+	 *            包括short的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return short数
+	 */	
+	
+	public static short bytesToShort(byte[] data, int offset) {
+		short num = 0;
+		for (int i = offset + 1; i >offset-1 ; i--) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+	
+	
+	/**
+	 * byte[]转换成int数 高位在前
+	 * 
+	 * @param data
+	 *            包括int的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return int数
+	 */
+	public static int bytesToIntEx(byte[] data, int offset) {
+		int num = 0;
+		for (int i = offset; i < offset + 4; i++) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+	/**
+	 * byte[]转换成int数 低位在前
+	 * 
+	 * @param data
+	 *            包括int的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return int数
+	 */
+	
+	public static int bytesToInt(byte[] data, int offset) {
+		int num = 0;
+		for (int i = offset + 3; i > offset-1; i--) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+
+
+	/**
+	 * byte[]转换成long数 高位在前
+	 * 
+	 * @param data
+	 *            包括long的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return long数
+	 */
+	public static long bytesToLongEX(byte[] data, int offset) {
+		long num = 0;
+		for (int i = offset; i < offset + 8; i++) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+	/**
+	 * byte[]转换成long数 低位在前
+	 * 
+	 * @param data
+	 *            包括long的byte[]
+	 * @param offset
+	 *            偏移量
+	 * @return long数
+	 */
+	public static long bytesToLong(byte[] data, int offset) {
+		long num = 0;
+		for (int i = offset+7; i > offset - 1; i--) {
+			num <<= 8;
+			num |= (data[i] & 0xff);
+		}
+		return num;
+	}
+	
+	/**
 	 * short类型转换成byte[] 高位在前
 	 * 
 	 * @param num
 	 *            short数
 	 * @return byte[]
-	 
-	public static byte[] shortToBytes(short num) {
+	 */
+	public static byte[] shortToBytesEx(short num) {
 		byte[] b = new byte[2];
 		for (int i = 0; i < 2; i++) {
 			b[i] = (byte) (num >>> (8-i*8));
 		}  
 		return b;
 	}
-    */
+    
 	/**
 	 * short类型转换成byte[] 低位在前
 	 * 
@@ -50,8 +166,8 @@ public class TypeConversion {
 	 * @param num
 	 *            int数
 	 * @return byte[]
-	 
-	public static byte[] intToBytes(int num) {
+	 */ 
+	public static byte[] intToBytesEx(int num) {
 
 		byte[] b = new byte[4];
 		for (int i = 0; i < 4; i++) {
@@ -59,7 +175,7 @@ public class TypeConversion {
 		}
 		return b;
 	}
-	*/ 
+	
 	/**
 	 * int类型转换成byte[] 低位在前
 	 * 
@@ -78,13 +194,13 @@ public class TypeConversion {
 
 	
 	/**
-	 * long类型转换成byte[]
+	 * long类型转换成byte[] 高位在前
 	 * 
 	 * @param num
 	 *            long数
 	 * @return byte[]
-	 
-	public static byte[] longToBytes(long num) {
+	 */
+	public static byte[] longToBytesEx(long num) {
 		byte[] b = new byte[8];
 		for (int i = 0; i < 8; i++) {
 			b[i] = (byte) (num >>> (56 - i * 8));
@@ -93,7 +209,6 @@ public class TypeConversion {
 		
 		return b;
 	}
-	*/
 	/**
 	 * long类型转换成byte[] 低位在前
 	 * 
@@ -109,119 +224,10 @@ public class TypeConversion {
 		return b;
 	}
 	
-	/**
-	 * byte[]转换成short数
-	 * 
-	 * @param data
-	 *            包括short的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return short数
-	 
+
 	
-	public static short bytesToShort(byte[] data, int offset) {
-		short num = 0;
-		for (int i = offset; i < offset + 2; i++) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
-   */	
-	/**
-	 * byte[]转换成short数
-	 * 
-	 * @param data
-	 *            包括short的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return short数
-	 */	
-	
-	public static short bytesToShort(byte[] data, int offset) {
-		short num = 0;
-		for (int i = offset + 1; i >offset-1 ; i--) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
-	
-	
-	/**
-	 * byte[]转换成int数 高位在前
-	 * 
-	 * @param data
-	 *            包括int的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return int数
-	 
-	public static int bytesToInt(byte[] data, int offset) {
-		int num = 0;
-		for (int i = offset; i < offset + 4; i++) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
-	*/
-	/**
-	 * byte[]转换成int数 低位在前
-	 * 
-	 * @param data
-	 *            包括int的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return int数
-	 */
-	
-	public static int bytesToInt(byte[] data, int offset) {
-		int num = 0;
-		for (int i = offset + 3; i > offset-1; i--) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
 	
 
-
-	/**
-	 * byte[]转换成long数
-	 * 
-	 * @param data
-	 *            包括long的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return long数
-	 
-	public static long bytesToLong(byte[] data, int offset) {
-		long num = 0;
-		for (int i = offset; i < offset + 8; i++) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
-	*/
-	/**
-	 * byte[]转换成long数 低位在前
-	 * 
-	 * @param data
-	 *            包括long的byte[]
-	 * @param offset
-	 *            偏移量
-	 * @return long数
-	 */
-	public static long bytesToLong(byte[] data, int offset) {
-		long num = 0;
-		for (int i = offset+7; i > offset - 1; i--) {
-			num <<= 8;
-			num |= (data[i] & 0xff);
-		}
-		return num;
-	}
 	
 	/**
 	 * byte 转换成无符号整数
@@ -410,11 +416,14 @@ public class TypeConversion {
      * @param b
      * @return
      */
-	public static String byte2hex(byte[] b) //二行制转字符串
+	public static String byte2hex(byte[] b,int startIndex,int length) //二行制转字符串
     {
+		if(b==null||startIndex+length>b.length){
+			return null;
+		}
 		String hs="";
 		String stmp="";
-		for (int n=0;n<b.length;n++)
+		for (int n=startIndex;n<startIndex+length;n++)
 		{
 			stmp=(java.lang.Integer.toHexString(b[n] & 0XFF));
 			if (stmp.length()==1) hs=hs+"0"+stmp;
@@ -423,8 +432,156 @@ public class TypeConversion {
 		return hs.toUpperCase();
     }
 	
+	
+	
+    /**
+     * 二进制转16进制字符串
+     * @param b
+     * @return
+     */
+	public static String byte2hex(byte[] b,int startIndex) {//二行制转字符串
+		return byte2hex(b,startIndex,b.length-startIndex);
+    }
+	
+    /**
+     * 二进制转16进制字符串
+     * @param b
+     * @return
+     */
+	public static String byte2hex(byte[] b) {//二行制转字符串
+		return byte2hex(b,0,b.length);
+    }
+	
+	
+    /**
+     * 二进制转2进制字符串
+     * @param b
+     * @return
+     */
+	public static String byteTo0XString(byte[] b,int startIndex,int length) //二行制转字符串
+    {
+		StringBuffer temp = new StringBuffer();
+		if(b==null||startIndex+length>b.length){
+			return null;
+		}
+		for (int n=startIndex;n<startIndex+length;n++)
+		{
+			for(int i=0;i<8;i++){
+				temp.append((b[n]>>7-i)&0x01);
+			}
+		}
+		return temp.toString();
+    }
+	
+    /**
+     * 二进制转16进制字符串
+     * @param b
+     * @return
+     */
+	public static String byteTo0XString(byte[] b,int startIndex) {//二行制转字符串
+		return byteTo0XString(b,startIndex,b.length-startIndex);
+    }
+	
+    /**
+     * 二进制转16进制字符串
+     * @param b
+     * @return
+     */
+	public static String byteTo0XString(byte[] b) {//二行制转字符串
+		return byteTo0XString(b,0,b.length);
+    }
+	/**
+	 * 获取字符串
+	 * @param data
+	 * @param dataIndex 表示要转换的长度
+	 * @return
+	 */
+	public static String getASCString(byte[] data,int dataIndex) {
+		byte[] temp = new byte[dataIndex];
+		System.arraycopy(data, 0, temp, 0, temp.length);
+		int k = 0;
+		for (int i = 0; i < temp.length; i ++) {
+			if ((temp[i] >= 32)) temp[k ++] = temp[i];
+		}
+		return new String(temp, 0, k);	
+	}
+	
+	/**
+	 * 数字字符串转BDC压缩码
+	 * @param s
+	 * rightAlign 是否右对齐
+	 * @return
+	 */
+	public static byte[] str2bcd(String s,boolean rightAlign) {
+		if (s.length() % 2 != 0) {
+			s = rightAlign?"0" + s:s+"0";
+		}
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		char[] cs = s.toCharArray();
+		for (int i = 0; i < cs.length/2; i++) {
+			int high = cs[2*i] - 48;
+			int low = cs[2*i + 1] - 48;
+			baos.write(high << 4 | low);
+		}
+		return baos.toByteArray();
+	}
+
+	/**
+	 * 数字字符串转BDC压缩码
+	 * @param s
+	 * rightAlign 是否右对齐
+	 * @return
+	 */
+	public static byte[] str2bcd(String s) {
+		return str2bcd(s,true);
+	}
+	
+	
+	/**
+	 * BCD码转字符串
+	 * @param b
+	 * @return
+	 */
+	public static String bcd2string(byte[] b) {
+		return bcd2string(b,0,b.length);
+	}
+	/**
+	 * BCD码转字符串
+	 * @param b
+	 * @return
+	 */
+	public static String bcd2string(byte[] b,int begin,int length) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = begin; i < begin+length; i++) {
+			int h = ((b[i] & 0xff) >> 4) + 48;
+			sb.append((char) h);
+			int l = (b[i] & 0x0f) + 48;
+			sb.append((char) l);
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * java二进制,字节数组,字符,十六进制,BCD编码转换 把16进制字符串转换成字节数组
+	 * 
+	 * @param hex
+	 * @return
+	 */
+	public static byte[] hexStringToByte(String hex) {
+		int len = (hex.length() / 2);
+		byte[] result = new byte[len];
+		char[] achar = hex.toCharArray();
+		for (int i = 0; i < len; i++) {
+			int pos = i * 2;
+			result[i] = (byte) ("0123456789ABCDEF".indexOf(achar[pos])<< 4|"0123456789ABCDEF".indexOf(achar[pos+1]));
+		}
+		return result;
+	}
+	
 	public static void main(String args[]) {
 		try{
+			
+			byte[] temp = stringToAscii(null);
 			byte[] s = TypeConversion.intToBytes(1);
 			String str = "123456我";
 			System.out.println(str.getBytes("GBK").length);

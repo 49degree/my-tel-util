@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.guanri.fsk.utils.TypeConversion;
 import com.guanri.fsk.view.CureLineBean;
 import com.guanri.fsk.view.WaveAnalyse;
@@ -21,7 +20,7 @@ public class FskDecode {
 	private int[] singleMaxArray = null;//固定数量的最大值数组
 	private int[] singleMinArray = null;//固定数量的最小值数组
 	private int singleMaxArrayLength = 40;//固定数量的最大值数组长度
-	private float splitParmats = 0.65f;//0，1分割参数
+	private float splitParmats = 0.58f;//0，1分割参数
 	
 	private int singleTlength0 = 0;//0信号在一个周期内的采样点数 
 	private int singleTlength1 = 0;//1信号在一个周期内的采样点数 
@@ -61,11 +60,19 @@ public class FskDecode {
 	private int nextSinglePosition = 0;
 	private int position = 0;
 	private boolean started = false;
+	
+	private boolean isFirst = true;
 	private void reviseNextSigPos(){
     	singleCount = 0;
     	nextSinglePosition = 0;
     	position = 0;
     	started = false;
+    	if(isFirst){
+    		nextSinglePosition = -(boundTlength-singleTArraylength)/2;
+    	}else{
+    		nextSinglePosition = 0;//-(boundTlength-singleTArraylength)/2;
+    	}
+    	
     	calcNextSigPos();
     }	
 	
@@ -137,8 +144,6 @@ public class FskDecode {
 	private int boundFilterValue = 0;
 	
 	private int modifyState = 0 ;
-	
-
 	public boolean decode(int sampleValue) {
 		boolean result = false;
 		//判断信号是否失真被削平
@@ -163,7 +168,6 @@ public class FskDecode {
 
 		
 		
-		//System.out.println("sampleValue:"+sampleValue);
 		
 	    //根据信号波中0或者1的较大频率的波的周期进行滤波
 		singleTIndex = singleTIndex % singleTArraylength;
@@ -191,14 +195,10 @@ public class FskDecode {
 	    
 	    splitValue = averageMaxValue*splitParmats;
 	    
-
-	    if(!hasHeader){
-	    	decodeHeader();
-	    }
-	    
 	    
 	    if (! started) {
 	    	if (boundFilterValue < splitValue)
+	    	//if(isZero)
 	    		position ++;
 	    	else
 	    		position = 0;
@@ -223,7 +223,6 @@ public class FskDecode {
 	
 	
 	
-	
 	//判断前导码 80对01和40个1
 	private int headerSingle = 2;
 	private int header01Index = 0;
@@ -234,7 +233,7 @@ public class FskDecode {
 		if (startHeader) {
 			position++;
 			if (position >= nextSinglePosition) {
-				calcNextSigPos2(false);
+				calcNextSigPos();
 				isSingle0 = boundFilterValue < splitValue;
 			}
 		} else {
@@ -243,7 +242,7 @@ public class FskDecode {
 			else
 				position = 0;
 			if (position >= (boundTlength - singleTArraylength + 1)) {
-				calcNextSigPos2(true);
+				reviseNextSigPos();
 				startHeader = true;
 				isSingle0 = true;
 			}
@@ -272,30 +271,13 @@ public class FskDecode {
 					}
 					if (header1Index >= 10) {
 						hasHeader = true;
+						reviseNextSigPos();
 					}
 				}
 			}
 
 		}
-	}
-	
-	
-	/**
-	 * 计算下一个采样点的信息
-	 */
-	int modeValue = 0;
-	private void calcNextSigPos2(boolean isStart){
-		if(isStart){
-			nextSinglePosition = boundTlength-((boundTlength - singleTArraylength)/2);
-		}else{
-			//波特周期/采样周期=(1/boundRate)/(1/sampleF)=sampleF/boundRate表示一波特周期要采集几个点,
-			//因为采样点个数只能取整数，所以会有余数fskEnCodeResult.modeValue，为了增加可靠性，把余数加入下一次进行计算
-			nextSinglePosition = (fskCodeParams.getSampleF()+modeValue)/fskCodeParams.getBoundRate();
-			modeValue = (fskCodeParams.getSampleF()+modeValue)%fskCodeParams.getBoundRate();
-		}
-		position = 0;
-	}
-	
+	}	
 	/**
 	 * 解码
 	 */
@@ -363,6 +345,7 @@ public class FskDecode {
 				byte[] source = sourceQueue.get();
 				if(fskCodeParams.getSampleByteLength()==2){//采样精度为2byte
 					for(int i=0;i<source.length/2;i++){
+						
 						if(decodeValue(TypeConversion.bytesToShort(source, i*2))){
 							byte temp = decodeValue;
 							decodeValue = 0;
@@ -370,16 +353,7 @@ public class FskDecode {
 							
 						}
 					}
-					
-//					short[] data = new short[source.length/2];
-//					for(int i=0;i<source.length/2;i++){
-//						data[i] = TypeConversion.bytesToShort(source, i*2);
-//						
-//					}
-//					new Analyze().analyze1(data, data.length);
 				}
-				
-				
 			
 			}
 		}
@@ -387,290 +361,9 @@ public class FskDecode {
 	
 	
 	
-	public class Analyze{
-		private int mDebug = 1;
-		private int stat;
-		private int sign;
-		private int sSign;
-		private int oSign;
-		private int width;
-		private int tWidth;
-		private int widthBuf[] = new int[4];
-		private int timing;
-		private int mTiming;
-		private int mLimitWidth;
-		
-		private int mHighLowThreshold;
-		
-		private int bData;
-	    private void analyze1(short aword0[], int i)
-	    {
-	        int j = 0;
-	        int ai[];
-	        int ai1[];
-	        int ai2[];
-	        int k;
-	        int l;
-	        int i1;
-	        int k1;
-	        int l1;
-	        int i2;
-	        int j2;
-	        int k2;
-	        int l2;
-	        int i3;
-	        int j3;
-	        int k3;
-	        int l3;
-	        int i4;
-	        int j4;
-	        int k4;
-	        int l4;
-	        do
-	        {
-	            if(j >= i)
-	                return;
-	            
-	    	    //记录解码过程数据，是否记录在addSourceValue方法中进行判断
-	    	    if(fskDecodeResult.isRecordDecodeInfo()){
-	    	    	fskDecodeResult.addSourceValue(aword0[j], 0, 0, 0);
-	    	    }
-	            if(stat == 0 && (aword0[j] > 16384 || -aword0[j] > 16384))
-	            {
-	                stat = 1;
-
-	                if(aword0[j] > 0)
-	                    sSign = 1;
-	                else
-	                    sSign = -1;
-	                width = 0;
-	                ai = widthBuf;
-	                ai1 = widthBuf;
-	                ai2 = widthBuf;
-	                widthBuf[3] = 0;
-	                ai2[2] = 0;
-	                ai1[1] = 0;
-	                ai[0] = 0;
-	            }
-	            if(stat != 0)
-	            {
-	                if(aword0[j] > 0)
-	                    sign = 1;
-	                else
-	                if(aword0[j] < 0)
-	                {
-	                    sign = -1;
-	                } else
-	                {
-	                    int i5 = oSign;
-	                    sign = i5;
-	                }
-	                k = oSign;
-	                l = sign;
-	                if(k != l && j + 1 < i)
-	                {
-	                    i1 = j + 1;
-	                    int j1;
-	                    if(aword0[i1] > 0)
-	                    {
-	                        j1 = 1;
-	                    } else
-	                    {
-	                        int j5 = j + 1;
-	                        if(aword0[j5] < 0)
-	                            j1 = -1;
-	                        else
-	                            j1 = -sign;
-	                    }
-	                    k1 = sign;
-	                    if(j1 != k1)
-	                    {
-	                        l1 = oSign;
-	                        sign = l1;
-	                    }
-	                }
-	                i2 = width + 1;
-	                width = i2;
-	                j2 = width;
-	                k2 = mLimitWidth;
-	                if(j2 > k2)
-	                {
-	                    if(mDebug > 2)
-	                        System.out.println("end (limit width)");
-	                    lostCarrier();
-	                }
-	                l2 = sign;
-	                i3 = oSign;
-	                if(l2 != i3)
-	                {
-	                    j3 = oSign;
-	                    k3 = sSign;
-	                    if(j3 == k3)
-	                    {
-	                        l3 = width;
-	                        tWidth = l3;
-	                    } else
-	                    {
-	                        int k5 = tWidth;
-	                        int l5 = width;
-	                        int i6 = k5 + l5;
-	                        tWidth = i6;
-	                        int ai3[] = widthBuf;
-	                        int j6 = widthBuf[2];
-	                        ai3[3] = j6;
-	                        int ai4[] = widthBuf;
-	                        int k6 = widthBuf[1];
-	                        ai4[2] = k6;
-	                        int ai5[] = widthBuf;
-	                        int l6 = widthBuf[0];
-	                        ai5[1] = l6;
-	                        int ai6[] = widthBuf;
-	                        int i7 = tWidth;
-	                        ai6[0] = i7;
-	                        if(stat == 1)
-	                        {
-	                            if(mDebug > 3)
-	                            {
-	                                StringBuilder stringbuilder = new StringBuilder("tWidth ");
-	                                int j7 = tWidth;
-	                                String s = stringbuilder.append(j7).toString();
-	                                System.out.println( s);
-	                            }
-	                            if(widthBufCheck() == 1)
-	                            {
-	                                stat = 2;
-	                                int k7 = widthBuf[0];
-	                                int l7 = widthBuf[1];
-	                                int i8 = k7 + l7;
-	                                int j8 = widthBuf[2];
-	                                int k8 = i8 + j8;
-	                                int l8 = widthBuf[3] / 2;
-	                                int i9 = k8 + l8;
-	                                timing = i9;
-	                            }
-	                        } else if(mDebug > 2)
-	                        {
-	                            StringBuilder stringbuilder1 = new StringBuilder("tWidth ");
-	                            int j9 = tWidth;
-	                            String s1 = stringbuilder1.append(j9).toString();
-	                            System.out.println( s1);
-	                        }
-	                    }
-	                    width = 0;
-	                    i4 = sign;
-	                    oSign = i4;
-	                }
-	                if(stat >= 2 && stat <= 11)
-	                {
-	                    j4 = timing + 1;
-	                    timing = j4;
-	                    k4 = timing;
-	                    l4 = mTiming;
-	                    if(k4 >= l4)
-	                    {
-	                        boolean flag;
-	                        if(widthBufCheck() == 0)
-	                            flag = true;
-	                        else
-	                            flag = false;
-	                        byteDecode(flag);
-	                        if(mDebug > 2)
-	                        	System.out.println( "-----");
-	                        timing = 0;
-	                    }
-	                }
-	            }
-	            j++;
-	        } while(true);
-	    }
-		
-	    private void lostCarrier()
-	    {
-	        if(mDebug > 1)
-	        {
-	            StringBuilder stringbuilder = new StringBuilder("lostCarrier status:");
-	            int i = stat;
-	            String s = stringbuilder.append(i).toString();
-	            System.out.println(  s);
-	        }
-	        stat = 0;
-	        width = 0;
-	        int ai[] = widthBuf;
-	        int ai1[] = widthBuf;
-	        int ai2[] = widthBuf;
-	        widthBuf[3] = 0;
-	        ai2[2] = 0;
-	        ai1[1] = 0;
-	        ai[0] = 0;
-	    }
-	    
-	    private void byteDecode(boolean flag)
-	    {
-	        if(stat != 2) {
-	            if(stat >= 3 && stat <= 10) {
-	                int j = bData >> 1;
-	                bData = j;
-	                if(flag)
-	                {
-	                    int k = bData | 0x80;
-	                    bData = k;
-	                }
-	                int l = stat + 1;
-	                stat = l;
-	            } else if(stat == 11){
-	            	fskDecodeResult.addResult((byte)bData);//记录解码结果
-	                if(mDebug > 0) {
-	                    StringBuilder stringbuilder = new StringBuilder("byteData ");
-	                    String s = Integer.toHexString(bData & 0xff);
-	                    String s1 = stringbuilder.append(s).toString();
-	                    System.out.println(s1);
-	                }
-	                bData = 0;
-	                stat = 0;
-	            }
-	        }else{
-	            bData = 0;
-	            int i = stat + 1;
-	            stat = i;
-	        }
-	        return ;
-
-	    }
-	    
-	    private int widthBufCheck()
-	    {
-	      int[] arrayOfInt = this.widthBuf;
-	      int j = arrayOfInt.length;
-	      int k = 0;
-	      int i;
-
-	      while (true){
-	          if (k >= j)
-	          {
-	            i = 1;
-	          }else{
-	              int m = arrayOfInt[k];
-	              if (m == 0)
-	              {
-	                i = -1;
-	                continue;
-	              }
-	              int n = mHighLowThreshold;
-	              if (m > n){
-	              	i = 0;
-	              	break;
-	              }
-	          }
-	          k += 1;
-	      }
-	      return i;
-	    }
-		
-	}
-	
 	
 
-    
+	
 	public static String getASCString(byte[] data,int dataIndex) {
 		byte[] temp = new byte[dataIndex];
 		System.arraycopy(data, 0, temp, 0, temp.length);

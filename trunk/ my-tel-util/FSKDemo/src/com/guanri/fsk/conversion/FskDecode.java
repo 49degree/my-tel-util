@@ -190,11 +190,14 @@ public class FskDecode {
 	    //boolean isZero = com.guanri.fsk.utils.Demo.decode(sampleValue);
 	    
 	    splitValue = averageMaxValue*splitParmats;
+	    
+
+	    if(!hasHeader){
+	    	decodeHeader();
+	    }
+	    
+	    
 	    if (! started) {
-	    	if(!decodeHeader()){
-	    		return result;
-	    	}
-	    	
 	    	if (boundFilterValue < splitValue)
 	    		position ++;
 	    	else
@@ -227,9 +230,7 @@ public class FskDecode {
 	private int header1Index = 0;
 	private boolean hasHeader = false;
 	private boolean startHeader = false;
-	private boolean decodeHeader(){
-		boolean result = false;
-    	
+	private void decodeHeader(){
 		if (startHeader) {
 			position++;
 			if (position >= nextSinglePosition) {
@@ -275,10 +276,7 @@ public class FskDecode {
 				}
 			}
 
-		}else{
-    		result = true;
-    	}
-    	return result;
+		}
 	}
 	
 	

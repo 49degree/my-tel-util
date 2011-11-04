@@ -32,13 +32,12 @@ public class Test {
 	}
 
 	public static void encode(String fileName){
-		FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,11025,2,1200);
+		
 		FskEncode fskEncode = new FskEncode(fskCodeParams);
 		//进行编码
-		byte[] s = "FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,11025,2,1200)".getBytes();
-		byte[] bu = new byte[2+s.length];
-		System.arraycopy(s, 0, bu, 0, s.length);
-		FskEnCodeResult fskEnCodeResult = fskEncode.encode(bu);
+		byte[] s = "FskEncode fskEncode = new FskEncode(fskCodeParams)".getBytes();
+
+		FskEnCodeResult fskEnCodeResult = fskEncode.encode(s);
 		//编码结束
 //		//保存wave文件
 //		WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams,fskEnCodeResult);
@@ -58,7 +57,8 @@ public class Test {
 			final WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams);
 			waveFileParams.createFile(fileName);
 			
-			waveFileParams.appendData(fskEnCodeResult.code);
+			waveFileParams.appendData(fskEnCodeResult.code,fskEnCodeResult.index);
+			
 			waveFileParams.closeFile();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -68,7 +68,6 @@ public class Test {
 	}
 	static byte[] read = null;
 	public static void decode(String fileName){
-		FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,11025,2,1200);
 		
 		//读取文件
 		 
@@ -76,13 +75,13 @@ public class Test {
 			File waveFile = new File(fileName);
 			FileInputStream inf = new FileInputStream(waveFile);
 			read = new byte[(int)waveFile.length()-44];
-			//System.out.println("read"+read.length);
+			
 			inf.read(read, 0, 44);
 			inf.read(read,0,(int)waveFile.length()-44);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
+		//System.out.println("read"+read.length);
 		final SourceQueue sourceQueue = new SourceQueue();
 		sourceQueue.put(read);
 		
@@ -95,14 +94,19 @@ public class Test {
 			}
 		}.start();
 		try{
-			Thread.sleep(10);
+			Thread.sleep(1000);
 		}catch(InterruptedException e){
 			e.printStackTrace();
 		}
 		fskDecode.isContinue = false;
 		
-		System.out.println("解码结果："+new String(fskDecodeResult.data,0,fskDecodeResult.dataIndex));
-		
+		if(fskDecodeResult.dataIndex>0){
+			System.out.println("解码结果："+new String(fskDecodeResult.data,0,fskDecodeResult.dataIndex));
+			putASC(fskDecodeResult.data);
+			
+		}else{
+			System.out.println("无结果：");
+		}
 		//绘图
 		List<CureLineBean> list = new ArrayList<CureLineBean>();
 
@@ -120,12 +124,15 @@ public class Test {
 		list.add(cureLineBean);
 		
 		WaveAnalyse test = new WaveAnalyse(list);
-		test.setVisible(true);			
+		test.setVisible(true);			 
 	}
-	
+	static FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,11025,2,1200);
 	public static void main(String[] args){
-		String fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
-		encode(fileName);
+		String fileName = System.getProperty("user.dir")+"/out_record_1320398196967.wav";//"/"+new Date().getTime()+".wav";
+		//String fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
+		//encode(fileName);
 		decode(fileName);
+		
+		
 	}
 }

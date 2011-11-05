@@ -3,6 +3,9 @@ package com.guanri.fsk.conversion;
 import java.util.ArrayList;
 
 public class FskDecodeResult {
+	public final static int ZERO = Short.MIN_VALUE*2;
+	public final static int ONE = Short.MAX_VALUE*2;
+	
 	private boolean recordInfo = false;//是否记录解码过程数据
 	
 	public byte[] data = null;//解码后的数据
@@ -13,6 +16,8 @@ public class FskDecodeResult {
 	public int[] singleFilter = null;//第一次滤波后数组
 	public int[] boundFilter = null;//第二次滤波后数组
 	public int[] maxAverage = null;//最大平均值*0.55
+	
+	public int[] valueZeroOne = null;//0，1值
 	
 	public FskDecodeResult(){
 		this(false);
@@ -35,6 +40,7 @@ public class FskDecodeResult {
 			singleFilter = new int[1024];
 			boundFilter = new int[1024];
 			maxAverage = new int[1024];
+			valueZeroOne  = new int[1024];
 			sourceIndex = 0;
 		}else if(sourceIndex>=sourceValue.length){
 			int[] temp = sourceValue;
@@ -52,6 +58,10 @@ public class FskDecodeResult {
 			temp = maxAverage;
 			maxAverage = new int[sourceIndex+1024];
 			System.arraycopy(temp, 0, maxAverage, 0, sourceIndex);
+			
+			temp = valueZeroOne;
+			valueZeroOne = new int[sourceIndex+1024];
+			System.arraycopy(temp, 0, valueZeroOne, 0, sourceIndex);
 			temp = null;
 		}
 		
@@ -59,6 +69,12 @@ public class FskDecodeResult {
 		singleFilter[sourceIndex] = singleFilterValue;
 		boundFilter[sourceIndex] = boundFilterValue;
 		maxAverage[sourceIndex] = maxAverageValue;
+		if(boundFilterValue>maxAverageValue){
+			valueZeroOne[sourceIndex] = ONE;
+		}else{
+			valueZeroOne[sourceIndex] = ZERO;
+		}
+		
 		sourceIndex++;
 	}
 	

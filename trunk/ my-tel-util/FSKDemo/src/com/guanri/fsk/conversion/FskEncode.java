@@ -66,6 +66,11 @@ public class FskEncode {
 		for(byte sourceData:source){
 			encodeByte(sourceData,fskEnCodeResult);
 		}
+		
+		//发送前导码40个1
+		for(int i=0;i<40;i++){
+			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
+		}
 		return fskEnCodeResult;
 	}
 	
@@ -97,7 +102,7 @@ public class FskEncode {
 	 * @return
 	 */
 	public int getFskLength(int sourceLength){
-		float codeLength = fskCodeParams.getSampleF()*(sourceLength*10+80*2+40)/new Float(fskCodeParams.getBoundRate());//80*2+40前导码长度80对01 40个1
+		float codeLength = fskCodeParams.getSampleF()*(sourceLength*10+80*2+80)/new Float(fskCodeParams.getBoundRate());//80*2+40前导码长度80对01 40个1
 		
 		return Math.round(new Float(codeLength+0.5))*fskCodeParams.getSampleByteLength();
 	}

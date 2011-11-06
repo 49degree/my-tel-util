@@ -1,14 +1,7 @@
 package com.guanri.fsk.conversion;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.guanri.fsk.utils.Test;
 import com.guanri.fsk.utils.TypeConversion;
-import com.guanri.fsk.view.CureLineBean;
-import com.guanri.fsk.view.WaveAnalyse;
 
 public class FskDecode {
 	private FskCodeParams fskCodeParams = null;//采样参数
@@ -20,7 +13,7 @@ public class FskDecode {
 	private int[] singleMaxArray = null;//固定数量的最大值数组
 	private int[] singleMinArray = null;//固定数量的最小值数组
 	private int singleMaxArrayLength = 40;//固定数量的最大值数组长度
-	private float splitParmats = 0.65f;//0，1分割参数
+	private float splitParmats = 0.62f;//0，1分割参数
 	
 	private int singleTlength0 = 0;//0信号在一个周期内的采样点数 
 	private int singleTlength1 = 0;//1信号在一个周期内的采样点数 
@@ -68,7 +61,7 @@ public class FskDecode {
     	position = 0;
     	started = false;
 //    	if(isFirst){
-    		nextSinglePosition = -2;//-(boundTlength-singleTArraylength)/2;
+    		nextSinglePosition = 0;//-(boundTlength-singleTArraylength)/2;
 //    	}else{
 //    		nextSinglePosition = 0;//-(boundTlength-singleTArraylength)/2;
 //    	}
@@ -104,6 +97,8 @@ public class FskDecode {
 		lastValue2 = lastValue1;
 		lastValue1 = lastValue;
 		lastValue = sampleValue;
+
+		
 		if (lastValue <= lastValue1 && lastValue2 <= lastValue1) { // 判断是否有最大值
 			if (lastValue1 < 1000)
 				return;
@@ -137,33 +132,30 @@ public class FskDecode {
 	private int singleTTotalValue = 0;
 	private int boundTIndex = 0;
 	private int boundTTotalValue = 0;
-	private boolean isSingle0 = false;
+	private boolean isSingle0 = false,isSingle0Temp= false,isSingle0Last = false;
 	double splitValue = 0;
 	
 	private int singleFilterValue = 0;
 	private int boundFilterValue = 0;
 	
-	private int modifyState = 0 ;
+	private int lastSampleValue = 0;
+	private int lastSampleValue1 = 0;
+	private int lastSampleValue2 = 0;
 	public boolean decode(int sampleValue) {
 		boolean result = false;
 		//判断信号是否失真被削平
-//		if(Math.abs(sampleValue)<=32750){
-//			modifyState =0 ;
-//		}else if(Math.abs(sampleValue)>32500){
-//			if(modifyState==0){
-//				sampleValue = Math.round(0.75f*sampleValue);
-//				modifyState++;
-//			}else if(modifyState==1){
-//				modifyState++;
-//			}else if(modifyState==2){
-//				sampleValue = Math.round(0.75f*sampleValue);
-//				modifyState++;
-//			}else if(modifyState==3){
-//				sampleValue = Math.round(0.55f*sampleValue);
-//				modifyState=0;
-//			}
-//			
+//		lastSampleValue2 = lastSampleValue1;
+//		lastSampleValue1= lastSampleValue;
+//		lastSampleValue = sampleValue;
+//		if(lastSampleValue2>0&&lastSampleValue1>0&&lastSampleValue>0&&
+//				lastSampleValue2>lastSampleValue1&&lastSampleValue1<lastSampleValue){//被削顶了
+//			lastSampleValue1 =  (lastSampleValue2>lastSampleValue?lastSampleValue2:lastSampleValue)+300;
 //		}
+//		if(lastSampleValue2<0&&lastSampleValue1<0&&lastSampleValue<0&&
+//				lastSampleValue2<lastSampleValue1&&lastSampleValue1>lastSampleValue){//被削顶了
+//			lastSampleValue1 =  (lastSampleValue2<lastSampleValue?lastSampleValue2:lastSampleValue)-300;
+//		}
+//		sampleValue = lastSampleValue1;
 		
 
 		
@@ -195,32 +187,63 @@ public class FskDecode {
 	    
 	    splitValue = averageMaxValue*splitParmats;
 	    
-	    
-	    if (! started) {
-	    	if (boundFilterValue < splitValue)
-	    	//if(isZero)
-	    		position ++;
-	    	else
-	    		position = 0;
-
-	      if (position >= (boundTlength - singleTArraylength + 1)) {
-	    	  reviseNextSigPos();
-	    	  started = true;
-	    	  isSingle0 = true;
-	    	  result = true;
-	      }
-	    } else {
+	    isSingle0Last = isSingle0Temp;
+	    isSingle0 = isSingle0Temp = boundFilterValue < splitValue;
+		if (!started) {
 	    	position ++;
-	    	if (position >= nextSinglePosition) {
-	    		calcNextSigPos();
-	    		isSingle0 = boundFilterValue < splitValue;
-	    		result = true;
+	    	if(isSingle0Temp){
+	    		if(position>=boundTlength){
+	    			result = true;
+	    			position = 0;
+	    			started = true;
+	    		}
+	    		
+	    	}else{
+	    		if(position>(boundTlength - singleTArraylength+1)){
+	    			result = true;
+	    			started = true;
+	    			isSingle0 = true;
+	    		}
+	    		position = 1;
 	    	}
+			
+			
+//			if (boundFilterValue < splitValue)
+//				position++;
+//			else
+//				position = 0;
+//
+//			if (position > (boundTlength - singleTArraylength)) {
+//				reviseNextSigPos();
+//				started = true;
+//				isSingle0 = true;
+//				result = true;
+//			}
+		} else {
+	    	position ++;
+	    	if(isSingle0Last==isSingle0Temp){
+	    		if(position>=boundTlength){
+	    			result = true;
+	    			position = 0;
+	    		}
+	    	}else{
+	    		if((isSingle0Last&&position>(boundTlength - singleTArraylength+1))||(!isSingle0Last&&position>=singleTArraylength)){
+	    			result = true;
+	    			isSingle0 = isSingle0Last;
+	    		}
+	    		position = 1;
+	    	}
+	    	
+//	    	position ++;
+//	    	if (position >= nextSinglePosition) {
+//	    		calcNextSigPos();
+//	    		isSingle0 = boundFilterValue < splitValue;
+//	    		result = true;
+//	    	}
 	    }
 		
 		return result;
 	}
-	
 	
 	
 	//判断前导码 80对01和40个1
@@ -362,7 +385,14 @@ public class FskDecode {
 	
 	
 	
-
+	public static void main(String[] args){
+		System.out.println("FskEnCodeResult:"+TypeConversion.byteTo0XString("FskEnCodeResult".getBytes()));
+		String fileName = System.getProperty("user.dir")+"/out_record_1320587864166.wav";//"/"+new Date().getTime()+".wav";
+		//fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
+		//Test.encode(fileName);
+		Test.decode(fileName);
+		
+	}
 	
 	public static String getASCString(byte[] data,int dataIndex) {
 		byte[] temp = new byte[dataIndex];

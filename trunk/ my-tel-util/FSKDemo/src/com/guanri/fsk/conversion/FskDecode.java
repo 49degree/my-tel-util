@@ -13,7 +13,7 @@ public class FskDecode {
 	private int[] singleMaxArray = null;//固定数量的最大值数组
 	private int[] singleMinArray = null;//固定数量的最小值数组
 	private int singleMaxArrayLength = 40;//固定数量的最大值数组长度
-	private float splitParmats = 0.62f;//0，1分割参数
+	public float splitParmats = 0.62f;//0，1分割参数
 	
 	private int singleTlength0 = 0;//0信号在一个周期内的采样点数 
 	private int singleTlength1 = 0;//1信号在一个周期内的采样点数 
@@ -386,8 +386,8 @@ public class FskDecode {
 	
 	
 	public static void main(String[] args){
-		System.out.println("FskEnCodeResult:"+TypeConversion.byteTo0XString("FskEnCodeResult".getBytes()));
-		String fileName = System.getProperty("user.dir")+"/out_record_1320587864166.wav";//"/"+new Date().getTime()+".wav";
+		//System.out.println("FskEnCodeResult:"+TypeConversion.byteTo0XString("FskEnCodeResult".getBytes()));
+		String fileName = System.getProperty("user.dir")+"/in_record_1320659144559.wav";//"/"+new Date().getTime()+".wav";
 		//fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
 		//Test.encode(fileName);
 		Test.decode(fileName);

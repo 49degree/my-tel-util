@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.io.RandomAccessFile;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +39,7 @@ import com.guanri.fsk.conversion.SourceQueue;
 import com.guanri.fsk.conversion.WaveFileParams;
 import com.guanri.fsk.pc.AudioOperator;
 import com.guanri.fsk.pc.AudioOperator.AudioReceiveDataHandler;
+import com.guanri.fsk.utils.TypeConversion;
 
 
 
@@ -352,12 +355,19 @@ public class RecordPlayView extends  JFrame{
 			
 			final JButton begin = new JButton("开始");
 			final JButton stop = new JButton("停止");
+			
+			final JButton autoSend = new JButton("开始自动发送数据");
+			
+			
 			stop.setEnabled(false);
 			begin.setEnabled(true);
-			begin.addActionListener(new ActionListener(){
+			autoSend.setEnabled(true);
+			
+			autoSend.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
 					stop.setEnabled(true);
 					begin.setEnabled(false);
+					autoSend.setEnabled(false);
 					audioOperator.start();
 					
 					try{
@@ -366,14 +376,38 @@ public class RecordPlayView extends  JFrame{
 						waveRecFileParams.createFile(System.getProperty("user.dir")+"/in_record_"+new Date().getTime()+".wav");
 						
 						audioOperator.setAudioReceiveDataHandler(new ReceiveDataHandler(recordImagePanel,sourceQueue,waveRecFileParams));
-						playDataHandler = new PlayDataHandler(playImagePanel,fskEncode,audioOperator,wavePlayFileParams);
+						playDataHandler = new PlayDataHandler(playImagePanel,fskEncode,audioOperator,wavePlayFileParams,true);
 						playDataHandler.start();
 						
 					}catch(Exception ex){
 						
 					}
 					//解码
-					decode(begin,sourceQueue);
+					decode(begin,sourceQueue,true);
+				}
+			});
+			
+			begin.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					stop.setEnabled(true);
+					begin.setEnabled(false);
+					autoSend.setEnabled(false);
+					audioOperator.start();
+					
+					try{
+						
+						wavePlayFileParams.createFile(System.getProperty("user.dir")+"/out_record_"+new Date().getTime()+".wav");
+						waveRecFileParams.createFile(System.getProperty("user.dir")+"/in_record_"+new Date().getTime()+".wav");
+						
+						audioOperator.setAudioReceiveDataHandler(new ReceiveDataHandler(recordImagePanel,sourceQueue,waveRecFileParams));
+						playDataHandler = new PlayDataHandler(playImagePanel,fskEncode,audioOperator,wavePlayFileParams,false);
+						playDataHandler.start();
+						
+					}catch(Exception ex){
+						
+					}
+					//解码
+					decode(begin,sourceQueue,false);
 				}
 			});
 			stop.addActionListener(new ActionListener(){
@@ -394,6 +428,7 @@ public class RecordPlayView extends  JFrame{
 					
 					stop.setEnabled(false);
 					begin.setEnabled(true);
+					autoSend.setEnabled(true);
 					
 					
 				}
@@ -414,6 +449,8 @@ public class RecordPlayView extends  JFrame{
 			add(sendWav, constraints, 2, 2, 1, 1);
 			add(recWavFile, constraints, 3, 2, 1, 1);
 			add(recWav, constraints, 4, 2, 1, 1);
+			add(autoSend, constraints, 5, 2, 1, 1);
+			
 			
 		}
 		
@@ -433,7 +470,20 @@ public class RecordPlayView extends  JFrame{
 	 * @param begin
 	 * @param sourceQueue
 	 */
-	public  void decode(final JButton begin,SourceQueue sourceQueue){
+	private static String sendString = "receivStr += new String(fskDecodeResult.data,2";//自动测试字符串
+	private static SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private RandomAccessFile autoTestAccessWriter = null;
+	public  void decode(final JButton begin,SourceQueue sourceQueue,final boolean isAutoTest){
+		
+		//自动测试结果记录文件
+		if(isAutoTest){
+			try{
+				autoTestAccessWriter = new RandomAccessFile(System.getProperty("user.dir")+"/auto_test_result.text", "rw");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
 		final FskDecodeResult fskDecodeResult = new FskDecodeResult(true);
 		final FskDecode fskDecode = new FskDecode(fskCodeParams,sourceQueue,fskDecodeResult);
 		new Thread(){
@@ -444,20 +494,48 @@ public class RecordPlayView extends  JFrame{
 		
 		final DataCheckHandler dataCheckHandler = new DataCheckHandler(fskDecodeResult);
 		dataCheckHandler.start();
+		
 		new Thread(){
 			public void run(){
-				
+				String receivStr = "";
 				while(!begin.isEnabled()){
-					if(fskDecodeResult.dataIndex>0){
-						//System.out.println("解码结果："+new String(fskDecodeResult.data,0,fskDecodeResult.dataIndex));
-						recmsgT.setText(new String(fskDecodeResult.data,0,fskDecodeResult.dataIndex));
+					byte[] dataResult = fskDecodeResult.getData();
+					if(dataResult!=null){
+						if(isAutoTest){//自动测试
+							receivStr = new String(dataResult);
+							try{
+								autoTestAccessWriter.write((sf.format(new Date())+"--接收字符串："+receivStr+"\n").getBytes());
+								recmsgT.setText(receivStr);
+								if(!receivStr.equals(sendString)){
+									autoTestAccessWriter.write((sf.format(new Date())+"--错误："+receivStr+"\n").getBytes());
+
+								}
+							}catch(Exception e){
+								
+							}
+
+						}else{
+							receivStr += new String(dataResult);
+							recmsgT.setText(receivStr);
+						}
+
 					}else{
 						//System.out.println("无结果：");
 					}
 					
 					try{
+						
 						Thread.sleep(1000);
 					}catch(InterruptedException e){
+						e.printStackTrace();
+					}
+				}
+				
+				//自动测试结果记录文件
+				if(isAutoTest){
+					try{
+						autoTestAccessWriter.close();
+					}catch(Exception e){
 						e.printStackTrace();
 					}
 				}
@@ -506,32 +584,48 @@ public class RecordPlayView extends  JFrame{
 		WaveFileParams wavePlayFileParams;
 		boolean running = true;
 		String value = "";
-		public PlayDataHandler(ImagePanel playImagePanel,FskEncode fskEncode,AudioOperator audioOperator,WaveFileParams wavePlayFileParams){
+		boolean isAutoTest = false;
+		public PlayDataHandler(ImagePanel playImagePanel,FskEncode fskEncode,AudioOperator audioOperator,WaveFileParams wavePlayFileParams,boolean isAutoTest){
 			this.playImagePanel = playImagePanel;
 			this.fskEncode = fskEncode;
 			this.audioOperator = audioOperator;
 			this.wavePlayFileParams = wavePlayFileParams;
+			this.isAutoTest = isAutoTest;
 		}
 		public void run(){
 			String temp = null;
 			while(running){
-				temp = sendmsgT.getText().trim();
-
-				if("".equals(temp)||(value!=null&&value.trim().equals(temp))||value.indexOf(temp)>-1){
+				
+				if(isAutoTest){//自动测试
+					temp = sendString;
 					try{
-						Thread.sleep(1000);
+						Thread.sleep(3000);
+						autoTestAccessWriter.write((sf.format(new Date())+"--发送字符串："+temp+"\n").getBytes());
+						sendmsgT.setText(temp);
 					}catch(Exception e){
 						
 					}
-					continue;
-				}
-				
-				//System.out.println("+++++++");
-				if(temp.indexOf(value)>-1){
 					
-					temp = temp.substring(value.length());
+				}else{
+					temp = sendmsgT.getText().trim();
+					if("".equals(temp)||(value!=null&&value.trim().equals(temp))||value.indexOf(temp)>-1){
+						try{
+							Thread.sleep(1000);
+						}catch(Exception e){
+							
+						}
+						continue;
+					}
+					//System.out.println("+++++++");
+					if(temp.indexOf(value)>-1){
+						
+						temp = temp.substring(value.length());
+					}
+					value = sendmsgT.getText().trim();
 				}
-				value = sendmsgT.getText().trim();
+
+				
+				
 				FskEnCodeResult  fskEnCodeResult = fskEncode.encode(temp.getBytes());
 				audioOperator.playAudio(fskEnCodeResult.code,fskEnCodeResult.index);
 				
@@ -561,7 +655,6 @@ public class RecordPlayView extends  JFrame{
 			while(running){
 				temp = sendmsgT.getText().trim();
 				if("".equals(temp)){
-					fskDecodeResult.dataIndex = 0;
 					recmsgT.setText("");
 				}
 				try{
@@ -575,6 +668,7 @@ public class RecordPlayView extends  JFrame{
 		}
 		
 	}
+	
 	
 	public static void main(String[] args)
 	{

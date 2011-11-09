@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.swing.JButton;
 
 import com.guanri.fsk.conversion.FskCodeParams;
 import com.guanri.fsk.conversion.FskDecode;
@@ -16,8 +19,13 @@ import com.guanri.fsk.conversion.FskEnCodeResult;
 import com.guanri.fsk.conversion.FskEncode;
 import com.guanri.fsk.conversion.SourceQueue;
 import com.guanri.fsk.conversion.WaveFileParams;
+import com.guanri.fsk.pc.AudioOperator;
+import com.guanri.fsk.pc.AudioOperator.AudioReceiveDataHandler;
 import com.guanri.fsk.view.CureLineBean;
 import com.guanri.fsk.view.WaveAnalyse;
+import com.guanri.fsk.view.RecordPlayView.DataCheckHandler;
+import com.guanri.fsk.view.RecordPlayView.PlayDataHandler;
+import com.guanri.fsk.view.RecordPlayView.ReceiveDataHandler;
 
 public class Test {
 
@@ -31,28 +39,15 @@ public class Test {
 		System.out.println("解码字符: " +  new String(Data, 0, k));	
 	}
 
+	
 	public static void encode(String fileName){
 		
 		FskEncode fskEncode = new FskEncode(fskCodeParams);
 		//进行编码
-		byte[] s = "hello world".getBytes();
+		byte[] s = ("4safdafFskCodeParams5FskCodeParams").getBytes(); 
 
 		FskEnCodeResult fskEnCodeResult = fskEncode.encode(s);
-		//编码结束
-//		//保存wave文件
-//		WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams,fskEnCodeResult);
-//		byte[] waveByte = waveFileParams.parseWaveToByte();
-//		String fileName = System.getProperty("user.dir")+"/in_record_1320224169511.wav";
-//		try{
-//			File waveFile = new File(fileName);
-//			if(!waveFile.exists()){
-//				waveFile.createNewFile();
-//			}
-//			FileOutputStream fout = new FileOutputStream(waveFile);
-//			fout.write(waveByte);
-//		}catch(Exception e){
-//			e.printStackTrace(); 
-//		}
+
 		try{
 			final WaveFileParams waveFileParams = new WaveFileParams(fskCodeParams);
 			waveFileParams.createFile(fileName);
@@ -94,18 +89,17 @@ public class Test {
 			}
 		}.start();
 		try{
-			Thread.sleep(1000);
+			Thread.sleep(10000);
 		}catch(InterruptedException e){
 			e.printStackTrace();
 		}
 		fskDecode.isContinue = false;
-		
-		if(fskDecodeResult.dataIndex>0){
-			System.out.println("解码结果："+TypeConversion.byteTo0XString(fskDecodeResult.data,0,fskDecodeResult.dataIndex));//,0,fskDecodeResult.dataIndex));
-			putASC(fskDecodeResult.data);
+		byte[] dataResult = fskDecodeResult.getData();
+		while(dataResult!=null){
+			System.out.println("解码结果："+TypeConversion.byteTo0XString(dataResult,0,dataResult.length));//,0,fskDecodeResult.dataIndex));
+			putASC(dataResult);
+			dataResult = fskDecodeResult.getData();
 			
-		}else{
-			System.out.println("无结果：");
 		}
 		//绘图
 		List<CureLineBean> list = new ArrayList<CureLineBean>();
@@ -129,9 +123,9 @@ public class Test {
 	static FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,11025,2,1200);
 	public static void main(String[] args){
 		String fileName = System.getProperty("user.dir")+"/in_record_1320418813953.wav";//"/"+new Date().getTime()+".wav";
-		//String fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
-		//encode(fileName);
-		decode(fileName);
+		fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
+		encode(fileName);
+		decode(fileName); 
 		
 		
 	}

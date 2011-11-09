@@ -8,7 +8,11 @@ public class SourceQueue {
 		sourceList.addLast(o); // 尾部添加元素
 	}
 	public synchronized byte[] get() {
-		return sourceList.removeFirst();// 从前面删除
+		if(sourceList.isEmpty()){
+			return null;
+		}else{
+			return sourceList.removeFirst();// 从前面删除
+		}
 	}
 
 	public synchronized boolean empty() {

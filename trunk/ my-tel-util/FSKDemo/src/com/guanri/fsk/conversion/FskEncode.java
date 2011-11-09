@@ -60,14 +60,13 @@ public class FskEncode {
 		fskEnCodeResult.signal1Degree = 2*Math.PI*fskCodeParams.getF1()/fskCodeParams.getBoundRate();//表示1信号区间的角度
 		
 		//发送前导码
-		encodeHeader(fskEnCodeResult);
-		//发送数据长度
-		encodeDataLength(fskEnCodeResult,(short)source.length);
+		encodeGuideCode(fskEnCodeResult);
+		//发送数据包头
+		encodeHeaderData(fskEnCodeResult,(short)source.length);
 		//对数据进行编码
 		for(byte sourceData:source){
 			encodeByte(sourceData,fskEnCodeResult);
 		}
-		
 		//发送结束码40个1
 		for(int i=0;i<40;i++){
 			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
@@ -79,14 +78,12 @@ public class FskEncode {
 	 * 发送前导码
 	 * @param fskEnCodeResult
 	 */
-	public void encodeHeader(FskEnCodeResult fskEnCodeResult){
+	public void encodeGuideCode(FskEnCodeResult fskEnCodeResult){
 		//发送前导码80对01
 		for(int i=0;i<80;i++){
 			encode(fskEnCodeResult,FskEncode.SINGLE_ZERO);
 			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
 		}
-		
-		
 		//发送前导码40个1
 		for(int i=0;i<40;i++){
 			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
@@ -96,14 +93,21 @@ public class FskEncode {
 	
 	/**
 	 * 发送数据长度
+	 * 数据头：  包头（1字节）	+长度(HEX2)+命令ID (1)
+	 * 包头：‘M’是固定的
+	 * 长度：除包头、长度和校验和外剩余数据的总长度 
+	 *  命令ID：固定为00 
 	 * @param fskEnCodeResult
 	 */
-	public void encodeDataLength(FskEnCodeResult fskEnCodeResult,short dataLength){
-		byte[] lengthSource = TypeConversion.shortToBytes(dataLength);
+	public void encodeHeaderData(FskEnCodeResult fskEnCodeResult,short dataLength){
+		byte[] lengthSource = TypeConversion.shortToBytesEx(dataLength);
+		
+		encodeByte((byte)0x4D,fskEnCodeResult);//包头：‘M’是固定的
 		//fskEnCodeResult
 		for(byte sourceData:lengthSource){
 			encodeByte(sourceData,fskEnCodeResult);
 		}
+		encodeByte((byte)0x00,fskEnCodeResult);//命令ID：固定为00 
 		
 		
 	}
@@ -115,7 +119,11 @@ public class FskEncode {
 	 * 
 	 * (波特周期/采样周期)*源数据长度*10*采样数据长度
 	 * 
-	 * sourceLength+2表示长度+2长度标识位
+	 * sourceLength+4(数据头)   
+	 * 数据头：  包头（1字节）	+长度(HEX2)+命令ID (1)
+	 * 包头：‘M’是固定的
+	 * 长度：除包头、长度和校验和外剩余数据的总长度 
+	 *  命令ID：固定为00 
 	 * 
 	 * 10表示一个字节8位加上起始位0和结束位1共10位
 	 * 采样数据长度 单位为字节
@@ -123,7 +131,7 @@ public class FskEncode {
 	 * @return
 	 */
 	public int getFskLength(int sourceLength){
-		float codeLength = fskCodeParams.getSampleF()*((sourceLength+2)*10+80*2+80)/new Float(fskCodeParams.getBoundRate());//80*2+40前导码长度80对01 40个1
+		float codeLength = fskCodeParams.getSampleF()*((sourceLength+4)*10+80*2+80)/new Float(fskCodeParams.getBoundRate());//80*2+80前导码长度80对01 40个1(首尾各一段)
 		
 		return Math.round(new Float(codeLength+0.5))*fskCodeParams.getSampleByteLength();
 	}

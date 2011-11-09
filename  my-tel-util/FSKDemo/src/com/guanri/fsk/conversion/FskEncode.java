@@ -61,19 +61,24 @@ public class FskEncode {
 		
 		//发送前导码
 		encodeHeader(fskEnCodeResult);
-
+		//发送数据长度
+		encodeDataLength(fskEnCodeResult,(short)source.length);
 		//对数据进行编码
 		for(byte sourceData:source){
 			encodeByte(sourceData,fskEnCodeResult);
 		}
 		
-		//发送前导码40个1
+		//发送结束码40个1
 		for(int i=0;i<40;i++){
 			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
 		}
 		return fskEnCodeResult;
 	}
 	
+	/**
+	 * 发送前导码
+	 * @param fskEnCodeResult
+	 */
 	public void encodeHeader(FskEnCodeResult fskEnCodeResult){
 		//发送前导码80对01
 		for(int i=0;i<80;i++){
@@ -81,6 +86,7 @@ public class FskEncode {
 			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
 		}
 		
+		
 		//发送前导码40个1
 		for(int i=0;i<40;i++){
 			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
@@ -88,6 +94,19 @@ public class FskEncode {
 		
 	}
 	
+	/**
+	 * 发送数据长度
+	 * @param fskEnCodeResult
+	 */
+	public void encodeDataLength(FskEnCodeResult fskEnCodeResult,short dataLength){
+		byte[] lengthSource = TypeConversion.shortToBytes(dataLength);
+		//fskEnCodeResult
+		for(byte sourceData:lengthSource){
+			encodeByte(sourceData,fskEnCodeResult);
+		}
+		
+		
+	}
 	
 	/**
 	 * 计算 编码以后的数据长度
@@ -96,13 +115,15 @@ public class FskEncode {
 	 * 
 	 * (波特周期/采样周期)*源数据长度*10*采样数据长度
 	 * 
+	 * sourceLength+2表示长度+2长度标识位
+	 * 
 	 * 10表示一个字节8位加上起始位0和结束位1共10位
 	 * 采样数据长度 单位为字节
 	 * @param sourceLength
 	 * @return
 	 */
 	public int getFskLength(int sourceLength){
-		float codeLength = fskCodeParams.getSampleF()*(sourceLength*10+80*2+80)/new Float(fskCodeParams.getBoundRate());//80*2+40前导码长度80对01 40个1
+		float codeLength = fskCodeParams.getSampleF()*((sourceLength+2)*10+80*2+80)/new Float(fskCodeParams.getBoundRate());//80*2+40前导码长度80对01 40个1
 		
 		return Math.round(new Float(codeLength+0.5))*fskCodeParams.getSampleByteLength();
 	}

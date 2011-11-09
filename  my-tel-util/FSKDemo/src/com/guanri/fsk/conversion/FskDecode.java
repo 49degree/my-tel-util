@@ -13,7 +13,7 @@ public class FskDecode {
 	private int[] singleMaxArray = null;//固定数量的最大值数组
 	private int[] singleMinArray = null;//固定数量的最小值数组
 	private int singleMaxArrayLength = 40;//固定数量的最大值数组长度
-	public float splitParmats = 0.62f;//0，1分割参数
+	public float splitParmats = 0.58f;//0，1分割参数
 	
 	private int singleTlength0 = 0;//0信号在一个周期内的采样点数 
 	private int singleTlength1 = 0;//1信号在一个周期内的采样点数 
@@ -251,55 +251,34 @@ public class FskDecode {
 	private int header01Index = 0;
 	private int header1Index = 0;
 	private boolean hasHeader = false;
-	private boolean startHeader = false;
-	private void decodeHeader(){
-		if (startHeader) {
-			position++;
-			if (position >= nextSinglePosition) {
-				calcNextSigPos();
-				isSingle0 = boundFilterValue < splitValue;
-			}
-		} else {
-			if (boundFilterValue < splitValue)
-				position++;
-			else
-				position = 0;
-			if (position >= (boundTlength - singleTArraylength + 1)) {
-				reviseNextSigPos();
-				startHeader = true;
-				isSingle0 = true;
-			}
-		}
-		
-		
+	private boolean decodeHeader(){
     	//判断前导码 80对01和40个1
-		if (!hasHeader) {
-			System.out.println(header01Index+":"+header1Index+":"+hasHeader);
-			if(startHeader){
-				if (header01Index < 80) {
-					if (headerSingle > 0 && isSingle0) {
-						headerSingle = 0;
-						header01Index++;
-					} else if (headerSingle == 0 && isSingle0) {
-						headerSingle = 1;
-						header01Index++;
-					} else {
-						header01Index = 0;
-					}
+		//先找联系20个01,再找连续20个1，找到则认为开始
+		if(!hasHeader){
+			if (header01Index < 40) {//判断是否找到20个01
+				if ((headerSingle==2||headerSingle==1) && isSingle0) {
+					headerSingle = 0;
+					header01Index++;
+				} else if (headerSingle==0 && !isSingle0) {
+					headerSingle = 1;
+					header01Index++;
 				} else {
-					if (isSingle0) {
-						header1Index++;
-					} else {
-						header1Index = 0;
-					}
-					if (header1Index >= 10) {
-						hasHeader = true;
-						reviseNextSigPos();
-					}
+					header01Index = 0;
+					headerSingle = 2;
+				}
+			} else {
+				if (!isSingle0) {
+					header1Index++;
+				} else {
+					header1Index = 0;
+				}
+				if (header1Index >= 10) {//判断是否找到20个01
+					hasHeader = true;
 				}
 			}
-
 		}
+		return hasHeader;
+
 	}	
 	/**
 	 * 解码
@@ -318,7 +297,7 @@ public class FskDecode {
 	private static final byte s_Stop = 9;
 	public boolean decodeValue(int sampleValue){
 		boolean result = false;
-		if (decode(sampleValue)) {
+		if (decode(sampleValue)&&decodeHeader()) {
 			switch (state) {
 			case s_Start:
 				if (isSingle0) {
@@ -368,11 +347,14 @@ public class FskDecode {
 				byte[] source = sourceQueue.get();
 				if(fskCodeParams.getSampleByteLength()==2){//采样精度为2byte
 					for(int i=0;i<source.length/2;i++){
-						
 						if(decodeValue(TypeConversion.bytesToShort(source, i*2))){
 							byte temp = decodeValue;
 							decodeValue = 0;
 							fskDecodeResult.addResult(temp);//记录解码结果
+							//判断数据是否接收完成
+							if(fskDecodeResult.getDataIndex()==0){
+								hasHeader = false;
+							}
 							
 						}
 					}
@@ -387,7 +369,10 @@ public class FskDecode {
 	
 	public static void main(String[] args){
 		//System.out.println("FskEnCodeResult:"+TypeConversion.byteTo0XString("FskEnCodeResult".getBytes()));
-		String fileName = System.getProperty("user.dir")+"/in_record_1320659144559.wav";//"/"+new Date().getTime()+".wav";
+		String fileName = System.getProperty("user.dir")+"/in_record_1320748951382.wav";//"/"+new Date().getTime()+".wav";
+		 //fileName = "C:/Users/Administrator/Desktop/wav/lin_1320742683351.wav";
+		
+		
 		//fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
 		//Test.encode(fileName);
 		Test.decode(fileName);

@@ -369,7 +369,7 @@ public class FskDecode {
 	
 	public static void main(String[] args){
 		//System.out.println("FskEnCodeResult:"+TypeConversion.byteTo0XString("FskEnCodeResult".getBytes()));
-		String fileName = System.getProperty("user.dir")+"/in_record_1320748951382.wav";//"/"+new Date().getTime()+".wav";
+		String fileName = System.getProperty("user.dir")+"/in_record_1320804265423.wav";//"/"+new Date().getTime()+".wav";
 		 //fileName = "C:/Users/Administrator/Desktop/wav/lin_1320742683351.wav";
 		
 		

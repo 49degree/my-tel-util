@@ -32,7 +32,7 @@ public class FskEncode {
 		
 		final FskEnCodeResult fskEnCodeResult = new FskEnCodeResult();//编码结果对象
 		if(fskCodeParams.getSampleByteLength()==1){//采样长度为1
-			fskEnCodeResult.sampleMaxValue = Byte.MAX_VALUEs;
+			fskEnCodeResult.sampleMaxValue = Byte.MAX_VALUE;
 			fskEnCodeResult.setParseValueImp(new ParseValueImp(){
 				public void parseValueToByte(double value){//value为正玄函数的值
 					fskEnCodeResult.insertCode((byte)Math.round(value*fskEnCodeResult.sampleMaxValue));

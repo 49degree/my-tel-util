@@ -89,9 +89,12 @@ public class WaveFileParams {
 	public void closeFile(){
 		try{
             randomAccessWriter.seek(4); // Write size to RIFF header
-            randomAccessWriter.writeInt(Integer.reverseBytes((int)randomAccessWriter.length()-8));
+            //randomAccessWriter.writeInt(Integer.reverseBytes((int)randomAccessWriter.length()-8));
+            
+            randomAccessWriter.write(TypeConversion.intToBytes((int)randomAccessWriter.length()-8));
             randomAccessWriter.seek(40); // Write size to Subchunk2Size field
-            randomAccessWriter.writeInt((int)randomAccessWriter.length()-44);
+            //randomAccessWriter.writeInt((int)randomAccessWriter.length()-44);
+            randomAccessWriter.write(TypeConversion.intToBytes((int)randomAccessWriter.length()-44));
             randomAccessWriter.close();
             randomAccessWriter = null;
 		}catch(Exception e){

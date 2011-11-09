@@ -88,6 +88,7 @@ public class FskDecodeResult {
 	 * 加入解码结果
 	 * @param value
 	 */
+	int headLength = 4;
 	public synchronized void addResult(byte value){
 		if(data == null){
 			data = new byte[256];
@@ -100,11 +101,10 @@ public class FskDecodeResult {
 		}
 		data[dataIndex] = value;
 		dataIndex++;
-		
-		if(dataIndex>=2&&TypeConversion.bytesToShort(data, 0)==dataIndex-2){//一段数据接收完成
-			if(dataIndex>2){
-				byte[] temp = new byte[dataIndex-2];
-				System.arraycopy(data, 2,temp , 0, dataIndex-2);
+		if(dataIndex>=headLength&&TypeConversion.bytesToShortEx(data, 1)==dataIndex-headLength){//一段数据接收完成
+			if(dataIndex>headLength){
+				byte[] temp = new byte[dataIndex-headLength];
+				System.arraycopy(data, headLength,temp , 0, dataIndex-headLength);
 				resultDataList.put(temp);
 			}
 			dataIndex = 0;

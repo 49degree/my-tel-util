@@ -1,8 +1,6 @@
 package com.guanri.fsk.conversion;
 
-import java.util.ArrayList;
-
-import com.guanri.fsk.utils.TypeConversion;
+import com.guanri.android.lib.utils.TypeConversion;
 
 public class FskDecodeResult {
 	public final static int ZERO = Short.MIN_VALUE*2;
@@ -101,6 +99,16 @@ public class FskDecodeResult {
 		}
 		data[dataIndex] = value;
 		dataIndex++;
+		
+//		if(dataIndex>4){
+//			System.out.println("收到数据长度:"+dataIndex+"：长度："+TypeConversion.bytesToShortEx(data, 1));
+//			try{
+//				System.out.println("收到数据:"+TypeConversion.asciiToString(data, 4, dataIndex-4));
+//			}catch(Exception e){
+//				
+//			}
+//		}
+		
 		if(dataIndex>=headLength&&TypeConversion.bytesToShortEx(data, 1)==dataIndex-headLength){//一段数据接收完成
 			if(dataIndex>headLength){
 				byte[] temp = new byte[dataIndex-headLength];

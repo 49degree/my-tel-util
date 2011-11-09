@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -25,11 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-
-import com.guanri.fsk.conversion.FskCodeParams;
-import com.guanri.fsk.conversion.FskEnCodeResult;
-import com.guanri.fsk.conversion.FskEncode;
-import com.guanri.fsk.utils.TypeConversion;
 
 
 
@@ -112,7 +106,7 @@ public class WaveAnalyse extends  JFrame{
 			JButton moveLeft = new JButton("左移");
 			moveLeft.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
-					xBeginIndex+=10;
+					xBeginIndex+=10/xPxPerPoint;
 					imagePanel.repaint();
 				}
 			});
@@ -120,7 +114,7 @@ public class WaveAnalyse extends  JFrame{
 			moveRight.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
 					if(xBeginIndex>10){
-						xBeginIndex-=10;
+						xBeginIndex-=10/xPxPerPoint;
 					}else{
 						xBeginIndex=0;
 					}
@@ -179,8 +173,9 @@ public class WaveAnalyse extends  JFrame{
 
 				public void mouseDragged(MouseEvent me) {
 					curX = (int) me.getPoint().getX();
-					if(xBeginIndex-(curX-startX)>0){
-						xBeginIndex = xBeginIndex-(curX-startX);
+					int stepLength = (int)((curX-startX)/xPxPerPoint);
+					if(xBeginIndex-stepLength>0){
+						xBeginIndex = xBeginIndex-stepLength;
 						
 					}else{
 						xBeginIndex = 0;

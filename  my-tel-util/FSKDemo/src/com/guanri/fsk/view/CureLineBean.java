@@ -1,7 +1,7 @@
 package com.guanri.fsk.view;
 import java.awt.Color;
 
-import com.guanri.fsk.utils.TypeConversion;
+import com.guanri.android.lib.utils.TypeConversion;
 
 
 public class CureLineBean {

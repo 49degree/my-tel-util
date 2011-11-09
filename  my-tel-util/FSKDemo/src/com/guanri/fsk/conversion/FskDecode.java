@@ -1,7 +1,6 @@
 package com.guanri.fsk.conversion;
 
-import com.guanri.fsk.utils.Test;
-import com.guanri.fsk.utils.TypeConversion;
+import com.guanri.android.lib.utils.TypeConversion;
 
 public class FskDecode {
 	private FskCodeParams fskCodeParams = null;//采样参数
@@ -143,24 +142,6 @@ public class FskDecode {
 	private int lastSampleValue2 = 0;
 	public boolean decode(int sampleValue) {
 		boolean result = false;
-		//判断信号是否失真被削平
-//		lastSampleValue2 = lastSampleValue1;
-//		lastSampleValue1= lastSampleValue;
-//		lastSampleValue = sampleValue;
-//		if(lastSampleValue2>0&&lastSampleValue1>0&&lastSampleValue>0&&
-//				lastSampleValue2>lastSampleValue1&&lastSampleValue1<lastSampleValue){//被削顶了
-//			lastSampleValue1 =  (lastSampleValue2>lastSampleValue?lastSampleValue2:lastSampleValue)+300;
-//		}
-//		if(lastSampleValue2<0&&lastSampleValue1<0&&lastSampleValue<0&&
-//				lastSampleValue2<lastSampleValue1&&lastSampleValue1>lastSampleValue){//被削顶了
-//			lastSampleValue1 =  (lastSampleValue2<lastSampleValue?lastSampleValue2:lastSampleValue)-300;
-//		}
-//		sampleValue = lastSampleValue1;
-		
-
-		
-		
-		
 	    //根据信号波中0或者1的较大频率的波的周期进行滤波
 		singleTIndex = singleTIndex % singleTArraylength;
 		singleTTotalValue = singleTTotalValue - singleTArray[singleTIndex] + sampleValue;
@@ -367,17 +348,6 @@ public class FskDecode {
 	
 	
 	
-	public static void main(String[] args){
-		//System.out.println("FskEnCodeResult:"+TypeConversion.byteTo0XString("FskEnCodeResult".getBytes()));
-		String fileName = System.getProperty("user.dir")+"/in_record_1320808574667.wav";//"/"+new Date().getTime()+".wav";
-		 //fileName = "C:/Users/Administrator/Desktop/wav/lin_1320742683351.wav";
-		
-		
-		//fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
-		//Test.encode(fileName);
-		Test.decode(fileName);
-		
-	}
 	
 	public static String getASCString(byte[] data,int dataIndex) {
 		byte[] temp = new byte[dataIndex];

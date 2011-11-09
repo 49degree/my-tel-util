@@ -39,7 +39,6 @@ import com.guanri.fsk.conversion.SourceQueue;
 import com.guanri.fsk.conversion.WaveFileParams;
 import com.guanri.fsk.pc.AudioOperator;
 import com.guanri.fsk.pc.AudioOperator.AudioReceiveDataHandler;
-import com.guanri.fsk.utils.TypeConversion;
 
 
 
@@ -470,7 +469,7 @@ public class RecordPlayView extends  JFrame{
 	 * @param begin
 	 * @param sourceQueue
 	 */
-	private static String sendString = "receivStr += new String(fskDecodeResult.data,2";//自动测试字符串
+	private static String sendString = "SimpleDateFormat";//自动测试字符串
 	private static SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private RandomAccessFile autoTestAccessWriter = null;
 	public  void decode(final JButton begin,SourceQueue sourceQueue,final boolean isAutoTest){
@@ -479,6 +478,7 @@ public class RecordPlayView extends  JFrame{
 		if(isAutoTest){
 			try{
 				autoTestAccessWriter = new RandomAccessFile(System.getProperty("user.dir")+"/auto_test_result.text", "rw");
+				autoTestAccessWriter.seek(autoTestAccessWriter.length());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -577,6 +577,7 @@ public class RecordPlayView extends  JFrame{
 	 * @author Administrator
 	 *
 	 */
+	int i = 0;
 	public class PlayDataHandler extends Thread{
 		ImagePanel playImagePanel;
 		FskEncode fskEncode;
@@ -594,10 +595,14 @@ public class RecordPlayView extends  JFrame{
 		}
 		public void run(){
 			String temp = null;
+			if(isAutoTest&&!"".equals(sendmsgT.getText().trim())){//自动测试字符串
+				sendString = sendmsgT.getText().trim();
+			}
+			
 			while(running){
 				
 				if(isAutoTest){//自动测试
-					temp = sendString;
+					temp = sendString+i++;
 					try{
 						Thread.sleep(3000);
 						autoTestAccessWriter.write((sf.format(new Date())+"--发送字符串："+temp+"\n").getBytes());

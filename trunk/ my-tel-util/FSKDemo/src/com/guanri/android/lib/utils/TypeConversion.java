@@ -1,4 +1,4 @@
-package com.guanri.fsk.utils;
+package com.guanri.android.lib.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;

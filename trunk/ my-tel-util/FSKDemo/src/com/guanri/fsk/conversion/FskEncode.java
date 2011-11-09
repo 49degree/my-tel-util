@@ -3,8 +3,8 @@ package com.guanri.fsk.conversion;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import com.guanri.android.lib.utils.TypeConversion;
 import com.guanri.fsk.conversion.FskEnCodeResult.ParseValueImp;
-import com.guanri.fsk.utils.TypeConversion;
 
 /**
  * 对数据进行编码
@@ -39,7 +39,7 @@ public class FskEncode {
 				}
 			});
 		}else if(fskCodeParams.getSampleByteLength()==2){//采样长度为2
-			fskEnCodeResult.sampleMaxValue = Short.MAX_VALUE/2;
+			fskEnCodeResult.sampleMaxValue = Short.MAX_VALUE;
 			fskEnCodeResult.setParseValueImp(new ParseValueImp(){
 				public void parseValueToByte(double value){//value为正玄函数的值
 					short value1 = (short)Math.round(value*fskEnCodeResult.sampleMaxValue);

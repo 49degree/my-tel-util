@@ -3,7 +3,7 @@ package com.guanri.fsk.conversion;
 import java.io.File;
 import java.io.RandomAccessFile;
 
-import com.guanri.fsk.utils.TypeConversion;
+import com.guanri.android.lib.utils.TypeConversion;
 
 public class WaveFileParams {
 

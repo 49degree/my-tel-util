@@ -27,8 +27,11 @@ public class FskEncode {
 	 * @param source
 	 * @return
 	 */
-	public FskEnCodeResult encode(byte[] source){
-		byte[] code = new byte[getFskLength(source.length)];//编码后的数据
+	public FskEnCodeResult encode(byte[] source,int offset,int length){
+		if(length>source.length-offset)
+			return null;
+
+		byte[] code = new byte[getFskLength(length)];//编码后的数据
 		
 		final FskEnCodeResult fskEnCodeResult = new FskEnCodeResult();//编码结果对象
 		if(fskCodeParams.getSampleByteLength()==1){//采样长度为1
@@ -64,14 +67,27 @@ public class FskEncode {
 		//发送数据包头
 		encodeHeaderData(fskEnCodeResult,(short)source.length);
 		//对数据进行编码
-		for(byte sourceData:source){
-			encodeByte(sourceData,fskEnCodeResult);
+		for(int i=offset;i<offset+length;i++){
+			encodeByte(source[i],fskEnCodeResult);
 		}
 		//发送结束码40个1
 		for(int i=0;i<40;i++){
 			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
 		}
 		return fskEnCodeResult;
+	
+		
+		
+		//byte
+	}
+	
+	/**
+	 * 对数据source进行编码
+	 * @param source
+	 * @return
+	 */
+	public FskEnCodeResult encode(byte[] source){
+		return encode(source,0,source.length);
 	}
 	
 	/**

@@ -87,7 +87,7 @@ public class Test {
 		}catch(InterruptedException e){
 			e.printStackTrace();
 		}
-		fskDecode.isContinue = false;
+		fskDecode.stopDecode();
 		byte[] dataResult = fskDecodeResult.getData();
 		while(dataResult!=null){
 			System.out.println("解码结果："+TypeConversion.byteTo0XString(dataResult,0,dataResult.length));//,0,fskDecodeResult.dataIndex));
@@ -115,14 +115,18 @@ public class Test {
 		WaveAnalyse test = new WaveAnalyse(list);
 		test.setVisible(true);			 
 	}
+	
+
+	
+	
+	
 	static FskCodeParams fskCodeParams = new FskCodeParams(2200,1200,11025,2,1200);
 	public static void main(String[] args){
 		String fileName = System.getProperty("user.dir")+"/in_record_1320831661311.wav";//"/"+new Date().getTime()+".wav";
 		fileName = "C:/Users/Administrator/Desktop/wav/lin_1320832451395.wav";//"/"+new Date().getTime()+".wav";
-//		fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
-//		encode(fileName);
+		fileName = System.getProperty("user.dir")+"/"+new Date().getTime()+".wav";
+		encode(fileName);
 		decode(fileName); 
-		
 		
 	}
 }

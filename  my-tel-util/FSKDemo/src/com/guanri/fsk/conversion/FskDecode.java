@@ -314,9 +314,9 @@ public class FskDecode {
 	/**
 	 * 开始解码
 	 */
-	public boolean isContinue = true;//是否停止
+	private boolean isDecodeContinue = true;//是否停止
 	public void beginDecode(){
-		while(isContinue){
+		while(isDecodeContinue){
 			if(sourceQueue.size()<=0){
 				try{
 					Thread.sleep(100);
@@ -345,19 +345,17 @@ public class FskDecode {
 		}
 	}
 	
-	
-	
-	
-	
-	public static String getASCString(byte[] data,int dataIndex) {
-		byte[] temp = new byte[dataIndex];
-		System.arraycopy(data, 0, temp, 0, temp.length);
-		int k = 0;
-		//System.out.println("解码字符: " +  new String(Data, 0, Data.length));	
-		for (int i = 0; i < temp.length; i ++) {
-			if ((temp[i] >= 32)) temp[k ++] = temp[i];
-		}
-		return new String(temp, 0, k);	
+	/**
+	 * 停止解码
+	 */
+	public void stopDecode(){
+		isDecodeContinue = false;
 	}
-
+	
+	/**
+	 * 获取解码状态
+	 */
+	public boolean getDecodeState(){
+		return isDecodeContinue;
+	}
 }

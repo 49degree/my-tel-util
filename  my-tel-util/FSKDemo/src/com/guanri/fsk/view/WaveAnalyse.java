@@ -34,7 +34,7 @@ public class WaveAnalyse extends  JFrame{
     static final int HEIGHT=700;
     private int scringWidth=0;
     private int scringHeight=0;
-    ImagePanel imagePanel = null;
+    public ImagePanel imagePanel = null;
     List<CureLineBean> mLineList = null;
 
 	public WaveAnalyse(List<CureLineBean> lineList) {
@@ -158,7 +158,9 @@ public class WaveAnalyse extends  JFrame{
 
 		
 		List<CureLineBean> mLineList = null;
-		
+		public void setCureLineBean(List<CureLineBean> lineList){
+			this.mLineList = lineList;
+		}
 		public ImagePanel(int pointXLength,List<CureLineBean> lineList){
 			super();
 			this.mLineList = lineList;

@@ -140,19 +140,30 @@ public class FFT {
 	     fft.fft(re, im);
 	     System.out.println("After: ");
 	     printReIm(re, im);
+
 	   }
 	 
 	   protected static void printReIm(double[] re, double[] im) {
 	     System.out.print("Re: [");
-	     for(int i=0; i<re.length; i++)
+	     for(int i=0; i<(re.length>100?100:re.length); i++)
 	       System.out.print(((int)(re[i]*1000)/1000.0) + " ");
 	 
 	     System.out.print("]\nIm: [");
-	     for(int i=0; i<im.length; i++)
+	     for(int i=0; i<(im.length>100?100:im.length); i++)
 	       System.out.print(((int)(im[i]*1000)/1000.0) + " ");
 	 
 	     System.out.println("]");
 	   }
+	   
+	   
+	   protected static void printReSplitIm(double[] re, double[] im) {
+		     System.out.print("after tranc rate: \n");
+		     System.out.print("Re/Im: [");
+		     for(int i=0; i<(re.length>100?100:re.length); i++)
+		       System.out.print(re[i]/im[i] + " ");
+		 
+		     System.out.print("]\n");
+	  }	   
 	   
 	   // Test the FFT to make sure it's working
 	   public static void main(String[] args) {

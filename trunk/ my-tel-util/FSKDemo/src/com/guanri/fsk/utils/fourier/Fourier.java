@@ -30,8 +30,7 @@ public class Fourier {
     private static void calcuW(int m, float[] cos, float[] sin) {
         float pi2 = 6.2831853f;
         int m1 = m - 1, n = 1 << m;
-        cos = new float[n];
-        sin = new float[n];
+
         for (int k = 0; k < n; k++) {
             int p = bitRev(k / (2 << m1), m);
             float arg = pi2 * p / n;
@@ -51,12 +50,15 @@ public class Fourier {
         if ((a == null) || (b == null)) {
             return; //throw Exception("变换数组不能为空。");
         }
-        float[] cos=null, sin=null;
+
         int i, k = 0, l, n = a.length, n2 = n >> 1, m = (int) log(n, 2);
         if (n != (int) Math.pow(2, m)) {
             return;//throw new Exception("变换数组应该满足2的整数幂关系。");
         }
         float re, im;
+        float[] cos=null, sin=null;
+        cos = new float[n];
+        sin = new float[n];
         calcuW(m, cos, sin);
         for (l = 0; l < m; l++) {
             while (k < n) {
@@ -174,7 +176,8 @@ public class Fourier {
     }
 
     public static void main(String[] agrs) {
-        float[] a = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, b = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        float[] a = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+        b = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         FFT(true, a, b);
         FFT(false, a, b);
     }

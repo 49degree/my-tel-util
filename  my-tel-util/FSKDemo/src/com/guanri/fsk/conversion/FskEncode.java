@@ -28,6 +28,10 @@ public class FskEncode {
 	 * @return
 	 */
 	public FskEnCodeResult encode(byte[] source,int offset,int length){
+		sing0 = 0;
+		sing1 = 0;
+		
+		
 		if(length>source.length-offset)
 			return null;
 
@@ -42,7 +46,7 @@ public class FskEncode {
 				}
 			});
 		}else if(fskCodeParams.getSampleByteLength()==2){//采样长度为2
-			fskEnCodeResult.sampleMaxValue = Short.MAX_VALUE;
+			fskEnCodeResult.sampleMaxValue = Short.MAX_VALUE/2;
 			fskEnCodeResult.setParseValueImp(new ParseValueImp(){
 				public void parseValueToByte(double value){//value为正玄函数的值
 					short value1 = (short)Math.round(value*fskEnCodeResult.sampleMaxValue);
@@ -74,6 +78,8 @@ public class FskEncode {
 		for(int i=0;i<40;i++){
 			encode(fskEnCodeResult,FskEncode.SINGLE_ONE);
 		}
+		
+		System.out.println("sing0:"+sing0+":sing1:"+sing1);
 		return fskEnCodeResult;
 	
 		
@@ -176,7 +182,15 @@ public class FskEncode {
 	 * @param fskEnCodeResult
 	 * @param single 0表示0编码，1表示1编码
 	 */
+	int sing0 = 0;
+	int sing1 = 0;
 	public void encode(FskEnCodeResult fskEnCodeResult,int single){
+		if(single==0){
+			sing0++;
+		}else{
+			sing1++;
+		}
+		
 		//波特周期/采样周期=(1/boundRate)/(1/sampleF)=sampleF/boundRate表示一波特周期要采集几个点,
 		//因为采样点个数只能取整数，所以会有余数fskEnCodeResult.modeValue，为了增加可靠性，把余数加入下一次进行计算
 		int point = (fskCodeParams.getSampleF()+fskEnCodeResult.modeValue)/fskCodeParams.getBoundRate();

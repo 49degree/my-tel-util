@@ -125,17 +125,12 @@ public class FFTDecoder {
 		
 	}
 	
-
-	public static void main(String[] args) {
-		//decode();
-		
-		System.out.println();
+	
+	public static void fft(){
 		FskEnCodeResult fskEnCodeResult = encode();
 		int logLen = (int)(Math.log(fskEnCodeResult.index)/Math.log(2));
 		int N = (1<<logLen<fskEnCodeResult.index?(1<<logLen+1):1<<logLen);
-		
 		System.out.println(logLen+":"+N);
-		
 		FFT fft = new FFT(N);
 		double[] window = fft.getWindow();
 		
@@ -149,8 +144,6 @@ public class FFTDecoder {
 			re[j] = fskEnCodeResult.code[j]*window[j];
 			im[j] = 0;
 		}
-//		FFT.beforeAfter(fft, re, im);
-//		FFT.printReSplitIm(re, im);
 		fft.fft(re, im);
 		
 		int freq = 1200;
@@ -175,9 +168,17 @@ public class FFTDecoder {
 		list.add(cureLineBean);
 		
 		WaveAnalyse test = new WaveAnalyse(list);
-		test.setVisible(true);	
+		test.setVisible(true);
+	}
+	
+	public static void dft(){
+		FskEnCodeResult fskEnCodeResult = encode();
+		int logLen = (int)(Math.log(fskEnCodeResult.index)/Math.log(2));
+		int N = (1<<logLen<fskEnCodeResult.index?(1<<logLen+1):1<<logLen);
 		
-		/*		
+		double[] re = new double[N];
+		double[] im = new double[N];
+		
 		//普通傅立叶变换运算
 		for(int j=0;j<N;j++){
 			if(j>=fskEnCodeResult.index){
@@ -186,22 +187,98 @@ public class FFTDecoder {
 			re[j] = fskEnCodeResult.code[j];
 			im[j] = 0;
 		}
-		System.out.println("Before add window: ");
-		FFT.printReIm(re, im);
-		
+		//加窗
 		re=window(re, BLACKMANN);
-		System.out.println("Before: ");
-		FFT.printReIm(re, im);
+		
 		forwardMagnitude(re,im);
-	    System.out.println("After: ");
-	    FFT.printReIm(re, im);
-	    FFT.printReSplitIm(re, im);
+	    
+		int freq = 1200;
+		double value = Math.sqrt(re[freq]*re[freq]+im[freq]*im[freq]);
+		System.out.println(value);
+		freq = 2200;
+		value = Math.sqrt(re[freq]*re[freq]+im[freq]*im[freq]);
+		System.out.println(value);
+	    
+		int[] values = new int[N];
+		for(int j=0;j<N;j++){
+			freq = j;
+			re[freq] = re[freq]*N;
+			im[freq] = im[freq]*N;
+			
+			values[j] = (int)Math.sqrt(re[freq]*re[freq]+im[freq]*im[freq]);
+			if(j>N/2)
+				values[j] =-values[j] ;
+		}
+	    
+		//绘图
+		List<CureLineBean> list = new ArrayList<CureLineBean>();
+
+		CureLineBean cureLineBean = new CureLineBean(values,Color.RED);
+		list.add(cureLineBean);
+		
+		WaveAnalyse test = new WaveAnalyse(list);
+		test.setVisible(true);	
+		
+	}
+
+	
+	public static void testSingle(){
+		int N = 18;
+		int f2 = 3200;
+		int f0 = 2200;
+		int f1 = 1200;
+		int fs = 11025;
+		
+		double[] data = new double[N];
+		double fd = 0d;
+		for(int i=0;i<2*data.length;i++){
+			fd = fd+2*Math.PI*i*f0/fs;
+		}
+		for(int i=0;i<2*data.length;i++){
+			fd = fd+2*Math.PI*i*f1/fs;
+		}
+		for(int i=0;i<data.length;i++){
+			fd = fd+2*Math.PI*i*f0/fs;
+			data[i] = (Short.MAX_VALUE*Math.sin(fd));
+		}
+		double[] im = new double[N];
+		//加窗
+		data=window(data, BLACKMANN);
+		
+		forwardMagnitude(data,im);
 		
 		
-		*/
+		int freq = 0;
+	    
+		int[] values = new int[N];
+		for(int j=0;j<N;j++){
+			freq = j;
+			data[freq] = data[freq]*N;
+			im[freq] = im[freq]*N;
+			
+			values[j] = (int)Math.sqrt(data[freq]*data[freq]+im[freq]*im[freq]);
+			if(j>N/2)
+				values[j] =-values[j] ;
+			System.out.println(freq+":"+values[j]);
+		}
+	    
+		//绘图
+		List<CureLineBean> list = new ArrayList<CureLineBean>();
+
+		CureLineBean cureLineBean = new CureLineBean(values,Color.RED);
+		list.add(cureLineBean);
 		
+		WaveAnalyse test = new WaveAnalyse(list);
+		test.setVisible(true);	
 		
+	}
+	
+	public static void main(String[] args) {
+		//decode();
+		//dft();
+		//fft();
 		
+		testSingle();
 		
 		
 		

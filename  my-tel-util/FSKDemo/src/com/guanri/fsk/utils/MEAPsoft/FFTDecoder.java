@@ -401,8 +401,8 @@ public class FFTDecoder {
 			
 //			if(times%6==0)
 //				getDataIndex++;
-//			if(times%3>0)
-//				getDataIndex++;
+			if(times%3>0)
+				getDataIndex++;
 			
 			System.arraycopy(source, getDataIndex, data, 0, N);
 			
@@ -418,7 +418,7 @@ public class FFTDecoder {
 			
 			double[] im = new double[N];
 			//加窗
-			data=window(data, BLACKMANN);
+			data=window(data, HANN);
 			
 			forwardMagnitude(data,im);
 			
@@ -444,7 +444,7 @@ public class FFTDecoder {
 //				continue;
 //			}
 			
-			getDataIndex++;	
+			getDataIndex+=N;	
 			
 			
 
@@ -496,16 +496,21 @@ public class FFTDecoder {
 	
 	
 	public static void testSingle3(){
-		double[] data = new double[2000];
+		int f0 = 2200;
+		int f1 = 1200;
+		float fs = 8000;
+		int fb = 1200;
+		
+		double[] data = new double[100];
 		for(int i=0;i<data.length;i++){
-			data[i] = Math.sin(101*2*Math.PI*i/data.length)*2000;
+			data[i] = Math.sin((f1/fs)*2*Math.PI*i)*2000;
 			
 		}
 		
 		
 		double[] im = new double[data.length];
 		//加窗
-		data=window(data, BLACKMANN);
+		data=window(data, HANN);
 		
 		forwardMagnitude(data,im);
 		
@@ -518,6 +523,8 @@ public class FFTDecoder {
 			
 			if(freq>data.length/2)
 				values[freq] =-values[freq] ;
+			
+			System.out.println(freq+":"+values[freq]);
 		}
 		
 		//绘图
@@ -536,7 +543,7 @@ public class FFTDecoder {
 		//dft();
 		//fft();
 		
-		testSingle2();
+		testSingle3();
 		
 		
 		

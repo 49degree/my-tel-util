@@ -196,10 +196,10 @@ public class FskEncode {
 		int point = (fskCodeParams.getSampleF()+fskEnCodeResult.modeValue)/fskCodeParams.getBoundRate();
 		fskEnCodeResult.modeValue = (fskCodeParams.getSampleF()+fskEnCodeResult.modeValue)%fskCodeParams.getBoundRate();
 		
-		double degreePerPoint = (single==0)?fskEnCodeResult.signal0Degree/point:fskEnCodeResult.signal1Degree/point;
+		double degreePerPoint = (single==0)?2*Math.PI*fskCodeParams.getF0()/fskCodeParams.getSampleF():2*Math.PI*fskCodeParams.getF1()/fskCodeParams.getSampleF();
 		
 		if(fskEnCodeResult.degree==0d){
-			fskEnCodeResult.degree = -degreePerPoint;//如果是起始点，则前滑一个点的区间
+			//fskEnCodeResult.degree = -degreePerPoint;//如果是起始点，则前滑一个点的区间
 		}
 		
 		for(int i=1;i<=point;i++){

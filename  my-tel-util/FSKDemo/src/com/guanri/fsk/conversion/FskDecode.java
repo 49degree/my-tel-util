@@ -7,18 +7,11 @@ public class FskDecode {
 	private SourceQueue sourceQueue = null;//数据员队列
 	FskDecodeResult fskDecodeResult = null;//结果数据对象
 	
-	private int[] singleTArray = null;//频率较高的波形在一个周期内的采样点数组
 	private int[] boundTArray = null;//一波特周期内的采样点数组
-	private int[] singleMaxArray = null;//固定数量的最大值数组
-	private int[] singleMinArray = null;//固定数量的最小值数组
-	private int singleMaxArrayLength = 40;//固定数量的最大值数组长度
-	public float splitParmats = 0.58f;//0，1分割参数
-	
-	private int singleTlength0 = 0;//0信号在一个周期内的采样点数 
-	private int singleTlength1 = 0;//1信号在一个周期内的采样点数 
 	private int singleTArraylength = 0;//频率较高的波形在一个周期内的采样点数
-	
 	private int boundTlength = 0;//1波特周期内的采样点数 
+	private int singleTlength0 = 0;
+	private int singleTlength1 = 0;
 	
 	public FskDecode(FskCodeParams fskCodeParams,SourceQueue sourceQueue,FskDecodeResult fskDecodeResult){
 		this.fskCodeParams = fskCodeParams;// new FskCodeParams(2200,1200,11025,2,1200);
@@ -31,19 +24,18 @@ public class FskDecode {
 	 * 根据参数FskCodeParams初始化相关数组信息
 	 */
 	private void init(){
-		singleTlength0 = fskCodeParams.getSampleF()/fskCodeParams.getF0();//0信号在一个周期内的采样点数 
-		singleTlength1 = fskCodeParams.getSampleF() /fskCodeParams.getF1();//1信号在一个周期内的采样点数 
+		singleTlength0 = (int)Math.round(fskCodeParams.getSampleF()*1.0f/fskCodeParams.getF0());
+		singleTlength1 = (int)Math.round(fskCodeParams.getSampleF()*1.0f/fskCodeParams.getF1());
+		
 		singleTArraylength = singleTlength0<singleTlength1?singleTlength0:singleTlength1;
-		singleTArray = new int[singleTArraylength];//频率较高的波形在一个周期内的采样点数组
+		boundTlength = (int) Math.round(fskCodeParams.getSampleF()*1.0f/ fskCodeParams.getBoundRate());
 		
-		boundTlength = fskCodeParams.getSampleF()/ fskCodeParams.getBoundRate();
 		boundTArray = new int[boundTlength];//一波特周期内的采样点数组
-			
-		singleMaxArray = new int[singleMaxArrayLength];//固定数量的最大值数组
-		singleMinArray = new int[singleMaxArrayLength];//固定数量的最小值数组
-		
 		reviseNextSigPos();
 	}
+	
+	
+
 	
 	/**
 	 * 初始化采样点信息
@@ -53,27 +45,23 @@ public class FskDecode {
 	private int position = 0;
 	private boolean started = false;
 	
-	private boolean isFirst = true;
 	private void reviseNextSigPos(){
     	singleCount = 0;
     	nextSinglePosition = 0;
     	position = 0;
     	started = false;
-//    	if(isFirst){
-    		nextSinglePosition = 0;//-(boundTlength-singleTArraylength)/2;
-//    	}else{
-//    		nextSinglePosition = 0;//-(boundTlength-singleTArraylength)/2;
-//    	}
-    	
     	calcNextSigPos();
     }	
+
 	
 	/**
 	 * 计算下一个采样点的信息
 	 */
 	private void calcNextSigPos(){
-		nextSinglePosition = nextSinglePosition +  boundTlength;
+		
+		nextSinglePosition = nextSinglePosition -  singleCount*fskCodeParams.getSampleF()/ fskCodeParams.getBoundRate();
 		singleCount++;
+		nextSinglePosition = nextSinglePosition + singleCount*fskCodeParams.getSampleF()/ fskCodeParams.getBoundRate();
 	    if (singleCount > fskCodeParams.getBoundRate()){
 	    	singleCount -= fskCodeParams.getBoundRate();
 	    	nextSinglePosition -= position;
@@ -81,148 +69,95 @@ public class FskDecode {
 	    }
 	}
 	
-	/**
-	 * 计算最大平均值
-	 */
-	private int lastValue = 0;
-	private int lastValue1 = 0;
-	private int lastValue2 = 0;
-	private int maxValue = 0;
-	private int maxValueIndex = 0;
-	private int totalMaxValue = 0;
-	private int averageMaxValue = 0;
-	private boolean haveMaxValueFull = false;
-	private void calcMaxAverage(int sampleValue) {
-		lastValue2 = lastValue1;
-		lastValue1 = lastValue;
-		lastValue = sampleValue;
 
-		
-		if (lastValue <= lastValue1 && lastValue2 <= lastValue1) { // 判断是否有最大值
-			if (lastValue1 < 1000)
-				return;
-//			if (maxValue > 0) {
-//				if (lastValue1 < (maxValue * 0.4))
-//					return;
-//				if (lastValue1 > (maxValue * 1.8))
-//					return;
-//			}
-			//求最大平均值
-			maxValue = lastValue1;
-			maxValueIndex = maxValueIndex % singleMaxArrayLength;
-			
-			totalMaxValue = totalMaxValue - singleMaxArray[maxValueIndex] + maxValue;
-			singleMaxArray[maxValueIndex] = maxValue;
-			maxValueIndex++;
-
-			if (haveMaxValueFull) {
-				averageMaxValue = totalMaxValue / singleMaxArrayLength;
-			} else {
-				haveMaxValueFull = maxValueIndex >= singleMaxArrayLength;
-				averageMaxValue = totalMaxValue / maxValueIndex;
-			}
-		}
-	}
+	
 
 	/**
 	 * 进行虑波
 	 */
 	private int singleTIndex = 0;
-	private int singleTTotalValue = 0;
-	private int boundTIndex = 0;
-	private int boundTTotalValue = 0;
-	private boolean isSingle0 = false,isSingle0Temp= false,isSingle0Last = false;
-	double splitValue = 0;
+	private boolean isSingle0 = false;
 	
-	private int singleFilterValue = 0;
-	private int boundFilterValue = 0;
 	
-	private int lastSampleValue = 0;
-	private int lastSampleValue1 = 0;
-	private int lastSampleValue2 = 0;
-	public boolean decode(int sampleValue) {
+	int times = 0;
+	public boolean decode2(int sampleValue){
 		boolean result = false;
-	    //根据信号波中0或者1的较大频率的波的周期进行滤波
-		singleTIndex = singleTIndex % singleTArraylength;
-		singleTTotalValue = singleTTotalValue - singleTArray[singleTIndex] + sampleValue;
-		singleTArray[singleTIndex] = sampleValue;
-		singleTIndex ++;
-		singleFilterValue = singleTTotalValue / singleTArraylength;
-		singleFilterValue = Math.abs(singleFilterValue);
-	   
-	   // 在波的周期滤波基础上进行波特周期滤波
-	    boundTIndex = boundTIndex % boundTlength;
-	    boundTTotalValue = boundTTotalValue - boundTArray[boundTIndex] + singleFilterValue;
-	    boundTArray[boundTIndex] = singleFilterValue;
-	    boundTIndex ++;
-	    boundFilterValue = boundTTotalValue / boundTlength;
-	    
-	    calcMaxAverage(boundFilterValue);//求最大平均值
-	    
+		times++;
+//		singleTIndex = singleTIndex % boundTlength;
+//		boundTArray[singleTIndex] = sampleValue;
+//		singleTIndex ++;
+		
+	    for (int i = boundTlength - 1; i > 0; i--)
+	    	boundTArray[i] = boundTArray[i - 1];     
+
+	    boundTArray[0] = sampleValue;
+		
+		
 	    //记录解码过程数据，是否记录在addSourceValue方法中进行判断
 	    if(fskDecodeResult.isRecordDecodeInfo()){
-	    	fskDecodeResult.addSourceValue(sampleValue, singleFilterValue, boundFilterValue, Math.round(averageMaxValue*splitParmats));
-	    }
-	    
-	    //boolean isZero = com.guanri.fsk.utils.Demo.decode(sampleValue);
-	    
-	    splitValue = averageMaxValue*splitParmats;
-	    
-	    isSingle0Last = isSingle0Temp;
-	    isSingle0 = isSingle0Temp = boundFilterValue < splitValue;
-		if (!started) {
-	    	position ++;
-	    	if(isSingle0Temp){
-	    		if(position>=boundTlength){
-	    			result = true;
-	    			position = 0;
-	    			started = true;
-	    		}
-	    		
-	    	}else{
-	    		if(position>(boundTlength - singleTArraylength+1)){
-	    			result = true;
-	    			started = true;
-	    			isSingle0 = true;
-	    		}
-	    		position = 1;
-	    	}
-			
-			
-//			if (boundFilterValue < splitValue)
-//				position++;
-//			else
-//				position = 0;
-//
-//			if (position > (boundTlength - singleTArraylength)) {
-//				reviseNextSigPos();
-//				started = true;
-//				isSingle0 = true;
-//				result = true;
-//			}
-		} else {
-	    	position ++;
-	    	if(isSingle0Last==isSingle0Temp){
-	    		if(position>=boundTlength){
-	    			result = true;
-	    			position = 0;
-	    		}
-	    	}else{
-	    		if((isSingle0Last&&position>(boundTlength - singleTArraylength+1))||(!isSingle0Last&&position>=singleTArraylength)){
-	    			result = true;
-	    			isSingle0 = isSingle0Last;
-	    		}
-	    		position = 1;
-	    	}
-	    	
-//	    	position ++;
-//	    	if (position >= nextSinglePosition) {
-//	    		calcNextSigPos();
-//	    		isSingle0 = boundFilterValue < splitValue;
-//	    		result = true;
-//	    	}
+	    	fskDecodeResult.addSourceValue(sampleValue, 0, 0,0);
 	    }
 		
+		//解码相关参数
+		double amp = 0,minError=-1, sum=0, data=0 ,rad=0;
+
+		double[] singleDistance = {2*Math.PI*fskCodeParams.getF0()/fskCodeParams.getSampleF(),2*Math.PI*fskCodeParams.getF1()/fskCodeParams.getSampleF()}; 
+		double[] singleResult = new double[2];
+		
+		for(int i=0;i<boundTlength;i++){
+		    data = boundTArray[i];
+		    sum +=  data * data;	
+		}
+		amp = Math.sqrt((sum / boundTlength) * 2);
+		//  Amplitude := Amp;
+
+		//判断与0或1更接近
+		for(int type = 0;type<2;type++){
+			minError = -1;
+			rad = 0;
+			while(rad < (2 * Math.PI)){
+				sum = 0;
+				for(int i=0;i<boundTlength;i++){
+					data= (boundTArray[i] - amp * Math.sin(rad - i * singleDistance[type]));
+					sum = sum + data * data;
+				}
+			    if (minError > sum || minError < 0) {
+			    	minError = sum;
+			    }
+			    rad = rad + singleDistance[type] / 2;
+			}
+			singleResult[type] = minError;
+		}
+//		if(times<100){
+//			System.out.print(singleResult[0]<singleResult[1]?"0":"1");
+//		}
+		
+
+		if (!started) {
+			if (singleResult[0]<singleResult[1])
+				position++;
+			else
+				position = 0;
+
+			
+			if (position >= singleTArraylength) {
+				reviseNextSigPos();
+				started = true;
+				isSingle0 = true;
+				result = true;
+			}
+		} else {
+	    	position ++;
+	    	if (position >= nextSinglePosition) {
+	    		calcNextSigPos();
+	    		isSingle0 = singleResult[0]<singleResult[1];
+	    		result = true;
+	    	}
+	    }
+		
+		if(result){
+			System.out.print(isSingle0?"0":"1");
+		}
 		return result;
 	}
 	
@@ -278,7 +213,7 @@ public class FskDecode {
 	private static final byte s_Stop = 9;
 	public boolean decodeValue(int sampleValue){
 		boolean result = false;
-		if (decode(sampleValue)&&decodeHeader()) {
+		if (decode2(sampleValue)&&decodeHeader()) {
 			switch (state) {
 			case s_Start:
 				if (isSingle0) {

@@ -17,58 +17,53 @@ public class Asset
   {
     String str1 = paramString;
     String str2;
+    
+    InputStream localInputStream = null;
+    FileOutputStream localFileOutputStream = null;
+    
     try
     {
-      while (true)
-      {
-        String str3;
-        if (str1.indexOf("/") <= -1)
+        String str3 = paramContext.getFilesDir() + File.separator + str1;
+        File localFile = new File(str3);
+        if (localFile.exists())
+          localFile.delete();
+        
+        localInputStream = paramContext.getAssets().open(paramString);
+        localFileOutputStream = new FileOutputStream(str3);
+        
+        byte[] arrayOfByte = new byte[4096];
+        while (true)
         {
-          str3 = paramContext.getFilesDir() + File.separator + str1;
-          File localFile = new File(str3);
-          if (localFile.exists())
-            localFile.delete();
-          if (new File(str3).exists())
+          int i = localInputStream.available();
+          if (i <= 0)
           {
+            localFileOutputStream.close();
+            localInputStream.close();
             str2 = str3;
             break;
+          }else{
+              i = localInputStream.read(arrayOfByte, 0, 4096);
+              localFileOutputStream.write(arrayOfByte, 0, i);
           }
         }
-        else
-        {
-          str1 = str1.substring(1 + str1.indexOf("/"));
-          continue;
-        }
-        InputStream localInputStream = paramContext.getAssets().open(paramString);
-        FileOutputStream localFileOutputStream = new FileOutputStream(str3);
-        try
-        {
-          byte[] arrayOfByte = new byte[4096];
-          while (true)
-          {
-            int i = localInputStream.available();
-            if (i <= 0)
-            {
-              localFileOutputStream.close();
-              localInputStream.close();
-              str2 = str3;
-              break;
-            }
-            localFileOutputStream.write(arrayOfByte, 0, localInputStream.read(arrayOfByte, 0, 4096));
-          }
-        }
-        finally
-        {
-          localFileOutputStream.close();
-          localInputStream.close();
-        }
-      }
+
+
+        
     }
     catch (Exception localException)
     {
       localException.printStackTrace();
       str2 = "";
-    }
+    }finally{
+    	try{
+        	if(localFileOutputStream!=null)
+        		localFileOutputStream.close();
+        	if(localInputStream!=null)
+        		localInputStream.close();
+    	}catch(Exception e){
+    		
+    	}
+      }
     return str2;
   }
 }

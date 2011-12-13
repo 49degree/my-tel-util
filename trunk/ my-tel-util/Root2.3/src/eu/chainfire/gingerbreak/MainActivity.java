@@ -250,7 +250,7 @@ public class MainActivity extends PreferenceActivity
 
     protected void updateMessage(String paramString)
     {
-      MainActivity.Exploit.UpdateRunnable local1UpdateRunnable = new MainActivity.Exploit.UpdateRunnable(this);
+      MainActivity.Exploit.UpdateRunnable local1UpdateRunnable = new MainActivity.Exploit.UpdateRunnable();
       local1UpdateRunnable.message = paramString;
       handler.post(local1UpdateRunnable);
     }
@@ -258,14 +258,15 @@ public class MainActivity extends PreferenceActivity
     	public String message = "";
 
 		public void run() {
-			if (MainActivity.UnExploit.access$2(this$1) != null)
-				MainActivity.UnExploit.access$2(this$1).setMessage(message);
-			}
+    		if (dialog != null)
+    			dialog.setMessage(message);
+    		}
 		}
   }
 
   private class Startup extends AsyncTask<Integer, Integer, Integer>
   {
+	  String Tag = "Startup";
     private ProgressDialog dialog = null;
     private Handler handler = null;
 
@@ -290,7 +291,9 @@ public class MainActivity extends PreferenceActivity
         }
         updateMessage("Loading ...\nChecking for SuperUser ...");
         MainActivity localMainActivity = MainActivity.this;
+        
         if (SuperUser.executeSU("su", "ls /") != null);
+        
         for (boolean bool = true; ; bool = false)
         {
           localMainActivity.haveSU = bool;
@@ -305,6 +308,9 @@ public class MainActivity extends PreferenceActivity
           deleteFile("/data/data/eu.chainfire.gingerbreak/files/rooted");
           updateMessage("Loading ...\nExtracting assets ...\nGingerBreak");
           String str2 = Asset.extractAssetToFile(_this, "gingerbreak.png");
+          
+          Log.e(Tag, "[Asset.extractAssetToFile " + str2);
+          
           String[] arrayOfString1 = new String[3];
           arrayOfString1[0] = "rm /data/data/eu.chainfire.gingerbreak/files/gingerbreak";
           arrayOfString1[1] = ("cat \"" + str2 + "\" > /data/data/eu.chainfire.gingerbreak/files/gingerbreak");
@@ -382,7 +388,7 @@ public class MainActivity extends PreferenceActivity
 
     protected void updateMessage(String paramString)
     {
-      MainActivity.Startup.UpdateRunnable local1UpdateRunnable = new MainActivity.Startup.UpdateRunnable(this);
+      MainActivity.Startup.UpdateRunnable local1UpdateRunnable = new MainActivity.Startup.UpdateRunnable();
       //UpdateRunnable local1UpdateRunnable = new UpdateRunnable(this);
       local1UpdateRunnable.message = paramString;
       handler.post(local1UpdateRunnable);
@@ -390,8 +396,8 @@ public class MainActivity extends PreferenceActivity
     private class UpdateRunnable implements Runnable {
     	public String message = "";
     	public void run(){
-    		if (MainActivity.Startup.access$2(this$1) != null)
-    			MainActivity.Startup.access$2(this$1).setMessage(message);
+    		if (dialog != null)
+    			dialog.setMessage(message);
     		}
     }
   }
@@ -468,16 +474,16 @@ public class MainActivity extends PreferenceActivity
 
     protected void updateMessage(String paramString)
     {
-      MainActivity.UnExploit.UpdateRunnable local1UpdateRunnable = new MainActivity.UnExploit.UpdateRunnable(this);
+      MainActivity.UnExploit.UpdateRunnable local1UpdateRunnable = new MainActivity.UnExploit.UpdateRunnable();
       local1UpdateRunnable.message = paramString;
       handler.post(local1UpdateRunnable);
     }
     private class UpdateRunnable implements Runnable {
     	public String message = "";
     	public void run() {
-    		if (MainActivity.UnExploit.access$2(this$1) != null)
-    			MainActivity.UnExploit.access$2(this$1).setMessage(message);
+    		if (dialog != null)
+    			dialog.setMessage(message);
+    		}
 		}
 	}
-  }
 }

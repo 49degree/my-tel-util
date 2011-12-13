@@ -22,6 +22,7 @@ public class SuperUser
   public static List<String> executeSU(String paramString, String[] paramArrayOfString)
   {
     ArrayList localArrayList1 = new ArrayList();
+    ArrayList localArrayList2 = null;
     try
     {
       Process localProcess = Runtime.getRuntime().exec(paramString);
@@ -35,21 +36,22 @@ public class SuperUser
         localDataOutputStream.writeBytes("exit\n");
         localDataOutputStream.flush();
       }
+      
+      
+      
       while (true)
       {
+    	  Log.e("GingerBreak", "[isRunning(localProcess)] " + isRunning(localProcess));
+    	  
         if (!isRunning(localProcess))
         {
-          localProcess.waitFor();
-          if (localProcess.exitValue() != 255)
-            break label305;
-          localArrayList2 = null;
-          break label373;
+//          localProcess.waitFor();
+//          if (localProcess.exitValue() != 255)
+//            break;
           String str1 = paramArrayOfString[j];
           Log.e("GingerBreak", "[GingerBreak][SU+] " + str1);
           localDataOutputStream.writeBytes(str1 + "\n");
           localDataOutputStream.flush();
-          j++;
-          break;
         }
         if (localDataInputStream2.available() > 0)
         {
@@ -62,15 +64,17 @@ public class SuperUser
           Log.e("GingerBreak", "[GingerBreak][SU*] " + str2);
           localArrayList1.add(str2);
         }
+        if(j++>=i)
+      	  break;
         Thread.sleep(20L);
       }
-      label305: 
-      do
-      {
-        String str5 = localDataInputStream2.readLine();
-        Log.e("GingerBreak", "[GingerBreak][SU-] " + str5);
+      
+     
+      while (localDataInputStream2.available() > 0){
+          String str5 = localDataInputStream2.readLine();
+          Log.e("GingerBreak", "[GingerBreak][SU-] " + str5);
       }
-      while (localDataInputStream2.available() > 0);
+      
       while (true)
       {
         if (localDataInputStream1.available() <= 0)
@@ -86,13 +90,12 @@ public class SuperUser
     catch (InterruptedException localInterruptedException)
     {
       localArrayList2 = null;
-      return localArrayList2;
     }
     catch (IOException localIOException)
     {
-      while (true)
-        label373: ArrayList localArrayList2 = null;
+        localArrayList2 = null;
     }
+    return localArrayList2;
   }
 
   public static void executeSUreboot()
@@ -113,19 +116,19 @@ public class SuperUser
     try
     {
       int j = paramProcess.exitValue();
-      if (j == 0);
-      for (i = 0; ; i = 0)
-        return i;
+      if (j == 0)
+    	  return true;
+      else
+    	  return false;
     }
     catch (Exception localException)
     {
-      while (true)
-        int i = 1;
+      return false;
     }
   }
 }
 
-/* Location:           E:\开发工具\android开发工具\反编译工具\apktool2.2\gingerbreak\gingerbreak_dex2jar.jar
+/* Location:           E:\寮�彂宸ュ叿\android寮�彂宸ュ叿\鍙嶇紪璇戝伐鍏穃apktool2.2\gingerbreak\gingerbreak_dex2jar.jar
  * Qualified Name:     eu.chainfire.gingerbreak.SuperUser
  * JD-Core Version:    0.6.0
  */

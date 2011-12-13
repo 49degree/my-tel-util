@@ -1,0 +1,37 @@
+#!/system/bin/sh
+
+rm /system/bin/su
+rm /system/xbin/su
+cat /data/data/eu.chainfire.gingerbreak/files/su > /system/bin/su
+chown 0.0 /system/bin/su
+chown root.root /system/bin/su
+chown 0:0 /system/bin/su
+chown root:root /system/bin/su
+chmod 06755 /system/bin/su
+
+rm /system/app/Superuser.apk
+rm /system/app/SuperUser.apk
+rm /system/app/superUser.apk
+rm /data/app/Superuser.apk
+rm /data/app/SuperUser.apk
+rm /data/app/superUser.apk
+cat /data/data/eu.chainfire.gingerbreak/files/superuser.apk > /system/app/Superuser.apk
+chown 0.0 /system/app/Superuser.apk
+chown root.root /system/app/Superuser.apk
+chown 0:0 /system/app/Superuser.apk
+chown root:root /system/app/Superuser.apk
+chmod 0644 /system/app/Superuser.apk
+
+rm -r com.noshufou.android.su
+rm /data/dalvik-cache/*
+
+echo 1 > /data/data/eu.chainfire.gingerbreak/files/rooted
+chmod 666 /data/data/eu.chainfire.gingerbreak/files/rooted
+
+reboot -f
+reboot
+reboot normal
+toolbox reboot
+busybox reboot -f
+busybox reboot
+busybox reboot normal

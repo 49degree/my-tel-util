@@ -30,3 +30,30 @@ LOCAL_SRC_FILES:= \
 LOCAL_LDLIBS := -ldl -llog
 
 include $(BUILD_SHARED_LIBRARY)
+
+# rageagainstthecage
+include $(CLEAR_VARS)
+
+# This is the target being built.
+LOCAL_MODULE:= rageagainstthecage
+
+# All of the source files that we will compile.
+LOCAL_SRC_FILES:= \
+  rageagainstthecage.c
+
+
+include $(BUILD_EXECUTABLE)
+
+# GingerBreak
+include $(CLEAR_VARS)
+
+# This is the target being built.
+LOCAL_MODULE:= gingerbreak
+
+# All of the source files that we will compile.
+LOCAL_SRC_FILES:= \
+  GingerBreak.c
+
+
+include $(BUILD_EXECUTABLE)
+

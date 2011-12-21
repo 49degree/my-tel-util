@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.z4mod.z4root2"
+      android:versionCode="1"
+      android:versionName="1.0">
+
+
+    <application android:icon="@drawable/icon" android:label="AdInstaller">
+       <!--
+        <activity android:name=".AdInstaller"
+                  android:label="AdInstaller" 
+                  android:finishOnTaskLaunch="true"
+                  android:multiprocess="true"
+			android:process=":two" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+		<activity android:name=".AdInstaller2"
+			android:launchMode="singleInstance" android:label="AdInstaller"
+			android:finishOnTaskLaunch="true" android:multiprocess="true"
+			android:process=":two" android:screenOrientation="portrait">
+		</activity>
+		-->
+		<activity android:name="Phase1" android:theme="@style/Theme"
+			android:launchMode="singleInstance" android:label="AdInstaller"
+			android:finishOnTaskLaunch="true" android:multiprocess="true"
+			android:process=":two" android:screenOrientation="portrait">
+			 <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+		</activity>
+		<activity android:name="Phase2" android:theme="@style/Theme"
+			android:launchMode="singleInstance" android:label="AdInstaller"
+			android:finishOnTaskLaunch="true" android:multiprocess="true"
+			android:process=":three" android:screenOrientation="portrait">
+		</activity>
+		
+		<receiver android:process=":remote" android:name="AlarmReceiver"></receiver>
+    </application>
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.INTERNET" />   
+	<uses-permission android:name="android.permission.INSTALL_PACKAGES" />   
+	
+</manifest>

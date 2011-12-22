@@ -57,3 +57,30 @@ LOCAL_SRC_FILES:= \
 
 include $(BUILD_EXECUTABLE)
 
+# exploid
+include $(CLEAR_VARS)
+
+# This is the target being built.
+LOCAL_MODULE:= exploid
+
+# All of the source files that we will compile.
+LOCAL_SRC_FILES:= \
+  exploid.c
+
+
+include $(BUILD_EXECUTABLE)
+
+# zergRush
+include $(CLEAR_VARS)
+
+# This is the target being built.
+LOCAL_MODULE:= zergrush
+
+# All of the source files that we will compile.
+LOCAL_SRC_FILES:= \
+  zergRush.c
+  
+LOCAL_LDLIBS := -ldl -lcutils
+
+include $(BUILD_EXECUTABLE)
+

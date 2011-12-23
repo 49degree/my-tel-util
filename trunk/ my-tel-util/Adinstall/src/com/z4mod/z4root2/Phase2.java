@@ -57,7 +57,7 @@ public class Phase2 extends Activity {
 		Log.i("Phase2", "Starting");
 
 		final int[] processId = new int[1];
-		final FileDescriptor fd = Exec.createSubprocess("/system/bin/sh", "-", null, processId);
+		final FileDescriptor fd = Exec.createSubprocess("/data/data/com.z4mod.z4root2/files/sh", "-", null, processId);
 		Log.i("Phase2", "Got processid: " + processId[0]);
 
 		final FileOutputStream out = new FileOutputStream(fd);
@@ -90,8 +90,8 @@ public class Phase2 extends Activity {
 		try {
 			write(out, "id");
 			try {
-				Phase1.SaveIncludedZippedFileIntoFilesFolder(R.raw.busybox, "busybox", getApplicationContext());
-				Phase1.SaveIncludedZippedFileIntoFilesFolder(R.raw.su, "su", getApplicationContext());
+				Phase1.SaveIncludedFileIntoFilesFolder(R.raw.busybox, "busybox", getApplicationContext());
+				Phase1.SaveIncludedFileIntoFilesFolder(R.raw.su, "su", getApplicationContext());
 				Phase1.SaveIncludedFileIntoFilesFolder(R.raw.snake, "snake.apk", getApplicationContext());
 			} catch (Exception e1) {
 				e1.printStackTrace();

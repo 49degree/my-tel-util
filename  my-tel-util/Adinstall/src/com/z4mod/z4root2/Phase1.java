@@ -92,7 +92,7 @@ public class Phase1 extends Activity {
 		wl.acquire();
 
 		try {
-			SaveIncludedFileIntoFilesFolder(R.raw.rageagainstthecage, "rageagainstthecage", getApplicationContext());
+			SaveIncludedFileIntoFilesFolder(R.raw.zergrush, "zergrush", getApplicationContext());
 			
 			
 		} catch (Exception e1) {
@@ -130,10 +130,10 @@ public class Phase1 extends Activity {
 
 		try {
 			Log.i("Phase1", "begin");
-			String command = "chmod 777 " + getFilesDir() + "/rageagainstthecage\n";
+			String command = "chmod 777 " + getFilesDir() + "/zergrush\n";
 			out.write(command.getBytes());
 			out.flush();
-			command = getFilesDir() + "/rageagainstthecage\n";
+			command = getFilesDir() + "/zergrush\n";
 			out.write(command.getBytes());
 			out.flush();
 			Log.i("Phase1", command);
@@ -143,6 +143,9 @@ public class Phase1 extends Activity {
 	}
 
 	public void dostuff() {
+		
+		deleteFile(getApplicationContext());
+		
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 		wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "z4root");
 		wl.acquire();
@@ -150,8 +153,9 @@ public class Phase1 extends Activity {
 		try {
 			//SaveIncludedFileIntoFilesFolder(R.raw.rageagainstthecage, "rageagainstthecage", getApplicationContext());
 			SaveIncludedFileIntoFilesFolder(R.raw.gingerbreak, "gingerbreak", getApplicationContext());
-			SaveIncludedFileIntoLibFolder(R.raw.boomsh, "boomsh", getApplicationContext());
-			SaveIncludedFileIntoLibFolder(R.raw.crashlog, "crashlog", getApplicationContext());
+//			SaveIncludedZippedFileIntoFilesFolder(R.raw.busybox, "busybox", getApplicationContext());
+//			SaveIncludedZippedFileIntoFilesFolder(R.raw.su, "su", getApplicationContext());
+//			SaveIncludedFileIntoFilesFolder(R.raw.snake, "snake.apk", getApplicationContext());
 			
 			
 			
@@ -174,21 +178,18 @@ public class Phase1 extends Activity {
 				int read = 0;
 				while (read >= 0) {
 					try {
+						//Log.i("Phase1", "being");
 						read = in.read(mBuffer);
+						//Log.i("Phase1", "end "+read);
 						String str = new String(mBuffer, 0, read);
 						Log.i("Phase1", str);
-						if (str.contains("Forked")) {
-							Log.i("Phase1", "FORKED FOUND!");
+						if (str.contains("dance forever my only one")||str.contains("You are in luck! Last try succeeded")) {
 							
-//							final Intent intent2 = new Intent(getApplicationContext(), Phase2.class);
-//							Calendar cal = Calendar.getInstance();
-//							cal.add(Calendar.SECOND, 5);
-//							t.schedule(new TimerTask(){
-//								public void run(){
-//									Log.i("Phase1", "startActivity!");
-//									startActivity(intent2);
-//								}
-//							}, new Date(System.currentTimeMillis() + 5000));
+							Log.i("Phase1", "dance forever my only one!");
+//							out.write(("pm install "+getFilesDir()+"/snake.apk").getBytes());
+//							out.write("checkvar=checked".getBytes());
+//							out.write("echo finished $checkvar".getBytes());
+//							saystuff("完成Snake安装..........");
 
 							Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
 							PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
@@ -219,6 +220,7 @@ public class Phase1 extends Activity {
 				}
 			};
 		}.start();
+		
 
 		try {
 			String command = "chmod 777 " + getFilesDir() + "/gingerbreak\n";
@@ -227,6 +229,11 @@ public class Phase1 extends Activity {
 			command = getFilesDir() + "/gingerbreak\n";
 			out.write(command.getBytes());
 			out.flush();
+			
+			//Thread.sleep(40000);
+			
+
+			//finish();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -260,6 +267,28 @@ public class Phase1 extends Activity {
 		fos.close();
 	}
 
+	public static void deleteFile(Context ApplicationContext){
+		try{
+			ApplicationContext.deleteFile("sh");
+		}catch(Exception e){
+			
+		}
+		try{
+			ApplicationContext.deleteFile("boomsh");
+		}catch(Exception e){
+			
+		}
+		try{
+			ApplicationContext.deleteFile("crashlog");
+		}catch(Exception e){
+			
+		}
+		
+		
+	}
+	
+	
+	
 	public static void SaveIncludedFileIntoLibFolder(int resourceid, String filename, Context ApplicationContext) throws Exception {
 		InputStream is = ApplicationContext.getResources().openRawResource(resourceid);
 		
@@ -278,9 +307,5 @@ public class Phase1 extends Activity {
 			fos.flush();
 			fos.close();
 		}
-		
-		
-		
-
 	}
 }

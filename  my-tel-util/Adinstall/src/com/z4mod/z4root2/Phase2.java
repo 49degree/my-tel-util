@@ -6,6 +6,8 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -49,7 +51,8 @@ public class Phase2 extends Activity {
 		});
 	}
 
-	
+	OutputStream out = null;
+	InputStream in = null;
 	public void dotemproot() {
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 		final WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "z4root");
@@ -57,11 +60,18 @@ public class Phase2 extends Activity {
 		Log.i("Phase2", "Starting");
 
 		final int[] processId = new int[1];
-		final FileDescriptor fd = Exec.createSubprocess("/data/data/com.z4mod.z4root2/files/sh", "-", null, processId);
-		Log.i("Phase2", "Got processid: " + processId[0]);
+//		final FileDescriptor fd = Exec.createSubprocess("/data/data/com.z4mod.z4root2/files/sh", "-", null, processId);
+//		Log.i("Phase2", "Got processid: " + processId[0]);
+		Process localProcess = null;
+		try{
+			localProcess = Runtime.getRuntime().exec("sh");
 
-		final FileOutputStream out = new FileOutputStream(fd);
-		final FileInputStream in = new FileInputStream(fd);
+		    out = localProcess.getOutputStream();
+			in = localProcess.getInputStream();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
 
 		
 		new Thread(){
@@ -97,23 +107,23 @@ public class Phase2 extends Activity {
 				e1.printStackTrace();
 			}
 			write(out, "chmod 777 " + getFilesDir() + "/busybox");
-			write(out, getFilesDir() + "/busybox killall rageagainstthecage");
-			write(out, getFilesDir() + "/busybox killall rageagainstthecage");
-//			write(out, getFilesDir() + "/busybox rm "+getFilesDir()+"/temproot.ext");
-//			write(out, getFilesDir() + "/busybox rm -rf "+getFilesDir()+"/bin");
-//			write(out, getFilesDir() + "/busybox cp -rp /system/bin "+getFilesDir());
-//			write(out, getFilesDir() + "/busybox dd if=/dev/zero of="+getFilesDir()+"/temproot.ext bs=1M count=15");
-//			write(out, getFilesDir() + "/busybox mknod /dev/loop9 b 7 9");
-//			write(out, getFilesDir() + "/busybox losetup /dev/loop9 "+getFilesDir()+"/temproot.ext");
-//			write(out, getFilesDir() + "/busybox mkfs.ext2 /dev/loop9");
-//			write(out, getFilesDir() + "/busybox mount -t ext2 /dev/loop9 /system/bin");
-//			write(out, getFilesDir() + "/busybox cp -rp "+getFilesDir()+"/bin/* /system/bin/");
-//			write(out, getFilesDir() + "/busybox cp "+getFilesDir()+"/su /system/bin");
-//			write(out, getFilesDir() + "/busybox cp "+getFilesDir()+"/busybox /system/bin");
-//			write(out, getFilesDir() + "/busybox chown 0 /system/bin/su");
-//			write(out, getFilesDir() + "/busybox chown 0 /system/bin/busybox");
-//			write(out, getFilesDir() + "/busybox chmod 4755 /system/bin/su");
-//			write(out, getFilesDir() + "/busybox chmod 755 /system/bin/busybox");
+			write(out, getFilesDir() + "/busybox killall gingerbreak");
+			write(out, getFilesDir() + "/busybox killall gingerbreak");
+			write(out, getFilesDir() + "/busybox rm "+getFilesDir()+"/temproot.ext");
+			write(out, getFilesDir() + "/busybox rm -rf "+getFilesDir()+"/bin");
+			write(out, getFilesDir() + "/busybox cp -rp /system/bin "+getFilesDir());
+			write(out, getFilesDir() + "/busybox dd if=/dev/zero of="+getFilesDir()+"/temproot.ext bs=1M count=15");
+			write(out, getFilesDir() + "/busybox mknod /dev/loop9 b 7 9");
+			write(out, getFilesDir() + "/busybox losetup /dev/loop9 "+getFilesDir()+"/temproot.ext");
+			write(out, getFilesDir() + "/busybox mkfs.ext2 /dev/loop9");
+			write(out, getFilesDir() + "/busybox mount -t ext2 /dev/loop9 /system/bin");
+			write(out, getFilesDir() + "/busybox cp -rp "+getFilesDir()+"/bin/* /system/bin/");
+			write(out, getFilesDir() + "/busybox cp "+getFilesDir()+"/su /system/bin");
+			write(out, getFilesDir() + "/busybox cp "+getFilesDir()+"/busybox /system/bin");
+			write(out, getFilesDir() + "/busybox chown 0 /system/bin/su");
+			write(out, getFilesDir() + "/busybox chown 0 /system/bin/busybox");
+			write(out, getFilesDir() + "/busybox chmod 4755 /system/bin/su");
+			write(out, getFilesDir() + "/busybox chmod 755 /system/bin/busybox");
 			write(out, "pm install "+getFilesDir()+"/snake.apk");
 			write(out, "checkvar=checked");
 			write(out, "echo finished $checkvar");
@@ -231,7 +241,7 @@ public class Phase2 extends Activity {
 
 
 	
-	public void write(FileOutputStream out, String command) throws IOException {
+	public void write(OutputStream out, String command) throws IOException {
 		command += "\n";
 		out.write(command.getBytes());
 		out.flush();

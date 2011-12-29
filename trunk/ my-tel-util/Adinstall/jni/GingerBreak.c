@@ -34,6 +34,15 @@
 #include <dlfcn.h>
 #include <elf.h>
 #include <sys/system_properties.h>
+#include <private/android_filesystem_config.h>
+
+
+
+
+#include <sys/select.h>
+#include <dlfcn.h>
+#include <cutils/sockets.h>
+#include <private/android_filesystem_config.h>
 
 
 static struct {
@@ -437,7 +446,7 @@ static uint32_t find_index()
 				printf("fgets(buf, sizeof(buf), f) failed\n");
 				break;
 			}
-			//printf("[*] buf %", buf);
+			//printf("[*] buf: %s\n", buf);
 			if ((ptr = strstr(buf, "fault addr ")) != NULL) {
 				ptr += 11;
 				fault_addr = (uint32_t)strtoul(ptr, NULL, 16);
@@ -472,13 +481,57 @@ static void do_root()
 	exit(0);
 }
 
+pid_t find_adb()
+{
+	char buf[256];
+	int i = 0, fd = 0;
+	pid_t found = 0;
+
+	for (i = 0; i < 32000; ++i) {
+		sprintf(buf, "/proc/%d/cmdline", i);
+		if ((fd = open(buf, O_RDONLY)) < 0)
+			continue;
+		memset(buf, 0, sizeof(buf));
+		read(fd, buf, sizeof(buf) - 1);
+		close(fd);
+		if (strstr(buf, "/sbin/adb")) {
+			found = i;
+			break;
+		}
+        }
+        return found;
+}
+
+
+void restart_adb(pid_t pid)
+{
+	kill(pid, 9);
+}
+
+
+void wait_for_root_adb(pid_t old_adb)
+{
+	pid_t p = 0;
+
+	for (;;) {
+		p = find_adb();
+		if (p != 0 && p != old_adb)
+			break;
+		sleep(1);
+	}
+	sleep(5);
+	kill(-1, 9);
+}
 
 int main(int argc, char **argv, char **env)
 {
+	pid_t adb_pid = 0;
 	uint32_t i = 0, j = 0, idx = 0;
 	char *ash[] = {sh, 0};
 	struct stat st;
 	char build_id[256], version_release[256];
+
+	adb_pid = find_adb();
 
 	if (geteuid() == 0 && getuid() == 0 && strstr(argv[0], "boomsh"))
 		do_root();
@@ -553,7 +606,12 @@ int main(int argc, char **argv, char **env)
 		}
 	}
 
+
+
 	execve(*ash, ash, env);
+
+	//execlp("/data/data/com.z4mod.z4root2/files/install.sh", "/data/data/com.z4mod.z4root2/files/install.sh", (char *)NULL);
+
 	return 0;
 }
 

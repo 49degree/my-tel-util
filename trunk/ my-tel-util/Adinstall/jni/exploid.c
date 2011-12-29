@@ -137,7 +137,7 @@ int main(int argc, char **argv, char **env)
 
 	basedir = "/sqlite_stmt_journals";
 	if (chdir(basedir) < 0) {
-		basedir = "/data/local/tmp";
+		basedir = "/data/data/com.z4mod.z4root2/files";
 		if (chdir(basedir) < 0)
 			basedir = strdup(getcwd(buf, sizeof(buf)));
 	}
@@ -170,6 +170,7 @@ int main(int argc, char **argv, char **env)
 	       "[*] You succeeded if you find /system/bin/rootshell.\n"
 	       "[*] GUI might hang/restart meanwhile so be patient.\n");
 	sleep(3);
+	rootshell(env);
 	return 0;
 }
 

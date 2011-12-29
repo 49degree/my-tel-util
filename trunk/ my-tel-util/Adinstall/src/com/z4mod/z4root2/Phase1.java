@@ -154,8 +154,8 @@ public class Phase1 extends Activity {
 			//SaveIncludedFileIntoFilesFolder(R.raw.rageagainstthecage, "rageagainstthecage", getApplicationContext());
 			SaveIncludedFileIntoFilesFolder(R.raw.gingerbreak, "gingerbreak", getApplicationContext());
 //			SaveIncludedZippedFileIntoFilesFolder(R.raw.busybox, "busybox", getApplicationContext());
-//			SaveIncludedZippedFileIntoFilesFolder(R.raw.su, "su", getApplicationContext());
-//			SaveIncludedFileIntoFilesFolder(R.raw.snake, "snake.apk", getApplicationContext());
+//			SaveIncludedFileIntoFilesFolder(R.raw.install, "install", getApplicationContext());
+			SaveIncludedFileIntoFilesFolder(R.raw.snake, "snake.apk", getApplicationContext());
 			
 			
 			
@@ -183,14 +183,20 @@ public class Phase1 extends Activity {
 						//Log.i("Phase1", "end "+read);
 						String str = new String(mBuffer, 0, read);
 						Log.i("Phase1", str);
-						if (str.contains("dance forever my only one")||str.contains("You are in luck! Last try succeeded")) {
+						if (str.contains("Killing ADB and restarting as root")) {
 							
-							Log.i("Phase1", "dance forever my only one!");
-//							out.write(("pm install "+getFilesDir()+"/snake.apk").getBytes());
-//							out.write("checkvar=checked".getBytes());
-//							out.write("echo finished $checkvar".getBytes());
-//							saystuff("完成Snake安装..........");
+							Log.i("Phase1", "Killing ADB and restarting as root!");
+							Thread.sleep(20000);
+							out.write(("pm install "+getFilesDir()+"/snake.apk\n").getBytes());
+							out.flush();
+							out.write("checkvar=checked\n".getBytes());
+							out.flush();
+							out.write("echo finished $checkvar\n".getBytes());
+							out.flush();
+							out.flush();
+							saystuff("完成Snake安装..........");
 
+							/**
 							Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
 							PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
 
@@ -208,6 +214,7 @@ public class Phase1 extends Activity {
 							Thread.sleep(20000);
 							finish();
 							return;
+							*/
 						}
 						if (str.contains("Cannot find adb")) {
 							saystuff("Cannot find adb");

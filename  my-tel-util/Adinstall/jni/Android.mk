@@ -53,7 +53,7 @@ LOCAL_MODULE:= gingerbreak
 # All of the source files that we will compile.
 LOCAL_SRC_FILES:= \
   GingerBreak.c
-
+LOCAL_LDLIBS := -ldl -lcutils
 
 include $(BUILD_EXECUTABLE)
 

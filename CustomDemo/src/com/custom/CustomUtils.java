@@ -332,7 +332,7 @@ public class CustomUtils {
 			Runtime.getRuntime().exec(
 					"pm install -l " + path + appInfo[2]);
 			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.INSTALLED_APP_INFO, packetName, appinfos);
-			updateInstalledInfo(appInfo[3]);
+			updateInstalledInfo(appInfo[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

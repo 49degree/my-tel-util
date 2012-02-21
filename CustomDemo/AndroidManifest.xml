@@ -5,8 +5,8 @@
       android:versionName="1.0">
 
 
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".CustomDemo"
+    <application android:name="com.custom.MainApplication" android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name="CustomDemo"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -14,6 +14,25 @@
             </intent-filter>
         </activity>
 
+		<!-- 开机接收广播 -->
+		<receiver android:name="com.custom.broadcast.BootBroadcastReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+			</intent-filter>
+		</receiver>
+		
+		<!-- 启动服务广播 -->
+		<receiver android:name="com.custom.broadcast.StartServiceReceiver">
+			<intent-filter>
+				<action android:name="com.custom.broadcast.StartServiceReceiver" />
+			</intent-filter>
+		</receiver>	
+		
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES"></uses-permission>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    
+ 
+    
 </manifest>

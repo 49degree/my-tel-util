@@ -247,7 +247,7 @@ public class CustomUtils {
     public boolean checkAndInstalledApp(){
 		try {
 			Map<String,String> appInfos = (Map<String,String>)SharedPreferencesUtils.getConfigAll(SharedPreferencesUtils.NEW_APP_INFO);
-			Log.i("getInstallerPackageName",appInfos.size()+"");
+			//Log.i("getInstallerPackageName",appInfos.size()+"");
 			if(appInfos.size()<=0)
 				return false;
 			
@@ -292,7 +292,7 @@ public class CustomUtils {
 			//判断文件是否存在
 			File file = new File(path, appInfo[2]);//如果存在，则退出下载
 			if(!file.exists()){
-				Log.d("appInfo",appInfo[1]+":");
+				//Log.d("appInfo",appInfo[1]+":");
 				URL url = new URL(appInfo[1]);   
 				HttpURLConnection conn =(HttpURLConnection) url.openConnection();   
 				conn.setDoInput(true);   

@@ -204,7 +204,7 @@ public class HttpRequest {
 					bufferParas.append(key).append("=").append(this.paramMap.get(key)).append("&");
 				}
 			}
-			Log.i(TAG, "==================="+this.requestUrl+bufferParas.toString());
+			//Log.i(TAG, "==================="+this.requestUrl+bufferParas.toString());
 			 HttpGet get = new HttpGet(this.requestUrl+bufferParas.toString());
             return client.execute(get);
         } catch (Exception e) {

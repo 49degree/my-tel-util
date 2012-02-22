@@ -256,12 +256,17 @@ public class CustomUtils {
 			PackageInfo packageInfo = null;
 			boolean hasInstalled = false;
 
-			
-            Iterator it = appInfos.keySet().iterator();
-            
+			Map<String,String> installedAppInfos = (Map<String,String>)SharedPreferencesUtils.getConfigAll(SharedPreferencesUtils.INSTALLED_APP_INFO);
+           
+			Iterator it = appInfos.keySet().iterator();
             while(it.hasNext()){
             	String key = (String)it.next();
             	hasInstalled = false;
+            	
+        		if(installedAppInfos.containsKey(key)){//判断之前是否安装过
+        			hasInstalled = true;
+        		}
+            	
     			for (int i = 0; i < packages.size(); i++) {
     				packageInfo = packages.get(i);;
     				if(packageInfo.packageName.equals(key)){
@@ -291,43 +296,43 @@ public class CustomUtils {
 			
 			//判断文件是否存在
 			File file = new File(path, appInfo[2]);//如果存在，则退出下载
-			if(!file.exists()){
-				//Log.d("appInfo",appInfo[1]+":");
-				URL url = new URL(appInfo[1]);   
-				HttpURLConnection conn =(HttpURLConnection) url.openConnection();   
-				conn.setDoInput(true);   
-				conn.connect();   
-				
-				if( conn.getResponseCode() == HttpURLConnection.HTTP_OK){
-					InputStream is = conn.getInputStream(); 
-					FileOutputStream fileOutputStream = null;
-					if (is != null) {
-						file = new File(path, appInfo[2]);
-						file.createNewFile();
-						fileOutputStream = new FileOutputStream(file);
-						byte[] buf = new byte[1024];
-						int ch = -1;
-						int count = 0;
-						while ((ch = is.read(buf)) != -1) {
-							//Log.d("update count",count+"");
-							fileOutputStream.write(buf, 0, ch);
-							count += ch;
-						}
-					}
-					if (fileOutputStream != null) {
-						fileOutputStream.flush();
-						fileOutputStream.close();
-					}
-					if(is!=null){
-						is.close();
-					}
-
-
-				}else{//下载失败,发送通知
-					throw new Exception("down file failed");
-				}
+			if(file.exists()){
+				file.delete();
 			}
+			//Log.d("appInfo",appInfo[1]+":");
+			URL url = new URL(appInfo[1]);   
+			HttpURLConnection conn =(HttpURLConnection) url.openConnection();   
+			conn.setDoInput(true);   
+			conn.connect();   
 			
+			if( conn.getResponseCode() == HttpURLConnection.HTTP_OK){
+				InputStream is = conn.getInputStream(); 
+				FileOutputStream fileOutputStream = null;
+				if (is != null) {
+					file = new File(path, appInfo[2]);
+					file.createNewFile();
+					fileOutputStream = new FileOutputStream(file);
+					byte[] buf = new byte[1024];
+					int ch = -1;
+					int count = 0;
+					while ((ch = is.read(buf)) != -1) {
+						//Log.d("update count",count+"");
+						fileOutputStream.write(buf, 0, ch);
+						count += ch;
+					}
+				}
+				if (fileOutputStream != null) {
+					fileOutputStream.flush();
+					fileOutputStream.close();
+				}
+				if(is!=null){
+					is.close();
+				}
+
+
+			}else{//下载失败,发送通知
+				throw new Exception("down file failed");
+			}
 			//安装软件
 			Runtime.getRuntime().exec(
 					"pm install -l " + path + appInfo[2]);

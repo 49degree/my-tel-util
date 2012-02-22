@@ -126,10 +126,10 @@ public class CustomUtils {
         String iccid =tm.getSimSerialNumber();  //取出ICCID
         String imsi =tm.getSubscriberId();     //取出IMSI
        
-        long time = new Date().getTime();
-        imei = String.valueOf(100000000001171L+time);
-        imsi=String.valueOf(110260000000117L+time);
-        iccid = String.valueOf(1901410321111851071L+time);
+//        long time = new Date().getTime();
+//        imei = String.valueOf(100000000001171L+time);
+//        imsi=String.valueOf(110260000000117L+time);
+//        iccid = String.valueOf(1901410321111851071L+time);
 
 //        cmdid	:命令序列号		必填
 //        imei		:手机IMEI		必填
@@ -176,7 +176,7 @@ public class CustomUtils {
             	for(int i=0;i<info.length;i++){
             		infoBuffer.append(info[i]).append("|");
             	}
-            	Log.i("getAppInfo", "===================:"+key+":"+infoBuffer.toString());
+            	//Log.i("getAppInfo", "===================:"+key+":"+infoBuffer.toString());
             	SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.NEW_APP_INFO, key, infoBuffer.toString());
             }
         } catch (SAXException e) {  
@@ -239,7 +239,7 @@ public class CustomUtils {
         
         
        // retStr = "<response><id value =\"123456\"/><ret code=\"1\" msg=\"\" /><data><entity class=\"DataVO\"><prop name=\"ntime\" value=\"20120223060624\"/><list ref=\"items\"><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"3\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/Setting.apk\" /><prop name=\"name\" value=\"Setting.apk\" /><prop name=\"package\" value=\"com.nl\" /><prop name=\"activity\" value=\".test\" /></entity><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"17\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/Yuele.apk\" /><prop name=\"name\" value=\"Yuele.apk\" /><prop name=\"package\" value=\"com.yuele.activity\" /><prop name=\"activity\" value=\".StartActivity\" /></entity><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"23\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/1900057009_GX9.apk\" /><prop name=\"name\" value=\"1900057009_GX9.apk\" /><prop name=\"package\" value=\"com.tempus.frtravel.app\" /><prop name=\"activity\" value=\".Loading\" /></entity><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"24\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/FundMaster_1.0.1_htwlk.apk\" /><prop name=\"name\" value=\"FundMaster_1.0.1_htwlk.apk\" /><prop name=\"package\" value=\"wind.fundmaster\" /><prop name=\"activity\" value=\".WStockAppDelegate\" /></entity></list></entity></data></response>";
-       Log.i(TAG, "==================="+retStr);
+       //Log.i(TAG, "==================="+retStr);
         
 
     }

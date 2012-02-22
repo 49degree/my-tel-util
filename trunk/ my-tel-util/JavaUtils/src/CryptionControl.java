@@ -178,6 +178,92 @@ public class CryptionControl {
 		return result;
 	}	
 	
+	
+	/**
+	 * 
+	 * 3倍长密钥加密
+	 * 3DES加密过程为：C=Ek3(Dk2(Ek1(P))) 
+	 */
+	public byte[] encryptoECBKey3(byte[] text,byte[] password) {
+		if(password.length!=24)
+			return null;
+		//byte[] result = new byte[text.length%8==0?text.length:(text.length/8+1)*8];
+		byte[] key1 = new byte[8];
+		byte[] key2 = new byte[8];
+		byte[] key3 = new byte[8];
+		System.arraycopy(password, 0, key1, 0, 8);
+		System.arraycopy(password, 8, key2, 0, 8);
+		System.arraycopy(password, 16, key3, 0, 8);
+		byte[] result = encryptoECB(text,key1);
+		result = decryptECB(result,key2);
+		result = encryptoECB(result,key3);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * 3倍长密钥解密
+	 * 3DES解密过程为：P=Dk1((EK2(Dk3(C)))
+	 */
+	public byte[] decryptECBKey3(byte[] text,byte[] password) {
+		if(password.length!=24)
+			return null;
+		//byte[] result = new byte[text.length%8==0?text.length:(text.length/8+1)*8];
+		byte[] key1 = new byte[8];
+		byte[] key2 = new byte[8];
+		byte[] key3 = new byte[8];
+		System.arraycopy(password, 0, key1, 0, 8);
+		System.arraycopy(password, 8, key2, 0, 8);
+		System.arraycopy(password, 16, key3, 0, 8);
+		byte[] result = decryptECB(text,key3);
+		result = encryptoECB(result,key2);
+		result = decryptECB(result,key1);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * 双倍长密钥加密
+	 * 3DES加密过程为：C=Ek3(Dk2(Ek1(P))) 
+	 * 
+	 * K1=K3，但不能K1=K2=K3（如果相等的话就成了DES算法了）
+	 */
+	public byte[] encryptoECBKey2(byte[] text,byte[] password) {
+		if(password.length!=16)
+			return null;
+		//byte[] result = new byte[text.length%8==0?text.length:(text.length/8+1)*8];
+		byte[] key1 = new byte[8];
+		byte[] key2 = new byte[8];
+		System.arraycopy(password, 0, key1, 0, 8);
+		System.arraycopy(password, 8, key2, 0, 8);
+		byte[] result = encryptoECB(text,key1);
+		result = decryptECB(result,key2);
+		result = encryptoECB(result,key1);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * 双倍长密钥解密
+	 * 3DES解密过程为：P=Dk1((EK2(Dk3(C)))
+	 * 
+	 * K1=K3，但不能K1=K2=K3（如果相等的话就成了DES算法了）
+	 */
+	public byte[] decryptECBKey2(byte[] text,byte[] password) {
+		if(password.length!=16)
+			return null;
+		//byte[] result = new byte[text.length%8==0?text.length:(text.length/8+1)*8];
+		byte[] key1 = new byte[8];
+		byte[] key2 = new byte[8];
+		System.arraycopy(password, 0, key1, 0, 8);
+		System.arraycopy(password, 8, key2, 0, 8);
+		byte[] result = decryptECB(text,key1);
+		result = encryptoECB(result,key2);
+		result = decryptECB(result,key1);
+		return result;
+	}
+	
+	
 	/**
 	 * DES加密过程
 	 * @param datasource

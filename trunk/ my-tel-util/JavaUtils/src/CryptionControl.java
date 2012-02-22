@@ -270,10 +270,14 @@ public class CryptionControl {
 	 * @param password
 	 * @return
 	 */
-	public byte[] encryptoECB(byte[] datasource, byte[] password) {
+	public byte[] encryptoECB(byte[] src, byte[] password) {
 		try {
 			//return DESCryption.encryptionECB(datasource, password);
-			
+			if(src.length%8>0){//补足8字节整数倍
+				byte[] temp = new byte[(src.length/8+1)*8];
+				System.arraycopy(src, 0, temp, 0, src.length);
+				src = temp;
+			}
 			SecureRandom random = new SecureRandom();
 			DESKeySpec desKey = new DESKeySpec(password);
 			// 创建一个密匙工厂，然后用它把DESKeySpec转换成
@@ -285,7 +289,7 @@ public class CryptionControl {
 			cipher.init(Cipher.ENCRYPT_MODE, securekey, random);
 			// 现在，获取数据并加密
 			// 正式执行加密操作
-			return cipher.doFinal(datasource);
+			return cipher.doFinal(src);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -302,6 +306,11 @@ public class CryptionControl {
 	private byte[] decryptECB(byte[] src, byte[] password){
 		try {
 			//return DESCryption.discryptionECB(src, password);
+			if(src.length%8>0){//补足8字节整数倍
+				byte[] temp = new byte[(src.length/8+1)*8];
+				System.arraycopy(src, 0, temp, 0, src.length);
+				src = temp;
+			}
 			// DES算法要求有一个可信任的随机数源
 			SecureRandom random = new SecureRandom();
 			// 创建一个DESKeySpec对象
@@ -327,7 +336,7 @@ public class CryptionControl {
 
 	
 	public static void main(String[] args){
-		byte[] key = TypeConversion.hexStringToByte("1111111111111111");
+		byte[] key = TypeConversion.hexStringToByte("111111111111111122222222222222223333333333333333");
 		byte[] source = ("1111111111111111CBCKey1").getBytes(); 
 		System.out.println(TypeConversion.byte2hex(source,0,source.length));
 //		byte[] encodeResult = CryptionControl.getInstance().encryptoECB(source,key);
@@ -335,9 +344,9 @@ public class CryptionControl {
 //		byte[] decodeResult =  CryptionControl.getInstance().decryptECB(encodeResult, key);
 //		System.out.println("decodeResult:"+TypeConversion.byte2hex(decodeResult));
 		
-		byte[] encryptoDesResult = CryptionControl.getInstance().encryptoCBCKey1(source,key);
+		byte[] encryptoDesResult = CryptionControl.getInstance().encryptoECBKey3(source,key);
 		System.out.println("encryptoDesResult:"+TypeConversion.byte2hex(encryptoDesResult));
-		byte[] decryptDesResult = CryptionControl.getInstance().decryptCBCKey1(encryptoDesResult,key);
+		byte[] decryptDesResult = CryptionControl.getInstance().decryptECBKey3(encryptoDesResult,key);
 		System.out.println("decryptDesResult:"+TypeConversion.byte2hex(decryptDesResult));
 	}
 }

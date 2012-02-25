@@ -7,11 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 
+import com.custom.MainApplication;
+
 
 public class BootBroadcastReceiver extends BroadcastReceiver{
 
 	@Override
 	public void onReceive(Context context, Intent mintent) {
+		MainApplication.newInstance(context);
         if (Intent.ACTION_BOOT_COMPLETED.equals(mintent.getAction())) {
         	// 启动完成              
         	Intent intent = new Intent(context, StartServiceReceiver.class);               

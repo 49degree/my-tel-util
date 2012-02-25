@@ -5,7 +5,8 @@
       android:versionName="1.0">
 
 
-    <application android:name="com.custom.MainApplication" android:icon="@drawable/icon" android:label="@string/app_name">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        
         <activity android:name="CustomDemo"
                   android:label="@string/app_name">
             <intent-filter>
@@ -29,6 +30,8 @@
 		</receiver>	
 		
     </application>
+    
+    	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.INSTALL_PACKAGES"></uses-permission>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />

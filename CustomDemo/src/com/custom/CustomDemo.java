@@ -44,6 +44,7 @@ public class CustomDemo extends Activity implements OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        MainApplication.newInstance(this);
 
         
         button = (Button)this.findViewById(R.id.button);

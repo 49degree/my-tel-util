@@ -1,7 +1,7 @@
 package com.custom;
 
 import android.app.Activity;
-import android.app.Application;
+import android.content.Context;
 import android.os.Handler;
 import android.view.Display;
 import android.view.WindowManager;
@@ -11,8 +11,8 @@ import android.view.WindowManager;
  * @author 杨雪平
  *
  */
-public class MainApplication extends Application {
-	private static MainApplication instance;
+public class MainApplication {
+	private static Context instance;
 	public int screenHeight = 0;
 	public int screenWidth = 0;
 	
@@ -21,9 +21,16 @@ public class MainApplication extends Application {
 	private NetWorkTools netWorkTools = null;//网络连接状态监听工具
 
 
-	public static MainApplication getInstance() {
+	public static Context getInstance() {
 		return instance;
 	}
+	
+	public static void newInstance(Context mInstance) {
+		if(instance==null){
+			instance=mInstance;
+		}
+	}
+	
 	/**
 	 * 设置屏幕的高度和宽度
 	 */
@@ -48,13 +55,13 @@ public class MainApplication extends Application {
 		return screenWidth;
 	}
 
-	@Override
-	public void onCreate() {
-		// TODO Auto-generated method stub
-		super.onCreate();
-		//System.out.println("Aplication 初始化");
-		instance = this;
-	}
+//	@Override
+//	public void onCreate() {
+//		// TODO Auto-generated method stub
+//		super.onCreate();
+//		//System.out.println("Aplication 初始化");
+//		instance = this;
+//	}
 	
 	
 	/**
@@ -73,7 +80,7 @@ public class MainApplication extends Application {
 				
 			}
 		}
-		netWorkTools = new NetWorkTools(this,handler);
+		netWorkTools = new NetWorkTools(instance,handler);
 		return true;
 	}
 	/**

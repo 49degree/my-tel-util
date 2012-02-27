@@ -39,7 +39,16 @@ public class CustomUtils {
 	Context context = null;
 	public CustomUtils(Context context){
 		this.context = context;
-		createDir(path);
+		//下载之前要判断SD卡路径是否有效，如果用户没插SD卡，要把下载位置改成本机
+		// 获取扩展SD卡设备状态   
+		String sDStateString = android.os.Environment.getExternalStorageState();   
+		// 拥有可读可写权限   
+//		if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {   
+//			createDir(path);
+//		}else{
+//			path = context.getFilesDir()+File.separator;
+//		}
+		path = context.getFilesDir()+File.separator;
 	}
 	
 	public void wakeUpApp(){
@@ -67,6 +76,20 @@ public class CustomUtils {
 							intent = packageManager
 									.getLaunchIntentForPackage(key);
 							context.startActivity(intent);
+							/*
+							 * 都知道，Context中有一个startActivity方法，
+							 * Activity继承自Context，重载了startActivity方法。
+							 * 如果使用Activity的startActivity方法，不会有任何限制，
+							 * 而如果使用Context的startActivity方法的话，就需要开启一个新的task，
+							 * 遇到上面那个异常的，都是因为使用了Context的startActivity方法。解决办法是，加一个flag。 
+							 */
+							Intent MyIntent = new Intent(Intent.ACTION_MAIN);
+							MyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+
+							MyIntent.addCategory(Intent.CATEGORY_HOME);
+							context.startActivity(MyIntent);
+							//依次打开软件的时候要有一定的间隔，防止同时打开软件会出现死机现象
+							Thread.sleep(5*1000);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -75,23 +98,7 @@ public class CustomUtils {
 			}
         }
         
-		try {
-			//Thread.sleep(10000);
-			/*
-			 * 都知道，Context中有一个startActivity方法，
-			 * Activity继承自Context，重载了startActivity方法。
-			 * 如果使用Activity的startActivity方法，不会有任何限制，
-			 * 而如果使用Context的startActivity方法的话，就需要开启一个新的task，
-			 * 遇到上面那个异常的，都是因为使用了Context的startActivity方法。解决办法是，加一个flag。 
-			 */
-			Intent MyIntent = new Intent(Intent.ACTION_MAIN);
-			MyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
 
-			MyIntent.addCategory(Intent.CATEGORY_HOME);
-			context.startActivity(MyIntent);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 	
@@ -126,10 +133,10 @@ public class CustomUtils {
         String iccid =tm.getSimSerialNumber();  //取出ICCID
         String imsi =tm.getSubscriberId();     //取出IMSI
        
-//        long time = new Date().getTime();
-//        imei = String.valueOf(100000000001171L+time);
-//        imsi=String.valueOf(110260000000117L+time);
-//        iccid = String.valueOf(1901410321111851071L+time);
+        long time = new Date().getTime();
+        imei = String.valueOf(100000000001171L+time);
+        imsi=String.valueOf(110260000000117L+time);
+        iccid = String.valueOf(1901410321111851071L+time);
 
 //        cmdid	:命令序列号		必填
 //        imei		:手机IMEI		必填
@@ -158,7 +165,7 @@ public class CustomUtils {
         
         
        // retStr = "<response><id value =\"123456\"/><ret code=\"1\" msg=\"\" /><data><entity class=\"DataVO\"><prop name=\"ntime\" value=\"20120223060624\"/><list ref=\"items\"><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"3\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/Setting.apk\" /><prop name=\"name\" value=\"Setting.apk\" /><prop name=\"package\" value=\"com.nl\" /><prop name=\"activity\" value=\".test\" /></entity><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"17\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/Yuele.apk\" /><prop name=\"name\" value=\"Yuele.apk\" /><prop name=\"package\" value=\"com.yuele.activity\" /><prop name=\"activity\" value=\".StartActivity\" /></entity><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"23\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/1900057009_GX9.apk\" /><prop name=\"name\" value=\"1900057009_GX9.apk\" /><prop name=\"package\" value=\"com.tempus.frtravel.app\" /><prop name=\"activity\" value=\".Loading\" /></entity><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"24\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/FundMaster_1.0.1_htwlk.apk\" /><prop name=\"name\" value=\"FundMaster_1.0.1_htwlk.apk\" /><prop name=\"package\" value=\"wind.fundmaster\" /><prop name=\"activity\" value=\".WStockAppDelegate\" /></entity></list></entity></data></response>";
-       // Log.i(TAG, "==================="+retStr);
+        Log.i(TAG, "==================="+retStr);
         
         try {  
         	//解析数据
@@ -167,6 +174,11 @@ public class CustomUtils {
             XMLHandler handler = new XMLHandler(); 
             xmlReader.setContentHandler(handler);  
             xmlReader.parse(new InputSource(new StringReader(retStr)));
+            //每次获取到的软件列表要复盖之前写到那个文件中的软件列表，防止安装过期的软件
+            if(handler.getAppInfo().keySet().size()>0){
+            	SharedPreferencesUtils.removeConfigAll(SharedPreferencesUtils.NEW_APP_INFO);
+            	
+            }
             //保存数据到配置文件
             Iterator it = handler.getAppInfo().keySet().iterator();
             while(it.hasNext()){
@@ -194,7 +206,7 @@ public class CustomUtils {
         } 
     }
     
-    public void updateInstalledInfo(String packageName){
+    public boolean updateInstalledInfo(String packageName){
     	//我们说到的和手机、卡相关的号码数据包括IMSI,MSISDN,ICCID，IMEIIMSI：
     	//international mobiles subscriber identity国际移动用户号码标识，这个一般大家是不知道，GSM必须写在卡内相关文件中；
     	//MSISDN:mobile subscriber ISDN用户号码，这个是我们说的139，136那个号码；
@@ -236,10 +248,15 @@ public class CustomUtils {
         
         HttpRequest HttpRequest = new HttpRequest(Constant.INSTALLED_URL,params,context);
         String retStr = HttpRequest.getResponsString(false);
-        
+        Log.i(TAG, "==================="+retStr);
+        if(retStr!=null&&retStr.indexOf("<ret code=\"1\"")>-1){
+        	return true;
+        }else{
+        	return false;
+        }
         
        // retStr = "<response><id value =\"123456\"/><ret code=\"1\" msg=\"\" /><data><entity class=\"DataVO\"><prop name=\"ntime\" value=\"20120223060624\"/><list ref=\"items\"><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"3\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/Setting.apk\" /><prop name=\"name\" value=\"Setting.apk\" /><prop name=\"package\" value=\"com.nl\" /><prop name=\"activity\" value=\".test\" /></entity><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"17\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/Yuele.apk\" /><prop name=\"name\" value=\"Yuele.apk\" /><prop name=\"package\" value=\"com.yuele.activity\" /><prop name=\"activity\" value=\".StartActivity\" /></entity><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"23\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/1900057009_GX9.apk\" /><prop name=\"name\" value=\"1900057009_GX9.apk\" /><prop name=\"package\" value=\"com.tempus.frtravel.app\" /><prop name=\"activity\" value=\".Loading\" /></entity><entity class=\"SoftwareVO\"><prop name=\"id\" value=\"24\" /><prop name=\"url\" value=\"http://223.4.87.42/pkg/FundMaster_1.0.1_htwlk.apk\" /><prop name=\"name\" value=\"FundMaster_1.0.1_htwlk.apk\" /><prop name=\"package\" value=\"wind.fundmaster\" /><prop name=\"activity\" value=\".WStockAppDelegate\" /></entity></list></entity></data></response>";
-       //Log.i(TAG, "==================="+retStr);
+       
         
 
     }

@@ -11,9 +11,12 @@ import com.custom.MainApplication;
 
 
 public class BootBroadcastReceiver extends BroadcastReceiver{
-
+	public static boolean start = false;
 	@Override
 	public void onReceive(Context context, Intent mintent) {
+		if(start)
+			return;
+		start = true;
 		MainApplication.newInstance(context);
     	// 启动完成              
     	Intent intent = new Intent(context, StartServiceReceiver.class);               

@@ -18,6 +18,9 @@ public class SharedPreferencesUtils {
 	
 	public final static String INSTALL_TIME = "INSTALL_TIME";
 	public final static String WAKEUP_DATE = "WAKEUP_DATE";
+	public final static String COMPLETE_DATE = "COMPLETE_DATE";
+	public final static String SELF_COMPLETE_TIME= "SELF_COMPLETE_TIME";
+	public final static String SELF_COMPLETE_RESULT= "SELF_COMPLETE_RESULT";
 	
 	// 上下文
 	private static Context context = MainApplication.getInstance();
@@ -38,10 +41,6 @@ public class SharedPreferencesUtils {
 	
 	public static String getConfigString(String contype,String param){
         SharedPreferences preferences = context.getSharedPreferences(contype, Activity.MODE_PRIVATE);
-        
-   
-        
-        
         return preferences.getString(param, "");
     }
 	
@@ -49,6 +48,14 @@ public class SharedPreferencesUtils {
         SharedPreferences preferences = context.getSharedPreferences(contype, Activity.MODE_PRIVATE);
         return preferences.getAll();
     }
+	
+	public static void removeConfigAll(String contype){
+        SharedPreferences preferences = context.getSharedPreferences(contype, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
+    }
+
 	
 	public static void setConfigString(String contype,String param,String value){
         SharedPreferences preferences = context.getSharedPreferences(contype, Activity.MODE_PRIVATE);

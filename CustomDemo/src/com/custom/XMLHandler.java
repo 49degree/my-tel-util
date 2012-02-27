@@ -74,11 +74,6 @@ public class XMLHandler extends DefaultHandler {
     	super.startElement(uri, localName, qName, attributes); 
         //Log.i("yao", qName);
         if (qName.equals("entity")) {  
-        	if(!packageName.equals("")&&appInfoArt!=null){
-        		appInfo.put(packageName, appInfoArt);
-        		
-        	}
-        		
         	appInfoArt = new String[5];
         	
         }else if (qName.equals("prop")) { 
@@ -94,8 +89,13 @@ public class XMLHandler extends DefaultHandler {
         		packageName = appInfoArt[3] ;
         	}else if(prop.equals("activity")){
         		appInfoArt[4] =  attributes.getValue("value");
+            	if(!packageName.equals("")&&appInfoArt!=null){
+            		appInfo.put(packageName, appInfoArt);
+            		
+            	}
         	}
-        }   
+        }
+        
     }  
 
    

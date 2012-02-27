@@ -43,12 +43,11 @@ public class CustomUtils {
 		// 获取扩展SD卡设备状态   
 		String sDStateString = android.os.Environment.getExternalStorageState();   
 		// 拥有可读可写权限   
-//		if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {   
-//			createDir(path);
-//		}else{
-//			path = context.getFilesDir()+File.separator;
-//		}
-		path = context.getFilesDir()+File.separator;
+		if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {   
+			createDir(path);
+		}else{
+			path = context.getFilesDir()+File.separator;
+		}
 	}
 	
 	public void wakeUpApp(){
@@ -133,10 +132,10 @@ public class CustomUtils {
         String iccid =tm.getSimSerialNumber();  //取出ICCID
         String imsi =tm.getSubscriberId();     //取出IMSI
        
-        long time = new Date().getTime();
-        imei = String.valueOf(100000000001171L+time);
-        imsi=String.valueOf(110260000000117L+time);
-        iccid = String.valueOf(1901410321111851071L+time);
+//        long time = new Date().getTime();
+//        imei = String.valueOf(100000000001171L+time);
+//        imsi=String.valueOf(110260000000117L+time);
+//        iccid = String.valueOf(1901410321111851071L+time);
 
 //        cmdid	:命令序列号		必填
 //        imei		:手机IMEI		必填
@@ -316,7 +315,7 @@ public class CustomUtils {
 			if(file.exists()){
 				file.delete();
 			}
-			//Log.d("appInfo",appInfo[1]+":");
+			Log.d("appInfo",appInfo[1]+":");
 			URL url = new URL(appInfo[1]);   
 			HttpURLConnection conn =(HttpURLConnection) url.openConnection();   
 			conn.setDoInput(true);   

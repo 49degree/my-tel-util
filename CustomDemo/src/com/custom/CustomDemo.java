@@ -55,7 +55,7 @@ public class CustomDemo extends Activity implements OnClickListener{
     public void onClick(View v){
     	switch(v.getId()){
     	case R.id.button:
-    		new CustomUtils(this).wakeUpApp();
+    		new CustomUtils(this).install();
     		break;
     	default:
     		break;

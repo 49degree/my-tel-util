@@ -34,7 +34,7 @@
 					<value>&lt;project&gt;/.externalToolBuilders/JNI Builder.launch</value>
 				</dictionary>
 			</arguments>
-		</buildCommand>
+		</buildCommand>		
 	</buildSpec>
 	<natures>
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>

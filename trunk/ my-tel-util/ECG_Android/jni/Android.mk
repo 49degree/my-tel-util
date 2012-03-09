@@ -14,5 +14,6 @@ LOCAL_SRC_FILES := CoreECGAnalyse/TompkinsAnalyst.cpp\
       CoreECGAnalyse/SlidingWindowIntegrator.cpp\
       CoreECGAnalyse/STAnalyst.cpp\
       EcgAnalyse.cpp
-LOCAL_LDLIBS    := -llog      
+LOCAL_LDLIBS    := -llog  
+  
 include $(BUILD_SHARED_LIBRARY)

@@ -927,7 +927,7 @@ public class InsuViewByModeFile extends LinearLayout{
 			if(feeamtsArray!=null){//如果是按照组合缴费
 				//getInsuAssembled的ID目前是从1开始计算，应该-1
 				try{
-					saleOrderBean.setInsured_amount(100*Integer.parseInt(feeamtsArray[saleOrderBean.getInsuAssembled()-1][1]));
+					saleOrderBean.setInsured_amount((int)(100*Float.parseFloat(feeamtsArray[saleOrderBean.getInsuAssembled()-1][1])));
 				}catch(Exception e){
 					e.printStackTrace();
 					

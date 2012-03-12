@@ -187,6 +187,31 @@ public class ZoomLinearLayout extends LinearLayout{
 		}
 	}
 
+	
+	int touchState = 0;
+	int touchX = 0;
+	int touchY = 0;
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		   int action = ev.getAction();
+		   
+		   switch(action){
+		   case MotionEvent.ACTION_DOWN:
+		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_DOWN");
+		        touchState = 0;
+		        break;
+		   case MotionEvent.ACTION_MOVE:
+		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_MOVE");
+		        touchState = 2;
+		        break;
+		   case MotionEvent.ACTION_UP:
+		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_UP");
+		        break;
+		   case MotionEvent.ACTION_CANCEL:
+		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_CANCEL");
+		        break;
+		   }
+		   return false;
+	}
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		gestureDetector.onTouchEvent(event);

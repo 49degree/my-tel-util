@@ -9,6 +9,8 @@ import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 
 public class IndexImageView extends ImageView  {
+	private static final String TAG = "ZoomLinearLayout";
+	
 	private GestureDetector gestureDetector=null;
 	private boolean imageCanMove = false;
 	private ZoomLinearLayout scrollView = null;
@@ -17,6 +19,26 @@ public class IndexImageView extends ImageView  {
 		initView(context);
 		this.scrollView = scrollView;
 		// TODO Auto-generated constructor stub
+	}
+	
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		   int action = ev.getAction();
+		   switch(action){
+		   case MotionEvent.ACTION_DOWN:
+		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_DOWN");
+//		      return true;
+		        break;
+		   case MotionEvent.ACTION_MOVE:
+		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_MOVE");
+		        break;
+		   case MotionEvent.ACTION_UP:
+		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_UP");
+		        break;
+		   case MotionEvent.ACTION_CANCEL:
+		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_CANCEL");
+		        break;
+		   }
+		   return false;
 	}
 	
 	@Override

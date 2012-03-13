@@ -46,11 +46,10 @@ public class IndexView extends LinearLayout{
 					LinearLayout.LayoutParams.FILL_PARENT,
 					LinearLayout.LayoutParams.FILL_PARENT));
 			this.setOrientation(LinearLayout.VERTICAL);
-			final ZoomLinearLayout scrollView = new ZoomLinearLayout(this.context);
+			BackgroundLinearLayout scrollView = new BackgroundLinearLayout(this.context);
 			scrollView.setLayoutParams(new LinearLayout.LayoutParams(
 					LinearLayout.LayoutParams.FILL_PARENT,
 					LinearLayout.LayoutParams.FILL_PARENT));
-			// scrollView.setScrollBarStyle(LinearLayout.VERTICAL);
 			this.addView(scrollView);
 
 			/**
@@ -64,9 +63,9 @@ public class IndexView extends LinearLayout{
 			int with = bm.getWidth();
 			int height = bm.getHeight();
 			// 设置主布局
+			AbsoluteLayout mLayout = new AbsoluteLayout(context);
 			LinearLayout.LayoutParams mLayoutParams = new LinearLayout.LayoutParams(
 					with, height);
-			AbsoluteLayout mLayout = new AbsoluteLayout(context);
 			mLayout.setLayoutParams(mLayoutParams);
 			mLayout.setBackgroundDrawable(new BitmapDrawable(bm));
 			// 使背景获取焦点，焦点不要默认在输入框
@@ -77,27 +76,14 @@ public class IndexView extends LinearLayout{
 			/**
 			 * 图片按钮
 			 */
-			final IndexImageView jpgView = new IndexImageView(context,scrollView);
-			in = assetManager.open("custom/bg.png");
-			bm = BitmapFactory.decodeStream(in);
-			jpgView.setImageBitmap(bm);
-			AbsoluteLayout.LayoutParams alayout = new AbsoluteLayout.LayoutParams(
-					300, 300, 100, 100);
-			jpgView.setLayoutParams(alayout);
-//			jpgView.setOnLongClickListener(new OnLongClickListener(){
-//				@Override
-//				public boolean onLongClick(View arg0) {
-//					// TODO Auto-generated method stub
-//					Log.e("IndexView",scrollView.getBackgroundMove()+":"+jpgView.getImageMove());
-//					scrollView.setBackgroundMove(false);
-//					jpgView.setImageMove(true);
-//
-//					return false;
-//				}
-//			});
-			
-			
-			mLayout.addView(jpgView);
+			for(int i=0;i<1;i++){
+				in = assetManager.open("custom/bg.png");
+				bm = BitmapFactory.decodeStream(in);
+				IndexImageButton imageView = new IndexImageButton(context,scrollView,bm);
+
+				mLayout.addView(imageView);
+			}
+
 
 		}catch(Exception e){
 			e.printStackTrace();

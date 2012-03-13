@@ -1,10 +1,13 @@
 package com.custom.view;
 
 
+import java.io.InputStream;
+
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
@@ -13,7 +16,10 @@ import android.view.View.OnClickListener;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.custom.bean.ResourceBean;
 
 public class IndexImageButton extends LinearLayout implements OnClickListener{
 	private static final String TAG = "IndexImageView";
@@ -22,12 +28,13 @@ public class IndexImageButton extends LinearLayout implements OnClickListener{
 	private boolean imageCanMove = true;
 	private BackgroundLinearLayout scrollView = null;
 	private Bitmap bm=null;
+	private ResourceBean resourceBean = null;
 	private Context context;
-	public IndexImageButton(Context context,BackgroundLinearLayout scrollView,Bitmap bm) {
+	public IndexImageButton(Context context,BackgroundLinearLayout scrollView,ResourceBean resourceBean) {
 		super(context);
 		this.context = context;
 		this.scrollView = scrollView;
-		this.bm = bm;
+		this.resourceBean = resourceBean;
 		initView(context);
 		this.setOnClickListener(this);
 		// TODO Auto-generated constructor stub
@@ -96,6 +103,15 @@ public class IndexImageButton extends LinearLayout implements OnClickListener{
 	}
 	
 	private void initView(final Context context) {
+		try{
+			AssetManager assetManager = context.getAssets();
+			InputStream in = assetManager.open(resourceBean.getBtnPic());
+			bm = BitmapFactory.decodeStream(in);
+		}catch(Exception e){
+			
+		}
+
+		
 		ImageView jpgView = new ImageView(context);
 		jpgView.setImageBitmap(bm);
 		int with = bm.getWidth();
@@ -103,6 +119,11 @@ public class IndexImageButton extends LinearLayout implements OnClickListener{
 		LayoutParams alayout = new LayoutParams(200, 200);
 		jpgView.setLayoutParams(alayout);
 		this.addView(jpgView);
+		
+		TextView text = new TextView(context);
+		text.setText(resourceBean.getName());
+		this.addView(text);
+		
 		
 		AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(
 				300, 300, 200, 300);

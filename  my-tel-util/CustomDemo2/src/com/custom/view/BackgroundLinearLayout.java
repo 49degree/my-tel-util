@@ -31,7 +31,7 @@ public class BackgroundLinearLayout extends LinearLayout{
 	public View child = null;
 	private int currentScreenIndex;
 
-	private GestureDetector gestureDetector;
+	public GestureDetector gestureDetector;
 
 	// 设置一个标志位，防止底层的onTouch事件重复处理UP事件
 	private boolean fling;
@@ -82,24 +82,6 @@ public class BackgroundLinearLayout extends LinearLayout{
 			@Override
 			public boolean onFling(MotionEvent e1, MotionEvent e2,
 					float velocityX, float velocityY) {
-//				if(backgroundCanMove){
-//					if (Math.abs(velocityX) > ViewConfiguration.get(context)
-//							.getScaledMinimumFlingVelocity()) {// 判断是否达到最小轻松速度，取绝对值的
-//						if (velocityX > 0 && currentScreenIndex > 0) {
-//							fling = true;
-//							//scrollToScreen(currentScreenIndex - 1);
-//						} else if (velocityX < 0
-//								&& currentScreenIndex < getChildCount() - 1) {
-//							fling = true;
-//							//scrollToScreen(currentScreenIndex + 1);
-//						}
-//					}
-//					
-//					float distanceY = -velocityY*Math.abs(velocityY)/5000;
-//					float distanceX = -velocityX*Math.abs(velocityX)/5000;
-//					
-//					scrollToIndex(distanceX, distanceY);
-//				}
 				return true;
 			}
 
@@ -193,58 +175,16 @@ public class BackgroundLinearLayout extends LinearLayout{
 	int touchY = 0;
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		   int action = ev.getAction();
-		   
-		   switch(action){
-		   case MotionEvent.ACTION_DOWN:
-		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_DOWN");
-		        touchState = 0;
-		        break;
-		   case MotionEvent.ACTION_MOVE:
-		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_MOVE");
-		        touchState = 2;
-		        break;
-		   case MotionEvent.ACTION_UP:
-		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_UP");
-		        break;
-		   case MotionEvent.ACTION_CANCEL:
-		        Log.e(TAG,"onInterceptTouchEvent action:ACTION_CANCEL");
-		        break;
-		   }
 		   return false;
 	}
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		gestureDetector.onTouchEvent(event);
-
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			Log.e(TAG,"action:ACTION_DOWN");
-			break;
-		case MotionEvent.ACTION_MOVE:
-			Log.e(TAG,"action:ACTION_MOVE");
-			break;
-		case MotionEvent.ACTION_UP:
-			Log.e(TAG,"action:ACTION_UP");
-			if (!fling) {
-				//snapToDestination();
-			}
-			fling = false;
-			break;
-		default:
-			break;
-		}
-		
-        if (event.getPointerCount() == 2) {
-        	
-        } else {
-        }
-
 		return true;
 	}
     
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-    	this.onTouchEvent(event);
     	return super.dispatchTouchEvent(event);
     }
 

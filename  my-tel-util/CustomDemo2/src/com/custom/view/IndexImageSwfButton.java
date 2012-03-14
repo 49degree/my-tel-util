@@ -8,6 +8,8 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
@@ -22,79 +24,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.custom.bean.ResourceBean;
+import com.custom.utils.Logger;
 
 public class IndexImageSwfButton extends IndexImageButtonImp{
-	private static final String TAG = "IndexImageView";
+	private static final String TAG = "IndexImageSwfButton";
+	private static final Logger logger = Logger.getLogger(IndexView.class);
 	
-	private GestureDetector gestureDetector=null;
-	private boolean imageCanMove = true;
-	private BackgroundLinearLayout scrollView = null;
-	private Bitmap bm=null;
-	private ResourceBean resourceBean = null;
-	private Context context;
-	public WindowManager.LayoutParams wmParams =new WindowManager.LayoutParams();;
-	public IndexImageSwfButton(Context context,BackgroundLinearLayout scrollView,ResourceBean resourceBean) {
+	private WindowManager.LayoutParams wmParams =null;
+	private WindowManager wm = null;
+    private float x;
+    private float y;
+	
+	public IndexImageSwfButton(Context context,ResourceBean resourceBean) {
 		super(context,resourceBean);
-		this.scrollView = scrollView;
+		wmParams =new WindowManager.LayoutParams();
 		initView();
 	}
 	
-	int touchState = 0;
-	int startTouchX = 0;
-	int startTouchY = 0;
-	int endTouchX = 0;
-	int endTouchY = 0;
-	long startTime = 0;
-	long endTime = 0;
-	boolean notClick = false;
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		if(event.getPointerCount()>1){
-			return true;
-		}
-		if(gestureDetector!=null){
-			gestureDetector.onTouchEvent(event);
-			return true;
-		}else{
-			int action = event.getAction();
-			int distance = 0;
-			switch(action){
-			case MotionEvent.ACTION_DOWN:
-				startTouchX = (int)event.getX();
-				startTouchY = (int)event.getY();
-				startTime = System.currentTimeMillis();
-				scrollView.onTouchEvent(event);
-				notClick = false;
-				return true;
-			case MotionEvent.ACTION_MOVE:
-				endTouchX = (int)event.getX();
-				endTouchY = (int)event.getY();
-				endTime = System.currentTimeMillis();
-				distance = (int)Math.sqrt(Math.pow(endTouchX-startTouchX,2)+Math.pow(endTouchY-startTouchY,2));
-				//Log.e(TAG,"endTime-startTime:"+(endTime-startTime)+":distance:"+distance+":notClick:"+notClick);
-				scrollView.onTouchEvent(event);
-				if((endTime-startTime<500&&distance>50)){
-					return true;
-				}else{
-					return false;
-				}
-			case MotionEvent.ACTION_UP:
-				scrollView.onTouchEvent(event);
-				endTouchX = (int)event.getX();
-				endTouchY = (int)event.getY();
-				endTime = System.currentTimeMillis();
-				distance = (int)Math.sqrt(Math.exp(endTouchX-startTouchX)+Math.exp(endTouchY-startTouchY));
-				//Log.e(TAG,"endTime-startTime22:"+(endTime-startTime)+":distance:"+distance);
-				if(endTime-startTime<500&&endTime-startTime>50&&distance<50){
-					Toast.makeText(context, "单击事件", Toast.LENGTH_SHORT).show();
-				}		
-			default:
-				break;
-			}
-			
-			return false;
-		}
-	}
+	
 
 	@Override
 	protected void initView() {
@@ -118,68 +65,94 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
 		LinearLayout.LayoutParams tlayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
 		text.setLayoutParams(tlayout);
 		this.addView(text);
-		AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(
-				300, 300, 200, 300);
-		
-		this.setLayoutParams(layout);
+
 		this.setOrientation(LinearLayout.VERTICAL);
 		this.setGravity(Gravity.CENTER);
-		//this.setBackgroundColor(Color.RED);
+		this.setBackgroundColor(Color.RED);
 
-		//如果可以移动
-		if(imageCanMove){
-
-			this.gestureDetector = new GestureDetector(new OnGestureListener() {
-				@Override
-				public boolean onSingleTapUp(MotionEvent e) {
-					return false;
-				}
-				@Override
-				public void onShowPress(MotionEvent e) {
-				}
-				@Override
-				public boolean onScroll(MotionEvent e1, MotionEvent e2,
-						float distanceX, float distanceY) {
-					moveImage(distanceX, distanceY);
-					return true;
-				}
-				@Override
-				public void onLongPress(MotionEvent e) {
-				}
-				@Override
-				public boolean onFling(MotionEvent e1, MotionEvent e2,
-						float velocityX, float velocityY) {
-					return true;
-				}
-				@Override
-				public boolean onDown(MotionEvent e) {
-					return false;
-				}
-			});
-		
-		}
+		// 获取WindowManager
+		wm = (WindowManager) context
+				.getSystemService(Context.WINDOW_SERVICE);
+		/**
+		 * 以下都是WindowManager.LayoutParams的相关属性 具体用途可参考SDK文档
+		 */
+		wmParams.type = WindowManager.LayoutParams.TYPE_PHONE; // 设置window type
+		wmParams.format = PixelFormat.RGBA_8888; // 设置图片格式，效果为背景透明
+		// 设置Window flag
+		wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+				| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+		/*
+		 * 下面的flags属性的效果形同“锁定”。 悬浮窗不可触摸，不接受任何事件,同时不影响后面的事件响应。
+		 * wmParams.flags=LayoutParams.FLAG_NOT_TOUCH_MODAL |
+		 * LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
+		 */
+		// wmParams.gravity=Gravity.LEFT|Gravity.TOP; //调整悬浮窗口至左上角
+		// 以屏幕左上角为原点，设置x、y初始值
+		wmParams.x = 100;
+		wmParams.y = 100;
+		// 设置悬浮窗口长宽数据
+		wmParams.width = 300;
+		wmParams.height = 300;
+		// 显示myFloatView图像
+		wm.addView(this, wmParams);
 	}
 	
-	private void moveImage(float distanceX, float distanceY){
-		//Log.e(TAG,"distanceX:"+distanceX+":distanceY:"+distanceY+":scrollView.getWidth():"+scrollView.getWidth()+":scrollView.getHeight():"+scrollView.getHeight());
-		AbsoluteLayout.LayoutParams alayout = (AbsoluteLayout.LayoutParams)this.getLayoutParams();
-		//Log.e(TAG,"alayout.width:"+alayout.width+":alayout.height:"+alayout.height);
-		alayout.x=(int)(alayout.x-distanceX);
-		alayout.y=(int)(alayout.y-distanceY);
-		if(alayout.x<0){
-			alayout.x=0;
-		}else if(alayout.x>this.scrollView.child.getWidth()-alayout.width){
-			alayout.x=this.scrollView.child.getWidth()-alayout.width;
+	public void removeView(){
+    	if(wm!=null){
+    		Log.e(TAG, "wm.removeView(myFV)");
+    		try{
+    			wm.removeView(this);
+    		}catch(Exception e){
+    			e.printStackTrace();
+    		}
+    		
+    	}
+	}
+	
+	int startTouchX = 0;
+	int startTouchY = 0;
+	int endTouchX = 0;
+	int endTouchY = 0;
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		
+		if(event.getPointerCount()>1||!imageCanMove){
+			return true;
 		}
-		
-		if(alayout.y<0){
-			alayout.y=0;
-		}else if(alayout.y>this.scrollView.child.getHeight()-alayout.height){
-			alayout.x=this.scrollView.child.getHeight()-alayout.height;
-		}
-		
-		//Log.e(TAG,"alayout.y:"+alayout.y+":alayout.x:"+alayout.x);
-		IndexImageSwfButton.this.setLayoutParams(alayout);
-		
+ 
+        switch (event.getAction()) {   
+        case MotionEvent.ACTION_DOWN:   
+            // 获取相对View的坐标，即以此View左上角为原点  
+            // 获取相对屏幕的坐标，即以屏幕左上角为原点   
+            x = wmParams.x;   
+            // 25是系统状态栏的高度,也可以通过方法得到准确的值，自己微调就是了   
+            y = wmParams.y ;   
+        	startTouchX = (int)event.getRawX();   
+        	startTouchY = (int)event.getRawY();   
+//        	x = x-(int)event.getX();   
+//        	y = y-(int)event.getY();
+        	//logger.error("startTouchX:"+startTouchX+":startTouchY:"+startTouchY);
+        	//logger.error("X:"+x+":Y:"+y);
+            break;   
+        case MotionEvent.ACTION_MOVE:  
+        	endTouchX = (int)event.getRawX();   
+        	endTouchY = (int)event.getRawY();  
+            updateViewPosition();   
+            break;   
+        case MotionEvent.ACTION_UP:   
+            updateViewPosition();    
+            break;   
+        }   
+        return true;
+	}
+
+	private void updateViewPosition() {
+		// 更新浮动窗口位置参数
+		// 获取WindowManager
+		WindowManager wm = (WindowManager) context
+				.getSystemService(Context.WINDOW_SERVICE);
+		wmParams.x = (int) (x + (endTouchX-startTouchX));
+		wmParams.y = (int) (y + (endTouchY-startTouchY));
+		wm.updateViewLayout(this, wmParams);
 	}
 }

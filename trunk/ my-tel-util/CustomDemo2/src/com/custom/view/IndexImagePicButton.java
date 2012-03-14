@@ -27,12 +27,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 	private static final String TAG = "IndexImageView";
 	
 	private GestureDetector gestureDetector=null;
-	private boolean imageCanMove = true;
 	private BackgroundLinearLayout scrollView = null;
-	private Bitmap bm=null;
-	private ResourceBean resourceBean = null;
-	private Context context;
-	public WindowManager.LayoutParams wmParams =new WindowManager.LayoutParams();;
 	public IndexImagePicButton(Context context,BackgroundLinearLayout scrollView,ResourceBean resourceBean) {
 		super(context,resourceBean);
 		this.scrollView = scrollView;
@@ -128,7 +123,6 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 
 		//如果可以移动
 		if(imageCanMove){
-
 			this.gestureDetector = new GestureDetector(new OnGestureListener() {
 				@Override
 				public boolean onSingleTapUp(MotionEvent e) {

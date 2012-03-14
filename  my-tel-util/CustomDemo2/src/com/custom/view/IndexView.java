@@ -202,6 +202,7 @@ public class IndexView extends FrameLayout{
 					ResourceBean resourceBean = resourceInfo.get(it.next());
 					IndexImageSwfButton imageView = new IndexImageSwfButton(context,resourceBean);
 					buttonList.push(imageView);
+					break;
 				}
 			}
 
@@ -260,7 +261,7 @@ public class IndexView extends FrameLayout{
 					}else if(swfType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
 						bgtype = BgType.swf;
 					}	
-					//bgtype = BgType.swf;
+					bgtype = BgType.swf;
 				}else{
 					ResourceBean res = null;
 					

@@ -58,7 +58,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 				startTouchX = (int)event.getX();
 				startTouchY = (int)event.getY();
 				startTime = System.currentTimeMillis();
-				scrollView.onTouchEvent(event);
+				onBackGroundTouchEvent(event);
 				notClick = false;
 				return true;
 			case MotionEvent.ACTION_MOVE:
@@ -67,14 +67,14 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 				endTime = System.currentTimeMillis();
 				distance = (int)Math.sqrt(Math.pow(endTouchX-startTouchX,2)+Math.pow(endTouchY-startTouchY,2));
 				//Log.e(TAG,"endTime-startTime:"+(endTime-startTime)+":distance:"+distance+":notClick:"+notClick);
-				scrollView.onTouchEvent(event);
+				onBackGroundTouchEvent(event);
 				if((endTime-startTime<500&&distance>50)){
 					return true;
 				}else{
 					return false;
 				}
 			case MotionEvent.ACTION_UP:
-				scrollView.onTouchEvent(event);
+				onBackGroundTouchEvent(event);
 				endTouchX = (int)event.getX();
 				endTouchY = (int)event.getY();
 				endTime = System.currentTimeMillis();
@@ -91,35 +91,16 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 		}
 	}
 
+	public void onBackGroundTouchEvent(MotionEvent event){
+		if(scrollView!=null){
+			scrollView.onTouchEvent(event);
+		}
+		
+	}
+	
 	@Override
 	protected void initView() {
-		try{
-			AssetManager assetManager = context.getAssets();
-			InputStream in = assetManager.open(resourceBean.getBtnPic());
-			bm = BitmapFactory.decodeStream(in);
-		}catch(Exception e){
-			
-		}
-		ImageView jpgView = new ImageView(context);
-		jpgView.setImageBitmap(bm);
-		int with = bm.getWidth();
-		int height = bm.getHeight();
-		LinearLayout.LayoutParams alayout = new LinearLayout.LayoutParams(200, 200);
-		jpgView.setLayoutParams(alayout);
-		this.addView(jpgView);
-		
-		TextView text = new TextView(context);
-		text.setText(resourceBean.getName());
-		LinearLayout.LayoutParams tlayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-		text.setLayoutParams(tlayout);
-		this.addView(text);
-		AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(
-				300, 300, 200, 300);
-		
-		this.setLayoutParams(layout);
-		this.setOrientation(LinearLayout.VERTICAL);
-		this.setGravity(Gravity.CENTER);
-		//this.setBackgroundColor(Color.RED);
+		super.initView();
 
 		//如果可以移动
 		if(imageCanMove){
@@ -162,18 +143,18 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 		alayout.y=(int)(alayout.y-distanceY);
 		if(alayout.x<0){
 			alayout.x=0;
-		}else if(alayout.x>this.scrollView.child.getWidth()-alayout.width){
-			alayout.x=this.scrollView.child.getWidth()-alayout.width;
+		}else if(alayout.x>scrollView.child.getWidth()-alayout.width){
+			alayout.x=scrollView.child.getWidth()-alayout.width;
 		}
 		
 		if(alayout.y<0){
 			alayout.y=0;
-		}else if(alayout.y>this.scrollView.child.getHeight()-alayout.height){
-			alayout.x=this.scrollView.child.getHeight()-alayout.height;
+		}else if(alayout.y>scrollView.child.getHeight()-alayout.height){
+			alayout.y=scrollView.child.getHeight()-alayout.height;
 		}
 		
 		//Log.e(TAG,"alayout.y:"+alayout.y+":alayout.x:"+alayout.x);
-		IndexImagePicButton.this.setLayoutParams(alayout);
-		
+		setLayoutParams(alayout);
+		MondifyIndexImageIndex.modifyImageIndexs(context, resourceBean.getBtnKey(), new int[]{alayout.x,alayout.y});
 	}
 }

@@ -4,6 +4,7 @@ public class ResourceBean {
 	public enum ResourceType{
 		fold,apk,swf
 	}
+	String btnKey = null;
 	String btnPic = null;
 	String name = null;
 	ResourceType type = null;
@@ -12,6 +13,12 @@ public class ResourceBean {
 	
 	
 
+	public String getBtnKey() {
+		return btnKey;
+	}
+	public void setBtnKey(String btnKey) {
+		this.btnKey = btnKey;
+	}
 	public String getBtnPic() {
 		return btnPic;
 	}

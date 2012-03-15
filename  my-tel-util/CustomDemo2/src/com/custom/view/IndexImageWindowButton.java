@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Logger;
+import com.custom.utils.MondifyIndexImageIndex;
 
 public class IndexImageWindowButton extends IndexImageButtonImp{
 	private static final String TAG = "IndexImageSwfButton";

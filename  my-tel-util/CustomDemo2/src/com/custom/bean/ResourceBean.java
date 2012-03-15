@@ -9,6 +9,7 @@ public class ResourceBean {
 	String name = null;
 	ResourceType type = null;
 	String resourcePath = null;
+	int foldDepth = 0;
 	
 	
 	
@@ -42,6 +43,12 @@ public class ResourceBean {
 	}
 	public void setResourcePath(String resourcePath) {
 		this.resourcePath = resourcePath;
+	}
+	public int getFoldDepth() {
+		return foldDepth;
+	}
+	public void setFoldDepth(int foldDepth) {
+		this.foldDepth = foldDepth;
 	}
 	
 	

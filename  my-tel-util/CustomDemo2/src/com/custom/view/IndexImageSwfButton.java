@@ -15,11 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.custom.bean.ResourceBean;
+import com.custom.utils.Constant;
 import com.custom.utils.Logger;
+import com.custom.utils.MondifyIndexImageIndex;
 
 public class IndexImageSwfButton extends IndexImageButtonImp{
 	private static final String TAG = "IndexImageSwfButton";
-	private static final Logger logger = Logger.getLogger(IndexView.class);
+	private static final Logger logger = Logger.getLogger(IndexImageSwfButton.class);
 	private AbsoluteLayout mLayout = null;
     private float x;
     private float y;
@@ -77,8 +79,10 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
 	}
 
 	private void updateViewPosition(boolean saveIndexs) {
+		if(resourceBean.getFoldDepth()>Constant.fistFoldDepth){
+			return ;
+		}
 		// 更新浮动窗口位置参数
-
 		AbsoluteLayout.LayoutParams alayout = (AbsoluteLayout.LayoutParams)this.getLayoutParams();
 		alayout.x = (int) (x + (endTouchX-startTouchX));
 		alayout.y = (int) (y + (endTouchY-startTouchY));

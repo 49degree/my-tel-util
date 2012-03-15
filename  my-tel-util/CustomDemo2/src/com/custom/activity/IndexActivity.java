@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import com.custom.utils.Constant;
 import com.custom.view.IndexView;
 
 public class IndexActivity  extends Activity {
@@ -14,10 +15,19 @@ public class IndexActivity  extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.main);
-		//LinearLayout layout = (LinearLayout)this.findViewById(R.id.index_layout);
-		v = new IndexView(this);
-		setContentView(v);
+		Bundle bundle = this.getIntent().getExtras();
+		if(bundle==null||bundle.get(Constant.foldPath)==null){
+			v = new IndexView(this,Constant.path,Constant.fistFoldDepth);
+			setContentView(v);
+		}else{
+			String foldPath = bundle.getString(Constant.foldPath);
+			int foldDepth = bundle.getInt(Constant.foldDepth);
+			v = new IndexView(this,foldPath,foldDepth);
+			setContentView(v);
+		}
+		
+
+
 		
 	}
 	

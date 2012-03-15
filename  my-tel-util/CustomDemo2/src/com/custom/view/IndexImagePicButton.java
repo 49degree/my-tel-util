@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.custom.bean.ResourceBean;
+import com.custom.utils.Constant;
+import com.custom.utils.MondifyIndexImageIndex;
 
 public class IndexImagePicButton extends IndexImageButtonImp{
 	private static final String TAG = "IndexImageView";
@@ -82,6 +84,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 				//Log.e(TAG,"endTime-startTime22:"+(endTime-startTime)+":distance:"+distance);
 				if(endTime-startTime<500&&endTime-startTime>50&&distance<50){
 					Toast.makeText(context, "单击事件", Toast.LENGTH_SHORT).show();
+					super.onClick(this);
 				}		
 			default:
 				break;
@@ -136,6 +139,9 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 	}
 	
 	private void moveImage(float distanceX, float distanceY){
+		if(resourceBean.getFoldDepth()>Constant.fistFoldDepth){
+			return ;
+		}
 		//Log.e(TAG,"distanceX:"+distanceX+":distanceY:"+distanceY+":scrollView.getWidth():"+scrollView.getWidth()+":scrollView.getHeight():"+scrollView.getHeight());
 		AbsoluteLayout.LayoutParams alayout = (AbsoluteLayout.LayoutParams)this.getLayoutParams();
 		//Log.e(TAG,"alayout.width:"+alayout.width+":alayout.height:"+alayout.height);

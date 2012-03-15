@@ -1,20 +1,23 @@
 package com.custom.view;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Stack;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -27,33 +30,29 @@ import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
 import com.custom.utils.Logger;
 import com.custom.utils.MondifyIndexImageIndex;
-import com.custom.utils.ScanFoldUtils;
 
 
 
-public class IndexView extends FrameLayout{
-	private static final Logger logger = Logger.getLogger(IndexView.class);
+public class SecondView extends FrameLayout{
+	private static final Logger logger = Logger.getLogger(SecondView.class);
 	private Context context = null;
 	BackgroundLinearLayout scrollView = null;
 	AbsoluteLayout mLayout = null;
 	WebView mWebView = null;
-	String foldPath = null;
 	private WindowManager.LayoutParams wmParams =null;
 	private WindowManager wm = null;
-	int foldDepth = Constant.fistFoldDepth;
 
-	public IndexView(Context context,String foldPath,int foldDepth){
+	public enum BgType{
+		pic,swf
+	}
+	public SecondView(Context context){
         super(context);
         this.context = context;
-        this.foldPath = foldPath; 
-        this.foldDepth = foldDepth;
 	}
 	
-	public IndexView(Context context, AttributeSet attr,String foldPath,int foldDepth){
+	public SecondView(Context context, AttributeSet attr){
         super(context, attr);
         this.context = context;
-        this.foldPath = foldPath; 
-        this.foldDepth = foldDepth;
         
 	}
 
@@ -100,7 +99,7 @@ public class IndexView extends FrameLayout{
 			mWebView.pauseTimers();
 			callHiddenWebViewMethod("onPause");
 		}
-		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
+		if(bgtype == BgType.swf&&wm!=null&&mLayout!=null){
 			wm.removeView(mLayout);
 		}
 
@@ -119,15 +118,14 @@ public class IndexView extends FrameLayout{
 	/**
 	 * 构建界面
 	 */
-	ScanFoldUtils scanFoldUtils = null;
 	private void initView(){
 		try {
 			/**
 			 * 查询资源信息
 			 */
-			scanFoldUtils = new ScanFoldUtils(context,foldPath,foldDepth);
+			queryRes();
 			MondifyIndexImageIndex.initImageIndexs(context);//获取按钮位置信息
-			if(scanFoldUtils.bgtype == Constant.BgType.pic){
+			if(bgtype == BgType.pic){
 				// 设置主界面布局
 				scrollView = new BackgroundLinearLayout(this.context);
 				scrollView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -138,39 +136,12 @@ public class IndexView extends FrameLayout{
 				 * 背景视图
 				 */
 				AssetManager assetManager = context.getAssets();
-				logger.error(scanFoldUtils.bgPic);
-				InputStream in = assetManager.open(scanFoldUtils.bgPic);
+				InputStream in = assetManager.open(Constant.path+"bg.jpg");
 				// BitmapDrawable backGroundDr = new BitmapDrawable(in);
 				Bitmap bm = BitmapFactory.decodeStream(in);
 				in.close();
 				int with = bm.getWidth();
 				int height = bm.getHeight();
-				
-				WindowManager manage = ((Activity)context).getWindowManager();
-				Display display = manage.getDefaultDisplay();
-				int screenHeight = display.getHeight();
-				int screenWidth = display.getWidth();
-				
-				logger.error("with:"+with+":height:"+height+":screenHeight:"+screenHeight+":screenWidth:"+screenWidth);
-				if(with<screenWidth){
-					if(height<screenHeight&&with*1.0f/screenWidth>height*1.0f/screenHeight){
-						height = screenHeight;
-						with = (int)(with*height*1.0f/screenHeight);
-					}else{
-						with = screenWidth;
-						height = (int)(with*height*1.0f/screenWidth);
-					}
-				}else if(height<screenHeight){
-					if(with<screenWidth&&with*1.0f/screenWidth>height*1.0f/screenHeight){
-						height = screenHeight;
-						with = (int)(with*height*1.0f/screenHeight);
-					}else{
-						with = screenWidth;
-						height = (int)(with*height*1.0f/screenWidth);
-					}
-				}
-				
-				
 				// 设置主布局
 				mLayout = new AbsoluteLayout(context);
 				LinearLayout.LayoutParams mLayoutParams = new LinearLayout.LayoutParams(
@@ -181,14 +152,14 @@ public class IndexView extends FrameLayout{
 				scrollView.setFocusable(true);
 				scrollView.setFocusableInTouchMode(true);
 				scrollView.addView(mLayout);
-				Iterator it = scanFoldUtils.resourceInfo.keySet().iterator();
+				Iterator it = resourceInfo.keySet().iterator();
 				while(it.hasNext()){
-					ResourceBean resourceBean = scanFoldUtils.resourceInfo.get(it.next());
+					ResourceBean resourceBean = resourceInfo.get(it.next());
 					IndexImagePicButton imageView = new IndexImagePicButton(context,scrollView,resourceBean);
 					mLayout.addView(imageView);
 					
 				}
-			}else if(scanFoldUtils.bgtype == Constant.BgType.swf){
+			}else if(bgtype == BgType.swf){
 				if(mWebView==null){
 					// 设置主界面布局
 					mWebView = new WebView(context); //网页
@@ -221,9 +192,9 @@ public class IndexView extends FrameLayout{
 				//mLayout.setBackgroundColor(Color.RED);
 				createView(mLayout);
 				
-				Iterator it = scanFoldUtils.resourceInfo.keySet().iterator();
+				Iterator it = resourceInfo.keySet().iterator();
 				while(it.hasNext()){
-					ResourceBean resourceBean = scanFoldUtils.resourceInfo.get(it.next());
+					ResourceBean resourceBean = resourceInfo.get(it.next());
 					IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
 					mLayout.addView(imageView);
 					
@@ -277,7 +248,112 @@ public class IndexView extends FrameLayout{
 		wm.addView(view, wmParams);
 	}
 
-
+	HashMap<String,String> btnInfo = null;
+	HashMap<String,ResourceBean> resourceInfo = null;
+	HashMap<String,String> picType= null;
+	HashMap<String,String> swfType= null;
+	BgType bgtype = BgType.pic;
+	
+	public void queryRes(){
+		btnInfo = new HashMap<String,String>();
+		resourceInfo = new HashMap<String,ResourceBean>();
+		picType = new HashMap<String,String>();
+		swfType = new HashMap<String,String>();
+		picType.put("JPG", "");
+		picType.put("jpg", "");
+		picType.put("GIF", "");
+		picType.put("gif", "");
+		picType.put("PNG", "");
+		picType.put("png", "");
+		picType.put("JEPG", "");
+		picType.put("jepg", "");
+		
+		swfType.put("swf", "");
+		swfType.put("SWF", "");
+		
+		
+		try{
+			AssetManager assetManager = context.getAssets();
+			BufferedReader  fin = new BufferedReader(new InputStreamReader(assetManager.open(Constant.path+Constant.mapFileName)));
+			String line = fin.readLine();
+			while(line!=null){
+				logger.error(line+":"+line.substring(0,line.indexOf("="))+":"+line.substring(line.indexOf("=")+1));
+				if(line.indexOf("=")>0){
+					btnInfo.put(line.substring(0,line.indexOf("=")), line.substring(line.indexOf("=")+1));
+				}
+				line = fin.readLine();
+			}
+			
+			String[] lists = assetManager.list(Constant.path.substring(0, Constant.path.length()-1));
+			for(int i=0;i<lists.length;i++){
+				logger.error(lists[i]);
+				if(lists[i].startsWith(Constant.bgPicName)){
+					//是背景图片
+					if(picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
+						bgtype = BgType.pic;
+					}else if(swfType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
+						bgtype = BgType.swf;
+					}	
+					//bgtype = BgType.swf;
+				}else{
+					ResourceBean res = null;
+					
+					if(lists[i].indexOf(".")<0){
+						if(resourceInfo.containsKey(lists[i])){
+							res = resourceInfo.get(lists[i]);
+						}else{
+							res = new ResourceBean();
+						}
+						
+						res.setResourcePath(Constant.path+lists[i]);
+						res.setType(ResourceBean.ResourceType.fold);
+						resourceInfo.put(lists[i], res);
+						continue;
+					}
+					String btnName = lists[i].substring(0,lists[i].indexOf("."));
+					logger.error(btnName);
+					if(picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
+						if(resourceInfo.containsKey(btnName)){
+							res = resourceInfo.get(btnName);
+						}else{
+							res = new ResourceBean();
+						}	
+						res.setBtnKey(btnName);
+						res.setBtnPic(Constant.path+lists[i]);
+						resourceInfo.put(btnName, res);
+					}else if(swfType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
+						if(resourceInfo.containsKey(btnName)){
+							res = resourceInfo.get(btnName);
+						}else{
+							res = new ResourceBean();
+						}	
+						res.setType(ResourceBean.ResourceType.swf);
+						res.setResourcePath(Constant.path+lists[i]);
+						resourceInfo.put(btnName, res);
+					}else if("apk".equals(lists[i].substring(lists[i].indexOf(".")+1))){
+						if(resourceInfo.containsKey(btnName)){
+							res = resourceInfo.get(btnName);
+						}else{
+							res = new ResourceBean();
+						}	
+						res.setType(ResourceBean.ResourceType.apk);
+						res.setResourcePath(Constant.path+lists[i]);
+						resourceInfo.put(btnName, res);
+					}
+					if(resourceInfo.get(btnName)!=null){
+						logger.error( btnName);
+						resourceInfo.get(btnName).setName(btnInfo.get(btnName));
+					}
+					
+					
+				}
+			}
+			
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	
 
 

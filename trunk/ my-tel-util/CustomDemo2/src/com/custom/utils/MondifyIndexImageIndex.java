@@ -1,4 +1,4 @@
-package com.custom.view;
+package com.custom.utils;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -10,8 +10,6 @@ import java.util.Iterator;
 
 import android.content.Context;
 
-import com.custom.utils.Constant;
-import com.custom.utils.Logger;
 
 public class MondifyIndexImageIndex {
 	private static final Logger logger = Logger.getLogger(MondifyIndexImageIndex.class);
@@ -53,6 +51,8 @@ public class MondifyIndexImageIndex {
 			raf.setLength(0); 
 			raf.close(); 
 			FileOutputStream fos = context.openFileOutput(Constant.imageIndexFileName, Context.MODE_WORLD_READABLE);
+			
+			
 			Iterator it = imageIndexs.keySet().iterator();
 
 			while(it.hasNext()){

@@ -35,6 +35,7 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
 
 	@Override
 	protected void initView() {
+		this.setOnClickListener(this);
 		super.initView();
 	}
 	
@@ -46,7 +47,9 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
 	int endTouchY = 0;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		
+        if(!imageCanMove){
+        	return super.onTouchEvent(event);
+        }
 		if(event.getPointerCount()>1||!imageCanMove){
 			return true;
 		}
@@ -75,6 +78,8 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
             updateViewPosition(true);    
             break;   
         }   
+
+        
         return true;
 	}
 

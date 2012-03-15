@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AbsoluteLayout;
@@ -155,18 +156,18 @@ public class IndexView extends FrameLayout{
 				if(with<screenWidth){
 					if(height<screenHeight&&with*1.0f/screenWidth>height*1.0f/screenHeight){
 						height = screenHeight;
-						with = (int)(with*height*1.0f/screenHeight);
+						with = (int)(with*height*1.0f/screenWidth);
 					}else{
 						with = screenWidth;
-						height = (int)(with*height*1.0f/screenWidth);
+						height = (int)(with*height*1.0f/screenHeight);
 					}
 				}else if(height<screenHeight){
 					if(with<screenWidth&&with*1.0f/screenWidth>height*1.0f/screenHeight){
 						height = screenHeight;
-						with = (int)(with*height*1.0f/screenHeight);
+						with = (int)(with*height*1.0f/screenWidth);
 					}else{
 						with = screenWidth;
-						height = (int)(with*height*1.0f/screenWidth);
+						height = (int)(with*height*1.0f/screenHeight);
 					}
 				}
 				
@@ -196,6 +197,7 @@ public class IndexView extends FrameLayout{
 				    mWebView.setVerticalScrollBarEnabled(false);
 					mWebView.getSettings().setJavaScriptEnabled(true);
 					mWebView.getSettings().setPluginsEnabled(true);
+					
 					mWebView.setWebViewClient(new WebViewClient() {
 						public boolean shouldOverrideUrlLoading(WebView view, String url) {
 							view.loadUrl(url);
@@ -205,13 +207,12 @@ public class IndexView extends FrameLayout{
 						@Override
 						public void onPageFinished(final WebView webView, String url) {
 							try {
-								// Thread.sleep(5000);
-								 //popAwindow(webView);
+								mWebView.loadUrl("javascript:showgame('"+scanFoldUtils.bgPic+"')");
 							} catch (Exception e) {
 							}
 						}
 					});
-					mWebView.loadUrl("file:///android_asset/index.htm");
+					mWebView.loadUrl(Constant.swfView);
 					this.addView(mWebView);
 				}
 				

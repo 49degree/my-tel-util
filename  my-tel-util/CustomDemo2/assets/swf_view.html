@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+<meta name="HandheldFriendly" content="True" />
+<title>mochigames</title>
+<script type="text/javascript">
+        
+        //var gamePath = '1.swf';  
+        
+        var showgame = function(path){
+          	//document.getElementById("player").innerHTML = "<embed src='1.swf' wmode='transparent' quality='high' width='100%' height='100%' allowScriptAccess='sameDomain' allowFullScreen='true' fullscreenOnSelection='true' type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' />";
+      		document.getElementById("player").innerHTML='<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" '
+          		+'codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" '
+          		+'width="100%" height="100%" id="MyFlash">'    
+          		+'<param name="movie" value="'+path+'"> '   
+          		+'<param name="autoStart" value="true"> '
+          		+'<param name="showControls" value="true"> '
+          		+'<param name="loop" value="true">     '
+          		+'<embed id="playerFF" src="'+path+'" width="100%" height="100%"'
+          		+'type="application/x-shockwave-flash"  pluginspage="http://www.macromedia.com/go/getflashplayer">'
+          		+'</embed></object>';
+
+          	  
+          	}
+        </script>
+</head>
+<body
+	style="background-color: #000; overflow: hidden; padding: 0; marign: 0; overflow: hidden; width: 100%; height: 100%;"
+	id="player">
+
+</body>
+</html>

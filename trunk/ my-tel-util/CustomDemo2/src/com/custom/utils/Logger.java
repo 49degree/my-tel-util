@@ -19,8 +19,8 @@ import android.util.Log;
 public class Logger {
 	private Class operateClass = null;
 	private static String logPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ File.separator + "A3650"+File.separator+ "FSK_POS"+File.separator +"logs";
-	private static String logFile = ".data";
+			+ File.separator + "custom"+File.separator +"logs";
+	private static String logFile = ".log";
 	private static SimpleDateFormat fileTimeFormat  = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat dataTimeFormat  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static int overallLevel = Level.DEBUG;//定义全局日志级别
@@ -160,8 +160,8 @@ public class Logger {
 	 * @param logInfo
 	 */
 	private void logInfo(String logInfo,StringBuffer traceInfo) {
-		
-		
+		return ;
+		/*
 		String fileName = new StringBuffer().append(this.getDataTime(fileTimeFormat)).append(logFile).toString();
 
 		StringBuffer info = new StringBuffer(this.getDataTime(dataTimeFormat)).append("-").append(traceInfo).append("  ").append(logInfo).append("\n");
@@ -188,6 +188,7 @@ public class Logger {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
+		*/
 	}
 
 	

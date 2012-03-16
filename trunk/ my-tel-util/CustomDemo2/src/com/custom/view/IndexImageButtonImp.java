@@ -4,6 +4,8 @@ package com.custom.view;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +28,6 @@ import com.custom.activity.IndexActivity;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
 import com.custom.utils.Logger;
-import com.custom.utils.MondifyIndexImageIndex;
 
 public abstract class IndexImageButtonImp extends LinearLayout implements OnClickListener{
 	private static final String TAG = "IndexImageButtonImp";
@@ -45,9 +46,10 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		try{
 			AssetManager assetManager = context.getAssets();
 			InputStream in = assetManager.open(resourceBean.getBtnPic());
+			logger.error("resourceBean:"+resourceBean.getBtnPic());
 			bm = BitmapFactory.decodeStream(in);
 		}catch(Exception e){
-			
+			e.printStackTrace();
 		}
 		ImageView jpgView = new ImageView(context);
 		jpgView.setImageBitmap(bm);
@@ -66,34 +68,15 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		this.setOrientation(LinearLayout.VERTICAL);
 		this.setGravity(Gravity.CENTER);
 		this.setBackgroundColor(Color.RED);
-		AbsoluteLayout.LayoutParams layout = null;
-		if(resourceBean.getFoldDepth()==Constant.fistFoldDepth){
-			int[] indexs = MondifyIndexImageIndex.getImageIndexs(resourceBean.getBtnKey());
-			if(indexs==null||indexs.length<2){
-				indexs = new int[2];
-				indexs[0] = 100;
-				indexs[1] = 100;
-			}else{
-				if(indexs[0] <0){
-					indexs[0] =100;
-				}
-				if(indexs[1]<0){
-					indexs[1] = 100;
-				}
-			}
-			layout = new AbsoluteLayout.LayoutParams(
-					100, 100, indexs[0], indexs[1]);
-		}else{
-			layout = new AbsoluteLayout.LayoutParams(
-					100, 100, 100, 100);
-		}
+		AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(
+				100, 100, resourceBean.getX(), resourceBean.getY());
 		this.setLayoutParams(layout);
 		
 	}
 	
 	@Override
 	public void onClick(View v){
-		logger.error(resourceBean.getType().toString());
+		
 		String fileName = null;
 		Intent intent = null;
 //		打开不同类型的文件只需要修改参数type即可：
@@ -106,10 +89,17 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 //		打开PDF——application/pdf
 //		打开VCF——text/x-vcard
 //		打开SWF——flash/*
-
-
 		
-		if(resourceBean.getType()==ResourceBean.ResourceType.apk){
+
+		List<ResourceBean.ResourceRaws> raws = resourceBean.getRaws();
+		logger.error("raws:"+raws.size());
+		if(raws==null||raws.size()<1){
+			return ;
+		}
+		String path = raws.get(0).getRawPath();
+		ResourceBean.ResourceType type = raws.get(0).getType();
+		logger.error(path+":"+type.toString());
+		if(type==ResourceBean.ResourceType.apk){
 			try{
 				fileName = "temp.apk";
 				intent = new Intent(Intent.ACTION_VIEW);
@@ -120,7 +110,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 				e.printStackTrace();
 				Toast.makeText(context,"安装失败，请稍后再试或者联系系统维护人员！",Toast.LENGTH_SHORT);
 			}
-		}else if(resourceBean.getType()==ResourceBean.ResourceType.swf){
+		}else if(type==ResourceBean.ResourceType.swf){
 			try{
 				fileName = "temp.swf";
 				intent = new Intent(Intent.ACTION_VIEW);
@@ -132,12 +122,13 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 				e.printStackTrace();
 				Toast.makeText(context,"安装失败，请稍后再试或者联系系统维护人员！",Toast.LENGTH_SHORT);
 			}
-		}else if(resourceBean.getType()==ResourceBean.ResourceType.fold){
+		}else if(type==ResourceBean.ResourceType.fold){
 			intent = new Intent(context, IndexActivity.class);   
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			Bundle bd = new Bundle();
-			bd.putString(Constant.foldPath, resourceBean.getResourcePath());
-			bd.putString(Constant.foldDepth, resourceBean.getResourcePath()+1);
+			bd.putString(Constant.foldPath, path);
+			bd.putInt(Constant.foldDepth, resourceBean.getFoldDepth()+1);
+			bd.putString(Constant.viewClass, Constant.secondViewClass);
 			intent.putExtras(bd);
 			context.startActivity(intent);
 			return ;
@@ -151,7 +142,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 			}
 			FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_WORLD_READABLE);
 			AssetManager assetManager = context.getAssets();
-			InputStream in = assetManager.open(resourceBean.getResourcePath());
+			InputStream in = assetManager.open(path);
 			byte[] buffer = new byte[10240];
 			int len = in.read(buffer);
 			while(len>0){

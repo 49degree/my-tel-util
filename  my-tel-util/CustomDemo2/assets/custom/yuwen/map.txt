@@ -1,3 +1,5 @@
 btn1=第一册
 btn2=第二册
 btn3=第三册
+abc=abc
+dcd=dcd

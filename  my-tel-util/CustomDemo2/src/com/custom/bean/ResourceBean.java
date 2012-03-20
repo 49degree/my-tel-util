@@ -1,7 +1,10 @@
 package com.custom.bean;
 
-import java.util.HashMap;
 import java.util.List;
+
+import android.graphics.Bitmap;
+
+import com.custom.utils.Constant.DirType;
 
 public class ResourceBean {
 	public enum ResourceType{
@@ -40,6 +43,8 @@ public class ResourceBean {
 	int x;
 	int y;
 	List<ResourceRaws> raws = null;
+	DirType dirType = DirType.assets;
+	Bitmap bm = null;
 	
 	
 	
@@ -92,6 +97,18 @@ public class ResourceBean {
 	}
 	public void setRaws(List<ResourceRaws> raws) {
 		this.raws = raws;
+	}
+	public DirType getDirType() {
+		return dirType;
+	}
+	public void setDirType(DirType dirType) {
+		this.dirType = dirType;
+	}
+	public Bitmap getBm() {
+		return bm;
+	}
+	public void setBm(Bitmap bm) {
+		this.bm = bm;
 	}
 
 	

@@ -11,6 +11,7 @@ import android.content.res.AssetManager;
 
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant.BgType;
+import com.custom.utils.Constant.DirType;
 
 public class ScanFoldUtils {
 	private static final Logger logger = Logger.getLogger(ScanFoldUtils.class);
@@ -21,6 +22,7 @@ public class ScanFoldUtils {
 	public String foldPath = null;
 	public String bgPic = null;
 	public BgType bgtype = BgType.pic;
+	public DirType bgDirtype = DirType.assets;
 	public int foldDepth = Constant.fistFoldDepth;
 
 	public ScanFoldUtils(Context context,String foldPath){
@@ -90,6 +92,7 @@ public class ScanFoldUtils {
 						bgtype = BgType.swf;
 					}	
 					bgPic = foldPath+"/"+lists[i];//背景路径
+					bgDirtype = DirType.assets;
 					//bgtype = BgType.swf;
 				}else if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){//按钮图片
 					if(!btnInfo.containsKey(btnName))//判断是否为当前目录需要的资源
@@ -104,6 +107,12 @@ public class ScanFoldUtils {
 					res.setName(btnInfo.get(btnName));//按钮对应下面显示的字符
 					res.setFoldDepth(foldDepth);//按钮的深度
 					res.setFoldPath(this.foldPath);//按钮所在目录
+					res.setDirType(DirType.assets);
+					res.setBm(LoadResources.loadBitmap(context, foldPath+"/"+lists[i], DirType.assets));
+					if(res.getRaws()==null){
+						List<ResourceBean.ResourceRaws> raws = this.queryRawsByValue(btnName);
+						res.setRaws(raws);
+					}
 					resourceInfo.put(btnName, res);
 					logger.error("btn:"+btnName+":"+res.getBtnPic());
 				}
@@ -142,6 +151,42 @@ public class ScanFoldUtils {
 						raws.add(new ResourceBean.ResourceRaws(mFoldPath+"/"+lists[i], type));
 					}
 					
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return raws;
+	}
+	
+	private List<ResourceBean.ResourceRaws> queryRawsByValue(String btnKey){
+		List<ResourceBean.ResourceRaws> raws = null;
+
+		try{
+			AssetManager assetManager = context.getAssets();
+			String[] lists = assetManager.list(this.foldPath+"/"+Constant.resourceFold);
+			for(int i=0;i<lists.length;i++){
+				if(lists[i].indexOf(".")<0){//为目录
+					continue;
+				}
+				String btnName = lists[i].substring(0,lists[i].indexOf("."));
+				if(!btnKey.equals(btnName)){
+					continue;
+				}
+				logger.error(btnName);
+				ResourceBean.ResourceType type = null;
+				if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
+					type = ResourceBean.ResourceType.pic;
+				}else if(Constant.swfType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
+					type = ResourceBean.ResourceType.swf;
+				}else if("apk".equals(lists[i].substring(lists[i].indexOf(".")+1))){
+					type = ResourceBean.ResourceType.apk;
+				}
+				if(type!=null){
+					raws = new ArrayList<ResourceBean.ResourceRaws>();
+					raws.add(new ResourceBean.ResourceRaws(this.foldPath+"/"+Constant.resourceFold+"/"+lists[i], type));
+					logger.error(this.foldPath+"/"+Constant.resourceFold+"/"+lists[i]+":"+btnKey);
+					break;
 				}
 			}
 		}catch(Exception e){

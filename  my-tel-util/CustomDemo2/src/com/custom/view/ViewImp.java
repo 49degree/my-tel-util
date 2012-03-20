@@ -122,7 +122,7 @@ public abstract class ViewImp extends FrameLayout{
 			/**
 			 * 查询资源信息
 			 */
-			if(scanFoldUtils!=null){
+			if(scanFoldUtils==null){
 				scanFoldUtils = new ScanFoldUtils(context,foldPath,foldDepth);
 			}
 			if(scanFoldUtils.bgtype == Constant.BgType.pic){

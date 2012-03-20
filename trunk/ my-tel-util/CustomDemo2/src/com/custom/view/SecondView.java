@@ -12,6 +12,8 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.WindowManager;
+import android.widget.AbsoluteLayout;
+import android.widget.LinearLayout;
 
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Logger;
@@ -55,23 +57,33 @@ public class SecondView extends ViewImp{
 						return object1.getKey().compareTo(object2.getKey());
 					}
 				}); 
-		
-		
-		
-		for(i=(pageNum-1)*8;i<(pageNum*8>resourceInfo.size()?resourceInfo.size():pageNum*8);i++){
-			logger.error("getKey:"+resourceInfo.get(i).getKey());
-			ResourceBean resourceBean = resourceInfo.get(i).getValue();
-			IndexImageButtonImp imageView = null;
-			setXY(resourceBean);
-			
-			if(scanFoldUtils.bgtype==BgType.pic){
-				imageView = new IndexImagePicButton(context,scrollView,resourceBean);
-			}else{
-				imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
-			}
-			mLayout.addView(imageView);
 
-		}
+		SecondViewGroup viewGroup = new SecondViewGroup(this.context);
+		mLayout.addView(viewGroup);
+		viewGroup.createIndexButton(resourceInfo);
+		
+//		for(int j=0;j<5;j++){
+//			AbsoluteLayout pageLayout = new AbsoluteLayout(context);
+//			LinearLayout.LayoutParams pageLayoutParams = new LinearLayout.LayoutParams(
+//					screenWidth, screenHeight);
+//			pageLayout.setLayoutParams(pageLayoutParams);
+//			viewGroup.addView(pageLayout);
+//			for(i=(pageNum-1)*8;i<(pageNum*8>resourceInfo.size()?resourceInfo.size():pageNum*8);i++){
+//				logger.error("getKey:"+resourceInfo.get(i).getKey());
+//				ResourceBean resourceBean = resourceInfo.get(i).getValue();
+//				IndexImageButtonImp imageView = null;
+//				setXY(resourceBean);
+//				
+//				imageView = new IndexImagePicButton(context,scrollView,resourceBean);
+////				if(scanFoldUtils.bgtype==BgType.pic){
+////					imageView = new IndexImagePicButton(context,scrollView,resourceBean);
+////				}else{
+////					imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
+////				}
+//				pageLayout.addView(imageView);
+//			}
+//		}
+
 	}
 	int i=0;
 	@Override

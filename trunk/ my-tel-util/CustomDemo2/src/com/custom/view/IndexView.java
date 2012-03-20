@@ -21,6 +21,7 @@ public class IndexView extends ViewImp{
 	private static final Logger logger = Logger.getLogger(IndexView.class);
 	public IndexView(Context context,String foldPath,int foldDepth){
 		super(context,foldPath,foldDepth);
+		MondifyIndexImageIndex.initImageIndexs(context);//获取按钮位置信息
 	}
 	
 	public IndexView(Context context, AttributeSet attr,String foldPath,int foldDepth){

@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.custom.activity.IndexActivity;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
+import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 
 public abstract class IndexImageButtonImp extends LinearLayout implements OnClickListener{
@@ -36,6 +37,10 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 	protected ResourceBean resourceBean = null;
 	protected Context context;
 	protected Bitmap bm=null;
+	protected int bmWidth = 0;
+	protected int bmHeight = 0;
+	
+
 	public IndexImageButtonImp(Context context,ResourceBean resourceBean) {
 		super(context);
 		this.context = context;
@@ -44,18 +49,15 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 	
 	protected void initView() {
 		try{
-			AssetManager assetManager = context.getAssets();
-			InputStream in = assetManager.open(resourceBean.getBtnPic());
-			logger.error("resourceBean:"+resourceBean.getBtnPic());
-			bm = BitmapFactory.decodeStream(in);
+			bm = resourceBean.getBm();//LoadResources.loadBitmap(context, resourceBean.getBtnPic(), resourceBean.getDirType());
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		ImageView jpgView = new ImageView(context);
 		jpgView.setImageBitmap(bm);
-		int with = bm.getWidth();
-		int height = bm.getHeight();
-		LinearLayout.LayoutParams alayout = new LinearLayout.LayoutParams(60, 60);
+		bmWidth = 100;//bm.getWidth();
+		bmHeight = 100;bm.getHeight();
+		LinearLayout.LayoutParams alayout = new LinearLayout.LayoutParams(bmWidth, bmHeight);
 		jpgView.setLayoutParams(alayout);
 		this.addView(jpgView);
 		
@@ -67,9 +69,9 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 
 		this.setOrientation(LinearLayout.VERTICAL);
 		this.setGravity(Gravity.CENTER);
-		this.setBackgroundColor(Color.RED);
+		//this.setBackgroundColor(Color.RED);
 		AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(
-				100, 100, resourceBean.getX(), resourceBean.getY());
+				bmWidth+20, bmHeight+60, resourceBean.getX(), resourceBean.getY());
 		this.setLayoutParams(layout);
 		
 	}
@@ -79,6 +81,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		
 		String fileName = null;
 		Intent intent = null;
+		
 //		打开不同类型的文件只需要修改参数type即可：
 //		打开APK——application/vnd.android.package-archive
 //		打开PPT——application/vnd.ms-powerpoint

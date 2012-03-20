@@ -1,20 +1,14 @@
 package com.custom.view;
 
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -25,9 +19,10 @@ import android.widget.LinearLayout;
 
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
+import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
-import com.custom.utils.MondifyIndexImageIndex;
 import com.custom.utils.ScanFoldUtils;
+import com.custom.utils.Constant.DirType;
 
 public abstract class ViewImp extends FrameLayout{
 	private static final Logger logger = Logger.getLogger(IndexView.class);
@@ -55,6 +50,10 @@ public abstract class ViewImp extends FrameLayout{
         this.foldDepth = foldDepth;  
 	}
 
+	public ViewImp(Context context, ScanFoldUtils scanFoldUtils){
+        super(context);
+        this.scanFoldUtils = scanFoldUtils;
+	}
 
 	/**
 	 * 
@@ -123,8 +122,9 @@ public abstract class ViewImp extends FrameLayout{
 			/**
 			 * 查询资源信息
 			 */
-			scanFoldUtils = new ScanFoldUtils(context,foldPath,foldDepth);
-			MondifyIndexImageIndex.initImageIndexs(context);//获取按钮位置信息
+			if(scanFoldUtils!=null){
+				scanFoldUtils = new ScanFoldUtils(context,foldPath,foldDepth);
+			}
 			if(scanFoldUtils.bgtype == Constant.BgType.pic){
 				// 设置主界面布局
 				scrollView = new BackgroundLinearLayout(this.context);
@@ -135,12 +135,11 @@ public abstract class ViewImp extends FrameLayout{
 				/**
 				 * 背景视图
 				 */
-				AssetManager assetManager = context.getAssets();
-				logger.error(scanFoldUtils.bgPic);
-				InputStream in = assetManager.open(scanFoldUtils.bgPic);
-				// BitmapDrawable backGroundDr = new BitmapDrawable(in);
-				Bitmap bm = BitmapFactory.decodeStream(in);
-				in.close();
+//				AssetManager assetManager = context.getAssets();
+//				logger.error(scanFoldUtils.bgPic);
+//				InputStream in = assetManager.open(scanFoldUtils.bgPic);
+				Bitmap bm = LoadResources.loadBitmap(context, scanFoldUtils.bgPic, DirType.assets);
+				//in.close();
 				int[] viewXY = calBackGroudView(bm);
 				// 设置主布局
 				mLayout = new AbsoluteLayout(context);
@@ -185,13 +184,7 @@ public abstract class ViewImp extends FrameLayout{
 				//mLayout.setBackgroundColor(Color.RED);
 				createView(mLayout);
 			}
-			Iterator it = scanFoldUtils.resourceInfo.keySet().iterator();
-			while(it.hasNext()){
-				ResourceBean resourceBean = scanFoldUtils.resourceInfo.get(it.next());
-				setXY(resourceBean);
-				IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
-				mLayout.addView(imageView);
-			}
+			this.createIndexButton();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -239,6 +232,7 @@ public abstract class ViewImp extends FrameLayout{
 
 	protected abstract void setXY(ResourceBean resourceBean);
 	protected abstract int[] calBackGroudView(Bitmap bm);
+	protected abstract void createIndexButton() ;
 
 }
 

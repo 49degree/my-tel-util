@@ -14,11 +14,15 @@ public class Constant {
 	public final static String viewClass="viewClass";
 	public final static String secondViewClass="com.custom.view.SecondView";
 	public final static String resourceFoldEnd="_raw";
+	public final static String resourceFold="raw";
 	
 	public final static  HashMap<String,String> picType= new HashMap<String,String>();;
 	public final static  HashMap<String,String> swfType= new HashMap<String,String>();
 	public enum BgType{
 		pic,swf
+	}
+	public enum DirType{
+		assets,file,sd
 	}
 	
 	static{

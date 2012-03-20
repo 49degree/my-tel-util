@@ -23,11 +23,12 @@ import android.widget.Toast;
 
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
+import com.custom.utils.Logger;
 import com.custom.utils.MondifyIndexImageIndex;
 
 public class IndexImagePicButton extends IndexImageButtonImp{
 	private static final String TAG = "IndexImageView";
-	
+	private static final Logger logger = Logger.getLogger(IndexImagePicButton.class);
 	private GestureDetector gestureDetector=null;
 	private BackgroundLinearLayout scrollView = null;
 	public IndexImagePicButton(Context context,BackgroundLinearLayout scrollView,ResourceBean resourceBean) {
@@ -57,6 +58,8 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 			int distance = 0;
 			switch(action){
 			case MotionEvent.ACTION_DOWN:
+				logger.error("Color.RED");
+				this.setBackgroundColor(Color.RED);
 				startTouchX = (int)event.getX();
 				startTouchY = (int)event.getY();
 				startTime = System.currentTimeMillis();
@@ -76,6 +79,8 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 					return false;
 				}
 			case MotionEvent.ACTION_UP:
+
+				
 				onBackGroundTouchEvent(event);
 				endTouchX = (int)event.getX();
 				endTouchY = (int)event.getY();
@@ -84,8 +89,15 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 				//Log.e(TAG,"endTime-startTime22:"+(endTime-startTime)+":distance:"+distance);
 				if(endTime-startTime<500&&endTime-startTime>50&&distance<50){
 					Toast.makeText(context, "单击事件", Toast.LENGTH_SHORT).show();
+					this.setBackgroundColor(0);
+					try{
+						Thread.sleep(200);	
+					}catch(Exception e){
+						e.printStackTrace();
+					}
 					super.onClick(this);
-				}		
+				}
+				this.setBackgroundColor(0);
 			default:
 				break;
 			}
@@ -96,7 +108,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 
 	public void onBackGroundTouchEvent(MotionEvent event){
 		if(scrollView!=null){
-			scrollView.onTouchEvent(event);
+			scrollView.onTouchEvent(event);//移动背景
 		}
 		
 	}

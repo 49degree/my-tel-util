@@ -47,7 +47,9 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
 	int endTouchY = 0;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		
         if(!imageCanMove){
+        	this.setBackgroundColor(Color.RED);
         	return super.onTouchEvent(event);
         }
 		if(event.getPointerCount()>1||!imageCanMove){

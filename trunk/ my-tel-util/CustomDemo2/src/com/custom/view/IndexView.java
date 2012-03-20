@@ -1,15 +1,19 @@
 package com.custom.view;
 
+import java.util.Iterator;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Logger;
 import com.custom.utils.MondifyIndexImageIndex;
+import com.custom.utils.Constant.BgType;
 
 
 
@@ -21,8 +25,24 @@ public class IndexView extends ViewImp{
 	
 	public IndexView(Context context, AttributeSet attr,String foldPath,int foldDepth){
         super(context, attr,foldPath,foldDepth);
+        MondifyIndexImageIndex.initImageIndexs(context);//获取按钮位置信息
 	}
-
+	
+	@Override
+	protected void createIndexButton() {
+		Iterator it = scanFoldUtils.resourceInfo.keySet().iterator();
+		while(it.hasNext()){
+			ResourceBean resourceBean = scanFoldUtils.resourceInfo.get(it.next());
+			setXY(resourceBean);
+			if(scanFoldUtils.bgtype==BgType.pic){
+				IndexImagePicButton imageView = new IndexImagePicButton(context,scrollView,resourceBean);
+				mLayout.addView(imageView);
+			}else{
+				IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
+				mLayout.addView(imageView);
+			}
+		}
+	}
 	@Override
 	protected void setXY(ResourceBean resourceBean) {
 		//设置图标的位置

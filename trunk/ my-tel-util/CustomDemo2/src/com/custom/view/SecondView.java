@@ -12,12 +12,13 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.WindowManager;
-import android.widget.AbsoluteLayout;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.custom.bean.PageNumBean;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Logger;
-import com.custom.utils.Constant.BgType;
+import com.custom.utils.MainApplication;
 
 
 
@@ -57,49 +58,35 @@ public class SecondView extends ViewImp{
 						return object1.getKey().compareTo(object2.getKey());
 					}
 				}); 
-
-		SecondViewGroup viewGroup = new SecondViewGroup(this.context);
-		mLayout.addView(viewGroup);
-		viewGroup.createIndexButton(resourceInfo);
 		
-//		for(int j=0;j<5;j++){
-//			AbsoluteLayout pageLayout = new AbsoluteLayout(context);
-//			LinearLayout.LayoutParams pageLayoutParams = new LinearLayout.LayoutParams(
-//					screenWidth, screenHeight);
-//			pageLayout.setLayoutParams(pageLayoutParams);
-//			viewGroup.addView(pageLayout);
-//			for(i=(pageNum-1)*8;i<(pageNum*8>resourceInfo.size()?resourceInfo.size():pageNum*8);i++){
-//				logger.error("getKey:"+resourceInfo.get(i).getKey());
-//				ResourceBean resourceBean = resourceInfo.get(i).getValue();
-//				IndexImageButtonImp imageView = null;
-//				setXY(resourceBean);
-//				
-//				imageView = new IndexImagePicButton(context,scrollView,resourceBean);
-////				if(scanFoldUtils.bgtype==BgType.pic){
-////					imageView = new IndexImagePicButton(context,scrollView,resourceBean);
-////				}else{
-////					imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
-////				}
-//				pageLayout.addView(imageView);
-//			}
-//		}
-
+		for(int i=0;i<5;i++){
+			resourceInfo.addAll(resourceInfo);
+		}
+		
+		PageNumBean pageNumBean = new PageNumBean(resourceInfo.size());
+		
+		FrameLayout frameLayout = new FrameLayout(this.context);
+		LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(
+				screenWidth, screenHeight);
+		frameLayout.setLayoutParams(frameLayoutParams);
+		mLayout.addView(frameLayout);
+		
+		PageNumView pageNumView = new PageNumView(this.context,pageNumBean);
+		pageNumView.setLayoutParams(new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
+		frameLayout.addView(pageNumView);
+		
+		
+		
+		
+		SecondViewGroup viewGroup = new SecondViewGroup(this.context,resourceInfo,pageNumView);
+		frameLayout.addView(viewGroup);
 	}
-	int i=0;
 	@Override
 	protected void setXY(ResourceBean resourceBean) {
-		//设置图标的位置
-		// TODO Auto-generated method stub
-		//int[] indexs = MondifyIndexImageIndex.getImageIndexs(resourceBean.getBtnKey());
-		resourceBean.setX(i%4*200+50);
-		resourceBean.setY(i/4%2*200+150);
 	}
 	@Override
 	protected int[] calBackGroudView(Bitmap bm){
-		int with = bm.getWidth();
-		int height = bm.getHeight();
-
-
 		int[] viewXY = new int[2];
 		viewXY[0] = screenWidth;
 		viewXY[1] = screenHeight;

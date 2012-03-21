@@ -4,7 +4,9 @@ import java.util.HashMap;
 
 public class Constant {
 	public final static String foldPath = "foldPath";
-	public final static String path = "custom/yuwen";
+	public static String foldName="";
+	public static String path = "";
+	public static String pageNumPicPath="";
 	public final static String bgPicName = "bg";
 	public final static String imageIndexFileName="IndexImageIndex.txt";
 	public final static String mapFileName="map.txt";
@@ -15,6 +17,8 @@ public class Constant {
 	public final static String secondViewClass="com.custom.view.SecondView";
 	public final static String resourceFoldEnd="_raw";
 	public final static String resourceFold="raw";
+	
+	
 	
 	public final static  HashMap<String,String> picType= new HashMap<String,String>();;
 	public final static  HashMap<String,String> swfType= new HashMap<String,String>();
@@ -37,5 +41,13 @@ public class Constant {
 		swfType.put("swf", "");
 		swfType.put("SWF", "");
 	}
+	
+	public static void setFoldName(String foldName){
+		Constant.foldName = foldName;
+		Constant.path = "custom/"+foldName;
+		Constant.pageNumPicPath = "custom/"+foldName+"/pagepic";
+		
+	}
+	
 	
 }

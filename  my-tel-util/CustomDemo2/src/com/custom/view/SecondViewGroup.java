@@ -1,12 +1,16 @@
 package com.custom.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.custom.bean.PageNumBean;
 import com.custom.bean.ResourceBean;
+import com.custom.utils.Logger;
+import com.custom.utils.MainApplication;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,7 +30,7 @@ import android.widget.Scroller;
 
 public class SecondViewGroup extends ViewGroup {
 
-	private static final String TAG = "scroller";
+	private static final Logger logger = Logger.getLogger(SecondViewGroup.class);
 
 	private Scroller scroller;
 
@@ -35,6 +39,7 @@ public class SecondViewGroup extends ViewGroup {
 	private GestureDetector gestureDetector;
 	
 	private Context context = null;
+	
 
 	// 设置一个标志位，防止底层的onTouch事件重复处理UP事件
 	private boolean fling;
@@ -44,19 +49,19 @@ public class SecondViewGroup extends ViewGroup {
 		return scroller;
 	}
 
-	public SecondViewGroup(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		initView(context);
-	}
 
-	public SecondViewGroup(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context);
-	}
-
-	public SecondViewGroup(Context context) {
+	public SecondViewGroup(Context context,ArrayList<Entry<String,ResourceBean>> resourceInfo,PageNumView pageNumView) {
 		super(context);
-		//this.resourceInfo = resourceInfo;
+		this.resourceInfo = resourceInfo;
+		this.pageNumView = pageNumView;
+		this.pageNumBean = pageNumView.getPageNumBean();
+		this.context = context;
+		
+		WindowManager manage = ((Activity)context).getWindowManager();
+		Display display = manage.getDefaultDisplay();
+		screenHeight = display.getHeight();
+		screenWidth = display.getWidth();
+		
 		initView(context);
 	}
 
@@ -79,11 +84,11 @@ public class SecondViewGroup extends ViewGroup {
 			@Override
 			public boolean onScroll(MotionEvent e1, MotionEvent e2,
 					float distanceX, float distanceY) {
-				Log.d(TAG, "on scroll>>>>>>>>>>>>>>>>>distanceX<<<<<<<<<<<<<<>>>"+distanceX);
+				logger.error( "on scroll>>>>>>>>>>>>>>>>>distanceX<<<<<<<<<<<<<<>>>"+distanceX);
 				if ((distanceX > 0 && currentScreenIndex < getChildCount() - 1)// 防止移动过最后一页
 						|| (distanceX < 0 && getScrollX() > 0)) {// 防止向第一页之前移动
 					scrollBy((int) distanceX, 0);
-					Log.d(TAG, "on scroll>>>>>>>>>>>>>>>>>防止向第一页之前移动<<<<<<<<<<<<<<>>>");
+					logger.error( "on scroll>>>>>>>>>>>>>>>>>防止向第一页之前移动<<<<<<<<<<<<<<>>>");
 				}
 				return true;
 			}
@@ -95,19 +100,19 @@ public class SecondViewGroup extends ViewGroup {
 			@Override
 			public boolean onFling(MotionEvent e1, MotionEvent e2,
 					float velocityX, float velocityY) {
-				Log.d(TAG, "min velocity >>>"
+				logger.error( "min velocity >>>"
 						+ ViewConfiguration.get(context)
 								.getScaledMinimumFlingVelocity()
 						+ " current velocity>>" + velocityX);
 				if (Math.abs(velocityX) > ViewConfiguration.get(context)
 						.getScaledMinimumFlingVelocity()) {// 判断是否达到最小轻松速度，取绝对值的
 					if (velocityX > 0 && currentScreenIndex > 0) {
-						Log.d(TAG, ">>>>fling to left");
+						logger.error( ">>>>fling to left");
 						fling = true;
 						scrollToScreen(currentScreenIndex - 1);
 					} else if (velocityX < 0
 							&& currentScreenIndex < getChildCount() - 1) {
-						Log.d(TAG, ">>>>fling to right");
+						logger.error( ">>>>fling to right");
 						fling = true;
 						scrollToScreen(currentScreenIndex + 1);
 					}
@@ -122,13 +127,13 @@ public class SecondViewGroup extends ViewGroup {
 			}
 		});
 		
-		//createIndexButton();
+		createIndexButton();
 	}
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
-		Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>left: " + left + " top: " + top + " right: " + right
+		logger.error( ">>>>>>>>>>>>>>>>>>>>left: " + left + " top: " + top + " right: " + right
 				+ " bottom:" + bottom);
 
 		/**
@@ -146,7 +151,7 @@ public class SecondViewGroup extends ViewGroup {
 	@Override
 	public void computeScroll() {
 		if (scroller.computeScrollOffset()) {
-			Log.d(TAG, ">>>>>>>>>>computeScroll>>>>>"+scroller.getCurrX());
+			//logger.error( ">>>>>>>>>>computeScroll>>>>>"+scroller.getCurrX());
 
 			scrollTo(scroller.getCurrX(), 0);
 			postInvalidate();
@@ -163,7 +168,7 @@ public class SecondViewGroup extends ViewGroup {
 		case MotionEvent.ACTION_MOVE:
 			break;
 		case MotionEvent.ACTION_UP:
-			Log.d(TAG, ">>ACTION_UP:>>>>>>>> MotionEvent.ACTION_UP>>>>>");
+			//logger.error( ">>ACTION_UP:>>>>>>>> MotionEvent.ACTION_UP>>>>>");
 			if (!fling) {
 				snapToDestination();
 			}
@@ -190,7 +195,16 @@ public class SecondViewGroup extends ViewGroup {
 		scroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);
 		invalidate();
 
+		if(currentScreenIndex>whichScreen){
+			pageNumBean.prePageNum();
+		}else{
+			pageNumBean.nextPageNum();
+		}
+		pageNumView.initPageNumView();
+		
 		currentScreenIndex = whichScreen;
+		
+
 	}
 
 	/**
@@ -201,39 +215,39 @@ public class SecondViewGroup extends ViewGroup {
 	}
 	
 	ArrayList<Entry<String,ResourceBean>> resourceInfo = null;
+	PageNumBean pageNumBean=null;
+	PageNumView pageNumView = null;
 	int screenHeight = 0;
 	int screenWidth = 0;
-	int pageNum = 1;
-	protected void createIndexButton(ArrayList<Entry<String,ResourceBean>> resourceInfo) {		
-		this.resourceInfo = resourceInfo;
-		WindowManager manage = ((Activity)context).getWindowManager();
-		Display display = manage.getDefaultDisplay();
-		screenHeight = display.getHeight();
-		screenWidth = display.getWidth();
+	protected void createIndexButton() {
 		
-		for(int j=0;j<5;j++){
-			AbsoluteLayout pageLayout = new AbsoluteLayout(context);
+
+		
+		for(int pageNum=pageNumBean.getStartPageNum();pageNum<=pageNumBean.getEndPageNum();pageNum++){
 			LinearLayout.LayoutParams pageLayoutParams = new LinearLayout.LayoutParams(
 					screenWidth, screenHeight);
+			AbsoluteLayout pageLayout = new AbsoluteLayout(context);
 			pageLayout.setLayoutParams(pageLayoutParams);
 			this.addView(pageLayout);
-			for(i=(pageNum-1)*8;i<(pageNum*8>resourceInfo.size()?resourceInfo.size():pageNum*8);i++){
+			int[] index = pageNumBean.getButtonIndexbyPageNum(pageNum);
+			logger.error("index:"+Arrays.toString(index)+":"+pageNumBean.getButtonCount());
+			
+			for(int i=index[0];i<=index[1];i++){
 				ResourceBean resourceBean = resourceInfo.get(i).getValue();
 				IndexImageButtonImp imageView = null;
-				setXY(resourceBean);
+				setXY(resourceBean,i);
 				imageView = new IndexImagePicButton(context,null,resourceBean);
 				pageLayout.addView(imageView);
 			}
 		}
 
 	}
-	int i=0;
-	protected void setXY(ResourceBean resourceBean) {
+	protected void setXY(ResourceBean resourceBean,int buttonIndex) {
 		//设置图标的位置
 		// TODO Auto-generated method stub
 		//int[] indexs = MondifyIndexImageIndex.getImageIndexs(resourceBean.getBtnKey());
-		resourceBean.setX(i%4*200+50);
-		resourceBean.setY(i/4%2*200+150);
+		resourceBean.setX(buttonIndex%4*200+50);
+		resourceBean.setY(buttonIndex/4%2*200+150);
 	}
 
 }

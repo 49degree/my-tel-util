@@ -81,12 +81,12 @@ public class PageNumView extends AbsoluteLayout{
 					Bitmap pageNum2 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/pageNum2.png", DirType.assets);
 					imageView.setImageBitmap(pageNum2);
 					layout = new AbsoluteLayout.LayoutParams(
-							pageNum2.getWidth(), pageNum2.getHeight(), beginX+i*60, beginY+20);
+							pageNum2.getWidth(), pageNum2.getHeight(), beginX+i%pageNumBean.getPageNumPerView()*60, beginY+20);
 				}else{
 					Bitmap pageNum1 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/pageNum1.png", DirType.assets);
 					imageView.setImageBitmap(pageNum1);
 					layout = new AbsoluteLayout.LayoutParams(
-							pageNum1.getWidth(), pageNum1.getHeight(), beginX+i*60, beginY+20);
+							pageNum1.getWidth(), pageNum1.getHeight(), beginX+i%pageNumBean.getPageNumPerView()*60, beginY+20);
 				}
 
 				imageView.setLayoutParams(layout);

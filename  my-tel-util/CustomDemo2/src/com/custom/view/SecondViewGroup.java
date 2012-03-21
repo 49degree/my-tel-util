@@ -2,31 +2,26 @@ package com.custom.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map;
 import java.util.Map.Entry;
-
-import com.custom.bean.PageNumBean;
-import com.custom.bean.ResourceBean;
-import com.custom.utils.Logger;
-import com.custom.utils.MainApplication;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.GestureDetector.OnGestureListener;
 import android.widget.AbsoluteLayout;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
+
+import com.custom.bean.PageNumBean;
+import com.custom.bean.ResourceBean;
+import com.custom.utils.Logger;
 
 public class SecondViewGroup extends ViewGroup {
 
@@ -84,12 +79,27 @@ public class SecondViewGroup extends ViewGroup {
 			@Override
 			public boolean onScroll(MotionEvent e1, MotionEvent e2,
 					float distanceX, float distanceY) {
-				logger.error( "on scroll>>>>>>>>>>>>>>>>>distanceX<<<<<<<<<<<<<<>>>"+distanceX);
-				if ((distanceX > 0 && currentScreenIndex < getChildCount() - 1)// 防止移动过最后一页
+				
+				if(distanceX > 0 && currentScreenIndex == getChildCount() - 1){//移动过最后一页
+					if(pageNumBean.nextPageView()){
+						SecondViewGroup.this.createIndexButton();
+						pageNumView.initPageNumView();
+						logger.error( "on scroll>>>>>>>>>>>>>>>>>向后移动<<<<<<<<<<<<<<>>>");
+					}
+					
+				}else if(distanceX < 0 && getScrollX() < 0){//向第一页之前移动
+					if(pageNumBean.prePageView()){
+						SecondViewGroup.this.createIndexButton();
+						pageNumView.initPageNumView();
+						logger.error( "on scroll>>>>>>>>>>>>>>>>>向前移动<<<<<<<<<<<<<<>>>");
+					}
+					
+				}else if ((distanceX > 0 && currentScreenIndex < getChildCount() - 1)// 防止移动过最后一页
 						|| (distanceX < 0 && getScrollX() > 0)) {// 防止向第一页之前移动
 					scrollBy((int) distanceX, 0);
 					logger.error( "on scroll>>>>>>>>>>>>>>>>>防止向第一页之前移动<<<<<<<<<<<<<<>>>");
 				}
+				
 				return true;
 			}
 
@@ -139,6 +149,7 @@ public class SecondViewGroup extends ViewGroup {
 		/**
 		 * 设置布局，将子视图顺序横屏排列
 		 */
+		
 		for (int i = 0; i < getChildCount(); i++) {
 			View child = getChildAt(i);
 			child.setVisibility(View.VISIBLE);
@@ -195,12 +206,12 @@ public class SecondViewGroup extends ViewGroup {
 		scroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);
 		invalidate();
 
-		if(currentScreenIndex>whichScreen){
-			pageNumBean.prePageNum();
-		}else{
-			pageNumBean.nextPageNum();
+		if(currentScreenIndex>whichScreen&&pageNumBean.prePageNum()){
+			pageNumView.initPageNumView();
+		}else if(currentScreenIndex<whichScreen&&pageNumBean.nextPageNum()){
+			pageNumView.initPageNumView();
 		}
-		pageNumView.initPageNumView();
+		
 		
 		currentScreenIndex = whichScreen;
 		
@@ -215,14 +226,23 @@ public class SecondViewGroup extends ViewGroup {
 	}
 	
 	ArrayList<Entry<String,ResourceBean>> resourceInfo = null;
+	private ArrayList<View> pageNumViews = new ArrayList<View>();
 	PageNumBean pageNumBean=null;
 	PageNumView pageNumView = null;
 	int screenHeight = 0;
 	int screenWidth = 0;
 	protected void createIndexButton() {
-		
-
-		
+		//this.removeAllViews();
+		while(pageNumViews.size()>0){
+			try{
+				//this.removeAllViews();
+			    this.removeViewInLayout(pageNumViews.remove(0));
+			}catch(Exception e){
+				
+			}
+			
+		}
+		//this.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT) );
 		for(int pageNum=pageNumBean.getStartPageNum();pageNum<=pageNumBean.getEndPageNum();pageNum++){
 			LinearLayout.LayoutParams pageLayoutParams = new LinearLayout.LayoutParams(
 					screenWidth, screenHeight);
@@ -239,6 +259,7 @@ public class SecondViewGroup extends ViewGroup {
 				imageView = new IndexImagePicButton(context,null,resourceBean);
 				pageLayout.addView(imageView);
 			}
+			//pageNumViews.add(pageLayout);
 		}
 
 	}

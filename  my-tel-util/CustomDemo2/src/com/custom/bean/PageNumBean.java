@@ -43,7 +43,7 @@ public class PageNumBean {
 	 * @return
 	 */
 	public int[] getButtonIndexbyPageNum(int pageNum){
-		if(pageNum>=pageCount){
+		if(pageNum>=pageCount||pageNum<0){
 			return null;
 		}
 		int startIndex = pageNum*buttonPerPage;
@@ -58,7 +58,7 @@ public class PageNumBean {
 	 */
 	public boolean setCurPageNum(int curPageNum) {
 		logger.error("this.curPageNum:"+this.curPageNum);
-		if(curPageNum>=pageCount){
+		if(curPageNum>=pageCount||curPageNum<0){
 			return false;
 		}
 		logger.error("curPageNum:"+curPageNum);
@@ -85,21 +85,25 @@ public class PageNumBean {
 	 * @param pageViewIndex
 	 * @return
 	 */
-	public boolean setPageViewIndex(int pageViewIndex) {
-		if(pageViewIndex>pageViewCount){
+	public boolean setPageViewIndex(int mPageViewIndex) {
+		if(mPageViewIndex>=pageViewCount||mPageViewIndex<0||this.pageViewIndex == mPageViewIndex){
 			return false;
 		}
-		this.pageViewIndex = pageViewIndex;
-		curPageNum = pageViewIndex*pageNumPerView;
+		if(this.pageViewIndex>mPageViewIndex){
+			curPageNum = (mPageViewIndex+1)*pageNumPerView-1;
+		}else{
+			curPageNum = mPageViewIndex*pageNumPerView;
+		}
+		this.pageViewIndex = mPageViewIndex;
 		return setCurPageNum(curPageNum);
 	}
 	
 	public boolean nextPageView() {
-		return setPageViewIndex(pageViewIndex++);
+		return setPageViewIndex(pageViewIndex+1);
 	}
 	
 	public boolean prePageView() {
-		return setPageViewIndex(pageViewIndex--);
+		return setPageViewIndex(pageViewIndex-1);
 	}
 	
 	

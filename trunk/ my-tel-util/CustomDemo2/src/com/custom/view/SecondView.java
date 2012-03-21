@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import com.custom.bean.PageNumBean;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Logger;
-import com.custom.utils.MainApplication;
 
 
 
@@ -58,9 +57,12 @@ public class SecondView extends ViewImp{
 						return object1.getKey().compareTo(object2.getKey());
 					}
 				}); 
-		
-		for(int i=0;i<5;i++){
-			resourceInfo.addAll(resourceInfo);
+		Entry<String,ResourceBean> data=  resourceInfo.get(0);
+		String name = data.getValue().getName();
+		resourceInfo.removeAll(resourceInfo);
+		for(int i=0;i<42;i++){
+			resourceInfo.add(data);
+			data.getValue().setName(name+i);
 		}
 		
 		PageNumBean pageNumBean = new PageNumBean(resourceInfo.size());

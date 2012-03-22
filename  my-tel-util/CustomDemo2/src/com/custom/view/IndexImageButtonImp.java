@@ -4,15 +4,12 @@ package com.custom.view;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -24,10 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.custom.R;
 import com.custom.activity.IndexActivity;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
-import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 
 public abstract class IndexImageButtonImp extends LinearLayout implements OnClickListener{
@@ -45,6 +42,11 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		super(context);
 		this.context = context;
 		this.resourceBean = resourceBean;
+		try{
+			imageCanMove = Boolean.parseBoolean(context.getString(R.string.modify_index));
+		}catch(Exception e){
+			
+		}
 	}  
 	
 	protected void initView() {

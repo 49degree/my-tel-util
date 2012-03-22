@@ -84,7 +84,7 @@ public class ScanFoldUtils {
 				}
 				
 				btnName = lists[i].substring(0,lists[i].indexOf("."));
-				if(Constant.bgPicName.equals(btnName)){
+				if(Constant.bgPicName.equals(btnName.toUpperCase())){
 					//是背景图片
 					if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
 						bgtype = BgType.pic;
@@ -145,7 +145,7 @@ public class ScanFoldUtils {
 					type = ResourceBean.ResourceType.apk;
 				}
 				if(type!=null){
-					if(btnName.equals("index")){
+					if(Constant.raw_first_name.indexOf(btnName.toUpperCase())>-1){
 						raws.add(0, new ResourceBean.ResourceRaws(mFoldPath+"/"+lists[i], type));
 					}else{
 						raws.add(new ResourceBean.ResourceRaws(mFoldPath+"/"+lists[i], type));

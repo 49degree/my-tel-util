@@ -7,7 +7,8 @@ public class Constant {
 	public static String foldName="";
 	public static String path = "";
 	public static String pageNumPicPath="";
-	public final static String bgPicName = "bg";
+	public final static String bgPicName = "BACKGROUP";
+	public final static String raw_first_name = "INDEX|PLAY";
 	public final static String imageIndexFileName="IndexImageIndex.txt";
 	public final static String mapFileName="map.txt";
 	public final static int fistFoldDepth=0;

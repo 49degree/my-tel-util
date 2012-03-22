@@ -24,16 +24,14 @@ public class PageNumView extends AbsoluteLayout{
 	private PageNumBean pageNumBean=null;
 	Context context = null;
 	private ArrayList<View> pageNumViews = new ArrayList<View>();
+	private UnitPageOnclick unitPageOnclick;
 	public PageNumView(Context context,PageNumBean pageNumBean) {
 		super(context);
 		this.context = context;
 		this.pageNumBean = pageNumBean;
 		
-		WindowManager manage = ((Activity)context).getWindowManager();
-		Display display = manage.getDefaultDisplay();
-		screenHeight = display.getHeight();
-		screenWidth = display.getWidth();
-		initView();
+
+		//initView();
 	}
 	/**
 	 * 构建界面
@@ -42,8 +40,14 @@ public class PageNumView extends AbsoluteLayout{
 	int beginX = 0;
 	int beginY = 0;
 	
-	private void initView(){
+	public void initView(){
 		try{
+			WindowManager manage = ((Activity)context).getWindowManager();
+			Display display = manage.getDefaultDisplay();
+			screenHeight = display.getHeight();
+			screenWidth = display.getWidth();
+			
+			
 			Bitmap bm = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/tree.png", DirType.assets);
 			ImageView imageView = new ImageView(context);
 			imageView.setImageBitmap(bm);
@@ -70,8 +74,12 @@ public class PageNumView extends AbsoluteLayout{
 				}catch(Exception e){
 					
 				}
-				
 			}
+			
+			WindowManager manage = ((Activity)context).getWindowManager();
+			Display display = manage.getDefaultDisplay();
+			screenHeight = display.getHeight();
+			screenWidth = display.getWidth();
 			
 			for(int i=pageNumBean.getStartPageNum();i<=pageNumBean.getEndPageNum();i++){
 				logger.error("beginX:"+i+":"+pageNumBean.getCurPageNum());
@@ -92,7 +100,36 @@ public class PageNumView extends AbsoluteLayout{
 				imageView.setLayoutParams(layout);
 				this.addView(imageView);
 				pageNumViews.add(imageView);
+			}
+			//上行翻页按钮
+			try{
+				ImageView imageView = new ImageView(context);
+				Bitmap pageNum1 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/nextunit.png", DirType.assets);
+				imageView.setImageBitmap(pageNum1);
+				AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(
+						200, 100, screenWidth-160,150);
+				imageView.setLayoutParams(layout);
+				this.addView(imageView);
+				imageView.setOnClickListener(new View.OnClickListener(){
+					public void onClick(View v){
+						unitPageOnclick.nextUnitOnclick();
+					}
+				});
 				
+				ImageView imageView2 = new ImageView(context);
+				Bitmap pageNum2 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/upunit.png", DirType.assets);
+				imageView2.setImageBitmap(pageNum2);
+				AbsoluteLayout.LayoutParams layout2 = new AbsoluteLayout.LayoutParams(
+						200, 100, screenWidth-200,210);
+				imageView2.setLayoutParams(layout2);
+				this.addView(imageView2);
+				imageView2.setOnClickListener(new View.OnClickListener(){
+					public void onClick(View v){
+						unitPageOnclick.upUnitOnclick();
+					}
+				});
+				
+			}catch(Exception e){
 				
 			}
 		}catch(Exception e){
@@ -102,8 +139,22 @@ public class PageNumView extends AbsoluteLayout{
 	
 	
 	
+	
 	public PageNumBean getPageNumBean(){
 		return pageNumBean;
+	}
+	
+	
+	
+	public void setUnitPageOnclick(UnitPageOnclick unitPageOnclick) {
+		this.unitPageOnclick = unitPageOnclick;
+	}
+
+
+
+	public interface UnitPageOnclick{
+		public void upUnitOnclick();
+		public void nextUnitOnclick();
 	}
 	
 }

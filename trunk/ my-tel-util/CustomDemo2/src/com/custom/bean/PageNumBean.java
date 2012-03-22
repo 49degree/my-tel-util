@@ -74,10 +74,12 @@ public class PageNumBean {
 	}
 	
 	public boolean nextPageNum() {
+		logger.error("nextPageNum:"+curPageNum);
 		return setCurPageNum(curPageNum+1);
 	}
 	
 	public boolean prePageNum() {
+		logger.error("prePageNum:"+curPageNum);
 		return setCurPageNum(curPageNum-1);
 	}
 	/**
@@ -89,11 +91,7 @@ public class PageNumBean {
 		if(mPageViewIndex>=pageViewCount||mPageViewIndex<0||this.pageViewIndex == mPageViewIndex){
 			return false;
 		}
-		if(this.pageViewIndex>mPageViewIndex){
-			curPageNum = (mPageViewIndex+1)*pageNumPerView-1;
-		}else{
-			curPageNum = mPageViewIndex*pageNumPerView;
-		}
+		this.curPageNum = mPageViewIndex*pageNumPerView;
 		this.pageViewIndex = mPageViewIndex;
 		return setCurPageNum(curPageNum);
 	}

@@ -17,7 +17,10 @@ import android.widget.LinearLayout;
 
 import com.custom.bean.PageNumBean;
 import com.custom.bean.ResourceBean;
+import com.custom.utils.Constant;
 import com.custom.utils.Logger;
+import com.custom.utils.SharedPreferencesUtils;
+import com.custom.view.PageNumView.UnitPageOnclick;
 
 
 
@@ -28,7 +31,8 @@ public class SecondView extends ViewImp{
 	ArrayList<Entry<String,ResourceBean>> resourceInfo = null;
 	int screenHeight = 0;
 	int screenWidth = 0;
-	int pageNum = 1;
+	int curPageNum = 0;
+	PageNumBean pageNumBean = null;
 	public SecondView(Context context,String foldPath,int foldDepth){
 		super(context,foldPath,foldDepth);
 		WindowManager manage = ((Activity)context).getWindowManager();
@@ -58,14 +62,18 @@ public class SecondView extends ViewImp{
 					}
 				}); 
 		Entry<String,ResourceBean> data=  resourceInfo.get(0);
-		String name = data.getValue().getName();
+		Entry<String,ResourceBean> data2=  resourceInfo.get(1);
 		resourceInfo.removeAll(resourceInfo);
-		for(int i=0;i<42;i++){
+		for(int i=0;i<32;i++){
 			resourceInfo.add(data);
-			data.getValue().setName(name+i);
 		}
 		
-		PageNumBean pageNumBean = new PageNumBean(resourceInfo.size());
+		for(int i=0;i<12;i++){
+			resourceInfo.add(data2);
+		}
+		
+		pageNumBean = new PageNumBean(resourceInfo.size());
+		pageNumBean.setCurPageNum(curPageNum);
 		
 		FrameLayout frameLayout = new FrameLayout(this.context);
 		LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(
@@ -76,13 +84,14 @@ public class SecondView extends ViewImp{
 		PageNumView pageNumView = new PageNumView(this.context,pageNumBean);
 		pageNumView.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
-		frameLayout.addView(pageNumView);
-		
-		
-		
 		
 		SecondViewGroup viewGroup = new SecondViewGroup(this.context,resourceInfo,pageNumView);
 		frameLayout.addView(viewGroup);
+		frameLayout.addView(pageNumView);
+		pageNumView.initView();
+		
+		
+
 	}
 	@Override
 	protected void setXY(ResourceBean resourceBean) {
@@ -94,6 +103,25 @@ public class SecondView extends ViewImp{
 		viewXY[1] = screenHeight;
 		return viewXY;
 		
+	}
+	
+	@Override
+	public void onPause() {
+		SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+				SharedPreferencesUtils.CURPAGENUM, String.valueOf(this.pageNumBean.getCurPageNum()));
+		super.onPause();
+
+	}
+	@Override
+	public void onResume() {
+		try{
+			curPageNum = Integer.parseInt(SharedPreferencesUtils.getConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+					SharedPreferencesUtils.CURPAGENUM));
+		}catch(Exception e){
+			curPageNum = 0;
+		}
+
+		super.onResume();
 	}
 	
 }

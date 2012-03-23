@@ -1,8 +1,8 @@
-listen1=第一课
-listen2=第二课
-listen3=第三课
-abc=abc
-listen4=第一课
-listen5=第二课
-listen6=第三课
-listen7=第三课
+=listen1=第一课
+=listen2=第二课
+=listen3=第三课
+=abc=abc
+=listen4=第一课
+=listen5=第二课
+=listen6=第三课
+=listen7=第三课

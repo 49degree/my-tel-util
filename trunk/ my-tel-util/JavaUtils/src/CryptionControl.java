@@ -7,6 +7,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
+import com.guanri.android.lib.utils.TypeConversion;
+
 
 
 
@@ -303,7 +305,7 @@ public class CryptionControl {
 	 * @param password
 	 * @return
 	 */
-	private byte[] decryptECB(byte[] src, byte[] password){
+	public byte[] decryptECB(byte[] src, byte[] password){
 		try {
 			//return DESCryption.discryptionECB(src, password);
 			if(src.length%8>0){//补足8字节整数倍
@@ -335,7 +337,41 @@ public class CryptionControl {
 
 
 	
+	/**
+	 * 加密工作密钥
+	 * @param workkeyInfo
+	 * @return
+	 */
+	public byte[] encryptoWorkKey(byte[] rootKey, String workkeyInfo){
+		if(workkeyInfo==null){
+			return null;
+		}
+		byte[] workkeyInfoBytes = TypeConversion.hexStringToByte(workkeyInfo);
+		if(workkeyInfoBytes.length%8>0){//补足8字节整数倍
+			byte[] temp = new byte[(workkeyInfoBytes.length/8+1)*8];
+			System.arraycopy(workkeyInfoBytes, 0, temp, 0, workkeyInfoBytes.length);
+			workkeyInfoBytes = temp;
+		}
+		workkeyInfoBytes = CryptionControl.getInstance().encryptoECB(workkeyInfoBytes, rootKey);
+		byte[] key = new byte[8];
+		if(workkeyInfoBytes.length>8){
+			System.arraycopy(workkeyInfoBytes, workkeyInfoBytes.length-8, key,0 , 8);
+		}else{
+			System.arraycopy(workkeyInfoBytes, 0, key,0, workkeyInfoBytes.length);
+		}
+		return key;
+	}
+	/**
+	 * 加密信息
+	 * @param into
+	 * @return
+	 */
+	private byte[] encryptoInfo(byte[] workKey,String into){
+		return CryptionControl.getInstance().decryptECB(TypeConversion.hexStringToByte(into), workKey);
+	}
+	
 	public static void main(String[] args){
+		/**
 		byte[] key = TypeConversion.hexStringToByte("111111111111111122222222222222223333333333333333");
 		byte[] source = ("1111111111111111CBCKey1").getBytes(); 
 		System.out.println(TypeConversion.byte2hex(source,0,source.length));
@@ -348,5 +384,26 @@ public class CryptionControl {
 		System.out.println("encryptoDesResult:"+TypeConversion.byte2hex(encryptoDesResult));
 		byte[] decryptDesResult = CryptionControl.getInstance().decryptECBKey3(encryptoDesResult,key);
 		System.out.println("decryptDesResult:"+TypeConversion.byte2hex(decryptDesResult));
+		
+		byte[] keypool=TypeConversion.hexStringToByte("D364FB15B07032B592FE0B8608B6C76E");
+		byte[] MAK=TypeConversion.hexStringToByte("08E3E55F85D716BD0000000000000000293ECBD0");
+		byte[] PIK=TypeConversion.hexStringToByte("1E857463A16D1C570C73CDBFA2003ADC9473B891");
+
+		
+		System.out.println("Result1:"+TypeConversion.byte2hex(CryptionControl.instance.decryptECBKey2(MAK, keypool)));
+		System.out.println("Result2:"+TypeConversion.byte2hex(CryptionControl.instance.encryptoCBCKey2(CryptionControl.instance.decryptCBCKey2(MAK, keypool), keypool)));
+		*/
+		byte[] rootKey = TypeConversion.hexStringToByte("DF83647F322E113D");
+		byte[] workKey = CryptionControl.instance.encryptoWorkKey(rootKey,"FSK_POS&2012-03-16");
+		
+		byte[] infos = TypeConversion.hexStringToByte("6EAE1B6231BD928B824F4EF4A8B3ABC1ED9783F3A4E72C2E5582E59BE990CA1EDE22AD864C87E34B033C4EB8B8D1878871607A2ECBB563820528639BA2C95175F18C92CE5EA19C88F7B5BD3B8228A251E48403E439F61B191DF7F1A408DB30E871EBA4E8501A15F092C3E5E4594F1F2D");
+		try{
+			System.out.println("LOG Result:"+TypeConversion.asciiToString(CryptionControl.instance.decryptECB(infos, workKey)));
+		}catch(Exception e){
+			
+		}
+		
+		
+		
 	}
 }

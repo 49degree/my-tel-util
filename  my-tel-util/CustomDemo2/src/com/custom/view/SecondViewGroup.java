@@ -70,12 +70,10 @@ public class SecondViewGroup extends LinearLayout {
 		secondViewPage.post(new Runnable() {
 			@Override
 			public void run() { 
-				if(currentScreenIndex==4){
-					final int delta = currentScreenIndex * getWidth();
-					logger.error("secondViewPage.post:"+currentScreenIndex+":delta:"+delta);
-					secondViewPage.scrollTo(delta, 0); 
-					logger.error("secondViewPage.post =============");
-				}
+				final int delta = currentScreenIndex * getWidth();
+				logger.error("secondViewPage.post:"+currentScreenIndex+":delta:"+delta);
+				secondViewPage.scrollTo(delta, 0); 
+				logger.error("secondViewPage.post =============");
 
 				onFling = true;
 			}   
@@ -124,31 +122,28 @@ public class SecondViewGroup extends LinearLayout {
 						float distanceX, float distanceY) {
 					logger.error("onScroll:"+distanceX+":"+getScrollX());
 					if(distanceX > 0 && currentScreenIndex == getChildCount() - 1){//移动过最后一页
-						if(pageNumBean.nextPageView()){
+						if(onFling&&pageNumBean.nextPageView()){
 							SecondViewGroup.this.initView();
 							onFling = false;
 							logger.error( "on scroll>>>>>>>>>>>>>>>>>向后移动<<<<<<<<<<<<<<>>>");
 						}
-						canotFling++;
+						logger.error( "on scroll22>>>>>>>>>>>>>>>>>向后移动<<<<<<<<<<<<<<>>>");
+						
 					}else if(distanceX < 0 && getScrollX() <= 0){//向第一页之前移动
 						logger.error( "on scrol11l>>>>>>>>>>>>>>>>>向前移动<<<<<<<<<<<<<<>>>");
 
-						if(pageNumBean.prePageView()){
+						if(onFling&&pageNumBean.prePageView()){
 							logger.error( "on scroll22>>>>>>>>>>>>>>>>>向前移动<<<<<<<<<<<<<<>>>");
 							pageNumBean.setCurPageNum(pageNumBean.getEndPageNum());
 							SecondViewGroup.this.initView();
 							onFling = false;
 							//pageNumView.initPageNumView();
 							logger.error( "on scroll33>>>>>>>>>>>>>>>>>向前移动<<<<<<<<<<<<<<>>>");
-							//return false;
 						}
-						canotFling++;
-						
 					}else if ((distanceX > 0 && currentScreenIndex < getChildCount() - 1)// 防止移动过最后一页
 							|| (distanceX < 0 && getScrollX() > 0)) {// 防止向第一页之前移动
+						logger.error( "on scroll11>>>>>>>>>>>>>>>>>防止向第一页之前移动<<<<<<<<<<<<<<>>>++++++++:"+canotFling);
 						scrollBy((int) distanceX, 0);
-						logger.error( "on scroll>>>>>>>>>>>>>>>>>防止向第一页之前移动<<<<<<<<<<<<<<>>>");
-						canotFling = 0;
 						onFling = true;
 					}
 					
@@ -252,8 +247,6 @@ public class SecondViewGroup extends LinearLayout {
 		public void scrollToScreen(int whichScreen) {
 			if(!onFling)
 				return;
-			if(canotFling!=0)
-				return;
 			if (getFocusedChild() != null && whichScreen != currentScreenIndex
 					&& getFocusedChild() == getChildAt(currentScreenIndex)) {
 				getFocusedChild().clearFocus();
@@ -261,8 +254,9 @@ public class SecondViewGroup extends LinearLayout {
 
 			final int delta = whichScreen * getWidth() - getScrollX();
 			logger.error("scrollToScreen:"+whichScreen+":delta:"+delta);
-			
-
+			if(Math.abs(delta)>screenWidth){
+				return;
+			}
 			scroller.startScroll(getScrollX(), 0, delta, 0, 200);
 			invalidate();
 			if(currentScreenIndex>whichScreen&&pageNumBean.prePageNum()){

@@ -129,6 +129,8 @@ public class BackgroundLinearLayout extends LinearLayout{
 			 isFirstLayout = false;
 		}
 		child = getChildAt(0);
+		if(child==null)
+			return;
 		
 		//Log.e(TAG,"view:"+this.getWidth()+"view:"+this.getHeight()+"left:"+left+"left:"+left+"top:"+top+"right:"+right+"bottom:"+bottom+"childgetWidth:"+child.getWidth()+"childgetHeight:"+child.getHeight());
 		

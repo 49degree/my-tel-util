@@ -3,6 +3,7 @@ package com.custom.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,7 +46,9 @@ public class ScanFoldUtils {
 			BufferedReader  fin = new BufferedReader(new InputStreamReader(assetManager.open(foldPath+"/"+Constant.mapFileName)));
 			String line = fin.readLine();
 			while(line!=null){
-				logger.error(line+":"+line.substring(0,line.indexOf("="))+":"+line.substring(line.indexOf("=")+1));
+				//logger.error(line);
+				line = line.substring(line.indexOf('=')+1);
+				//logger.error(line+":"+line.substring(0,line.indexOf("="))+":"+line.substring(line.indexOf("=")+1));
 				if(line.indexOf("=")>0){
 					btnInfo.put(line.substring(0,line.indexOf("=")), line.substring(line.indexOf("=")+1));
 				}
@@ -57,7 +60,7 @@ public class ScanFoldUtils {
 			
 			for(int i=0;i<lists.length;i++){
 				ResourceBean res = null;
-				logger.error(lists[i]);
+				//logger.error(lists[i]);
 				String btnName = null;
 				if(lists[i].indexOf(".")<0){//为目录，判断是二级目录还是资源目录
 					List<ResourceBean.ResourceRaws> raws = null;
@@ -95,13 +98,16 @@ public class ScanFoldUtils {
 					bgDirtype = DirType.assets;
 					//bgtype = BgType.swf;
 				}else if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){//按钮图片
+					//logger.error("btn begin:"+btnName+":");
+					//logger.error("btn begin:"+Arrays.toString(btnInfo.entrySet().toArray()));
 					if(!btnInfo.containsKey(btnName))//判断是否为当前目录需要的资源
 						continue;
 					if(resourceInfo.containsKey(btnName)){
 						res = resourceInfo.get(btnName);
 					}else{
 						res = new ResourceBean();
-					}	
+					}
+					//logger.error("ResourceBean:"+btnName+":");
 					res.setBtnKey(btnName);//按钮标示
 					res.setBtnPic(foldPath+"/"+lists[i]);//按钮背景图片路径
 					res.setName(btnInfo.get(btnName));//按钮对应下面显示的字符
@@ -114,7 +120,7 @@ public class ScanFoldUtils {
 						res.setRaws(raws);
 					}
 					resourceInfo.put(btnName, res);
-					logger.error("btn:"+btnName+":"+res.getBtnPic());
+					//logger.error("btn end:"+btnName+":"+res.getBtnPic());
 				}
 			}
 		}catch(Exception e){
@@ -173,7 +179,7 @@ public class ScanFoldUtils {
 				if(!btnKey.equals(btnName)){
 					continue;
 				}
-				logger.error(btnName);
+				//logger.error(btnName);
 				ResourceBean.ResourceType type = null;
 				if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
 					type = ResourceBean.ResourceType.pic;
@@ -185,7 +191,7 @@ public class ScanFoldUtils {
 				if(type!=null){
 					raws = new ArrayList<ResourceBean.ResourceRaws>();
 					raws.add(new ResourceBean.ResourceRaws(this.foldPath+"/"+Constant.resourceFold+"/"+lists[i], type));
-					logger.error(this.foldPath+"/"+Constant.resourceFold+"/"+lists[i]+":"+btnKey);
+					//logger.error(this.foldPath+"/"+Constant.resourceFold+"/"+lists[i]+":"+btnKey);
 					break;
 				}
 			}

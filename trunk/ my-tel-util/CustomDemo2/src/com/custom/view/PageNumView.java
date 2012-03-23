@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -80,23 +87,40 @@ public class PageNumView extends AbsoluteLayout{
 			Display display = manage.getDefaultDisplay();
 			screenHeight = display.getHeight();
 			screenWidth = display.getWidth();
+			Bitmap pageNum = null;
 			
+            Paint p = new Paint();                                                                 
+            String familyName ="宋体";                                                             
+            Typeface font = Typeface.create(familyName,Typeface.BOLD);                             
+            p.setColor(Color.RED);                                                                 
+            p.setTypeface(font);                                                                   
+            p.setTextSize(30);  
+            Bitmap pageNum1 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/pageNum2.png", DirType.assets);
+            Bitmap pageNum2 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/pageNum1.png", DirType.assets);
+            
 			for(int i=pageNumBean.getStartPageNum();i<=pageNumBean.getEndPageNum();i++){
 				logger.error("beginX:"+i+":"+pageNumBean.getCurPageNum());
 				AbsoluteLayout.LayoutParams layout = null;
 				ImageView imageView = new ImageView(context);
 				if(i==pageNumBean.getCurPageNum()){
-					Bitmap pageNum2 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/pageNum2.png", DirType.assets);
-					imageView.setImageBitmap(pageNum2);
-					layout = new AbsoluteLayout.LayoutParams(
-							pageNum2.getWidth(), pageNum2.getHeight(), beginX+i%pageNumBean.getPageNumPerView()*60, beginY+20);
-				}else{
-					Bitmap pageNum1 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/pageNum1.png", DirType.assets);
-					imageView.setImageBitmap(pageNum1);
-					layout = new AbsoluteLayout.LayoutParams(
-							pageNum1.getWidth(), pageNum1.getHeight(), beginX+i%pageNumBean.getPageNumPerView()*60, beginY+20);
-				}
+					pageNum = pageNum1;
 
+				}else{
+					pageNum = pageNum2;
+				}
+				if(pageNum!=null){
+					//imageView.setImageBitmap(pageNum);
+					layout = new AbsoluteLayout.LayoutParams(
+							pageNum.getWidth(), pageNum.getHeight(), beginX+i%pageNumBean.getPageNumPerView()*60, beginY+20);
+					Bitmap newb = Bitmap.createBitmap( pageNum.getWidth(), pageNum.getHeight(), Config.ARGB_8888 );  
+		            Canvas canvasTemp = new Canvas( newb );  
+		            canvasTemp.drawColor(Color.TRANSPARENT);    
+		            canvasTemp.drawBitmap(pageNum, 0, 0, p);//画图
+		            canvasTemp.drawText(String.valueOf(i+1), pageNum.getWidth()/3, pageNum.getHeight(), p); 
+		            imageView.setImageBitmap(newb);
+					
+					
+				}
 				imageView.setLayoutParams(layout);
 				this.addView(imageView);
 				pageNumViews.add(imageView);
@@ -104,7 +128,7 @@ public class PageNumView extends AbsoluteLayout{
 			//上行翻页按钮
 			try{
 				ImageView imageView = new ImageView(context);
-				Bitmap pageNum1 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/nextunit.png", DirType.assets);
+				pageNum1 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/nextunit.png", DirType.assets);
 				imageView.setImageBitmap(pageNum1);
 				AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(
 						200, 100, screenWidth-160,150);
@@ -117,7 +141,7 @@ public class PageNumView extends AbsoluteLayout{
 				});
 				
 				ImageView imageView2 = new ImageView(context);
-				Bitmap pageNum2 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/upunit.png", DirType.assets);
+				pageNum2 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/upunit.png", DirType.assets);
 				imageView2.setImageBitmap(pageNum2);
 				AbsoluteLayout.LayoutParams layout2 = new AbsoluteLayout.LayoutParams(
 						200, 100, screenWidth-200,210);

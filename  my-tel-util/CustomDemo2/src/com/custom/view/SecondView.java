@@ -110,8 +110,11 @@ public class SecondView extends ViewImp{
 	
 	@Override
 	public void onPause() {
-		SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
-				SharedPreferencesUtils.CURPAGENUM, String.valueOf(this.pageNumBean.getCurPageNum()));
+		if(this.pageNumBean!=null){
+			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+					SharedPreferencesUtils.CURPAGENUM, String.valueOf(this.pageNumBean.getCurPageNum()));	
+		}
+		
 		super.onPause();
 
 	}

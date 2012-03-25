@@ -290,7 +290,7 @@ public class SecondViewGroup extends LinearLayout {
 					ResourceBean resourceBean = resourceInfo.get(i).getValue();
 					IndexImageButtonImp imageView = null;
 					setXY(resourceBean,i);
-					imageView = new IndexImagePicButton(context,null,resourceBean);
+					imageView = new IndexImagePicButton(context,null,resourceBean,true);
 					pageLayout.addView(imageView);
 				}
 			}

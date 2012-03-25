@@ -32,7 +32,11 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 	private GestureDetector gestureDetector=null;
 	private BackgroundLinearLayout scrollView = null;
 	public IndexImagePicButton(Context context,BackgroundLinearLayout scrollView,ResourceBean resourceBean) {
-		super(context,resourceBean);
+		this(context,scrollView,resourceBean,false);
+	}
+	
+	public IndexImagePicButton(Context context,BackgroundLinearLayout scrollView,ResourceBean resourceBean,boolean hasFrame) {
+		super(context,resourceBean,hasFrame);
 		this.scrollView = scrollView;
 		initView();
 	}
@@ -79,8 +83,6 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 					return false;
 				}
 			case MotionEvent.ACTION_UP:
-
-				
 				onBackGroundTouchEvent(event);
 				endTouchX = (int)event.getX();
 				endTouchY = (int)event.getY();
@@ -89,7 +91,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 				//Log.e(TAG,"endTime-startTime22:"+(endTime-startTime)+":distance:"+distance);
 				if(endTime-startTime<500&&endTime-startTime>50&&distance<50){
 					Toast.makeText(context, "单击事件", Toast.LENGTH_SHORT).show();
-					this.setBackgroundColor(0);
+					
 					try{
 						Thread.sleep(200);	
 					}catch(Exception e){
@@ -98,6 +100,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 					super.onClick(this);
 				}
 				this.setBackgroundColor(0);
+				setBackground();
 			default:
 				break;
 			}

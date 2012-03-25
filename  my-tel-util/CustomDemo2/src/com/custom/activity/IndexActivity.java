@@ -35,7 +35,7 @@ public class IndexActivity  extends Activity {
 		if(bundle==null||bundle.get(Constant.foldPath)==null){
 			v = new IndexView(this,Constant.path,Constant.fistFoldDepth);
 			setContentView(v);
-			MainApplication.getInstance().setScreenW2H(this);
+			//MainApplication.getInstance().setScreenW2H(this);
 		}else{
 			try{
 				String foldPath = bundle.getString(Constant.foldPath);
@@ -59,6 +59,12 @@ public class IndexActivity  extends Activity {
 		}
 	}
 	
+	@Override
+	public void onStart() {
+		Log.e(TAG, "onStart");
+		super.onStart();
+		v.onStart();
+	}
     @Override
     public void onResume(){
     	Log.e(TAG, "onResume");
@@ -72,5 +78,18 @@ public class IndexActivity  extends Activity {
     	Log.e(TAG, "onPause");
     	v.onPause();
     	super.onPause();
+    }
+    @Override
+    public void onStop(){
+    	Log.e(TAG, "onStop");
+    	super.onStop();
+    	v.onStop();
+    }
+    @Override
+    public void onDestroy(){
+    	Log.e(TAG, "onDestroy");
+    	v.onDestroy();
+    	super.onDestroy();
+    	
     }
 }

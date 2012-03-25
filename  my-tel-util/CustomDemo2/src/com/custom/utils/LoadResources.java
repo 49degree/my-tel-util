@@ -1,6 +1,7 @@
 package com.custom.utils;
 
-import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,13 +20,15 @@ public class LoadResources {
 		InputStream in = null;
 		try{
 			if(dirType==DirType.assets){
-				String fileName = "bitMapPic.png";
-				try{
-					//复制文件
-					LoadResources.saveToTempFile(context, filePath, dirType, fileName);
-				}catch(Exception e){
-					e.printStackTrace();
-				}
+//				String fileName = "bitMapPic.png";
+//				try{
+//					//复制文件
+//					LoadResources.saveToTempFile(context, filePath, dirType, fileName);
+//				}catch(Exception e){
+//					e.printStackTrace();
+//				}
+//				Bitmap bm= BitmapFactory.decodeFile(context.getFilesDir()+File.separator+fileName);
+//				return bm;	
 //				
 //				in = new FileInputStream(new File(context.getFilesDir()+File.separator+fileName));
 //                
@@ -34,19 +37,22 @@ public class LoadResources {
 				//bitmapOptions.inTempStorage=new byte[12 * 1024];
 //				AssetManager assetManager = context.getAssets();
 //				in= assetManager.open(filePath);
-				Bitmap bm= BitmapFactory.decodeFile(context.getFilesDir()+File.separator+fileName);
-				return bm;		
-//				byte[] buffer = LoadResources.loadFile(context, filePath, dirType);
-//				if(buffer!=null){
-//					logger.error("bm:"+buffer.length+":"+960*540);
-//					BitmapFactory.Options opts = new BitmapFactory.Options();
-//					//设置inJustDecodeBounds为 true后，decodeFile并不分配空间，但可计算出原始图片的长度和宽度，即opts.width和opts.height
-//					//opts.inJustDecodeBounds = true;
-//					Bitmap bm = BitmapFactory.decodeStream(new BufferedInputStream(new ByteArrayInputStream(buffer)));
-//					logger.error("bm:"+bm.getWidth()+":"+bm.getHeight());
-//					
-//					return bm;
-//				}
+//				Bitmap bm= BitmapFactory.decodeFile(context.getFilesDir()+File.separator+fileName);
+//				return bm;		
+				byte[] buffer = LoadResources.loadFile(context, filePath, dirType);
+				if(buffer!=null){
+					//logger.error("bm:"+buffer.length+":"+960*540);
+					BitmapFactory.Options opts = new BitmapFactory.Options();
+					//设置inJustDecodeBounds为 true后，decodeFile并不分配空间，但可计算出原始图片的长度和宽度，即opts.width和opts.height
+					//opts.inJustDecodeBounds = true;
+//					if(buffer.length>40000){
+//						opts.inSampleSize = 2;
+//					}
+					Bitmap bm = BitmapFactory.decodeStream(new BufferedInputStream(new ByteArrayInputStream(buffer)),null,opts);
+					//logger.error("bm:"+bm.getWidth()+":"+bm.getHeight());
+					
+					return bm;
+				}
 
 				//设置堆内存
 //				int CWJ_HEAP_SIZE = 6* 1024* 1024 ; 

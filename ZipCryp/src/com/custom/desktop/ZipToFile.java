@@ -149,7 +149,7 @@ public class ZipToFile {
 	 * 
 	 * @throws Exception
 	 */
-	public static void upZipFile(String zipFile,String unZipDir,boolean decrypt) throws Exception {
+	public void upZipFile(String zipFile,String unZipDir,boolean decrypt) throws Exception {
 
 		
 		ZipFile zfile = new ZipFile(zipFile);
@@ -160,6 +160,10 @@ public class ZipToFile {
 		int readLen = 0;
 		while (zList.hasMoreElements()) {
 			ze = (ZipEntry) zList.nextElement();
+			
+			if(stopZipFile){//如果停止了，则退出
+				break;
+			}
 			
 			if (ze.isDirectory()) {
 				File f = new File(unZipDir + ze.getName());

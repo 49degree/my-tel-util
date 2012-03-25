@@ -1,13 +1,13 @@
 package com.custom.view;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,7 +25,9 @@ import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
+import com.custom.utils.MondifyIndexImageIndex;
 import com.custom.utils.ScanFoldUtils;
+import com.custom.utils.Constant.BgType;
 import com.custom.utils.Constant.DirType;
 
 public abstract class ViewImp extends FrameLayout{
@@ -39,6 +41,7 @@ public abstract class ViewImp extends FrameLayout{
 	protected WindowManager wm = null;
 	protected int foldDepth = Constant.fistFoldDepth;
 	protected ScanFoldUtils scanFoldUtils = null;
+	protected static HashMap<String,Bitmap> buttonBitMap = new HashMap<String,Bitmap>();
 
 	public ViewImp(Context context,String foldPath,int foldDepth){
         super(context);
@@ -51,12 +54,13 @@ public abstract class ViewImp extends FrameLayout{
         super(context, attr);
         this.context = context;
         this.foldPath = foldPath; 
-        this.foldDepth = foldDepth;  
+        this.foldDepth = foldDepth;
 	}
 
 	public ViewImp(Context context, ScanFoldUtils scanFoldUtils){
         super(context);
         this.scanFoldUtils = scanFoldUtils;
+
 	}
 
 	/**
@@ -104,20 +108,49 @@ public abstract class ViewImp extends FrameLayout{
 		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
 			wm.removeView(mLayout);
 		}
-//		if(bm!=null&&!bm.isRecycled())
-//			bm.recycle();
+
 	}
 
+	public void onStart() {
+		logger.error("onStart");
+	}
+	
+	
 	public void onResume() {
 		logger.error("onResume");
 		if (mWebView != null) {
 			mWebView.resumeTimers();
 			callHiddenWebViewMethod("onResume");
 		}
+		//
 		initView();
 	}
 
+	public void onStop(){
+		logger.error("onStop");
+	}
 	
+	public void onDestroy(){
+		logger.equals("onDestroy");
+		if(bm!=null&&!bm.isRecycled()){
+			logger.error("onDestroy:"+bm.hashCode());
+			bm.recycle();
+		}
+		bm = null;
+		if(scanFoldUtils!=null){
+			Iterator it = scanFoldUtils.resourceInfo.keySet().iterator();
+			while(it.hasNext()){
+				ResourceBean resourceBean = scanFoldUtils.resourceInfo.get(it.next());
+				
+				if(resourceBean.getBm()!=null&&!resourceBean.getBm().isRecycled()){
+					logger.error("onDestroy resourceBean:"+resourceBean.getBm().hashCode());
+					resourceBean.getBm().recycle();
+				}
+			}
+		}
+		scanFoldUtils = null;
+		
+	}
 	/**
 	 * 构建界面
 	 */
@@ -143,8 +176,11 @@ public abstract class ViewImp extends FrameLayout{
 //				AssetManager assetManager = context.getAssets();
 //				logger.error(scanFoldUtils.bgPic);
 //				InputStream in = assetManager.open(scanFoldUtils.bgPic);
-
-				bm = LoadResources.loadBitmap(context, scanFoldUtils.bgPic, DirType.assets);
+				if(bm==null){
+					bm = LoadResources.loadBitmap(context, scanFoldUtils.bgPic, DirType.assets);	
+				}
+				
+				logger.error(scanFoldUtils.bgPic+":"+bm.hashCode());
 				//in.close();
 				
 				int[] viewXY = calBackGroudView(bm);
@@ -201,6 +237,7 @@ public abstract class ViewImp extends FrameLayout{
 				mLayout = new AbsoluteLayout(context);
 				createView(mLayout);
 			}
+			logger.error("createIndexButton");
 			this.createIndexButton();
 		}catch(Exception e){
 			e.printStackTrace();

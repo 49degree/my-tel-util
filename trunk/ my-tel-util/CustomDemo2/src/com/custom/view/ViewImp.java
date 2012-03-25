@@ -1,9 +1,13 @@
 package com.custom.view;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
@@ -100,7 +104,8 @@ public abstract class ViewImp extends FrameLayout{
 		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
 			wm.removeView(mLayout);
 		}
-
+//		if(bm!=null&&!bm.isRecycled())
+//			bm.recycle();
 	}
 
 	public void onResume() {
@@ -116,7 +121,7 @@ public abstract class ViewImp extends FrameLayout{
 	/**
 	 * 构建界面
 	 */
-	
+	Bitmap bm = null;
 	protected void initView(){
 		try {
 			/**
@@ -138,8 +143,10 @@ public abstract class ViewImp extends FrameLayout{
 //				AssetManager assetManager = context.getAssets();
 //				logger.error(scanFoldUtils.bgPic);
 //				InputStream in = assetManager.open(scanFoldUtils.bgPic);
-				Bitmap bm = LoadResources.loadBitmap(context, scanFoldUtils.bgPic, DirType.assets);
+
+				bm = LoadResources.loadBitmap(context, scanFoldUtils.bgPic, DirType.assets);
 				//in.close();
+				
 				int[] viewXY = calBackGroudView(bm);
 				// 设置主布局
 				mLayout = new AbsoluteLayout(context);
@@ -147,10 +154,12 @@ public abstract class ViewImp extends FrameLayout{
 						viewXY[0], viewXY[1]);
 				mLayout.setLayoutParams(mLayoutParams);
 				mLayout.setBackgroundDrawable(new BitmapDrawable(bm));
+				
 				// 使背景获取焦点，焦点不要默认在输入框
 				scrollView.setFocusable(true);
 				scrollView.setFocusableInTouchMode(true);
 				scrollView.addView(mLayout);
+				
 
 			}else if(scanFoldUtils.bgtype == Constant.BgType.swf){
 				if(mWebView==null){
@@ -161,6 +170,13 @@ public abstract class ViewImp extends FrameLayout{
 					mWebView.getSettings().setJavaScriptEnabled(true);
 					mWebView.getSettings().setPluginsEnabled(true);
 					
+					final String fileName = "background.swf";//复制文件
+					try{
+						//复制文件
+						LoadResources.saveToTempFile(context, scanFoldUtils.bgPic, scanFoldUtils.bgDirtype, fileName);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
 					mWebView.setWebViewClient(new WebViewClient() {
 						public boolean shouldOverrideUrlLoading(WebView view, String url) {
 							view.loadUrl(url);
@@ -170,18 +186,19 @@ public abstract class ViewImp extends FrameLayout{
 						@Override
 						public void onPageFinished(final WebView webView, String url) {
 							try {
-								mWebView.loadUrl("javascript:showgame('"+scanFoldUtils.bgPic+"')");
+								mWebView.loadUrl("javascript:showgame('"+context.getFilesDir()+File.separator+fileName+"')");
 							} catch (Exception e) {
 							}
 						}
 					});
+					
+
+					
 					mWebView.loadUrl(Constant.swfView);
-					//mWebView.loadUrl("file:///android_asset/index.htm");
 					this.addView(mWebView);
 				}
 				// 设置主布局
 				mLayout = new AbsoluteLayout(context);
-				//mLayout.setBackgroundColor(Color.RED);
 				createView(mLayout);
 			}
 			this.createIndexButton();

@@ -1,9 +1,10 @@
 package com.custom.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,22 +43,22 @@ public class ScanFoldUtils {
 		btnInfo = new HashMap<String,String>();
 		resourceInfo = new HashMap<String,ResourceBean>();
 		try{
-			AssetManager assetManager = context.getAssets();
-			BufferedReader  fin = new BufferedReader(new InputStreamReader(assetManager.open(foldPath+"/"+Constant.mapFileName)));
+			//读取配置文件
+			byte[] buf = LoadResources.loadFile(context, foldPath+"/"+Constant.mapFileName, DirType.assets);
+			BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
 			String line = fin.readLine();
 			while(line!=null){
-				//logger.error(line);
+				logger.error(line);
 				line = line.substring(line.indexOf('=')+1);
 				//logger.error(line+":"+line.substring(0,line.indexOf("="))+":"+line.substring(line.indexOf("=")+1));
 				if(line.indexOf("=")>0){
-					btnInfo.put(line.substring(0,line.indexOf("=")), line.substring(line.indexOf("=")+1));
+					btnInfo.put(line.substring(0,line.indexOf("=")), line.substring(line.indexOf("=")+1).trim());
 				}
 				line = fin.readLine();
 			}
 			
+			AssetManager assetManager = context.getAssets();
 			String[] lists = assetManager.list(foldPath);
-			
-			
 			for(int i=0;i<lists.length;i++){
 				ResourceBean res = null;
 				//logger.error(lists[i]);

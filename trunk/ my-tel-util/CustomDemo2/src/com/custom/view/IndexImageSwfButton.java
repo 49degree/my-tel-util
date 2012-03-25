@@ -27,10 +27,17 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
     private float y;
 	
 	public IndexImageSwfButton(Context context,AbsoluteLayout mLayout,ResourceBean resourceBean) {
-		super(context,resourceBean);
+		this(context, mLayout, resourceBean, false);
+	}
+	
+	public IndexImageSwfButton(Context context,AbsoluteLayout mLayout,ResourceBean resourceBean,boolean hasFrame) {
+		super(context,resourceBean,hasFrame);
 		this.mLayout = mLayout;
 		initView();
 	}
+	
+
+	
 	
 
 	@Override

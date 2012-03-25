@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -25,7 +26,9 @@ import com.custom.R;
 import com.custom.activity.IndexActivity;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
+import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
+import com.custom.utils.Constant.DirType;
 
 public abstract class IndexImageButtonImp extends LinearLayout implements OnClickListener{
 	private static final String TAG = "IndexImageButtonImp";
@@ -36,12 +39,14 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 	protected Bitmap bm=null;
 	protected int bmWidth = 0;
 	protected int bmHeight = 0;
-	
+	protected static BitmapDrawable frame = null;
+	protected boolean hasFrame = false;
 
-	public IndexImageButtonImp(Context context,ResourceBean resourceBean) {
+	public IndexImageButtonImp(Context context,ResourceBean resourceBean,boolean hasFrame) {
 		super(context);
 		this.context = context;
 		this.resourceBean = resourceBean;
+		this.hasFrame = hasFrame;
 		try{
 			imageCanMove = Boolean.parseBoolean(context.getString(R.string.modify_index));
 		}catch(Exception e){
@@ -49,8 +54,28 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		}
 	}  
 	
-	protected void initView() {
+	
+	public IndexImageButtonImp(Context context,ResourceBean resourceBean) {
+		this(context, resourceBean, false);
+	}  
+	
+	protected void setBackground(){
 		try{
+			if(hasFrame){
+				if(frame==null){
+					frame = new BitmapDrawable(LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/frame.png", DirType.assets));
+				}
+				this.setBackgroundDrawable(frame);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	protected void initView() {
+
+		try{
+			setBackground();
 			bm = resourceBean.getBm();//LoadResources.loadBitmap(context, resourceBean.getBtnPic(), resourceBean.getDirType());
 		}catch(Exception e){
 			e.printStackTrace();
@@ -140,27 +165,13 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		}
 		try{
 			//复制文件
-			try{
-				context.deleteFile(fileName);
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_WORLD_READABLE);
-			AssetManager assetManager = context.getAssets();
-			InputStream in = assetManager.open(path);
-			byte[] buffer = new byte[10240];
-			int len = in.read(buffer);
-			while(len>0){
-				fos.write(buffer, 0, len);
-				fos.flush();
-				len = in.read(buffer);
-			}
-			fos.close();
-			in.close();
+			if(LoadResources.saveToTempFile(context, path, resourceBean.getDirType(), fileName))
 			context.startActivity(intent);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		
+		this.setBackground();
 
 	}
 	

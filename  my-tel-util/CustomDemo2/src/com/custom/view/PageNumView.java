@@ -173,7 +173,7 @@ public class PageNumView extends AbsoluteLayout{
 
             
 			for(int i=pageNumBean.getStartPageNum();i<=pageNumBean.getEndPageNum();i++){
-				logger.error("beginX:"+i+":"+pageNumBean.getCurPageNum());
+				//logger.error("beginX:"+i+":"+pageNumBean.getCurPageNum());
 				AbsoluteLayout.LayoutParams layout = null;
 				ImageView imageView = new ImageView(context);
 				if(i==pageNumBean.getCurPageNum()){

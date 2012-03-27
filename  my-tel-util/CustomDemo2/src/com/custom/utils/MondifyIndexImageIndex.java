@@ -1,23 +1,35 @@
 package com.custom.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.os.Environment;
 
 
 public class MondifyIndexImageIndex {
 	private static final Logger logger = Logger.getLogger(MondifyIndexImageIndex.class);
 	private static HashMap<String,int[]> imageIndexs = new HashMap<String,int[]>();
-	public static void initImageIndexs(Context context){
+	public static void initImageIndexs(Context context,boolean imageCanMove){
 		try{
-			String filePath = context.getFilesDir()+"/"+Constant.imageIndexFileName;
-			BufferedReader  fin = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+			String filePath = Constant.path+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
+			InputStream in = null;
+			if(imageCanMove){
+				filePath = Environment.getExternalStorageDirectory()+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
+				in = new FileInputStream(filePath);
+			}else{
+				AssetManager am = context.getAssets();
+				in = am.open(filePath);
+			}
+			BufferedReader  fin = new BufferedReader(new InputStreamReader(in));
 			String line = fin.readLine();
 			while(line!=null){
 				logger.error(line.substring(0,line.indexOf("="))+":"+line.substring(line.indexOf("=")+1));
@@ -45,12 +57,12 @@ public class MondifyIndexImageIndex {
 	}
 	public static void modifyImageIndexs(Context context){
 		try{
-			String filePath = context.getFilesDir()+"/"+Constant.imageIndexFileName;
+			String filePath = Environment.getExternalStorageDirectory()+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
 			//清空文件
 			RandomAccessFile   raf   =   new   RandomAccessFile(filePath,   "rw"); 
 			raf.setLength(0); 
 			raf.close(); 
-			FileOutputStream fos = context.openFileOutput(Constant.imageIndexFileName, Context.MODE_WORLD_READABLE);
+			FileOutputStream fos = new FileOutputStream(new File(filePath));
 			
 			
 			Iterator it = imageIndexs.keySet().iterator();

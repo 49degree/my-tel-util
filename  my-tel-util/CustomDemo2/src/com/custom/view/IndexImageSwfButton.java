@@ -37,9 +37,6 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
 	}
 	
 
-	
-	
-
 	@Override
 	protected void initView() {
 		this.setOnClickListener(this);

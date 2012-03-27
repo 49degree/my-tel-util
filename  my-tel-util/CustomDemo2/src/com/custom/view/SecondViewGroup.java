@@ -284,7 +284,7 @@ public class SecondViewGroup extends LinearLayout {
 				pageLayout.setLayoutParams(pageLayoutParams);
 				this.addView(pageLayout);
 				int[] index = pageNumBean.getButtonIndexbyPageNum(pageNum);
-				logger.error("index:"+Arrays.toString(index)+":"+pageNumBean.getButtonCount());
+				//logger.error("index:"+Arrays.toString(index)+":"+pageNumBean.getButtonCount());
 				
 				for(int i=index[0];i<=index[1];i++){
 					ResourceBean resourceBean = resourceInfo.get(i).getValue();

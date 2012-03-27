@@ -60,6 +60,13 @@ public class IndexActivity  extends Activity {
 	}
 	
 	@Override
+	public void onRestart() {
+		Log.e(TAG, "onStart");
+		super.onRestart();
+		v.onRestart();
+	}
+	
+	@Override
 	public void onStart() {
 		Log.e(TAG, "onStart");
 		super.onStart();

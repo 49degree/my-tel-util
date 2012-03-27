@@ -37,8 +37,37 @@ public class ScanFoldUtils {
 		this.context = context;
 		this.foldPath = foldPath;
 		this.foldDepth = foldDepth; 
-		queryRes();
+		queryBackGround();
 	}
+	
+	public void queryBackGround(){
+		try{
+			AssetManager assetManager = context.getAssets();
+			String[] lists = assetManager.list(foldPath);
+			String btnName = null;
+			for(int i=0;i<lists.length;i++){
+				ResourceBean res = null;
+				//logger.error(lists[i]);
+				btnName = lists[i].substring(0,lists[i].indexOf("."));
+				if(Constant.bgPicName.equals(btnName.toUpperCase())){
+					//是背景图片
+					if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
+						bgtype = BgType.pic;
+					}else if(Constant.swfType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
+						bgtype = BgType.swf;
+					}	
+					bgPic = foldPath+"/"+lists[i];//背景路径
+					bgDirtype = DirType.assets;
+				}
+			}
+		}catch(Exception e){
+			
+		}
+
+
+	}
+	
+	
 	public void queryRes(){
 		btnInfo = new HashMap<String,String>();
 		resourceInfo = new HashMap<String,ResourceBean>();
@@ -48,7 +77,7 @@ public class ScanFoldUtils {
 			BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
 			String line = fin.readLine();
 			while(line!=null){
-				logger.error(line);
+				//logger.error(line);
 				line = line.substring(line.indexOf('=')+1);
 				//logger.error(line+":"+line.substring(0,line.indexOf("="))+":"+line.substring(line.indexOf("=")+1));
 				if(line.indexOf("=")>0){
@@ -89,15 +118,8 @@ public class ScanFoldUtils {
 				
 				btnName = lists[i].substring(0,lists[i].indexOf("."));
 				if(Constant.bgPicName.equals(btnName.toUpperCase())){
-					//是背景图片
-					if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
-						bgtype = BgType.pic;
-					}else if(Constant.swfType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
-						bgtype = BgType.swf;
-					}	
-					bgPic = foldPath+"/"+lists[i];//背景路径
-					bgDirtype = DirType.assets;
-					//bgtype = BgType.swf;
+					//是背景图片在queryBackGround()方法中已经处理
+					
 				}else if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){//按钮图片
 					//logger.error("btn begin:"+btnName+":");
 					//logger.error("btn begin:"+Arrays.toString(btnInfo.entrySet().toArray()));
@@ -142,7 +164,7 @@ public class ScanFoldUtils {
 				}
 				String btnName = lists[i].substring(0,lists[i].indexOf("."));
 				
-				logger.error(btnName);
+				//logger.error(btnName);
 				ResourceBean.ResourceType type = null;
 				if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
 					type = ResourceBean.ResourceType.pic;

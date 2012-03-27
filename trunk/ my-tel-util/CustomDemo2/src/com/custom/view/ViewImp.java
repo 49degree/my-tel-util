@@ -3,16 +3,21 @@ package com.custom.view;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -25,9 +30,7 @@ import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
-import com.custom.utils.MondifyIndexImageIndex;
 import com.custom.utils.ScanFoldUtils;
-import com.custom.utils.Constant.BgType;
 import com.custom.utils.Constant.DirType;
 
 public abstract class ViewImp extends FrameLayout{
@@ -42,12 +45,13 @@ public abstract class ViewImp extends FrameLayout{
 	protected int foldDepth = Constant.fistFoldDepth;
 	protected ScanFoldUtils scanFoldUtils = null;
 	protected static HashMap<String,Bitmap> buttonBitMap = new HashMap<String,Bitmap>();
+	protected int screenHeight = 0;
+	protected int screenWidth = 0;
+	protected Bitmap bm = null;
+	protected ProgressDialog progress = null; 
 
 	public ViewImp(Context context,String foldPath,int foldDepth){
-        super(context);
-        this.context = context;
-        this.foldPath = foldPath; 
-        this.foldDepth = foldDepth;
+        this(context,null,foldPath,foldDepth);
 	}
 	
 	public ViewImp(Context context, AttributeSet attr,String foldPath,int foldDepth){
@@ -55,11 +59,21 @@ public abstract class ViewImp extends FrameLayout{
         this.context = context;
         this.foldPath = foldPath; 
         this.foldDepth = foldDepth;
+        
+		WindowManager manage = ((Activity)context).getWindowManager();
+		Display display = manage.getDefaultDisplay();
+		screenHeight = display.getHeight();
+		screenWidth = display.getWidth();
 	}
 
 	public ViewImp(Context context, ScanFoldUtils scanFoldUtils){
         super(context);
         this.scanFoldUtils = scanFoldUtils;
+        
+		WindowManager manage = ((Activity)context).getWindowManager();
+		Display display = manage.getDefaultDisplay();
+		screenHeight = display.getHeight();
+		screenWidth = display.getWidth();
 
 	}
 
@@ -97,65 +111,124 @@ public abstract class ViewImp extends FrameLayout{
 
 		}
 	}
-	
 
-	public void onPause() {
-		logger.error("onPause");
-		if (mWebView != null) {
-			mWebView.pauseTimers();
-			callHiddenWebViewMethod("onPause");
-		}
-		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
-			wm.removeView(mLayout);
-		}
-
+	protected boolean isRestart = false;
+	public void onRestart(){
+		isRestart = true;
 	}
-
+	
 	public void onStart() {
 		logger.error("onStart");
+		if(!isRestart){
+			progress = ProgressDialog.show(context, "请稍候", "正在加载资源....");
+			initBackground();
+			new LoadResAsyncTask().execute(scanFoldUtils);	
+		}else{
+			if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
+				createView(mLayout);
+			}
+		}
 	}
-	
 	
 	public void onResume() {
 		logger.error("onResume");
 		if (mWebView != null) {
 			mWebView.resumeTimers();
 			callHiddenWebViewMethod("onResume");
-		}
-		//
-		initView();
+		}		
 	}
+	
+	public void onPause() {
+		logger.error("onPause");
+		if (mWebView != null) {
+			mWebView.pauseTimers();
+			callHiddenWebViewMethod("onPause");
+		}
 
+	}
 	public void onStop(){
 		logger.error("onStop");
+		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
+			wm.removeView(mLayout);
+		}
 	}
 	
 	public void onDestroy(){
 		logger.equals("onDestroy");
 		if(bm!=null&&!bm.isRecycled()){
-			logger.error("onDestroy:"+bm.hashCode());
+			//logger.error("onDestroy:"+bm.hashCode());
 			bm.recycle();
 		}
 		bm = null;
-		if(scanFoldUtils!=null){
+		if(scanFoldUtils.resourceInfo!=null){
 			Iterator it = scanFoldUtils.resourceInfo.keySet().iterator();
 			while(it.hasNext()){
 				ResourceBean resourceBean = scanFoldUtils.resourceInfo.get(it.next());
 				
 				if(resourceBean.getBm()!=null&&!resourceBean.getBm().isRecycled()){
-					logger.error("onDestroy resourceBean:"+resourceBean.getBm().hashCode());
+					//logger.error("onDestroy resourceBean:"+resourceBean.getBm().hashCode());
 					resourceBean.getBm().recycle();
 				}
 			}
 		}
-		scanFoldUtils = null;
-		
-	}
+		scanFoldUtils = null;	
+	}	
+	
+    private class LoadResAsyncTask extends AsyncTask<ScanFoldUtils, Integer, ScanFoldUtils>{
+
+    	@Override
+    	protected void onPreExecute() {  
+    		// 任务启动，可以在这里显示一个对话框，这里简单处
+    	}   
+        
+    	@Override
+    	
+        protected ScanFoldUtils doInBackground(ScanFoldUtils... scanFoldUtils) {
+            // TODO Auto-generated method stub
+    		//参数对应<ScanFoldUtils, String, ScanFoldUtils>第1个,返回值对应第3个
+            if(scanFoldUtils[0]!=null&&scanFoldUtils[0].resourceInfo==null){
+            	scanFoldUtils[0].queryRes();
+            }
+            return scanFoldUtils[0];
+        }
+    	
+    	@Override
+    	protected void onProgressUpdate(Integer... values) {
+    		//参数对应<ScanFoldUtils, String, ScanFoldUtils>第二个
+    		
+    	} 
+
+        @Override
+        protected void onPostExecute(ScanFoldUtils scanFoldUtils) {
+        	//参数对应doInBackground返回值，也是<ScanFoldUtils, String, ScanFoldUtils>第3个
+			initView();	
+			if(progress!=null)
+				progress.dismiss();
+        }
+        @Override
+        protected void onCancelled(){
+        	
+        }
+    }
+
 	/**
 	 * 构建界面
 	 */
-	Bitmap bm = null;
-	protected void initView(){
+	
+	public void initView(){
+		try{
+			if(scanFoldUtils.resourceInfo==null){
+				scanFoldUtils.queryRes();
+			}
+			logger.error("createIndexButton");
+			this.createIndexButton();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	protected void initBackground(){
 		try {
 			/**
 			 * 查询资源信息
@@ -237,8 +310,6 @@ public abstract class ViewImp extends FrameLayout{
 				mLayout = new AbsoluteLayout(context);
 				createView(mLayout);
 			}
-			logger.error("createIndexButton");
-			this.createIndexButton();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -283,9 +354,14 @@ public abstract class ViewImp extends FrameLayout{
 		wm.addView(view, wmParams);
 	}
 
-
+	protected int[] calBackGroudView(Bitmap bm){
+		int[] viewXY = new int[2];
+		viewXY[0] = screenWidth>screenHeight?screenWidth:screenHeight;
+		viewXY[1] = screenWidth>screenHeight?screenHeight:screenWidth;
+		return viewXY;
+		
+	}
 	protected abstract void setXY(ResourceBean resourceBean);
-	protected abstract int[] calBackGroudView(Bitmap bm);
 	protected abstract void createIndexButton() ;
 
 }

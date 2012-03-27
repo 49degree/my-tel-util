@@ -10,6 +10,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.custom.R;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Logger;
 import com.custom.utils.MondifyIndexImageIndex;
@@ -20,14 +21,18 @@ import com.custom.utils.Constant.BgType;
 
 public class IndexView extends ViewImp{
 	private static final Logger logger = Logger.getLogger(IndexView.class);
+	protected boolean imageCanMove = false;
+	
 	public IndexView(Context context,String foldPath,int foldDepth){
-		super(context,foldPath,foldDepth);
-		MondifyIndexImageIndex.initImageIndexs(context);//获取按钮位置信息
+		this(context, null, foldPath, foldDepth);
 	}
 	
 	public IndexView(Context context, AttributeSet attr,String foldPath,int foldDepth){
         super(context, attr,foldPath,foldDepth);
-        MondifyIndexImageIndex.initImageIndexs(context);//获取按钮位置信息
+		try{
+			imageCanMove = Boolean.parseBoolean(context.getString(R.string.modify_index));
+		}catch(Exception e){}
+		MondifyIndexImageIndex.initImageIndexs(context,imageCanMove);//获取按钮位置信息
 	}
 	
 	@Override
@@ -36,13 +41,18 @@ public class IndexView extends ViewImp{
 		while(it.hasNext()){
 			ResourceBean resourceBean = scanFoldUtils.resourceInfo.get(it.next());
 			setXY(resourceBean);
-			if(scanFoldUtils.bgtype==BgType.pic){
-				IndexImagePicButton imageView = new IndexImagePicButton(context,scrollView,resourceBean);
-				mLayout.addView(imageView);
-			}else{
-				IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
-				mLayout.addView(imageView);
-			}
+			
+			IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
+			imageView.setImageMove(imageCanMove);
+			mLayout.addView(imageView);
+			
+//			if(scanFoldUtils.bgtype==BgType.pic){
+//				IndexImagePicButton imageView = new IndexImagePicButton(context,scrollView,resourceBean);
+//				mLayout.addView(imageView);
+//			}else{
+//				IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
+//				mLayout.addView(imageView);
+//			}
 		}
 	}
 	@Override
@@ -68,6 +78,8 @@ public class IndexView extends ViewImp{
 	}
 	@Override
 	protected int[] calBackGroudView(Bitmap bm){
+		return super.calBackGroudView(bm);
+		/**
 		int with = bm.getWidth();
 		int height = bm.getHeight();
 		WindowManager manage = ((Activity)context).getWindowManager();
@@ -96,10 +108,12 @@ public class IndexView extends ViewImp{
 				with = screenWidth;
 			}
 		}
+		
 		int[] viewXY = new int[2];
 		viewXY[0] = with;
 		viewXY[1] = height;
 		return viewXY;
+		*/
 		
 	}
 	

@@ -33,7 +33,7 @@ import com.custom.utils.Constant.DirType;
 public abstract class IndexImageButtonImp extends LinearLayout implements OnClickListener{
 	private static final String TAG = "IndexImageButtonImp";
 	private static final Logger logger = Logger.getLogger(IndexImageButtonImp.class);
-	protected boolean imageCanMove = false;
+	
 	protected ResourceBean resourceBean = null;
 	protected Context context;
 	protected Bitmap bm=null;
@@ -41,17 +41,14 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 	protected int bmHeight = 0;
 	protected static BitmapDrawable frame = null;
 	protected boolean hasFrame = false;
+	protected boolean imageCanMove = false;
 
 	public IndexImageButtonImp(Context context,ResourceBean resourceBean,boolean hasFrame) {
 		super(context);
 		this.context = context;
 		this.resourceBean = resourceBean;
 		this.hasFrame = hasFrame;
-		try{
-			imageCanMove = Boolean.parseBoolean(context.getString(R.string.modify_index));
-		}catch(Exception e){
-			
-		}
+
 	}  
 	
 	
@@ -66,6 +63,8 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 					frame = new BitmapDrawable(LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/frame.png", DirType.assets));
 				}
 				this.setBackgroundDrawable(frame);
+			}else{
+				this.setBackgroundColor(0);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -119,7 +118,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 //		打开PDF——application/pdf
 //		打开VCF——text/x-vcard
 //		打开SWF——flash/*
-		
+		this.setBackground();
 
 		List<ResourceBean.ResourceRaws> raws = resourceBean.getRaws();
 		logger.error("raws:"+raws.size());
@@ -171,7 +170,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 			e.printStackTrace();
 		}
 		
-		this.setBackground();
+		
 
 	}
 	

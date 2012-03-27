@@ -30,8 +30,6 @@ import com.custom.view.PageNumView.UnitPageOnclick;
 public class SecondView extends ViewImp{
 	private static final Logger logger = Logger.getLogger(SecondView.class);
 	ArrayList<Entry<String,ResourceBean>> resourceInfo = null;
-	int screenHeight = 0;
-	int screenWidth = 0;
 	int curPageNum = 0;
 	PageNumBean pageNumBean = null;
 	PageNumView pageNumView = null;
@@ -40,18 +38,10 @@ public class SecondView extends ViewImp{
 	
 	public SecondView(Context context,String foldPath,int foldDepth){
 		super(context,foldPath,foldDepth);
-		WindowManager manage = ((Activity)context).getWindowManager();
-		Display display = manage.getDefaultDisplay();
-		screenHeight = display.getHeight();
-		screenWidth = display.getWidth();
 	}
 	
 	public SecondView(Context context, AttributeSet attr,String foldPath,int foldDepth){
         super(context, attr,foldPath,foldDepth);
-		WindowManager manage = ((Activity)context).getWindowManager();
-		Display display = manage.getDefaultDisplay();
-		screenHeight = display.getHeight();
-		screenWidth = display.getWidth();
 	}
 
 	@Override
@@ -67,19 +57,6 @@ public class SecondView extends ViewImp{
 							return object1.getKey().compareTo(object2.getKey());
 						}
 					}); 
-			Entry<String,ResourceBean> data=  resourceInfo.get(0);
-			Entry<String,ResourceBean> data2=  resourceInfo.get(1);
-			resourceInfo.removeAll(resourceInfo);
-			for(int i=0;i<32;i++){
-				resourceInfo.add(data);
-			}
-			
-			for(int i=0;i<12;i++){
-				resourceInfo.add(data2);
-			}
-			for(int i=0;i<40;i++){
-				resourceInfo.add(data);
-			}
 		}
 
 		if(pageNumBean==null){
@@ -111,10 +88,7 @@ public class SecondView extends ViewImp{
 	}
 	@Override
 	protected int[] calBackGroudView(Bitmap bm){
-		int[] viewXY = new int[2];
-		viewXY[0] = screenWidth;
-		viewXY[1] = screenHeight;
-		return viewXY;
+		return super.calBackGroudView(bm);
 		
 	}
 	

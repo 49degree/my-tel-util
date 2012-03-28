@@ -2,6 +2,8 @@ package com.custom.utils;
 
 import java.util.HashMap;
 
+import com.custom.R;
+
 public class Constant {
 	public final static String foldPath = "foldPath";
 	public static String foldName="";
@@ -42,14 +44,10 @@ public class Constant {
 		picType.put("jepg", "");
 		swfType.put("swf", "");
 		swfType.put("SWF", "");
-	}
-	
-	public static void setFoldName(String foldName){
+		
+		String foldName = MainApplication.getInstance().getString(R.string.fold_name);
 		Constant.foldName = foldName;
 		Constant.path = "custom/"+foldName;
 		Constant.pageNumPicPath = "custom/"+foldName+"/pagepic";
-		
 	}
-	
-	
 }

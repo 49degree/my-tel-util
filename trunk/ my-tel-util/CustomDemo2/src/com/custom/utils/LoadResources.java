@@ -12,6 +12,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.custom.update.ZipToFile;
 import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
@@ -94,7 +95,7 @@ public class LoadResources {
 				}
 				return buf;
 
-			}else if(dirType==DirType.file||dirType==DirType.sd){
+			}else if(dirType==DirType.file||dirType==DirType.sd){ 
 				return null;
 			}
 		}catch(Exception e){

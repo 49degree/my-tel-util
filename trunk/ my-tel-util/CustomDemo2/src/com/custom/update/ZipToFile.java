@@ -1,12 +1,12 @@
-package com.custom.utils;
+package com.custom.update;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -15,35 +15,39 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-public class ZipToFile {
-	public final static byte[] rootKey = TypeConversion.hexStringToByte("DBED28F6415162BD");
+import android.os.Environment;
 
+import com.custom.utils.CryptionControl;
+import com.custom.utils.Logger;
+import com.custom.utils.TypeConversion;
+
+public class ZipToFile {
+	private static final Logger logger = Logger.getLogger(ZipToFile.class);
+	public static byte[] rootKey = TypeConversion.hexStringToByte("DBED28F6415162BD");
 	public static final int BUFFER = 1024;// 缓存大小
-	public static final String ZIP_FILENAME = "E:\\English";// 需要解压缩的文件名
-	public static final String ZIP_DIR = "E:\\English";// 需要压缩的文件夹
-	public static final String UN_ZIP_DIR = "E:\\unEnglish";// 要解压的文件目录
-	
-	public static void main(String[] args){
-		try{
-			boolean encode = true;
-			new ZipToFile().zipFile(ZIP_DIR, ZIP_FILENAME,encode);
-			new ZipToFile().upZipFile(ZIP_FILENAME,UN_ZIP_DIR,encode);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-	}
+	public final static int encrypLength = 128;
+	private String sdPath = null;
 	boolean stopZipFile = false;
+	
+	public ZipToFile(){
+		String status = Environment.getExternalStorageState();
+		if (status.equals(Environment.MEDIA_MOUNTED)){
+			sdPath = Environment.getDownloadCacheDirectory().getAbsolutePath();
+		}
+
+	}
+	
 	public void stopZipFile(){
 		stopZipFile = true;
 	}
+	
 	
 	/**
 	 * zip压缩功能. 压缩baseDir(文件夹目录)下所有文件，包括子目录
 	 * 
 	 * @throws Exception
 	 */
-	final static int encrypLength = 128;
+	
 	public void zipFile(String baseDir, String fileName,boolean encrypt)
 			throws Exception {
 		List fileList = getSubFiles(new File(baseDir));
@@ -63,7 +67,7 @@ public class ZipToFile {
 			}
 			
 			File f = (File) fileList.get(i);
-			System.out.println("name:"+f);
+			
 			if(f.getAbsoluteFile().equals(fileName+".temp"))//如果为当前压缩临时文件，这条过
 				continue;
 			
@@ -150,8 +154,17 @@ public class ZipToFile {
 	 * @throws Exception
 	 */
 	public void upZipFile(String zipFile,String unZipDir,boolean decrypt) throws Exception {
+		this.upZipFile(zipFile, unZipDir, decrypt, null);
 
-		
+	}
+
+	/**
+	 * 解压缩功能. 将ZIP_FILENAME文件解压到ZIP_DIR目录下.
+	 * 
+	 * @throws Exception
+	 */
+	public final static long setAside = 500*1024*1024;//内存要预留50M空间
+	public void upZipFile(String zipFile,String unZipDir,boolean decrypt,String specifiedDir) throws Exception {
 		ZipFile zfile = new ZipFile(zipFile);
 		Enumeration zList = zfile.entries();
 		ZipEntry ze = null;
@@ -165,15 +178,38 @@ public class ZipToFile {
 				break;
 			}
 			
+			if(specifiedDir!=null&&ze.getName().indexOf(specifiedDir)<0)
+				continue;
+			
 			if (ze.isDirectory()) {
 				File f = new File(unZipDir + ze.getName());
 				f.mkdir();
 				continue;
 			}
-			OutputStream os = new BufferedOutputStream(new FileOutputStream(
-					getRealFileName(unZipDir, ze.getName())));
+			File tempFile = getRealFileName(unZipDir, ze.getName(),specifiedDir);
+			RandomAccessFile os = new RandomAccessFile(tempFile.getAbsoluteFile(),"rw");
+			try{
+				os.setLength(ze.getSize()+setAside);//判断是否存在空间
+				os.setLength(ze.getSize());
+				logger.error("解压文件："+ze.getName());
+			}catch(IOException e){
+				//空间不足则保存到sd卡中
+				if(sdPath==null)
+					break;
+				if(tempFile.exists())
+					tempFile.delete();
+				tempFile = getRealFileName(sdPath, ze.getName(),specifiedDir);
+				os = new RandomAccessFile(tempFile.getAbsoluteFile(),"rw");
+				try{
+					os.setLength(ze.getSize()+setAside);//判断是否存在空间
+					os.setLength(ze.getSize());
+				}catch(IOException ex){
+					//空间不足则保存到sd卡中
+					break;
+				}
+				
+			}
 			InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
-			
 			readLen = is.read(buf, 0, BUFFER);
 			if(decrypt){
 				//解密文件头
@@ -190,7 +226,7 @@ public class ZipToFile {
 		}
 		zfile.close();
 	}
-
+	
 	/**
 	 * 给定根目录，返回一个相对路径所对应的实际文件名.
 	 * 
@@ -200,7 +236,10 @@ public class ZipToFile {
 	 *            相对路径名，来自于ZipEntry中的name
 	 * @return java.io.File 实际的文件
 	 */
-	public static File getRealFileName(String baseDir, String absFileName) {
+	public static File getRealFileName(String baseDir, String absFileName,String specifiedDir) {
+		if(specifiedDir!=null){
+			absFileName = absFileName.substring(absFileName.indexOf(specifiedDir));	
+		}
 		String[] dirs = absFileName.split("/");
 		File ret = new File(baseDir);
 		if (dirs.length > 0) {
@@ -215,5 +254,19 @@ public class ZipToFile {
 		}
 		return ret;
 	}
+	
+	/**
+	 * 给定根目录，返回一个相对路径所对应的实际文件名.
+	 * 
+	 * @param baseDir
+	 *            指定根目录
+	 * @param absFileName
+	 *            相对路径名，来自于ZipEntry中的name
+	 * @return java.io.File 实际的文件
+	 */
+	public static File getRealFileName(String baseDir, String absFileName) {
+		return getRealFileName(baseDir,absFileName,null);
+	}
+
 
 }

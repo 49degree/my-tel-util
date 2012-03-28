@@ -12,10 +12,12 @@ import android.view.WindowManager;
 
 import com.custom.R;
 import com.custom.bean.ResourceBean;
+import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.MondifyIndexImageIndex;
 import com.custom.utils.SharedPreferencesUtils;
 import com.custom.utils.Constant.BgType;
+import com.custom.utils.Constant.DirType;
 
 
 
@@ -40,8 +42,14 @@ public class IndexView extends ViewImp{
 		Iterator it = scanFoldUtils.resourceInfo.keySet().iterator();
 		while(it.hasNext()){
 			ResourceBean resourceBean = scanFoldUtils.resourceInfo.get(it.next());
+			//加载按钮图片
+			try{
+				if(resourceBean.getBm()==null)
+					resourceBean.setBm(LoadResources.loadBitmap(context, resourceBean.getBtnPic(), DirType.assets));
+			}catch(Exception e){
+				
+			}
 			setXY(resourceBean);
-			
 			IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
 			imageView.setImageMove(imageCanMove);
 			mLayout.addView(imageView);

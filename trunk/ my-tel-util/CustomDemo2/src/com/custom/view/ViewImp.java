@@ -44,7 +44,6 @@ public abstract class ViewImp extends FrameLayout{
 	protected WindowManager wm = null;
 	protected int foldDepth = Constant.fistFoldDepth;
 	protected ScanFoldUtils scanFoldUtils = null;
-	protected static HashMap<String,Bitmap> buttonBitMap = new HashMap<String,Bitmap>();
 	protected int screenHeight = 0;
 	protected int screenWidth = 0;
 	protected Bitmap bm = null;
@@ -123,10 +122,6 @@ public abstract class ViewImp extends FrameLayout{
 			progress = ProgressDialog.show(context, "请稍候", "正在加载资源....");
 			initBackground();
 			new LoadResAsyncTask().execute(scanFoldUtils);	
-		}else{
-			if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
-				createView(mLayout);
-			}
 		}
 	}
 	
@@ -135,7 +130,10 @@ public abstract class ViewImp extends FrameLayout{
 		if (mWebView != null) {
 			mWebView.resumeTimers();
 			callHiddenWebViewMethod("onResume");
-		}		
+		}
+		if(isRestart&&scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
+			createView(mLayout);
+		}
 	}
 	
 	public void onPause() {
@@ -144,13 +142,14 @@ public abstract class ViewImp extends FrameLayout{
 			mWebView.pauseTimers();
 			callHiddenWebViewMethod("onPause");
 		}
+		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
+			wm.removeView(mLayout);
+		}
 
 	}
 	public void onStop(){
 		logger.error("onStop");
-		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
-			wm.removeView(mLayout);
-		}
+
 	}
 	
 	public void onDestroy(){
@@ -279,10 +278,10 @@ public abstract class ViewImp extends FrameLayout{
 					mWebView.getSettings().setJavaScriptEnabled(true);
 					mWebView.getSettings().setPluginsEnabled(true);
 					
-					final String fileName = "background.swf";//复制文件
+					
 					try{
 						//复制文件
-						LoadResources.saveToTempFile(context, scanFoldUtils.bgPic, scanFoldUtils.bgDirtype, fileName);
+						LoadResources.saveToTempFile(context, scanFoldUtils.bgPic, scanFoldUtils.bgDirtype, Constant.backGroundSwfName);
 					}catch(Exception e){
 						e.printStackTrace();
 					}
@@ -295,7 +294,7 @@ public abstract class ViewImp extends FrameLayout{
 						@Override
 						public void onPageFinished(final WebView webView, String url) {
 							try {
-								mWebView.loadUrl("javascript:showgame('"+context.getFilesDir()+File.separator+fileName+"')");
+								mWebView.loadUrl("javascript:showgame('"+context.getFilesDir()+File.separator+Constant.backGroundSwfName+"')");
 							} catch (Exception e) {
 							}
 						}

@@ -5,18 +5,15 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.custom.bean.PageNumBean;
 import com.custom.utils.Constant;
@@ -171,30 +168,36 @@ public class PageNumView extends AbsoluteLayout{
 //            p.setTypeface(font);                                                                   
 //            p.setTextSize(30);  
 
-            
+			
 			for(int i=pageNumBean.getStartPageNum();i<=pageNumBean.getEndPageNum();i++){
 				//logger.error("beginX:"+i+":"+pageNumBean.getCurPageNum());
 				AbsoluteLayout.LayoutParams layout = null;
-				ImageView imageView = new ImageView(context);
+				TextView imageView = new TextView(context);
 				if(i==pageNumBean.getCurPageNum()){
 					pageNum = pageNum2;
+					imageView.setTextColor(Color.YELLOW);
 
 				}else{
 					pageNum = pageNum1;
+					imageView.setTextColor(Color.GREEN);
 				}
 				if(pageNum!=null){
 					//imageView.setImageBitmap(pageNum);
+					boolean doubleView = (i/pageNumBean.getPageNumPerView()%2==0);
 					layout = new AbsoluteLayout.LayoutParams(
-							pageNum.getWidth(), pageNum.getHeight(), beginX+i%pageNumBean.getPageNumPerView()*60, beginY+20);
+							pageNum.getWidth(), pageNum.getHeight(), 
+							beginX+115+i%pageNumBean.getPageNumPerView()*60, beginY+(((doubleView&&i%2==0)||(!doubleView&&i%2!=0))?65:55));
 //					Bitmap newb = Bitmap.createBitmap( pageNum.getWidth(), pageNum.getHeight(), Config.ARGB_8888 );  
 //		            Canvas canvasTemp = new Canvas( newb );  
 //		            canvasTemp.drawColor(Color.TRANSPARENT);    
 //		            canvasTemp.drawBitmap(pageNum, 0, 0, p);//画图
 //		            canvasTemp.drawText(String.valueOf(i+1), pageNum.getWidth()/3, pageNum.getHeight(), p); 
-		            imageView.setImageBitmap(pageNum);
-					
-					
+		            imageView.setBackgroundDrawable(new BitmapDrawable(pageNum));
+		            
 				}
+				imageView.setText(String.valueOf(i+1));
+				imageView.setGravity(Gravity.CENTER);
+				imageView.setPadding(0, 5, 0, 0);
 				imageView.setLayoutParams(layout);
 				this.addView(imageView);
 				pageNumViews.add(imageView);

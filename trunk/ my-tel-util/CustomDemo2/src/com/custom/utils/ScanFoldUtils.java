@@ -137,15 +137,11 @@ public class ScanFoldUtils {
 					res.setFoldDepth(foldDepth);//按钮的深度
 					res.setFoldPath(this.foldPath);//按钮所在目录
 					res.setDirType(DirType.assets);
-					res.setBm(LoadResources.loadBitmap(context, foldPath+"/"+lists[i], DirType.assets));
-					if(res.getRaws()==null){
-						List<ResourceBean.ResourceRaws> raws = this.queryRawsByValue(btnName);
-						res.setRaws(raws);
-					}
+					//res.setBm(LoadResources.loadBitmap(context, foldPath+"/"+lists[i], DirType.assets));
 					resourceInfo.put(btnName, res);
-					//logger.error("btn end:"+btnName+":"+res.getBtnPic());
 				}
 			}
+			this.queryRawsByValue();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -188,10 +184,12 @@ public class ScanFoldUtils {
 		return raws;
 	}
 	
-	private List<ResourceBean.ResourceRaws> queryRawsByValue(String btnKey){
+	private void queryRawsByValue(){
 		List<ResourceBean.ResourceRaws> raws = null;
 
 		try{
+			if(resourceInfo==null)
+				return;
 			AssetManager assetManager = context.getAssets();
 			String[] lists = assetManager.list(this.foldPath+"/"+Constant.resourceFold);
 			for(int i=0;i<lists.length;i++){
@@ -199,10 +197,10 @@ public class ScanFoldUtils {
 					continue;
 				}
 				String btnName = lists[i].substring(0,lists[i].indexOf("."));
-				if(!btnKey.equals(btnName)){
+				ResourceBean res = resourceInfo.get(btnName);
+				if(res==null){
 					continue;
 				}
-				//logger.error(btnName);
 				ResourceBean.ResourceType type = null;
 				if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
 					type = ResourceBean.ResourceType.pic;
@@ -214,13 +212,11 @@ public class ScanFoldUtils {
 				if(type!=null){
 					raws = new ArrayList<ResourceBean.ResourceRaws>();
 					raws.add(new ResourceBean.ResourceRaws(this.foldPath+"/"+Constant.resourceFold+"/"+lists[i], type));
-					//logger.error(this.foldPath+"/"+Constant.resourceFold+"/"+lists[i]+":"+btnKey);
-					break;
 				}
+				res.setRaws(raws);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return raws;
 	}
 }

@@ -60,7 +60,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		try{
 			if(hasFrame){
 				if(frame==null){
-					frame = new BitmapDrawable(LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/frame.png", DirType.assets));
+					//frame = new BitmapDrawable(LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/frame.png", DirType.assets));
 				}
 				this.setBackgroundDrawable(frame);
 			}else{
@@ -120,37 +120,55 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 //		打开SWF——flash/*
 		this.setBackground();
 
-		List<ResourceBean.ResourceRaws> raws = resourceBean.getRaws();
+		final List<ResourceBean.ResourceRaws> raws = resourceBean.getRaws();
 		logger.error("raws:"+raws.size());
 		if(raws==null||raws.size()<1){
 			return ;
 		}
 		String path = raws.get(0).getRawPath();
 		ResourceBean.ResourceType type = raws.get(0).getType();
-		logger.error(path+":"+type.toString());
+		String intentType = "*";
+		
+		//删除临时文件
+		try{
+			new Thread(){
+				public void run(){
+					String[] fileName = context.fileList();
+					for(int i=0;i<fileName.length;i++){
+						if(Constant.backGroundSwfName.equals(fileName[i]))
+							continue;
+						context.deleteFile(fileName[i]);
+					}
+				}
+			}.start();
+		}catch(Exception e){}
+		
 		if(type==ResourceBean.ResourceType.apk){
-			try{
-				fileName = "temp.apk";
-				intent = new Intent(Intent.ACTION_VIEW);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
-				intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir()+File.separator+fileName)),
-						"application/vnd.android.package-archive");
-			}catch(Exception e){
-				e.printStackTrace();
-				Toast.makeText(context,"安装失败，请稍后再试或者联系系统维护人员！",Toast.LENGTH_SHORT);
-			}
+			fileName = "temp.apk";
+			intentType = "application/vnd.android.package-archive";
 		}else if(type==ResourceBean.ResourceType.swf){
+			fileName = "temp.swf";
+			intentType = "*/*";
+			//复制其他flash文件
+			
 			try{
-				fileName = "temp.swf";
-				intent = new Intent(Intent.ACTION_VIEW);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
-//				AssetManager assetManager = context.getAssets();
-				intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir()+File.separator+fileName)),"*/*");
-//				context.startActivity(intent);
-			}catch(Exception e){
-				e.printStackTrace();
-				Toast.makeText(context,"安装失败，请稍后再试或者联系系统维护人员！",Toast.LENGTH_SHORT);
-			}
+				new Thread(){
+					public void run(){
+						ResourceBean.ResourceRaws  raw = null;
+						for(int i=1;i<raws.size();i++){
+							raw = raws.get(i);
+							if(raw.getType()==ResourceBean.ResourceType.swf){
+								String tempFile = raw.getRawPath().substring(raw.getRawPath().lastIndexOf('/')+1);
+								LoadResources.saveToTempFile(context, raw.getRawPath(), resourceBean.getDirType(),tempFile);
+							}
+						}
+
+						
+					}
+				}.start();
+			}catch(Exception e){}
+
+			
 		}else if(type==ResourceBean.ResourceType.fold){
 			intent = new Intent(context, IndexActivity.class);   
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -162,10 +180,15 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 			context.startActivity(intent);
 			return ;
 		}
+		
 		try{
-			//复制文件
-			if(LoadResources.saveToTempFile(context, path, resourceBean.getDirType(), fileName))
-			context.startActivity(intent);
+			if(LoadResources.saveToTempFile(context, path, resourceBean.getDirType(),fileName)){
+				intent = new Intent(Intent.ACTION_VIEW);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+				intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+fileName)),intentType);
+				context.startActivity(intent);
+			}
+				
 		}catch(Exception e){
 			e.printStackTrace();
 		}

@@ -1,11 +1,14 @@
 package com.custom.view;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -20,7 +23,10 @@ import android.widget.Scroller;
 
 import com.custom.bean.PageNumBean;
 import com.custom.bean.ResourceBean;
+import com.custom.utils.Constant.DirType;
+import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
+import com.custom.utils.ScanFoldUtils;
 import com.custom.view.PageNumView.UnitPageOnclick;
 
 public class SecondViewGroup extends LinearLayout {
@@ -34,6 +40,7 @@ public class SecondViewGroup extends LinearLayout {
 	private int currentScreenIndex = 0;
 	private boolean onFling = true;
 	private int canotFling = 0;
+	private ProgressDialog progress;
 	
 	public SecondViewGroup(Context context,ArrayList<Entry<String,ResourceBean>> resourceInfo,PageNumView pageNumView) {
 		super(context);
@@ -63,25 +70,61 @@ public class SecondViewGroup extends LinearLayout {
 	private void initView() {
 		if(secondViewPage!=null){
 			this.removeView(secondViewPage);
+			progress = ProgressDialog.show(context, "请稍候", "正在加载资源....");
 		}
-		currentScreenIndex = pageNumBean.getCurPageNum()%pageNumBean.getPageNumPerView();
-		pageNumView.initPageNumView();
-		secondViewPage = new SecondViewPage(context,resourceInfo,pageNumView);
-		secondViewPage.post(new Runnable() {
-			@Override
-			public void run() { 
-				final int delta = currentScreenIndex * getWidth();
-				logger.error("secondViewPage.post:"+currentScreenIndex+":delta:"+delta);
-				secondViewPage.scrollTo(delta, 0); 
-				logger.error("secondViewPage.post =============");
-
-				onFling = true;
-			}   
-		});
-		this.addView(secondViewPage);
+		new LoadResAsyncTask().execute(0);
+		
 	}
 	
-	
+    /**
+     * 回调更新界面
+     */
+    private class LoadResAsyncTask extends AsyncTask<Integer, Integer, Integer>{
+
+    	@Override
+    	protected void onPreExecute() {  
+    		// 任务启动，可以在这里显示一个对话框，这里简单处
+    	}   
+        
+    	@Override
+    	
+        protected Integer doInBackground(Integer... values) {
+            // TODO Auto-generated method stub
+
+            return values[0];
+        }
+    	
+    	@Override
+    	protected void onProgressUpdate(Integer... values) {
+    		//参数对应<ScanFoldUtils, String, ScanFoldUtils>第二个
+    		
+    	} 
+
+        @Override
+        protected void onPostExecute(Integer values) {
+        	//参数对应doInBackground返回值，也是<ScanFoldUtils, String, ScanFoldUtils>第3个
+        	
+    		currentScreenIndex = pageNumBean.getCurPageNum()%pageNumBean.getPageNumPerView();
+    		pageNumView.initPageNumView();
+    		secondViewPage = new SecondViewPage(context,resourceInfo,pageNumView);
+    		secondViewPage.post(new Runnable() {
+    			@Override
+    			public void run() { 
+    				final int delta = currentScreenIndex * getWidth();
+    				secondViewPage.scrollTo(delta, 0); 
+    				onFling = true;
+    			}   
+    		});
+    		addView(secondViewPage);
+			if(progress!=null)
+				progress.cancel();
+        }
+        @Override
+        protected void onCancelled(){
+        	
+        }
+    }
+    
 	public class SecondViewPage extends ViewGroup{
 		private Scroller scroller;
 		
@@ -288,6 +331,14 @@ public class SecondViewGroup extends LinearLayout {
 				
 				for(int i=index[0];i<=index[1];i++){
 					ResourceBean resourceBean = resourceInfo.get(i).getValue();
+					//加载按钮图片
+					try{
+						if(resourceBean.getBm()==null)
+							resourceBean.setBm(LoadResources.loadBitmap(context, resourceBean.getBtnPic(), DirType.assets));
+					}catch(Exception e){
+						
+					}
+
 					IndexImageButtonImp imageView = null;
 					setXY(resourceBean,i);
 					imageView = new IndexImagePicButton(context,null,resourceBean,true);

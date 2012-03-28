@@ -18,6 +18,7 @@ public class Constant {
 	public final static String secondViewClass="com.custom.view.SecondView";
 	public final static String resourceFoldEnd="_raw";
 	public final static String resourceFold="raw";
+	public final static String backGroundSwfName = "background.swf";//复制文件
 	
 	
 	

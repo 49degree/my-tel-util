@@ -3,25 +3,19 @@ package com.custom.view;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
-import android.view.Display;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.custom.bean.PageNumBean;
 import com.custom.bean.ResourceBean;
-import com.custom.utils.Constant;
 import com.custom.utils.Logger;
 import com.custom.utils.SharedPreferencesUtils;
-import com.custom.view.PageNumView.UnitPageOnclick;
 
 
 
@@ -59,12 +53,25 @@ public class SecondView extends ViewImp{
 					}); 
 		}
 
+		Entry<String,ResourceBean> data=  resourceInfo.get(0);
+		Entry<String,ResourceBean> data2=  resourceInfo.get(0);
+		resourceInfo.removeAll(resourceInfo);
+		for(int i=0;i<32;i++){
+			resourceInfo.add(data);
+		}
+		
+		for(int i=0;i<12;i++){
+			resourceInfo.add(data2);
+		}
+		for(int i=0;i<40;i++){
+			resourceInfo.add(data);
+		}
+		
 		if(pageNumBean==null){
 			pageNumBean = new PageNumBean(resourceInfo.size());	
 		}
 		
 		pageNumBean.setCurPageNum(curPageNum);
-		logger.error("frameLayout==null");
 		
 		frameLayout = new FrameLayout(this.context);
 		LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(
@@ -77,7 +84,7 @@ public class SecondView extends ViewImp{
 		
 		SecondViewGroup viewGroup = new SecondViewGroup(this.context,resourceInfo,pageNumView);
 		frameLayout.addView(viewGroup);
-		
+
 		frameLayout.addView(pageNumView);
 		pageNumView.initView();
 		mLayout.addView(frameLayout);

@@ -2,6 +2,7 @@ package com.custom.utils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,11 +121,16 @@ public class LoadResources {
 		try{
 			//复制文件
 			try{
+				File f = new File(context.getFilesDir().getAbsolutePath()+"/"+tempSavePath);
+				if(f.exists()){
+					logger.error("ffffffffff:"+f.length());
+				}
 				context.deleteFile(tempSavePath);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE);
+			logger.error("tempfile:"+tempSavePath);
 			//读取数据
 			if(dirType==DirType.assets){
 				AssetManager assetManager = context.getAssets();
@@ -138,6 +144,7 @@ public class LoadResources {
 					System.arraycopy(temp, 0, buffer, 0, ZipToFile.encrypLength);
 				}	
 				while(readLength>0){
+					//logger.error("readLength:"+readLength);
 					fos.write(buffer,0,readLength);
 					fos.flush();
 					readLength=in.read(buffer);

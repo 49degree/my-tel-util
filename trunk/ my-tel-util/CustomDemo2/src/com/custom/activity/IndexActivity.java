@@ -34,10 +34,14 @@ public class IndexActivity  extends Activity {
 			try{
 				new Thread(){
 					public void run(){
-						new ToGetFile().downFileFromzip(Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"mydir.zip");
+//						new ToGetFile().downFileFromzip(
+//								Environment.getExternalStorageDirectory().getAbsolutePath()
+//								+File.separator+"custom/myfile.zip");
 					}
 				}.start();
-			}catch(Exception e){}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}else{
 			try{
 				String foldPath = bundle.getString(Constant.foldPath);

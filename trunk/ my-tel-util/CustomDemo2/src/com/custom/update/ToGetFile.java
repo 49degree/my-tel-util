@@ -23,9 +23,11 @@ public class ToGetFile {
 	
 	public void downFileFromzip(String filePath){
 		try{
-			new ZipToFile().upZipFile(filePath,MainApplication.getInstance().getFilesDir().getAbsolutePath(),false,Constant.path);
+			new ZipToFile().upZipFile(filePath,
+					MainApplication.getInstance().getFilesDir().getAbsolutePath(),false,
+					"custom/English");
 		}catch(Exception e){
-			
+			e.printStackTrace();
 		}
 		
 	}

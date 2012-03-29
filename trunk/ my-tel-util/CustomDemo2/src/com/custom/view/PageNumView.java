@@ -1,5 +1,6 @@
 package com.custom.view;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -33,6 +34,7 @@ public class PageNumView extends AbsoluteLayout{
 		super(context);
 		this.context = context;
 		this.pageNumBean = pageNumBean;
+
 	}
 	/**
 	 * 构建界面
@@ -72,14 +74,29 @@ public class PageNumView extends AbsoluteLayout{
 	
 	public void initView(){
 		try{
+			if(pageNum2==null){
+				pageNum2 = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"pageNum2.png"); 
+			}
+			if(pageNum1==null){
+	    		 pageNum1 = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"pageNum1.png");        	
+			}
+			if(upunit==null){
+				upunit = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"upunit.png"); 
+			}
+			if(nextunit==null){
+				nextunit =  LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"nextunit.png"); 
+			}
+			if(bm==null){
+				bm = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"tree.png"); 
+			}
+			
+			
 			WindowManager manage = ((Activity)context).getWindowManager();
 			Display display = manage.getDefaultDisplay();
 			screenHeight = display.getHeight();
 			screenWidth = display.getWidth();
 			
-			if(bm==null||bm.isRecycled()){
-				bm = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/tree.png", DirType.assets);	
-			}
+
 			ImageView imageView = new ImageView(context);
 			imageView.setImageBitmap(bm);
 			beginX = screenWidth-bm.getWidth();
@@ -94,9 +111,7 @@ public class PageNumView extends AbsoluteLayout{
 			//上行翻页按钮
 			try{
 				imageView = new ImageView(context);
-				if(nextunit==null){
-					nextunit = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/nextunit.png", DirType.assets);
-				}
+
 				imageView.setImageBitmap(nextunit);
 				AbsoluteLayout.LayoutParams nextlayout = new AbsoluteLayout.LayoutParams(
 						200, 100, screenWidth-160,150);
@@ -110,9 +125,7 @@ public class PageNumView extends AbsoluteLayout{
 				
 				ImageView imageView2 = new ImageView(context);
 				
-				if(upunit==null){
-					upunit = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/upunit.png", DirType.assets);
-				}
+
 				imageView2.setImageBitmap(upunit);
 				AbsoluteLayout.LayoutParams uplayout = new AbsoluteLayout.LayoutParams(
 						200, 100, screenWidth-200,210);
@@ -143,18 +156,6 @@ public class PageNumView extends AbsoluteLayout{
 					
 				}
 			}
-			
-
-			if(pageNum2==null){
-				pageNum2 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/pageNum2.png", DirType.assets);
-		           	
-			}
-			if(pageNum1==null){
-	    		 pageNum1 = LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/pageNum1.png", DirType.assets);	           	
-			}
-
-
-			
 			WindowManager manage = ((Activity)context).getWindowManager();
 			Display display = manage.getDefaultDisplay();
 			screenHeight = display.getHeight();

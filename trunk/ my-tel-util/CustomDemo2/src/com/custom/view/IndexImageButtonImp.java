@@ -60,7 +60,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		try{
 			if(hasFrame){
 				if(frame==null){
-					//frame = new BitmapDrawable(LoadResources.loadBitmap(context, Constant.pageNumPicPath+"/frame.png", DirType.assets));
+					frame = new BitmapDrawable(LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+Constant.framePicName));	
 				}
 				this.setBackgroundDrawable(frame);
 			}else{
@@ -75,14 +75,14 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 
 		try{
 			setBackground();
-			bm = resourceBean.getBm();//LoadResources.loadBitmap(context, resourceBean.getBtnPic(), resourceBean.getDirType());
+			bm = resourceBean.getBm();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		ImageView jpgView = new ImageView(context);
 		jpgView.setImageBitmap(bm);
 		bmWidth = 100;//bm.getWidth();
-		bmHeight = 100;bm.getHeight();
+		bmHeight = 100;//bm.getHeight();
 		LinearLayout.LayoutParams alayout = new LinearLayout.LayoutParams(bmWidth, bmHeight);
 		jpgView.setLayoutParams(alayout);
 		this.addView(jpgView);
@@ -129,41 +129,32 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		ResourceBean.ResourceType type = raws.get(0).getType();
 		String intentType = "*";
 		
-		//删除临时文件
-		try{
-			new Thread(){
-				public void run(){
-					String[] fileName = context.fileList();
-					for(int i=0;i<fileName.length;i++){
-						if(Constant.backGroundSwfName.equals(fileName[i]))
-							continue;
-						context.deleteFile(fileName[i]);
-					}
-				}
-			}.start();
-		}catch(Exception e){}
-		
 		if(type==ResourceBean.ResourceType.apk){
-			fileName = "temp.apk";
+			fileName = "temp1.apk";
 			intentType = "application/vnd.android.package-archive";
 		}else if(type==ResourceBean.ResourceType.swf){
-			fileName = "temp.swf";
+			fileName = "temp1.swf";
 			intentType = "*/*";
-			//复制其他flash文件
 			
 			try{
 				new Thread(){
 					public void run(){
+						//删除临时文件
+						String[] fileName = context.fileList();
+						for(int i=0;i<fileName.length;i++){
+							if(Constant.backGroundSwfName.equals(fileName[i])||fileName[i].indexOf("temp")>-1)
+								continue;
+							context.deleteFile(fileName[i]);
+						}
+						//复制其他flash文件
 						ResourceBean.ResourceRaws  raw = null;
 						for(int i=1;i<raws.size();i++){
 							raw = raws.get(i);
 							if(raw.getType()==ResourceBean.ResourceType.swf){
-								String tempFile = raw.getRawPath().substring(raw.getRawPath().lastIndexOf('/')+1);
+								String tempFile = raw.getRawPath().substring(raw.getRawPath().lastIndexOf(File.separator)+1);
 								LoadResources.saveToTempFile(context, raw.getRawPath(), resourceBean.getDirType(),tempFile);
 							}
 						}
-
-						
 					}
 				}.start();
 			}catch(Exception e){}

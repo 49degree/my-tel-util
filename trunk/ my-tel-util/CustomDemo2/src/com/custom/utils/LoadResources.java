@@ -3,6 +3,7 @@ package com.custom.utils;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,56 +12,51 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 
 import com.custom.update.ZipToFile;
 import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
-	static boolean secrete = false; 
+	static boolean secrete = true;
+	
+	/**
+	 * 根据路径和文件名称获取文件对象
+	 * @param foldPath
+	 * @param dirType
+	 * @return
+	 */
+	public static File getFileByType(String foldPath,DirType dirType){
+		if(DirType.sd == dirType){
+			return new File( Constant.getSdPath()+File.separator+foldPath);
+		}else if(DirType.file == dirType){
+			return new File( Constant.getDataPath()+File.separator+foldPath);
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据路径和路径类型获取bitmap
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 * @throws Exception
+	 */
 	public static Bitmap loadBitmap(Context context,String filePath,DirType dirType) throws Exception{
 		InputStream in = null;
 		try{
-			if(dirType==DirType.assets){
-//				String fileName = "bitMapPic.png";
-//				try{
-//					//复制文件
-//					LoadResources.saveToTempFile(context, filePath, dirType, fileName);
-//				}catch(Exception e){
-//					e.printStackTrace();
-//				}
-//				Bitmap bm= BitmapFactory.decodeFile(context.getFilesDir()+File.separator+fileName);
-//				return bm;	
-//				
-//				in = new FileInputStream(new File(context.getFilesDir()+File.separator+fileName));
-//                
-				//BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-				//bitmapOptions.inSampleSize = 4;
-				//bitmapOptions.inTempStorage=new byte[12 * 1024];
-//				AssetManager assetManager = context.getAssets();
-//				in= assetManager.open(filePath);
-//				Bitmap bm= BitmapFactory.decodeFile(context.getFilesDir()+File.separator+fileName);
-//				return bm;		
-				byte[] buffer = LoadResources.loadFile(context, filePath, dirType);
-				if(buffer!=null){
-					//logger.error("bm:"+buffer.length+":"+960*540);
-					BitmapFactory.Options opts = new BitmapFactory.Options();
-					//设置inJustDecodeBounds为 true后，decodeFile并不分配空间，但可计算出原始图片的长度和宽度，即opts.width和opts.height
-					//opts.inJustDecodeBounds = true;
-//					if(buffer.length>40000){
-//						opts.inSampleSize = 2;
-//					}
-					Bitmap bm = BitmapFactory.decodeStream(new BufferedInputStream(new ByteArrayInputStream(buffer)),null,opts);
-					//logger.error("bm:"+bm.getWidth()+":"+bm.getHeight());
-					
-					return bm;
-				}
-
-				//设置堆内存
-//				int CWJ_HEAP_SIZE = 6* 1024* 1024 ; 
-//				VMRuntime.getRuntime().setMinimumHeapSize(CWJ_HEAP_SIZE);
-			}else if(dirType==DirType.file||dirType==DirType.sd){
-				return null;
+			byte[] buffer = LoadResources.loadFile(context, filePath, dirType);
+			if(buffer!=null){
+				logger.error("buffer size"+buffer.length);
+				BitmapFactory.Options opts = new BitmapFactory.Options();
+				Bitmap bm = BitmapFactory.decodeStream(new BufferedInputStream(new ByteArrayInputStream(buffer)),null,opts);
+				FileOutputStream f = new FileOutputStream(Constant.getSdPath()+File.separator+"test.jpg");
+				f.write(buffer);
+				f.flush();
+				f.close();
+				return bm;
 			}
 		}catch(Exception e){
 			throw e;
@@ -75,31 +71,37 @@ public class LoadResources {
 		return null;
 	}
 	
-	
-
-	
-	public static byte[] loadFile(Context context,String filePath,DirType dirType) throws Exception{
+	/**
+	 * 根据路径和路径类型读取文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
+	public static byte[] loadFile(Context context,String filePath,DirType dirType){
 		InputStream in= null;
+		logger.error("filePath:"+filePath+":dirType:"+dirType);
 		try{
 			if(dirType==DirType.assets){
 				AssetManager assetManager = context.getAssets();
 				in= assetManager.open(filePath);
-				byte[] buf = new byte[in.available()];
-				in.read(buf,0,buf.length);
-				if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&LoadResources.secrete){
-					//解密文件头
-					byte[] encrypByte = new byte[ZipToFile.encrypLength];
-					System.arraycopy(buf, 0, encrypByte, 0, ZipToFile.encrypLength);
-					byte[] temp = CryptionControl.getInstance().decryptECB(encrypByte, ZipToFile.rootKey);  
-					System.arraycopy(temp, 0, buf, 0, ZipToFile.encrypLength);
-				}
-				return buf;
-
-			}else if(dirType==DirType.file||dirType==DirType.sd){ 
-				return null;
+			}else if(dirType==DirType.file){
+				in= new FileInputStream(Constant.getDataPath()+File.separator+filePath);
+			}else if(dirType==DirType.sd){
+				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
 			}
+			byte[] buf = new byte[in.available()];
+			//in.read(buf,0,buf.length);
+			if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&LoadResources.secrete){
+				//解密文件头
+				byte[] encrypByte = new byte[ZipToFile.encrypLength];
+				System.arraycopy(buf, 0, encrypByte, 0, ZipToFile.encrypLength);
+				byte[] temp = CryptionControl.getInstance().decryptECB(encrypByte, ZipToFile.rootKey);  
+				System.arraycopy(temp, 0, buf, 0, ZipToFile.encrypLength);
+			}
+			return buf;
 		}catch(Exception e){
-			throw e;
+			return null;
 		}finally{
 			if(in!=null){
 				try{
@@ -110,9 +112,14 @@ public class LoadResources {
 				
 			}
 		}
-		return null;
 	}
-	
+	/**
+	 * 保存临时文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
 	public static boolean saveToTempFile(Context context,String filePath,DirType dirType,String tempSavePath){
 		FileOutputStream fos = null;
 		InputStream in = null;
@@ -136,24 +143,26 @@ public class LoadResources {
 			if(dirType==DirType.assets){
 				AssetManager assetManager = context.getAssets();
 				in= assetManager.open(filePath);
-				readLength=in.read(buffer);
-				if (readLength >= ZipToFile.encrypLength&&LoadResources.secrete) {
-					// 解密文件头
-					byte[] encrypByte = new byte[ZipToFile.encrypLength];
-					System.arraycopy(buffer, 0, encrypByte, 0,ZipToFile.encrypLength);
-					byte[] temp = CryptionControl.getInstance().decryptECB(encrypByte, ZipToFile.rootKey);
-					System.arraycopy(temp, 0, buffer, 0, ZipToFile.encrypLength);
-				}	
-				while(readLength>0){
-					//logger.error("readLength:"+readLength);
-					fos.write(buffer,0,readLength);
-					fos.flush();
-					readLength=in.read(buffer);
-				}
-				result = true;
-			}else if(dirType==DirType.file||dirType==DirType.sd){
-				
+			}else if(dirType==DirType.file){
+				in= new FileInputStream(Constant.getDataPath()+File.separator+filePath);
+			}else if(dirType==DirType.sd){
+				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
 			}
+			readLength=in.read(buffer);
+			if (readLength >= ZipToFile.encrypLength&&LoadResources.secrete) {
+				// 解密文件头
+				byte[] encrypByte = new byte[ZipToFile.encrypLength];
+				System.arraycopy(buffer, 0, encrypByte, 0,ZipToFile.encrypLength);
+				byte[] temp = CryptionControl.getInstance().decryptECB(encrypByte, ZipToFile.rootKey);
+				System.arraycopy(temp, 0, buffer, 0, ZipToFile.encrypLength);
+			}	
+			while(readLength>0){
+				//logger.error("readLength:"+readLength);
+				fos.write(buffer,0,readLength);
+				fos.flush();
+				readLength=in.read(buffer);
+			}
+			result = true;
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -174,6 +183,40 @@ public class LoadResources {
 		return result;
 	}
 	
+	public static Bitmap getBitmap(Context context,String filePath){
+		Bitmap bm = null;
+		if(bm==null){
+			try{
+				bm = LoadResources.loadBitmap(context, filePath, DirType.sd);	
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		if(bm==null){
+			try{
+				bm = LoadResources.loadBitmap(context, filePath, DirType.file);	
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}				
+		if(bm==null){
+			try{
+				bm = LoadResources.loadBitmap(context, filePath, DirType.assets);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}	
+		return bm;
+	}
+	
+	
+	/**
+	 * 一下代码没有用到
+	 * @param options
+	 * @param minSideLength
+	 * @param maxNumOfPixels
+	 * @return
+	 */
 	
 	public static int computeSampleSize(BitmapFactory.Options options,int minSideLength, int maxNumOfPixels) {
 		int initialSize = computeInitialSampleSize(options, minSideLength,maxNumOfPixels); 

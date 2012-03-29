@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="#080808">
+	<LinearLayout android:id="@+id/linearLayout1"
+		android:layout_height="fill_parent" android:layout_width="fill_parent"
+		android:background="#4BA500" android:layout_weight="3">
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:text="string/hello" />
+	</LinearLayout>
+	<LinearLayout android:id="@+id/linearLayout2"
+		android:layout_height="fill_parent" android:layout_width="fill_parent"
+		android:orientation="horizontal" android:layout_weight="1">
+		<LinearLayout android:id="@+id/linearLayout1"
+			android:layout_height="fill_parent" android:layout_width="fill_parent"
+			android:orientation="vertical" android:background="#ADEAEA"
+			android:layout_weight="3">
+			<TextView android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:text="string/hello" />
+		</LinearLayout>
+		<LinearLayout android:id="@+id/linearLayout2"
+			android:layout_height="fill_parent" android:layout_width="fill_parent"
+			android:orientation="vertical" android:background="#D8D8BF"
+			android:layout_weight="1" android:gravity="top|center">
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="更新内容"/>
+			<Button android:id="@+id/update_btn" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="更新"/>				
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>

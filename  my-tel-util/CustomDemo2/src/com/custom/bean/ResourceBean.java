@@ -13,12 +13,14 @@ public class ResourceBean {
 	public static class ResourceRaws{
 		String rawPath = null;
 		ResourceType type = null;
+		DirType dirType = null;
 		
 		
-		public ResourceRaws(String rawPath, ResourceType type) {
+		public ResourceRaws(String rawPath, ResourceType type, DirType dirType) {
 			super();
 			this.rawPath = rawPath;
 			this.type = type;
+			this.dirType = dirType;
 		}
 		public String getRawPath() {
 			return rawPath;
@@ -32,6 +34,13 @@ public class ResourceBean {
 		public void setType(ResourceType type) {
 			this.type = type;
 		}
+		public DirType getDirType() {
+			return dirType;
+		}
+		public void setDirType(DirType dirType) {
+			this.dirType = dirType;
+		}
+		
 		
 	}
 	

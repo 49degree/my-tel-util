@@ -17,6 +17,7 @@ import java.util.zip.ZipOutputStream;
 
 import android.os.Environment;
 
+import com.custom.utils.Constant;
 import com.custom.utils.CryptionControl;
 import com.custom.utils.Logger;
 import com.custom.utils.TypeConversion;
@@ -30,10 +31,7 @@ public class ZipToFile {
 	boolean stopZipFile = false;
 	
 	public ZipToFile(){
-		String status = Environment.getExternalStorageState();
-		if (status.equals(Environment.MEDIA_MOUNTED)){
-			sdPath = Environment.getDownloadCacheDirectory().getAbsolutePath();
-		}
+		sdPath = Constant.getSdPath();
 
 	}
 	
@@ -171,9 +169,9 @@ public class ZipToFile {
 		byte[] buf = new byte[BUFFER];
 		byte[] encrypByte = new byte[encrypLength];
 		int readLen = 0;
+		
 		while (zList.hasMoreElements()) {
 			ze = (ZipEntry) zList.nextElement();
-			
 			if(stopZipFile){//如果停止了，则退出
 				break;
 			}

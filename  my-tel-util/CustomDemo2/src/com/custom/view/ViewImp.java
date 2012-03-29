@@ -200,7 +200,7 @@ public abstract class ViewImp extends FrameLayout{
         @Override
         protected void onPostExecute(ScanFoldUtils scanFoldUtils) {
         	//参数对应doInBackground返回值，也是<ScanFoldUtils, String, ScanFoldUtils>第3个
-			initView();	
+			initView();
 			if(progress!=null)
 				progress.dismiss();
         }
@@ -216,9 +216,8 @@ public abstract class ViewImp extends FrameLayout{
 	
 	public void initView(){
 		try{
-			if(scanFoldUtils.resourceInfo==null){
-				scanFoldUtils.queryRes();
-			}
+			if(scanFoldUtils.resourceInfo==null||scanFoldUtils.resourceInfo.size()<1)
+				return;
 			logger.error("createIndexButton");
 			this.createIndexButton();
 		}catch(Exception e){
@@ -235,6 +234,9 @@ public abstract class ViewImp extends FrameLayout{
 			if(scanFoldUtils==null){
 				scanFoldUtils = new ScanFoldUtils(context,foldPath,foldDepth);
 			}
+			logger.error("logger.error(scanFoldUtils.bgPic);"+scanFoldUtils.bgPic);
+			if(scanFoldUtils.bgPic==null) 
+				return ;
 			if(scanFoldUtils.bgtype == Constant.BgType.pic){
 				// 设置主界面布局
 				scrollView = new BackgroundLinearLayout(this.context);
@@ -245,16 +247,9 @@ public abstract class ViewImp extends FrameLayout{
 				/**
 				 * 背景视图
 				 */
-//				AssetManager assetManager = context.getAssets();
-//				logger.error(scanFoldUtils.bgPic);
-//				InputStream in = assetManager.open(scanFoldUtils.bgPic);
 				if(bm==null){
-					bm = LoadResources.loadBitmap(context, scanFoldUtils.bgPic, DirType.assets);	
+					bm = LoadResources.loadBitmap(context, scanFoldUtils.bgPic, scanFoldUtils.bgDirtype);	
 				}
-				
-				logger.error(scanFoldUtils.bgPic+":"+bm.hashCode());
-				//in.close();
-				
 				int[] viewXY = calBackGroudView(bm);
 				// 设置主布局
 				mLayout = new AbsoluteLayout(context);
@@ -309,6 +304,7 @@ public abstract class ViewImp extends FrameLayout{
 				mLayout = new AbsoluteLayout(context);
 				createView(mLayout);
 			}
+			logger.error("background end");
 		}catch(Exception e){
 			e.printStackTrace();
 		}

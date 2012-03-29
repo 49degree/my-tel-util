@@ -1,6 +1,7 @@
 package com.custom.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import com.custom.utils.Constant.DirType;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -21,15 +24,27 @@ public class MondifyIndexImageIndex {
 	public static void initImageIndexs(Context context,boolean imageCanMove){
 		try{
 			String filePath = Constant.path+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
-			InputStream in = null;
+			byte[] buf = null;
 			if(imageCanMove){
 				filePath = Environment.getExternalStorageDirectory()+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
-				in = new FileInputStream(filePath);
+				buf = LoadResources.loadFile(context,filePath, DirType.sd);
 			}else{
-				AssetManager am = context.getAssets();
-				in = am.open(filePath);
+				//读取配置文件,首先在SD卡上找,在从data目录找，最后在assets目录找
+				filePath = Constant.path+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
+				if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
+					buf = LoadResources.loadFile(context,filePath, DirType.sd);
+				}
+				if(buf==null){//从DATA目录读取
+					buf = LoadResources.loadFile(context, filePath, DirType.file);
+				}
+				if(buf==null){//从ASSETS目录读取
+					buf = LoadResources.loadFile(context, filePath, DirType.assets);
+				}
 			}
-			BufferedReader  fin = new BufferedReader(new InputStreamReader(in));
+			if(buf==null){
+				return ;
+			}
+			BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
 			String line = fin.readLine();
 			while(line!=null){
 				logger.error(line.substring(0,line.indexOf("="))+":"+line.substring(line.indexOf("=")+1));

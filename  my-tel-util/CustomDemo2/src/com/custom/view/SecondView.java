@@ -53,19 +53,19 @@ public class SecondView extends ViewImp{
 					}); 
 		}
 
-		Entry<String,ResourceBean> data=  resourceInfo.get(0);
-		Entry<String,ResourceBean> data2=  resourceInfo.get(0);
-		resourceInfo.removeAll(resourceInfo);
-		for(int i=0;i<32;i++){
-			resourceInfo.add(data);
-		}
-		
-		for(int i=0;i<12;i++){
-			resourceInfo.add(data2);
-		}
-		for(int i=0;i<40;i++){
-			resourceInfo.add(data);
-		}
+//		Entry<String,ResourceBean> data=  resourceInfo.get(0);
+//		Entry<String,ResourceBean> data2=  resourceInfo.get(0);
+//		resourceInfo.removeAll(resourceInfo);
+//		for(int i=0;i<32;i++){
+//			resourceInfo.add(data);
+//		}
+//		
+//		for(int i=0;i<12;i++){
+//			resourceInfo.add(data2);
+//		}
+//		for(int i=0;i<40;i++){
+//			resourceInfo.add(data);
+//		}
 		
 		if(pageNumBean==null){
 			pageNumBean = new PageNumBean(resourceInfo.size());	

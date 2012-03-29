@@ -45,7 +45,7 @@ public class IndexView extends ViewImp{
 			//加载按钮图片
 			try{
 				if(resourceBean.getBm()==null)
-					resourceBean.setBm(LoadResources.loadBitmap(context, resourceBean.getBtnPic(), DirType.assets));
+					resourceBean.setBm(LoadResources.loadBitmap(context, resourceBean.getBtnPic(), resourceBean.getDirType()));
 			}catch(Exception e){
 				
 			}

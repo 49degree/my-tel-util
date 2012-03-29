@@ -15,7 +15,7 @@ public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
 	static boolean secrete = true;
 
-	private static HashMap<String,JSONObject> installedInfo = new HashMap<String,JSONObject>();
+	public static HashMap<String,JSONObject> installedInfo = new HashMap<String,JSONObject>();
 	private static JSONObject json = null;
 	public static void initInstalledInfo(){
 		try{

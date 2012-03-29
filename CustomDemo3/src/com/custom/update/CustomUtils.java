@@ -3,32 +3,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
+import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Environment;
-import android.telephony.TelephonyManager;
+import android.os.Handler;
 import android.util.Log;
 
 import com.custom.network.HttpRequest;
-import com.custom.utils.SharedPreferencesUtils;
+import com.custom.utils.LoadResources;
 
 
 public class CustomUtils {
@@ -37,95 +26,174 @@ public class CustomUtils {
 	Context context = null;
 	public CustomUtils(Context context){
 		this.context = context;
-		//下载之前要判断SD卡路径是否有效，如果用户没插SD卡，要把下载位置改成本机
-		// 获取扩展SD卡设备状态   
-		String sDStateString = android.os.Environment.getExternalStorageState();   
-		// 拥有可读可写权限   
-		if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {   
-			createDir(path);
-		}else{
-			path = context.getFilesDir()+File.separator;
-		}
 	}
     
-    public void queryInfo(){
-        java.text.SimpleDateFormat sf = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
+    public JSONObject queryInfo(){
         HashMap<String,String> params = new HashMap<String,String>();
         HttpRequest httpRequest = new HttpRequest(Constant.QUERY_URL,params,context);
-        String retStr = httpRequest.getResponsString(false);
-        Log.i(TAG, "==================="+retStr);
+        JSONObject retJson = httpRequest.getResponsJSON(false);
+        Log.i(TAG, "==================="+httpRequest.getResponsString(false));
         try {  
         	//解析数据
-        	
-            //保存数据到配置文件
-            Iterator it = handler.getAppInfo().keySet().iterator();
-            while(it.hasNext()){
-            	String key = (String)it.next();
-            	String[] info = handler.getAppInfo().get(key);
-            	StringBuffer infoBuffer = new StringBuffer();
-            	for(int i=0;i<info.length;i++){
-            		infoBuffer.append(info[i]).append("|"); 
-            	}
-            	SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.NEW_APP_INFO, key, infoBuffer.toString());
-            }
-        } catch (SAXException e) {  
-
+        	LoadResources.initInstalledInfo();
+			JSONArray list = retJson.getJSONArray("updates");
+			for(int i=0;i<list.length();i++){
+				JSONObject installed = list.getJSONObject(i);
+				
+				if(!LoadResources.installedInfo.containsKey(installed.getString("updateId")))
+					return installed;
+			}
+        } catch (Exception e) {  
             e.printStackTrace();  
-
-        } catch (ParserConfigurationException e) {  
-
-            e.printStackTrace();  
-
-        } catch (IOException e) {  
-
-            e.printStackTrace();  
-
         } 
+        return null;
     }
     
-    public boolean updateInstalledInfo(String packageName){}
-    
-    public boolean checkAndInstalledApp(){}
-    
-    public boolean downAndInstall(String packetName,String appinfos){}
-	public static void SaveIncludedFileIntoFilesFolder(int resourceid, String filename, Context ApplicationContext) throws Exception {
-		InputStream is = ApplicationContext.getResources().openRawResource(resourceid);
-		FileOutputStream fos = ApplicationContext.openFileOutput(filename, Context.MODE_WORLD_READABLE);
-		byte[] bytebuf = new byte[1024];
-		int read;
-		while ((read = is.read(bytebuf)) >= 0) {
-			fos.write(bytebuf, 0, read);
+	/**
+	 * 文件下载
+	 * @param url
+	 * @param fileName
+	 */
+	public void downFile(JSONObject installed ,Handler handler) throws Exception{
+		String fileName = installed.getString("fileName");
+		File sdfile = null;
+		boolean fileExsit = false;
+		long dowonedLength = 0;
+		RandomAccessFile oSavedFile = null;
+		String filePath = null;
+		String fileDirType = "";
+		//查询是否已经存在文件
+		if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){
+			sdfile = new File( Constant.getSdPath()+File.separator+Constant.foldName+File.separator+fileName);
+			if(fileExsit = sdfile.exists()){
+				filePath = Constant.getSdPath()+File.separator+Constant.foldName+File.separator+fileName;
+				fileDirType = "sd";
+			}
 		}
-		is.close();
-		fos.getChannel().force(true);
-		fos.flush();
-		fos.close();
+		if(!fileExsit){
+			sdfile = new File( Constant.getDataPath()+File.separator+Constant.foldName+File.separator+fileName);
+			if(fileExsit = sdfile.exists()){
+				filePath = Constant.getDataPath()+File.separator+Constant.foldName+File.separator+fileName;
+				fileDirType = "data";
+			}
+		}
+		if(fileExsit)
+			dowonedLength = sdfile.length();
+		int readLength = 0;
+		int length = 0;
+		byte[] buffer = new byte[1024];
+		try {
+			URL url = new URL(Constant.INSTALLED_URL+"/"+fileName);   
+			HttpURLConnection conn =(HttpURLConnection) url.openConnection();   
+			conn.setDoInput(true);
+			if(fileExsit){
+				// 设置 User-Agent 
+				conn.setRequestProperty("User-Agent","NetFox"); 
+				// 设置断点续传的开始位置 
+				conn.setRequestProperty("RANGE","bytes="+dowonedLength+"-"); 
+			}
+			conn.connect();
+			long setAside = 500*1024*1024;//内存要预留50M空间
+			if( conn.getResponseCode() == HttpURLConnection.HTTP_OK||conn.getResponseCode()==206){
+				length = conn.getContentLength();
+				InputStream in = conn.getInputStream(); 
+				
+				if(fileExsit){
+					try{
+						oSavedFile = new RandomAccessFile(fileName,"rw");
+						oSavedFile.setLength(length+(fileDirType.equals("data")?setAside:0));
+						oSavedFile.setLength(dowonedLength);
+					}catch(IOException e1){
+						//如果存储空间不够
+						if(fileDirType.equals("data")){
+							filePath = Constant.getSdPath()+File.separator+Constant.foldName+File.separator+fileName;
+							fileDirType = "sd";
+
+						}else if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){
+							filePath = Constant.getDataPath()+File.separator+Constant.foldName+File.separator+fileName;
+							fileDirType = "data";
+						}
+						RandomAccessFile oldSavefile = oSavedFile;
+						oSavedFile = new RandomAccessFile(fileName,"rw");
+						try{
+							oSavedFile.setLength(length+(fileDirType.equals("data")?setAside:0));
+							oSavedFile.setLength(0);
+							//复制原有数据
+							while((readLength=oldSavefile.read(buffer))>0){
+								oSavedFile.write(buffer,0,readLength);
+							}
+							
+						}catch(IOException e2){
+							//没有存储空间了
+							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
+							return;
+						}finally{
+							try{
+								oldSavefile.close();
+								sdfile.delete();//删除文件
+							}catch(IOException e3){
+								
+							}
+						}
+					}
+				}else{
+					try{
+						filePath = Constant.getSdPath()+File.separator+Constant.foldName+File.separator+fileName;
+						fileDirType = "sd";
+						oSavedFile = new RandomAccessFile(fileName,"rw");
+						oSavedFile.setLength(length+setAside);
+						oSavedFile.setLength(0);
+					}catch(IOException e1){
+						//如果存储空间不够
+						if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){
+							filePath = Constant.getDataPath()+File.separator+Constant.foldName+File.separator+fileName;
+							fileDirType = "data";
+						}else{
+							//没有存储空间了
+							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
+							return;
+						}
+					}
+				}
+				
+				oSavedFile = new RandomAccessFile(fileName,"rw");
+				try{
+					oSavedFile.setLength(length+(fileDirType.equals("data")?setAside:0));
+					oSavedFile.setLength(0);
+					while((readLength=in.read(buffer))>0){
+						oSavedFile.write(buffer,0,readLength);
+						dowonedLength +=readLength;
+						handler.sendMessage(handler.obtainMessage(2, (int)dowonedLength, length));//报告进度
+					}
+				}catch(IOException e2){
+					//没有存储空间了
+					handler.sendMessage(handler.obtainMessage(1));
+					return ;
+				}finally{
+					try{
+						oSavedFile.close();
+					}catch(IOException e3){
+						
+					}
+					try{
+						in.close();
+					}catch(IOException e3){
+						
+					}
+				}
+				installed.put("fileDirType", fileDirType);
+				LoadResources.updateInstalledInfo(installed);//保存已经下载完成
+				//通知下载完成
+				handler.sendMessage(handler.obtainMessage(3));//通知下载完成
+				
+			}else{//连接失败,发送通知
+				handler.sendMessage(handler.obtainMessage(4));//连接失败
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw e;
+		}
 	}
 	
-	/**
-	 * 判断目录是否存在，不存在则创建文件夹，成功返回文件夹的路径，失败返回�?
-	 * @param filePath
-	 */
-	private String createDir(String filePath) {
-		File fileDir = null; // 文件流变
-		boolean hasDir = false; // 标示文件流对象是否存
-		fileDir = new File(filePath); // 生成文件流对
-		hasDir = fileDir.exists(); // 判断文件流对象是否存
-		if (!hasDir) {
-			String[] fileDirs = filePath.split("/");
-			StringBuffer fileDirStr = new StringBuffer();
-			for(int i=0;i<fileDirs.length;i++){
-				fileDir = new File(fileDirStr.append("/").append(fileDirs[i]).toString());
-				if(!fileDir.exists()){
-					hasDir = fileDir.mkdir();
-				}
-			}
-			//hasDir = fileDir.mkdir();
-		}
-		//判断是否成功
-		if(!hasDir){
-			filePath = null;
-		}
-		return filePath;
-	}
+	
 }

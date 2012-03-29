@@ -12,6 +12,7 @@ public class Constant {
 	public final static String installedInfo = "installedInfo.txt";
 	private static String sdPath = null;
 	private static String dataPath = null;
+	public final static String foldName="custom";
 
 	
 	static{

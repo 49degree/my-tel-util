@@ -13,13 +13,14 @@ public class DecodeLogFile {
 	String packName = "FSK_POS&";
 	byte[] infos = null;
 	byte[] lineEnd = null;
-	public DecodeLogFile(String logFilePath,String fileName){
+	public DecodeLogFile(String logFilePath,String fileName,String packName){
 		this.logFilePath = logFilePath; 
 		this.fileName = fileName;
-		workKey = encryptoWorkKey(rootKey,packName+fileName.substring(0,10));
+		this.packName = packName+"&";
+		workKey = encryptoWorkKey(rootKey,this.packName+fileName.substring(0,10));
 		try{
 			lineEnd = TypeConversion.stringToAscii("\n");
-			//System.out.println(lineEnd.length+":"+lineEnd[0]);
+			
 		}catch(Exception e){
 			
 		}
@@ -49,8 +50,10 @@ public class DecodeLogFile {
 			while((readStr=rd.readLine())!=null){
 				
 				try{
-					
 					infos = TypeConversion.hexStringToByte(readStr);
+					
+					if(infos.length<8)
+						continue;
 					infos = CryptionControl.getInstance().decryptECB(infos, workKey);
 					int i=infos.length-1;
 					for(;i>-1;i--){

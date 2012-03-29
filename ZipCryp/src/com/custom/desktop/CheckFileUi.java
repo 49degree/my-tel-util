@@ -56,7 +56,8 @@ public class CheckFileUi extends JFrame {
 		BorderLayout lay = new BorderLayout();
 		setLayout(lay);
 
-		ButtonPanel buttonPanel = new ButtonPanel();
+//		ButtonPanel buttonPanel = new ButtonPanel();
+		DecodeLogFilePanel buttonPanel = new DecodeLogFilePanel();
 		contentPane.add(buttonPanel, BorderLayout.CENTER);
 		setVisible(true);
 
@@ -69,7 +70,7 @@ public class CheckFileUi extends JFrame {
 	}
 
 	public void realeas() {
-		System.out.println("关闭了。。。。。。");
+		//System.out.println("关闭了。。。。。。");
 		if(zipTofile!=null){
 			zipTofile.stopZipFile();
 		}
@@ -98,6 +99,134 @@ public class CheckFileUi extends JFrame {
 		diolog.show();
 	}
 	
+	
+	
+	
+	
+	
+	/**
+	 * 解密日志
+	 * @author Administrator
+	 *
+	 */
+	DecodeLogFile decodeLogFile = null;
+	public class DecodeLogFilePanel extends JPanel {
+		public DecodeLogFilePanel() {
+			super();
+			GridBagLayout lay = new GridBagLayout();
+			setLayout(lay);
+			// this.setSize(800, 200);
+			this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+
+			JLabel dirLable = new JLabel("解密文件：");
+			final JTextField dirPath = new JTextField(15);
+			JButton choiseBtn = new JButton("选择");
+			choiseBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JFileChooser chooser = new JFileChooser();
+					chooser.setCurrentDirectory(new java.io.File("."));
+					chooser.setDialogTitle("选择解密文件");
+					//chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);// 只能选择目录
+					chooser.setAcceptAllFileFilterUsed(false);
+					if (chooser.showOpenDialog(DecodeLogFilePanel.this) == JFileChooser.APPROVE_OPTION) {
+						dirPath.setText(chooser.getSelectedFile().getAbsolutePath());
+					}
+				}
+			});
+			JLabel packNameLable = new JLabel("包名：");
+			final JTextField packNameText = new JTextField(15);
+			JButton sureBtn = new JButton("解密");
+			sureBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					// 判断路径是否为空
+					if(dirPath.getText()==null||"".equals(dirPath.getText().trim())){
+						createDialog("路径为空!");
+						return;
+					}
+					
+					final File rootFile = new File(dirPath.getText());
+					if(!rootFile.exists()){
+						createDialog("路径不存在!");
+						return;
+					}
+					// 判断路径是否为空
+					if(packNameText.getText()==null||"".equals(packNameText.getText().trim())){
+						createDialog("包名为空!");
+						return;
+					}
+					
+					new Thread(){
+						public void run(){
+							try{
+								boolean encode = true;
+								decodeLogFile = new DecodeLogFile(rootFile.getParent(),rootFile.getName(),packNameText.getText().trim());
+								decodeLogFile.decodeFile();
+							}catch(Exception e){
+								e.printStackTrace();
+								createDialog(e.getMessage());
+								
+							}finally{
+								if(prossThread!=null){
+									//System.out.println("prossThread");
+									prossThread.stopBar();
+								}
+								//System.out.println("prossThread111");
+							}
+						}
+					}.start();
+					
+					prossThread = new ThreadDiag("加密资源","请稍候,正在进行加密...");
+					//System.out.println("prossThrea22");
+				}
+			});
+
+			GridBagConstraints constraints = new GridBagConstraints();
+			constraints.fill = GridBagConstraints.NONE;
+			constraints.weightx = 3;
+			constraints.weighty = 3;
+			add(dirLable, constraints, 1, 1, 1, 1); 
+			add(dirPath, constraints, 2, 1, 1, 1);
+			add(choiseBtn, constraints, 3, 1, 1, 1);
+			
+			add(packNameLable, constraints, 1, 2, 1, 1);
+			add(packNameText, constraints, 2, 2, 1, 1);
+			
+			add(sureBtn, constraints, 2, 3, 1, 1);
+			
+			
+			
+
+		}
+
+		public void add(Component c, GridBagConstraints constraints, int x,
+				int y, int w, int h) {
+			constraints.gridx = x;
+			constraints.gridy = y;
+			constraints.gridwidth = w;
+			constraints.gridheight = h;
+			add(c, constraints);
+		}		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 压缩解压文件
+	 */
 	ZipToFile zipTofile = null;
 	ThreadDiag prossThread = null; 
 	public class ButtonPanel extends JPanel {
@@ -119,13 +248,13 @@ public class CheckFileUi extends JFrame {
 					chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);// 只能选择目录
 					chooser.setAcceptAllFileFilterUsed(false);
 					if (chooser.showOpenDialog(ButtonPanel.this) == JFileChooser.APPROVE_OPTION) {
-						System.out.println("getCurrentDirectory(): "
-								+ chooser.getCurrentDirectory());
-						System.out.println("getSelectedFile() : "
-								+ chooser.getSelectedFile());
+						//System.out.println("getCurrentDirectory(): "
+						//		+ chooser.getCurrentDirectory());
+						//System.out.println("getSelectedFile() : "
+						//		+ chooser.getSelectedFile());
 						dirPath.setText(chooser.getSelectedFile().getAbsolutePath());
 					} else {
-						System.out.println("No Selection ");
+						//System.out.println("No Selection ");
 					}
 				}
 			});
@@ -157,16 +286,16 @@ public class CheckFileUi extends JFrame {
 								
 							}finally{
 								if(prossThread!=null){
-									System.out.println("prossThread");
+									//System.out.println("prossThread");
 									prossThread.stopBar();
 								}
-								System.out.println("prossThread111");
+								//System.out.println("prossThread111");
 							}
 						}
 					}.start();
 					
 					prossThread = new ThreadDiag("加密资源","请稍候,正在进行加密...");
-					System.out.println("prossThrea22");
+					//System.out.println("prossThrea22");
 				}
 			});
 
@@ -181,13 +310,13 @@ public class CheckFileUi extends JFrame {
 					chooser.setDialogTitle("选择资源目录");
 					chooser.setAcceptAllFileFilterUsed(false);
 					if (chooser.showOpenDialog(ButtonPanel.this) == JFileChooser.APPROVE_OPTION) {
-						System.out.println("getCurrentDirectory(): "
-								+ chooser.getCurrentDirectory());
-						System.out.println("getSelectedFile() : "
-								+ chooser.getSelectedFile());
+						//System.out.println("getCurrentDirectory(): "
+						//		+ chooser.getCurrentDirectory());
+						//System.out.println("getSelectedFile() : "
+						//		+ chooser.getSelectedFile());
 						decodePath.setText(chooser.getSelectedFile().getAbsolutePath());
 					} else {
-						System.out.println("No Selection ");
+						//System.out.println("No Selection ");
 					}
 				}
 			});
@@ -213,22 +342,22 @@ public class CheckFileUi extends JFrame {
 								zipTofile = new ZipToFile();
 								String path = rootFile.getAbsolutePath();
 								zipTofile.upZipFile(path,path.substring(0,path.lastIndexOf(".")),encode);
-								System.out.println("prossThread111");
+								//System.out.println("prossThread111");
 							}catch(Exception e){
 								e.printStackTrace();
 								createDialog(e.getMessage());
 							}finally{
 								if(prossThread!=null){
-									System.out.println("prossThread");
+									//System.out.println("prossThread");
 									prossThread.stopBar();
 								}
-								System.out.println("prossThread111");
+								//System.out.println("prossThread111");
 							}
 						}
 					}.start();
 					
 					prossThread = new ThreadDiag("加密资源","请稍候,正在进行加密...");
-					System.out.println("prossThrea22");
+					//System.out.println("prossThrea22");
 				}
 			});
 
@@ -278,14 +407,14 @@ public class CheckFileUi extends JFrame {
 		
 		public void stopBar(){
 			
-			System.out.println("complete");
+			//System.out.println("complete");
 			this.stop = true;
 		}
 		/**
 		 * 初始化对话框
 		 */
 		public void init() {
-			System.out.println("ThreadDiag11111111111111111");
+			//System.out.println("ThreadDiag11111111111111111");
 			this.setTitle(title);
 			this.setModal(true);
 			proBar = new JProgressBar();
@@ -316,7 +445,7 @@ public class CheckFileUi extends JFrame {
 				}
 			}.start();
 			
-			System.out.println("ThreadDiag222");
+			//System.out.println("ThreadDiag222");
 
 		}
 

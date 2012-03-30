@@ -2,6 +2,7 @@ package com.custom.utils;
 
 import java.util.HashMap;
 
+import android.content.Context;
 import android.os.Environment;
 
 import com.custom.view.R;
@@ -24,7 +25,7 @@ public class Constant {
 	public final static String resourceFold="raw";
 	public final static String backGroundSwfName = "background.swf";//复制文件
 	private static String sdPath = null;
-	private static String dataPath = null;
+	private static String updateDataPath = null;
 	public final static String framePicName = "frame.png";
 	
 	
@@ -58,13 +59,22 @@ public class Constant {
 		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
 			sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 		}
-		dataPath =  MainApplication.getInstance().getFilesDir().getAbsolutePath();
+		try{
+			Context friendContext = MainApplication.getInstance().createPackageContext(
+					"com.custom.update",Context.CONTEXT_IGNORE_SECURITY);	
+			updateDataPath =  friendContext.getFilesDir().getAbsolutePath();
+		}catch(Exception e){
+			
+		}
+		
+		
+		
 	}
 	public static String getSdPath(){
 		return sdPath;
 	}
 	
-	public static String getDataPath(){
-		return dataPath;
+	public static String getUpdateDataPath(){
+		return updateDataPath;
 	}
 }

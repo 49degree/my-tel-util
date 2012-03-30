@@ -47,7 +47,6 @@ public class MondifyIndexImageIndex {
 			BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
 			String line = fin.readLine();
 			while(line!=null){
-				logger.error(line.substring(0,line.indexOf("="))+":"+line.substring(line.indexOf("=")+1));
 				if(line.indexOf("=")>0){
 					String indexs =  line.substring(line.indexOf("=")+1);
 					if(indexs.length()<3||indexs.indexOf(":")<0){

@@ -31,7 +31,7 @@ public class LoadResources {
 		if(DirType.sd == dirType){
 			return new File( Constant.getSdPath()+File.separator+foldPath);
 		}else if(DirType.file == dirType){
-			return new File( Constant.getDataPath()+File.separator+foldPath);
+			return new File( Constant.getUpdateDataPath()+File.separator+foldPath);
 		}
 		return null;
 	}
@@ -81,12 +81,15 @@ public class LoadResources {
 	public static byte[] loadFile(Context context,String filePath,DirType dirType){
 		InputStream in= null;
 		logger.error("filePath:"+filePath+":dirType:"+dirType);
+
+
 		try{
 			if(dirType==DirType.assets){
 				AssetManager assetManager = context.getAssets();
 				in= assetManager.open(filePath);
 			}else if(dirType==DirType.file){
-				in= new FileInputStream(Constant.getDataPath()+File.separator+filePath);
+				//in= new FileInputStream(Constant.getDataPath()+File.separator+filePath);
+				in= new FileInputStream(Constant.getUpdateDataPath()+File.separator+filePath);
 			}else if(dirType==DirType.sd){
 				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
 			}
@@ -144,7 +147,7 @@ public class LoadResources {
 				AssetManager assetManager = context.getAssets();
 				in= assetManager.open(filePath);
 			}else if(dirType==DirType.file){
-				in= new FileInputStream(Constant.getDataPath()+File.separator+filePath);
+				in= new FileInputStream(Constant.getUpdateDataPath()+File.separator+filePath);
 			}else if(dirType==DirType.sd){
 				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
 			}

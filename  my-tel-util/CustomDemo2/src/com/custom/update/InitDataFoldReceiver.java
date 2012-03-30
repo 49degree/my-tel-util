@@ -24,7 +24,7 @@ public class InitDataFoldReceiver extends BroadcastReceiver {
     				Constant.update_package,Context.CONTEXT_IGNORE_SECURITY);
     		out = friendContext.openFileOutput("DataFoldCount.txt", Context.MODE_APPEND);
     		logger.error("InitDataFoldReceiver 查询结果:"+count);
-    		out.write(("="+Constant.foldName+"="+count+"\n").getBytes("GBK"));
+    		out.write(("="+Constant.foldName_ex+"="+count+"\n").getBytes("GBK"));
     		
     		out.flush();
         }catch(Exception e){

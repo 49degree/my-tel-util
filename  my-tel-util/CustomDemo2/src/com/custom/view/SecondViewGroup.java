@@ -350,6 +350,11 @@ public class SecondViewGroup extends LinearLayout {
 			//设置图标的位置
 			// TODO Auto-generated method stub
 			//int[] indexs = MondifyIndexImageIndex.getImageIndexs(resourceBean.getBtnKey());
+//			int[] viewXY = new int[2];
+//			viewXY[0] = screenWidth>screenHeight?screenWidth:screenHeight;
+//			viewXY[1] = screenWidth>screenHeight?screenHeight:screenWidth;
+//			int width = viewXY[0]-250;
+//			int height = viewXY[1]-100;
 			resourceBean.setX(buttonIndex%4*200+50);
 			resourceBean.setY(buttonIndex/4%2*200+150);
 		}

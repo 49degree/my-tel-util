@@ -10,7 +10,9 @@ import com.custom.view.R;
 public class Constant {
 	public final static String foldPath = "foldPath";
 	public static String foldName="";
+	public static String foldName_ex = "";
 	public static String path = "";
+	
 	public static String pageNumPicPath="";
 	public final static String bgPicName = "BACKGROUP";
 	public final static String raw_first_name = "INDEX|PLAY";
@@ -54,6 +56,7 @@ public class Constant {
 		
 		String foldName = MainApplication.getInstance().getString(R.string.fold_name);
 		Constant.foldName = foldName;
+		foldName_ex =MainApplication.getInstance().getString(R.string.fold_name_ex);
 		Constant.path = "custom/"+foldName;
 		Constant.pageNumPicPath = "custom/"+foldName+"/pagepic";
 

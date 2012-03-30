@@ -11,6 +11,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -18,6 +19,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -25,6 +27,7 @@ import android.webkit.WebViewClient;
 import android.widget.AbsoluteLayout;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
@@ -216,8 +219,18 @@ public abstract class ViewImp extends FrameLayout{
 	
 	public void initView(){
 		try{
-			if(scanFoldUtils.resourceInfo==null||scanFoldUtils.resourceInfo.size()<1)
+			if(scanFoldUtils.resourceInfo==null||scanFoldUtils.resourceInfo.size()<1){
+				TextView text = new TextView(context);
+				text.setBackgroundColor(Color.RED);
+				text.setText("未找到资源文件");
+				LinearLayout.LayoutParams tlayout = new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT);
+				tlayout.gravity = Gravity.CENTER;
+				text.setLayoutParams(tlayout);
+				
+				this.addView(text);
 				return;
+			}
 			logger.error("createIndexButton");
 			this.createIndexButton();
 		}catch(Exception e){

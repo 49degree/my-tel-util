@@ -5,13 +5,41 @@
       android:versionName="1.0"
       android:sharedUserId="com.custom">
     <application android:name="com.custom.utils.MainApplication"  android:icon="@drawable/icon" android:label="@string/app_name">
-		<activity android:name=".activity.IndexActivity" android:label="@string/app_name"
+
+       <!-- 
+		<provider android:name="com.custom.provider.NotePadProvider"
+			android:readPermission="android.permission.READ_CALENDAR"
+			android:writePermission="android.permission.WRITE_CALENDAR"
+			android:authorities="com.custom.view.provider.notepad" />
+		<activity android:name="com.custom.provider.ProviderTest" android:label="provider 测试">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+			<intent-filter>
+				<data android:mimeType="vnd.android.cursor.dir/vnd.google.note">
+				</data>
+			</intent-filter>
+			<intent-filter>
+				<data android:mimeType="vnd.android.cursor.item/vnd.google.note">
+				</data>
+			</intent-filter>
+		</activity>  
+		-->
+		<activity android:name="com.custom.activity.IndexActivity" android:label="@string/app_name"
 			android:configChanges="orientation|keyboardHidden" android:screenOrientation="landscape">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" /> 
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+				<!-- 查询已经安装数据广播 -->
+		<receiver android:name="com.custom.update.InitDataFoldReceiver">
+			<intent-filter>
+				<action android:name="com.custom.update.InitDataFoldReceiver" />
+			</intent-filter>
+		</receiver>
+		
     </application>
     <uses-sdk android:minSdkVersion="7" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />

@@ -112,7 +112,7 @@ public class ScanFoldUtils {
 		for(int i=0;i<lists.length;i++){
 			if(lists[i].indexOf(".")<0)//为目录
 				continue;
-			if(Constant.bgPicName.equals(lists[i].substring(0,lists[i].indexOf(".")).toUpperCase()))
+			if(!Constant.bgPicName.equals(lists[i].substring(0,lists[i].indexOf(".")).toUpperCase()))
 				continue;
 			//是背景图片
 			if(Constant.picType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){

@@ -85,7 +85,7 @@ public class ScanFoldUtils {
 			if(bgPic==null){//从DATA目录读取
 				File sdfile = LoadResources.getFileByType(foldPath,DirType.file);
 				if(sdfile.exists()){
-					lists =  getFileNames(new File( Constant.getDataPath()+File.separator+foldPath).listFiles(fl));
+					lists =  getFileNames(sdfile.listFiles(fl));
 					if(lists!=null)
 						expendBackground(lists,DirType.file);
 				}

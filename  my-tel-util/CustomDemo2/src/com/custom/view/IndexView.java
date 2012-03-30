@@ -2,22 +2,15 @@ package com.custom.view;
 
 import java.util.Iterator;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
-import android.view.Display;
-import android.view.View;
-import android.view.WindowManager;
 
-import com.custom.R;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.MondifyIndexImageIndex;
 import com.custom.utils.SharedPreferencesUtils;
-import com.custom.utils.Constant.BgType;
-import com.custom.utils.Constant.DirType;
 
 
 

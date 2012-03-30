@@ -2,13 +2,10 @@ package com.custom.view;
 
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -20,15 +17,12 @@ import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.custom.R;
 import com.custom.activity.IndexActivity;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
-import com.custom.utils.Constant.DirType;
 
 public abstract class IndexImageButtonImp extends LinearLayout implements OnClickListener{
 	private static final String TAG = "IndexImageButtonImp";

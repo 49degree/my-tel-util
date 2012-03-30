@@ -31,17 +31,7 @@ public class IndexActivity  extends Activity {
 		if(bundle==null||bundle.get(Constant.foldPath)==null){
 			v = new IndexView(this,Constant.path,Constant.fistFoldDepth);
 			setContentView(v);
-			try{
-				new Thread(){
-					public void run(){
-//						new ToGetFile().downFileFromzip(
-//								Environment.getExternalStorageDirectory().getAbsolutePath()
-//								+File.separator+"custom/myfile.zip");
-					}
-				}.start();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+
 		}else{
 			try{
 				String foldPath = bundle.getString(Constant.foldPath);

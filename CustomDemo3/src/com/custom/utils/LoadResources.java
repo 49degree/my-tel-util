@@ -31,11 +31,20 @@ public class LoadResources {
 				return ;
 			}
 			String info = new String(buf,"GBK");
+			logger.error(info);
 			json = new JSONObject(info);
-			JSONArray list = json.getJSONArray("updates");
+			JSONArray list = null;
+			try{
+				list = json.getJSONArray(Constant.root);
+			}catch(Exception e){
+				list = new JSONArray();
+				json.put(Constant.root, list);
+				
+			}
+			
 			for(int i=0;i<list.length();i++){
 				JSONObject installed = list.getJSONObject(i);
-				installedInfo.put(installed.getString("updateId"), installed);
+				installedInfo.put(installed.getString(Constant.updateId), installed);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -46,11 +55,26 @@ public class LoadResources {
 		String filePath = Constant.getDataPath()+File.separator+Constant.installedInfo;
 		try{
 			if(json!=null){
-				json.getJSONArray("updates").put(installed);
+				json.getJSONArray(Constant.root).put(installed);
+			}else{
+				json = new JSONObject();
+				json.put(Constant.root, new JSONArray());
+				logger.error("new json:"+json.toString());
 			}
 			
-			installedInfo.put(installed.getString("updateId"), installed);
+			if(installedInfo.containsKey(installed.getString(Constant.updateId))){
+				JSONArray list = json.getJSONArray(Constant.root);
+				for(int i=0;i<list.length();i++){//如果已经存在，则替换
+					JSONObject temp = list.getJSONObject(i);
+					if(temp.getString(Constant.updateId).equals(Constant.updateId)){
+						list.put(i, installedInfo);
+						break;
+					}
+				}
+			}
+			installedInfo.put(installed.getString(Constant.updateId), installed);
 			
+			logger.error("update json:"+json.toString());
 			writeFile(filePath,json.toString());
 		}catch(Exception e){
 			e.printStackTrace();

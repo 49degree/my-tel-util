@@ -17,12 +17,14 @@ public class Constant {
 //    {"updateId":"1","updateTime":"2012-3-26 18:00:00","fileName":"file1.zip"},
 //    {"updateId":"2","updateTime":"2012-3-28 18:00:00","fileName":"file2.zip"},
 //   ]}
+	public final static String success="success";
 	public final static String root="updates";
 	public final static String updateId="updateId";
 	public final static String updateTime="updateTime";
 	public final static String fileName="fileName";
 	public final static FileDirType fileDirType=FileDirType.data;
 	public final static String filePath="filePath";
+	public final static String fileUnziped="fileUnziped";
 	
 	public enum FileDirType{
 		data,sd

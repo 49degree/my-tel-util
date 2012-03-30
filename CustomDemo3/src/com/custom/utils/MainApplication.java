@@ -1,8 +1,8 @@
 package com.custom.utils;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
-import android.os.Handler;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -11,7 +11,7 @@ import android.view.WindowManager;
  * @author 杨雪平
  *
  */
-public class MainApplication {
+public class MainApplication extends Application{
 	private static Context instance;
 	public int screenHeight = 0;
 	public int screenWidth = 0;
@@ -53,13 +53,13 @@ public class MainApplication {
 		return screenWidth;
 	}
 
-//	@Override
-//	public void onCreate() {
-//		// TODO Auto-generated method stub
-//		super.onCreate();
-//		//System.out.println("Aplication 初始化");
-//		instance = this;
-//	}
+	@Override
+	public void onCreate() {
+		// TODO Auto-generated method stub
+		super.onCreate();
+		//System.out.println("Aplication 初始化");
+		instance = this;
+	}
 	
 	
 	

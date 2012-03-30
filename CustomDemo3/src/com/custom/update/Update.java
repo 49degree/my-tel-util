@@ -1,8 +1,10 @@
 package com.custom.update;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -18,9 +20,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.custom.utils.DialogUtils;
-import com.custom.utils.DialogUtils.OnAlertDlgSureBtn;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
+import com.custom.utils.DialogUtils.OnAlertDlgSureBtn;
 
 public class Update extends Activity implements OnClickListener{
 	private static final Logger logger = Logger.getLogger(Update.class);
@@ -65,22 +67,39 @@ public class Update extends Activity implements OnClickListener{
     @Override
     public void onClick(View v){
     	
-    	progress = ProgressDialog.show(this, "请稍候", "正在连接....");
+    	progress = new ProgressDialog(this);
+    	progress.setTitle("请稍候");
+    	progress.setMessage( "正在连接....");
+    	//progress.setIndeterminate(indeterminate);
+    	progress.setCancelable(true);
+    	progress.show();
     	progress.setOnCancelListener(new OnCancelListener(){
 			public void onCancel(DialogInterface dialog){
 				customUtils.stop();
-				progress.cancel();
+				//progress.cancel();
 			}
 		});
         new Thread(){
         	public void run(){
             	customUtils = new CustomUtils(Update.this);
             	JSONObject installed = customUtils.queryInfo();
+
+            	logger.error("JSONObject installed = customUtils.queryInfo();");
             	try{
-                 	logger.error(installed.getString(Constant.updateId));
+                 	
                 	if(installed!=null){
+            			try{
+            				if(!installed.getBoolean(Constant.success)){
+                         		handler.sendMessage(handler.obtainMessage(6,installed.getString("msg")));
+                         		return;
+            				}
+            			}catch(Exception e){
+            			}
+    					logger.error(installed.getString(Constant.updateId));
                 		handler.sendMessage(handler.obtainMessage(5));
                 	    customUtils.downFile(installed, handler);
+                	}else{
+                		handler.sendMessage(handler.obtainMessage(6,"无升级资源"));
                 	}
         		}catch(Exception e){
         			e.printStackTrace();
@@ -93,7 +112,7 @@ public class Update extends Activity implements OnClickListener{
     
     private Handler handler = new Handler(){
     	int times = 0;
-    	Object msgObject = null;
+    	JSONObject msgObject = null;
     	@Override
     	public void handleMessage(Message msg){
     		int what = msg.what;
@@ -113,23 +132,39 @@ public class Update extends Activity implements OnClickListener{
     			}
     			break;//报告下载进度
     		case 3:
-    			progress.cancel();
-    			msgObject = msg.obj;
+    			progress.dismiss();
+    			msgObject = (JSONObject)msg.obj;
     			DialogUtils.showMessageAlertDlg(Update.this,"提示", "下载成功", new OnAlertDlgSureBtn(){
     				public void OnSureBtn(){
     					progress.setMessage("正在解压文件");
     					progress.show();
     	    			try{
-    	        			final String filePath = ((JSONObject)msgObject).getString(Constant.filePath);
-    	        			logger.error("filePath:"+filePath);
+    	        			final String filePath = msgObject.getString(Constant.filePath);
     	        			new Thread(){
     	        				public void run(){
-    	        					new ToGetFile().downFileFromzip(filePath);
+    	        					try{
+        	        					new ToGetFile().downFileFromzip(filePath);
+        	        					msgObject.put(Constant.fileUnziped, "true");
+        	        					LoadResources.updateInstalledInfo(msgObject);
+    	        					}catch(Exception e){
+    	        						DialogUtils.showMessageAlertDlg(Update.this,"提示", "解压文件异常", null,null);
+    	        						if(new File(filePath).exists()){
+    	        							new File(filePath).delete();
+    	        						}
+    	        						try {
+											LoadResources.installedInfo.remove(msgObject.getString(Constant.updateId));
+										} catch (JSONException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+    	        					}
     	        					progress.cancel();
     	        				}
     	        			}.start();
     	    			}catch(Exception e){
-    	    				progress.setMessage("解压文件失败");
+    	    				e.printStackTrace();
+    	    				progress.cancel();
+    	    				DialogUtils.showMessageAlertDlg(Update.this,"提示", "解压文件异常", null,null);
     	    			}
     				}
     			},null);
@@ -140,7 +175,11 @@ public class Update extends Activity implements OnClickListener{
     			break;//连接异常
     		case 5:
     			progress.setMessage("开始下载程序");
-    			break;//没有存储空间    			
+    			break;//没有存储空间    		
+    		case 6:
+    			progress.cancel();
+    			DialogUtils.showMessageAlertDlg(Update.this,"提示",(String)msg.obj, null,null);
+    			break;//连接异常
     		default:
     			break;
     		}

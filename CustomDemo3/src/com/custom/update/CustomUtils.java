@@ -6,6 +6,7 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,21 +33,44 @@ public class CustomUtils {
 	}
     
     public JSONObject queryInfo(){
-        HashMap<String,String> params = new HashMap<String,String>();
-        HttpRequest httpRequest = new HttpRequest(Constant.QUERY_URL,params,context);
-        JSONObject retJson = httpRequest.getResponsJSON(false);
-        logger.error( "==================="+httpRequest.getResponsString(false));
-        try {  
-        	//解析数据
-        	LoadResources.initInstalledInfo();
-			JSONArray list = retJson.getJSONArray("updates");
-			for(int i=0;i<list.length();i++){
-				JSONObject installed = list.getJSONObject(i);
+		try {
+			LoadResources.initInstalledInfo();// 获取已经下载的文件列表
+			Iterator it = LoadResources.installedInfo.keySet().iterator();
+			while (it.hasNext()) {
+				String key = (String) it.next();
+				JSONObject installed = LoadResources.installedInfo.get(key);
+				try{
+					if (installed!=null&&installed.getString(Constant.fileUnziped) != null)// 有文件为解压
+						continue;
+				}catch(Exception e){
+					return installed;
+				}
+
+			}
+
+			HashMap<String, String> params = new HashMap<String, String>();
+			HttpRequest httpRequest = new HttpRequest(Constant.QUERY_URL,
+					params, context);
+			JSONObject retJson = httpRequest.getResponsJSON(false);
+			logger.error("===================" 	+ httpRequest.getResponsString(false));
+			// 解析数据
+			try{
+				if(!retJson.getBoolean("success")){
+					return retJson;
+				}
+			}catch(Exception e){
 				
-				if(!LoadResources.installedInfo.containsKey(installed.getString("updateId")))
+			}
+
+			JSONArray list = retJson.getJSONArray("updates");
+			for (int i = 0; i < list.length(); i++) {
+				JSONObject installed = list.getJSONObject(i);
+				if (!LoadResources.installedInfo.containsKey(installed
+						.getString("updateId")))
 					return installed;
 			}
-        } catch (Exception e) {  
+			
+		} catch (Exception e) {  
             e.printStackTrace();  
         } 
         return null;
@@ -54,6 +78,7 @@ public class CustomUtils {
     
 	/**
 	 * 文件下载
+	 * 文件优先放在SD卡上
 	 * @param url
 	 * @param fileName
 	 */
@@ -128,8 +153,6 @@ public class CustomUtils {
 							while(!stop&&(readLength=oldSavefile.read(buffer))>0){
 								oSavedFile.write(buffer,0,readLength);
 							}
-							if(stop)
-								return ;
 						}catch(IOException e2){
 							//没有存储空间了
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
@@ -215,8 +238,10 @@ public class CustomUtils {
 				handler.sendMessage(handler.obtainMessage(3,filePath));//通知下载完成
 				
 			}else if(conn.getResponseCode() == 416&&fileExsit){//已经完成下载
-				logger.error("filePath:"+filePath);
-				handler.sendMessage(handler.obtainMessage(3,filePath));//通知下载完成
+				installed.put(Constant.fileDirType.toString(), fileDirType);
+				installed.put(Constant.filePath, filePath);
+				LoadResources.updateInstalledInfo(installed);//保存已经下载完成
+				handler.sendMessage(handler.obtainMessage(3,installed));//通知下载完成
 			}else{//连接失败,发送通知
 				handler.sendMessage(handler.obtainMessage(4));//连接失败
 			}

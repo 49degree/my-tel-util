@@ -5,8 +5,6 @@ import android.app.Application;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.custom.R;
-
 /**
  * 
  * @author 杨雪平

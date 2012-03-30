@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import android.os.Environment;
 
-import com.custom.R;
+import com.custom.view.R;
 
 public class Constant {
 	public final static String foldPath = "foldPath";

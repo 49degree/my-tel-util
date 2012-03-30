@@ -19,15 +19,15 @@ public class ZipToFile {
 	private static byte[] rootKey = TypeConversion.hexStringToByte("DBED28F6415162BD");
 
 	public static final int BUFFER = 1024;// 缓存大小
-	public static final String ZIP_FILENAME = "E:\\English";// 需要解压缩的文件名
-	public static final String ZIP_DIR = "E:\\English";// 需要压缩的文件夹
-	public static final String UN_ZIP_DIR = "E:\\unEnglish";// 要解压的文件目录
+	public static final String ZIP_FILENAME = "E:\\mydir.zip";// 需要解压缩的文件名
+	public static final String ZIP_DIR = "E:\\mydir";// 需要压缩的文件夹
+	public static final String UN_ZIP_DIR = "E:\\unmydir";// 要解压的文件目录
 	
 	public static void main(String[] args){
 		try{
 			boolean encode = true;
-			new ZipToFile().zipFile(ZIP_DIR, ZIP_FILENAME,encode);
-			new ZipToFile().upZipFile(ZIP_FILENAME,UN_ZIP_DIR,encode);
+			//new ZipToFile().zipFile(ZIP_DIR, ZIP_FILENAME,encode);
+			new ZipToFile().upZipFile(ZIP_FILENAME,UN_ZIP_DIR,encode,"custom/yuwen");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -63,7 +63,7 @@ public class ZipToFile {
 			}
 			
 			File f = (File) fileList.get(i);
-			System.out.println("name:"+f);
+			
 			if(f.getAbsoluteFile().equals(fileName+".temp"))//如果为当前压缩临时文件，这条过
 				continue;
 			
@@ -150,8 +150,16 @@ public class ZipToFile {
 	 * @throws Exception
 	 */
 	public void upZipFile(String zipFile,String unZipDir,boolean decrypt) throws Exception {
+		this.upZipFile(zipFile, unZipDir, decrypt, null);
 
-		
+	}
+
+	/**
+	 * 解压缩功能. 将ZIP_FILENAME文件解压到ZIP_DIR目录下.
+	 * 
+	 * @throws Exception
+	 */
+	public void upZipFile(String zipFile,String unZipDir,boolean decrypt,String specifiedDir) throws Exception {
 		ZipFile zfile = new ZipFile(zipFile);
 		Enumeration zList = zfile.entries();
 		ZipEntry ze = null;
@@ -165,13 +173,16 @@ public class ZipToFile {
 				break;
 			}
 			
+			if(specifiedDir!=null&&ze.getName().indexOf(specifiedDir)<0)
+				continue;
+			
 			if (ze.isDirectory()) {
 				File f = new File(unZipDir + ze.getName());
 				f.mkdir();
 				continue;
 			}
 			OutputStream os = new BufferedOutputStream(new FileOutputStream(
-					getRealFileName(unZipDir, ze.getName())));
+					getRealFileName(unZipDir, ze.getName(),specifiedDir)));
 			InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
 			
 			readLen = is.read(buf, 0, BUFFER);
@@ -190,7 +201,7 @@ public class ZipToFile {
 		}
 		zfile.close();
 	}
-
+	
 	/**
 	 * 给定根目录，返回一个相对路径所对应的实际文件名.
 	 * 
@@ -200,7 +211,10 @@ public class ZipToFile {
 	 *            相对路径名，来自于ZipEntry中的name
 	 * @return java.io.File 实际的文件
 	 */
-	public static File getRealFileName(String baseDir, String absFileName) {
+	public static File getRealFileName(String baseDir, String absFileName,String specifiedDir) {
+		if(specifiedDir!=null){
+			absFileName = absFileName.substring(absFileName.indexOf(specifiedDir));	
+		}
 		String[] dirs = absFileName.split("/");
 		File ret = new File(baseDir);
 		if (dirs.length > 0) {
@@ -215,5 +229,19 @@ public class ZipToFile {
 		}
 		return ret;
 	}
+	
+	/**
+	 * 给定根目录，返回一个相对路径所对应的实际文件名.
+	 * 
+	 * @param baseDir
+	 *            指定根目录
+	 * @param absFileName
+	 *            相对路径名，来自于ZipEntry中的name
+	 * @return java.io.File 实际的文件
+	 */
+	public static File getRealFileName(String baseDir, String absFileName) {
+		return getRealFileName(baseDir,absFileName,null);
+	}
+
 
 }

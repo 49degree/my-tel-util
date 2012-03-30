@@ -1,15 +1,21 @@
 package com.custom.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.content.Context;
+
 import com.custom.update.Constant;
+import com.custom.update.Update;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
@@ -39,7 +45,10 @@ public class LoadResources {
 	public static void updateInstalledInfo(JSONObject installed){
 		String filePath = Constant.getDataPath()+File.separator+Constant.installedInfo;
 		try{
-			json.getJSONArray("updates").put(installed);
+			if(json!=null){
+				json.getJSONArray("updates").put(installed);
+			}
+			
 			installedInfo.put(installed.getString("updateId"), installed);
 			
 			writeFile(filePath,json.toString());
@@ -75,6 +84,61 @@ public class LoadResources {
 			}
 		}
 	}	
+	
+	/**
+	 * 查询已经下载了多少业务
+	 */
+	public static HashMap<String,String> queryDownedFold(Context context){
+		//读取数据
+		FileInputStream in = null;
+		HashMap<String,String> folds = new HashMap<String,String>();
+		try{
+			in = context.openFileInput("DataFoldCount.txt");
+			BufferedReader fin = new BufferedReader(new InputStreamReader(in));
+			String line = fin.readLine();
+			int count = 0;
+			while(line!=null){
+				line = line.substring(line.indexOf('=')+1);
+				if(line.indexOf("=")>0){
+					folds.put(line.substring(0,line.indexOf("=")), line.substring(line.indexOf("=")+1).trim());
+				}
+				line = fin.readLine();
+			}
+		}catch(Exception e){
+			
+		}finally{
+			try{
+				if(in!=null)
+					in.close();
+			}catch(Exception e){
+			}
+		}
+		FileOutputStream out = null;
+        try{
+    		out = context.openFileOutput("DataFoldCount.txt",Context.MODE_WORLD_READABLE);
+			//查询
+			Iterator it = folds.keySet().iterator();
+			while(it.hasNext()){
+				String name = (String)it.next();
+				String value = folds.get(name);
+	    		out.write(("="+name+"="+value+"\n").getBytes("GBK"));
+	    		out.flush();
+			}
+        }catch(Exception e){
+        	
+        }finally{
+        	try{
+        		if(out!=null)
+        			out.close();
+            }catch(Exception e){
+            	
+            }
+        	
+        }
+		
+		
+		return folds;
+	}
 	
 	/**
 	 * 根据路径和路径类型读取文件

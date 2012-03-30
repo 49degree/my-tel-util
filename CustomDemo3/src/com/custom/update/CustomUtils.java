@@ -1,6 +1,5 @@
 package com.custom.update;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -14,25 +13,29 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 
 import com.custom.network.HttpRequest;
 import com.custom.utils.LoadResources;
+import com.custom.utils.Logger;
 
 
 public class CustomUtils {
-	final static String TAG = "CustomUtils";
+	private static final Logger logger = Logger.getLogger(CustomUtils.class);
 	String path = Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separator + "customDemo"+File.separator;
 	Context context = null;
 	public CustomUtils(Context context){
 		this.context = context;
+	}
+	boolean stop = false;
+	public void stop(){
+		stop = true;
 	}
     
     public JSONObject queryInfo(){
         HashMap<String,String> params = new HashMap<String,String>();
         HttpRequest httpRequest = new HttpRequest(Constant.QUERY_URL,params,context);
         JSONObject retJson = httpRequest.getResponsJSON(false);
-        Log.i(TAG, "==================="+httpRequest.getResponsString(false));
+        logger.error( "==================="+httpRequest.getResponsString(false));
         try {  
         	//解析数据
         	LoadResources.initInstalledInfo();
@@ -61,20 +64,20 @@ public class CustomUtils {
 		long dowonedLength = 0;
 		RandomAccessFile oSavedFile = null;
 		String filePath = null;
-		String fileDirType = "";
+		Constant.FileDirType fileDirType = null;
 		//查询是否已经存在文件
 		if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){
-			sdfile = new File( Constant.getSdPath()+File.separator+Constant.foldName+File.separator+fileName);
+			sdfile = new File( Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName);
 			if(fileExsit = sdfile.exists()){
-				filePath = Constant.getSdPath()+File.separator+Constant.foldName+File.separator+fileName;
-				fileDirType = "sd";
+				filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
+				fileDirType = Constant.FileDirType.sd;
 			}
 		}
 		if(!fileExsit){
-			sdfile = new File( Constant.getDataPath()+File.separator+Constant.foldName+File.separator+fileName);
+			sdfile = new File( Constant.getDataPath()+File.separator+Constant.path+File.separator+fileName);
 			if(fileExsit = sdfile.exists()){
-				filePath = Constant.getDataPath()+File.separator+Constant.foldName+File.separator+fileName;
-				fileDirType = "data";
+				filePath = Constant.getDataPath()+File.separator+Constant.path+File.separator+fileName;
+				fileDirType = Constant.FileDirType.data;
 			}
 		}
 		if(fileExsit)
@@ -83,46 +86,50 @@ public class CustomUtils {
 		int length = 0;
 		byte[] buffer = new byte[1024];
 		try {
-			URL url = new URL(Constant.INSTALLED_URL+"/"+fileName);   
+			URL url = new URL(Constant.INSTALLED_URL+fileName);  
+			logger.error("连接:"+url.toString());
 			HttpURLConnection conn =(HttpURLConnection) url.openConnection();   
 			conn.setDoInput(true);
 			if(fileExsit){
 				// 设置 User-Agent 
-				conn.setRequestProperty("User-Agent","NetFox"); 
+				//conn.setRequestProperty("User-Agent","NetFox"); 
 				// 设置断点续传的开始位置 
 				conn.setRequestProperty("RANGE","bytes="+dowonedLength+"-"); 
 			}
 			conn.connect();
 			long setAside = 500*1024*1024;//内存要预留50M空间
+			logger.error("连接返回:"+conn.getResponseCode()+":dowonedLength:"+dowonedLength);
 			if( conn.getResponseCode() == HttpURLConnection.HTTP_OK||conn.getResponseCode()==206){
 				length = conn.getContentLength();
 				InputStream in = conn.getInputStream(); 
+				logger.error("length:"+length);
 				
 				if(fileExsit){
 					try{
-						oSavedFile = new RandomAccessFile(fileName,"rw");
-						oSavedFile.setLength(length+(fileDirType.equals("data")?setAside:0));
+						oSavedFile = new RandomAccessFile(filePath,"rw");
+						oSavedFile.setLength(length+(fileDirType==Constant.FileDirType.data?setAside:0));
 						oSavedFile.setLength(dowonedLength);
 					}catch(IOException e1){
 						//如果存储空间不够
-						if(fileDirType.equals("data")){
-							filePath = Constant.getSdPath()+File.separator+Constant.foldName+File.separator+fileName;
-							fileDirType = "sd";
+						if(fileDirType==Constant.FileDirType.data){
+							filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
+							fileDirType = Constant.FileDirType.sd;
 
 						}else if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){
-							filePath = Constant.getDataPath()+File.separator+Constant.foldName+File.separator+fileName;
-							fileDirType = "data";
+							filePath = Constant.getDataPath()+File.separator+Constant.path+File.separator+fileName;
+							fileDirType = Constant.FileDirType.data;
 						}
 						RandomAccessFile oldSavefile = oSavedFile;
-						oSavedFile = new RandomAccessFile(fileName,"rw");
+						oSavedFile = new RandomAccessFile(filePath,"rw");
 						try{
-							oSavedFile.setLength(length+(fileDirType.equals("data")?setAside:0));
+							oSavedFile.setLength(length+(fileDirType==Constant.FileDirType.data?setAside:0));
 							oSavedFile.setLength(0);
 							//复制原有数据
-							while((readLength=oldSavefile.read(buffer))>0){
+							while(!stop&&(readLength=oldSavefile.read(buffer))>0){
 								oSavedFile.write(buffer,0,readLength);
 							}
-							
+							if(stop)
+								return ;
 						}catch(IOException e2){
 							//没有存储空间了
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
@@ -138,16 +145,34 @@ public class CustomUtils {
 					}
 				}else{
 					try{
-						filePath = Constant.getSdPath()+File.separator+Constant.foldName+File.separator+fileName;
-						fileDirType = "sd";
-						oSavedFile = new RandomAccessFile(fileName,"rw");
+						if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){
+							filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
+							fileDirType = Constant.FileDirType.sd;
+						}else{
+							filePath = Constant.getDataPath()+File.separator+Constant.path+File.separator+fileName;
+							fileDirType = Constant.FileDirType.data;
+						}
+						oSavedFile = new RandomAccessFile(filePath,"rw");
 						oSavedFile.setLength(length+setAside);
 						oSavedFile.setLength(0);
 					}catch(IOException e1){
 						//如果存储空间不够
-						if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){
-							filePath = Constant.getDataPath()+File.separator+Constant.foldName+File.separator+fileName;
-							fileDirType = "data";
+						if(fileDirType == Constant.FileDirType.sd){
+							filePath = Constant.getDataPath()+File.separator+Constant.path+File.separator+fileName;
+							fileDirType = Constant.FileDirType.data;
+							try{
+								oSavedFile = new RandomAccessFile(filePath,"rw");
+								oSavedFile.setLength(length);
+								oSavedFile.setLength(0);
+							}catch(IOException e4){
+								//没有存储空间了
+								handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
+								return;
+							}finally{
+								try{
+									oSavedFile.close();//删除文件
+								}catch(IOException e5){}
+							}
 						}else{
 							//没有存储空间了
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
@@ -155,16 +180,18 @@ public class CustomUtils {
 						}
 					}
 				}
-				
-				oSavedFile = new RandomAccessFile(fileName,"rw");
 				try{
-					oSavedFile.setLength(length+(fileDirType.equals("data")?setAside:0));
-					oSavedFile.setLength(0);
-					while((readLength=in.read(buffer))>0){
+					logger.error("filePath:"+filePath);
+					if(oSavedFile!=null)
+						oSavedFile.seek(dowonedLength);
+					while(!stop&&(readLength=in.read(buffer))>0){
 						oSavedFile.write(buffer,0,readLength);
 						dowonedLength +=readLength;
+						logger.error("dowonedLength +=readLength:"+dowonedLength);
 						handler.sendMessage(handler.obtainMessage(2, (int)dowonedLength, length));//报告进度
 					}
+					if(stop)
+						return ;
 				}catch(IOException e2){
 					//没有存储空间了
 					handler.sendMessage(handler.obtainMessage(1));
@@ -181,11 +208,15 @@ public class CustomUtils {
 						
 					}
 				}
-				installed.put("fileDirType", fileDirType);
+				installed.put(Constant.fileDirType.toString(), fileDirType);
+				installed.put(Constant.filePath, filePath);
 				LoadResources.updateInstalledInfo(installed);//保存已经下载完成
 				//通知下载完成
-				handler.sendMessage(handler.obtainMessage(3));//通知下载完成
+				handler.sendMessage(handler.obtainMessage(3,filePath));//通知下载完成
 				
+			}else if(conn.getResponseCode() == 416&&fileExsit){//已经完成下载
+				logger.error("filePath:"+filePath);
+				handler.sendMessage(handler.obtainMessage(3,filePath));//通知下载完成
 			}else{//连接失败,发送通知
 				handler.sendMessage(handler.obtainMessage(4));//连接失败
 			}

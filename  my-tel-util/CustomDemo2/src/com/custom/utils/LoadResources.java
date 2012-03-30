@@ -1,12 +1,14 @@
 package com.custom.utils;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -19,7 +21,7 @@ import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
-	static boolean secrete = true;
+	static boolean secrete = false;
 	
 	/**
 	 * 根据路径和文件名称获取文件对象
@@ -212,9 +214,49 @@ public class LoadResources {
 		return bm;
 	}
 	
+	/**
+	 * 查询已经下载了多少业务
+	 */
+	public static int queryDownedFold(Context context){
+		String filePath = Constant.path+File.separator+Constant.mapFileName;
+		//读取数据
+		try{
+			//读取配置文件,首先在SD卡上找,在从data目录找，最后在assets目录找
+			byte[] buf = null;
+			if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
+				buf = LoadResources.loadFile(context, filePath, DirType.sd);
+			}
+			if(buf==null){//从DATA目录读取
+				buf = LoadResources.loadFile(context, filePath, DirType.file);
+			}
+			if(buf==null){//从ASSETS目录读取
+				buf = LoadResources.loadFile(context, filePath, DirType.assets);
+			}
+			if(buf==null){
+				return 0;
+			}
+			BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
+			String line = fin.readLine();
+			int count = 0;
+			while(line!=null){
+				line = line.substring(line.indexOf('=')+1);
+				if(line.indexOf("=")>0){
+					count++;
+				}
+				line = fin.readLine();
+			}
+			
+			
+			return count;
+		}catch(Exception e){
+			
+		}
+		return 0;
+	}
+	
 	
 	/**
-	 * 一下代码没有用到
+	 * 以下代码没有用到
 	 * @param options
 	 * @param minSideLength
 	 * @param maxNumOfPixels

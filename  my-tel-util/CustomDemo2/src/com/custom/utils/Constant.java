@@ -27,6 +27,7 @@ public class Constant {
 	private static String sdPath = null;
 	private static String updateDataPath = null;
 	public final static String framePicName = "frame.png";
+	public final static String update_package = "com.custom.update";
 	
 	
 	
@@ -61,7 +62,7 @@ public class Constant {
 		}
 		try{
 			Context friendContext = MainApplication.getInstance().createPackageContext(
-					"com.custom.update",Context.CONTEXT_IGNORE_SECURITY);	
+					update_package,Context.CONTEXT_IGNORE_SECURITY);	
 			updateDataPath =  friendContext.getFilesDir().getAbsolutePath();
 		}catch(Exception e){
 			

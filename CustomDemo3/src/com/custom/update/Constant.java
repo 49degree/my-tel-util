@@ -8,6 +8,7 @@ public class Constant {
 	public  static String QUERY_URL = "";
 	public  static String INSTALLED_URL = "";
 	public final static String installedInfo = "installedInfo.txt";
+	public final static String installedFold = "DataFoldCount.txt";
 	private static String sdPath = null;
 	private static String dataPath = null;
 	public final static String path="custom";

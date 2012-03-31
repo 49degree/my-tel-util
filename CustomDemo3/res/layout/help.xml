@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="#D8D8BF">
+
+	<LinearLayout android:layout_height="fill_parent"
+		android:layout_width="fill_parent" android:background="#9ACD32"
+		android:layout_weight="3" android:orientation="horizontal">
+		<LinearLayout android:layout_height="fill_parent"
+			android:layout_width="wrap_content" android:orientation="vertical"
+			android:gravity="bottom|right">
+			<ImageView android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:src="@drawable/logo" />
+		</LinearLayout>
+		<LinearLayout android:id="@+id/LinearLayout8"
+			android:layout_height="fill_parent" android:layout_width="fill_parent"
+			android:orientation="vertical" android:gravity="bottom|right"
+			android:paddingRight="20px" >
+			<Button android:id="@+id/Button1" android:layout_height="100px"
+				android:layout_width="100px" android:background="@drawable/help"/>
+				
+			<TextView android:textColor="@color/black"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="帮助中心  " />		
+		</LinearLayout>
+	</LinearLayout>
+
+	<LinearLayout android:id="@+id/linearLayout2"
+		android:layout_height="fill_parent" android:layout_width="fill_parent"
+		android:orientation="horizontal" android:layout_weight="1"
+		android:paddingTop="15px">
+		<LinearLayout android:id="@+id/LinearLayout6"
+			android:layout_height="fill_parent" android:layout_width="fill_parent"
+			android:orientation="vertical" android:layout_weight="3"
+			android:gravity="center" android:background="#FAFAD2">
+			<ImageView android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:src="@drawable/download1" />
+			<TextView android:textColor="@color/black"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="帮助中心" android:paddingTop="15px" />
+			<TextView android:textColor="@color/black"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="123456@163.com" android:paddingTop="15px" />
+		</LinearLayout>
+
+		<LinearLayout android:layout_height="fill_parent"
+			android:layout_width="fill_parent" android:orientation="vertical"
+			android:layout_weight="1" android:background="#FFFFFF"
+			android:gravity="top|center" android:layout_marginLeft="15px"
+			android:paddingLeft="20px">
+			<ScrollView  android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:orientation="horizontal"
+				android:gravity="center_vertical|left" android:scrollbars="vertical">
+				<TextView android:id="@+id/TextView9" android:textColor="@color/black"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="" />
+			</ScrollView >
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>

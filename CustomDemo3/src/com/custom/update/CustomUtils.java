@@ -33,30 +33,29 @@ public class CustomUtils {
 	}
     
     public JSONObject queryInfo(){
+    	logger.error("queryInfo");
 		try {
-			LoadResources.initInstalledInfo();// 获取已经下载的文件列表
-			
+			LoadResources.loadUpdateInstalledInfo();// 获取已经下载的文件列表
 			HashMap<String, String> params = new HashMap<String, String>();
 			HttpRequest httpRequest = new HttpRequest(Constant.QUERY_URL,
 					params, context);
 			JSONObject retJson = httpRequest.getResponsJSON(false);
-			logger.error("===================" 	+ httpRequest.getResponsString(false));
+			logger.error("查询返回："+httpRequest.getResponsString(false));
 			// 解析数据
 			try{
 				if(!retJson.getBoolean("success")){
 					return retJson;
 				}
-			}catch(Exception e){
-				
-			}
+			}catch(Exception e){}
 
 			JSONArray list = retJson.getJSONArray("updates");
 			for (int i = 0; i < list.length(); i++) {
 				try{
 					JSONObject installed = list.getJSONObject(i);
-					logger.error(installed.getString(Constant.updateId));
-					if (!LoadResources.installedInfo.containsKey(installed
-							.getString(Constant.updateId))){
+					logger.error(installed.getString(Constant.updateId)+":"
+							+LoadResources.updateInstalledInfo.containsKey(installed.getString(Constant.updateId)));
+					if (!LoadResources.updateInstalledInfo.containsKey(installed.getString(Constant.updateId))){
+						logger.error(installed.getString(installed.toString()));
 						LoadResources.updateInstalledInfo(installed);
 					}
 						//return installed;
@@ -65,17 +64,7 @@ public class CustomUtils {
 				}
 			}
 			
-			Iterator it = LoadResources.installedInfo.keySet().iterator();
-			while (it.hasNext()) {
-				String key = (String) it.next();
-				JSONObject installed = LoadResources.installedInfo.get(key);
-				try{
-					if (installed!=null&&installed.getString(Constant.fileUnziped) != null)// 有文件为解压
-						continue;
-				}catch(Exception e){
-					return installed;
-				}
-			}
+			LoadResources.initInstalledInfo();//区分已经解压和未解压数据
 			
 		} catch (Exception e) {  
             e.printStackTrace();  
@@ -90,6 +79,7 @@ public class CustomUtils {
 	 * @param fileName
 	 */
 	public void downFile(JSONObject installed ,Handler handler) throws Exception{
+		logger.error("downFile");
 		String fileName = installed.getString("fileName");
 		File sdfile = null;
 		boolean fileExsit = false;

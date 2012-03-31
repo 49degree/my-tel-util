@@ -11,6 +11,7 @@ public class Constant {
 	private static String sdPath = null;
 	private static String dataPath = null;
 	public final static String path="custom";
+	public final static String timeFormate = "yyyy-MM-dd HH:mm-ss";
 	
 	//升级文件信息
 //	{"updates":[
@@ -19,13 +20,15 @@ public class Constant {
 //   ]}
 	public final static String success="success";
 	public final static String root="updates";
+	public final static String modifyTime="modifyTime";
 	public final static String updateId="updateId";
 	public final static String updateTime="updateTime";
 	public final static String fileName="fileName";
 	public final static FileDirType fileDirType=FileDirType.data;
 	public final static String filePath="filePath";
 	public final static String fileUnziped="fileUnziped";
-	
+	public final static String fileContent="content";
+
 	public enum FileDirType{
 		data,sd
 	}

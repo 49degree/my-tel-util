@@ -59,32 +59,22 @@ public class HttpRequest {
 	}
 
 	public JSONObject getResponsJSON(boolean isPost) {
-		if (this.responsJSON == null) {
-			this.setResponsJSON(isPost);
-		}
+		try{
+			if(isPost)
+				this.httpPost();
+			else
+				this.httpGet();
+		}catch(Exception e){}
 		return this.responsJSON;
 	}
 
 	public String getResponsString(boolean isPost ) {
 		if (this.responsString == null) {
-			this.setResponsString(isPost);
+			getResponsJSON(isPost);
 		}
 		return responsString;
 	}
 
-	private HttpResponse getPostHttpResponse() throws Exception {
-		if (httpResponse == null) {
-			httpResponse = httpPost();
-		}
-		return httpResponse;
-	}
-	
-	private HttpResponse getGetHttpResponse() throws Exception {
-		if (httpResponse == null) {
-			httpResponse = httpGet();
-		}
-		return httpResponse;
-	}
 
 	private void setResponsJSON(boolean isPost) {
 		try {
@@ -92,24 +82,19 @@ public class HttpRequest {
 			if (this.responsJSON == null) {
 				
 				try {
-					HttpResponse response = null;
-					if(isPost)
-						response = getPostHttpResponse();
-					else
-						response = getGetHttpResponse();
 					
-					if (response == null) {
+					if (httpResponse == null) {
 						throw new Exception("请求失败:URL(" + this.requestUrl + ")无法访问！");
 					}
 					// 比较下状态码，看看是否成功
-					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-
+					if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 						if (this.responsString == null) {
-							this.responsString = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
+							this.responsString = EntityUtils.toString(httpResponse.getEntity(), HTTP.ISO_8859_1);
+							this.responsString=new String(responsString.getBytes("ISO-8859-1"),"GBK");
 						}
 
 					} else {
-						throw new Exception("请求失败:" + response.getStatusLine().getStatusCode());
+						throw new Exception("请求失败:" + httpResponse.getStatusLine().getStatusCode());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -125,36 +110,13 @@ public class HttpRequest {
 			} catch (JSONException je) {
 				je.printStackTrace();
 			}
+		}finally{
 		}
 	}
 	
-	private void setResponsString(boolean isPost) {
-		try {
-			
-			HttpResponse response = null;
-			if(isPost)
-				response = getPostHttpResponse();
-			else
-				response = getGetHttpResponse();
-			
-			if (response == null) {
-				throw new Exception("请求失败:URL(" + this.requestUrl + ")无法访问！");
-			}
-			// 比较下状态码，看看是否成功
-			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				if (this.responsString == null) {
-					this.responsString = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
-				}
-			} else {
-				throw new Exception("请求失败:" + response.getStatusLine().getStatusCode());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			this.responsString = "";
-		}
-	}
 
-	private HttpResponse httpPost() throws Exception {
+	private void httpPost() throws Exception {
+		HttpClient httpclient = null;
 		try {
 			BasicHttpParams httpParameters = new BasicHttpParams();
 			// 设置连接超时时间(单位毫秒) 
@@ -162,7 +124,7 @@ public class HttpRequest {
 			// 设置读数据超时时间(单位毫秒) 
 			HttpConnectionParams.setSoTimeout(httpParameters, 120000);
 			//连接对象
-			HttpClient httpclient = new DefaultHttpClient(httpParameters);
+			httpclient = new DefaultHttpClient(httpParameters);
 			//这里设置Url
 			HttpPost httppost = new HttpPost(this.requestUrl);
 			//设置请求参数
@@ -173,29 +135,32 @@ public class HttpRequest {
 				}
 				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 			}
-			return httpclient.execute(httppost);// 开始执行
+			httpResponse = httpclient.execute(httppost);// 开始执行
+			setResponsJSON(true);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			throw e;
 		} catch (ClientProtocolException ce) {
 			throw ce;
+		}finally{
+			try{
+				if(httpclient!=null){
+					httpclient.getConnectionManager().shutdown();
+				}
+			}catch(Exception e){
+				
+			}
+
+			
 		}
-		
-//        HttpClient client = new DefaultHttpClient();
-//        HttpGet get = new HttpGet(this.requestUrl);
-//        try {
-//            return client.execute(get);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
 	}
 
 	
-	private HttpResponse httpGet() throws Exception {
+	private void httpGet() throws Exception {
+		HttpClient client = null;
         try {
         	StringBuffer bufferParas = new StringBuffer("?");
-            HttpClient client = new DefaultHttpClient();
+            client = new DefaultHttpClient();
            
 			//设置请求参数
 			if (this.paramMap != null) {
@@ -206,11 +171,20 @@ public class HttpRequest {
 			}
 			//Log.i(TAG, "==================="+this.requestUrl+bufferParas.toString());
 			 HttpGet get = new HttpGet(this.requestUrl+bufferParas.toString());
-            return client.execute(get);
+            
+			 httpResponse = client.execute(get);
+			 setResponsJSON(false);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
-        }
+		}finally{
+			try{
+				if(client!=null){
+					client.getConnectionManager().shutdown();
+				}
+			}catch(Exception e){
+				
+			}
+		}
 	}
 	/**
 	 * 验证网络是否可用

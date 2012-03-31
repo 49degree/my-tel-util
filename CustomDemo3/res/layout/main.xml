@@ -2,30 +2,94 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:background="#080808">
-	<LinearLayout android:id="@+id/linearLayout1"
-		android:layout_height="fill_parent" android:layout_width="fill_parent"
-		android:background="#4BA500" android:layout_weight="3">
-		<TextView android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:text="string/hello" />
+
+	<LinearLayout android:layout_height="fill_parent"
+		android:layout_width="fill_parent" android:background="#9ACD32"
+		android:layout_weight="3" android:orientation="horizontal">
+		
+		<LinearLayout android:layout_height="fill_parent"
+			android:layout_width="wrap_content" android:orientation="vertical"
+			android:gravity="bottom|right">
+			<ImageView android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:src="@drawable/logo" />
+		</LinearLayout>
+		<LinearLayout android:layout_height="fill_parent"
+			android:layout_width="fill_parent" android:orientation="vertical"
+			android:gravity="bottom|right" android:paddingBottom="20px" android:paddingRight="20px">
+			<TextView android:textColor="@color/black" android:id="@+id/TextView7" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="系统版本   V1.0"/>
+			<TextView android:textColor="@color/black" android:id="@+id/TextView8" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="设备系列号"/>
+		</LinearLayout>
 	</LinearLayout>
+
 	<LinearLayout android:id="@+id/linearLayout2"
 		android:layout_height="fill_parent" android:layout_width="fill_parent"
 		android:orientation="horizontal" android:layout_weight="1">
-		<LinearLayout android:id="@+id/linearLayout1"
+		<LinearLayout android:id="@+id/LinearLayout6"
 			android:layout_height="fill_parent" android:layout_width="fill_parent"
 			android:orientation="vertical" android:background="#ADEAEA"
-			android:layout_weight="3">
-			<TextView android:layout_width="fill_parent"
-				android:layout_height="wrap_content" android:text="string/hello" />
+			android:layout_weight="3" android:gravity="center">
+			<ImageView android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:src="@drawable/download1" />
+			<TextView android:textColor="@color/black" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="内容更新"
+				android:paddingTop="15px" />
+			<TextView android:textColor="@color/black" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="123456@163.com"
+				android:paddingTop="15px" />
 		</LinearLayout>
-		<LinearLayout android:id="@+id/linearLayout2"
-			android:layout_height="fill_parent" android:layout_width="fill_parent"
-			android:orientation="vertical" android:background="#D8D8BF"
-			android:layout_weight="1" android:gravity="top|center">
-			<TextView android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:text="更新内容"/>
-			<Button android:id="@+id/update_btn" android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:text="更新"/>				
+		<LinearLayout android:layout_height="fill_parent"
+			android:layout_width="fill_parent" android:orientation="vertical"
+			android:background="#D8D8BF" android:layout_weight="1"
+			android:gravity="top|center" android:paddingLeft="15px">
+			<LinearLayout android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:orientation="vertical"
+				android:gravity="center_vertical|left">
+				<TextView android:textColor="@color/black" android:id="@+id/TextView1" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:text="" />
+				<LinearLayout android:id="@+id/LinearLayout1"
+					android:layout_height="wrap_content" android:layout_width="fill_parent"
+					android:orientation="vertical" android:gravity="center_vertical|left"
+					android:visibility="gone">
+					<TextView android:textColor="@color/black" android:id="@+id/TextView2"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:text="" />
+				</LinearLayout>
+
+			</LinearLayout>
+			<LinearLayout android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:orientation="vertical"
+				android:gravity="center_vertical|left">
+				<TextView android:textColor="@color/black" android:id="@+id/TextView5" android:layout_width="fill_parent"
+					android:layout_height="fill_parent" android:text="" />
+				<TextView android:textColor="@color/black" android:id="@+id/TextView3" android:layout_width="fill_parent"
+					android:layout_height="fill_parent" android:text="" />
+			</LinearLayout>
+			<LinearLayout android:id="@+id/LinearLayout3"
+				android:layout_height="wrap_content" android:layout_width="fill_parent"
+				android:orientation="vertical" android:gravity="center_vertical|left">
+				<TextView android:textColor="@color/black" android:id="@+id/TextView6" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:text="" />
+				<TextView android:textColor="@color/black" android:id="@+id/TextView4" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:text="" />
+			</LinearLayout>
+			<LinearLayout android:id="@+id/LinearLayout4"
+				android:layout_height="wrap_content" android:layout_width="fill_parent"
+				android:orientation="horizontal" android:gravity="center_vertical|left"
+				android:visibility="gone">
+				<TextView android:textColor="@color/black" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:text="您的设备未连接到无线网络,导致无法更新，您可以" />
+				<Button android:id="@+id/update_btn2" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:text="网络设置" />
+			</LinearLayout>
+			<LinearLayout android:id="@+id/LinearLayout5"
+				android:layout_height="wrap_content" android:layout_width="fill_parent"
+				android:orientation="horizontal" android:gravity="center_vertical|left"
+				android:paddingLeft="25px">
+				<Button android:id="@+id/update_btn" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:text="立即更新" />
+			</LinearLayout>
 		</LinearLayout>
 
 	</LinearLayout>

@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -15,14 +17,29 @@ import org.json.JSONObject;
 import android.content.Context;
 
 import com.custom.update.Constant;
-import com.custom.update.Update;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
 	static boolean secrete = true;
 
 	public final static HashMap<String,JSONObject> installedInfo = new HashMap<String,JSONObject>();
+	public static String lastModifyTime = "";
+	public static String noModifyTime = "0";
 	private static JSONObject json = null;
+	
+	public final static HashMap<String,Integer> installedfolds = new HashMap<String,Integer>();
+	public final static HashMap<String,Integer> noInstalledfolds = new HashMap<String,Integer>();
+	static{
+		installedfolds.put("语文", 0);
+		installedfolds.put("英语", 0);
+		installedfolds.put("数学", 0);
+	}
+	static{
+		noInstalledfolds.put("语文", 0);
+		noInstalledfolds.put("英语", 0);
+		noInstalledfolds.put("数学", 0);
+	}	
+	
 
 	public static void initInstalledInfo(){
 		try{
@@ -44,9 +61,47 @@ public class LoadResources {
 			}
 			
 			for(int i=0;i<list.length();i++){
-				JSONObject installed = list.getJSONObject(i);
-				installedInfo.put(installed.getString(Constant.updateId), installed);
+				try{
+					JSONObject installed = list.getJSONObject(i);
+					installedInfo.put(installed.getString(Constant.updateId), installed);
+					if (installed!=null&&installed.getString(Constant.fileUnziped) == null){// 统计未更新数量
+						JSONArray contents = installed.getJSONArray(Constant.fileContent);
+						for(int j=0;j<contents.length();j++){
+							JSONObject content = contents.getJSONObject(j);
+							String name = content.getString("name");
+							int value = content.getInt("value");
+							if(noInstalledfolds.containsKey(name))
+								noInstalledfolds.put(name, noInstalledfolds.get(name)+value);
+							else
+								noInstalledfolds.put(name, value);
+							logger.error("noInstalledfolds:"+noInstalledfolds.get(name));
+									
+						}
+					}else{
+						JSONArray contents = installed.getJSONArray(Constant.fileContent);
+						for(int j=0;j<contents.length();j++){
+							try{
+								JSONObject content = contents.getJSONObject(j);
+								String name = content.getString("name");
+								int value = content.getInt("value");
+								if(installedfolds.containsKey(name))
+									installedfolds.put(name, noInstalledfolds.get(name)+value);
+								else
+									installedfolds.put(name, value);
+								logger.error("installedfolds:"+name+":"+installedfolds.get(name));
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+
+									
+						}
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			}
+			lastModifyTime = json.getString(Constant.modifyTime);
+			noModifyTime = String.valueOf((new SimpleDateFormat(Constant.timeFormate).parse(lastModifyTime).getTime()-new Date().getTime())/(24*60*60*1000));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -55,9 +110,7 @@ public class LoadResources {
 	public static void updateInstalledInfo(JSONObject installed){
 		String filePath = Constant.getDataPath()+File.separator+Constant.installedInfo;
 		try{
-			if(json!=null){
-				json.getJSONArray(Constant.root).put(installed);
-			}else{
+			if(json==null){
 				json = new JSONObject();
 				json.put(Constant.root, new JSONArray());
 				logger.error("new json:"+json.toString());
@@ -67,14 +120,19 @@ public class LoadResources {
 				JSONArray list = json.getJSONArray(Constant.root);
 				for(int i=0;i<list.length();i++){//如果已经存在，则替换
 					JSONObject temp = list.getJSONObject(i);
+					logger.error("installedInfo json:"+list.length());
 					if(temp.getString(Constant.updateId).equals(Constant.updateId)){
 						list.put(i, installedInfo);
+						logger.error("update json:"+list.length());
 						break;
 					}
 				}
+			}else{
+				json.getJSONArray(Constant.root).put(installed);
 			}
-			installedInfo.put(installed.getString(Constant.updateId), installed);
 			
+			installedInfo.put(installed.getString(Constant.updateId), installed);
+			json.put(Constant.modifyTime, new SimpleDateFormat(Constant.timeFormate).format(new Date()));
 			logger.error("update json:"+json.toString());
 			writeFile(filePath,json.toString());
 		}catch(Exception e){
@@ -113,29 +171,26 @@ public class LoadResources {
 	/**
 	 * 查询已经下载了多少业务
 	 */
-	private final static HashMap<String,Integer> folds = new HashMap<String,Integer>();
-	static{
-		folds.put("语文", 0);
-		folds.put("英语", 0);
-		folds.put("数学", 0);
-	}
+
 	public static HashMap<String,Integer> queryDownedFold(Context context){
 		//读取数据
 		FileInputStream in = null;
 		try{
 			in = context.openFileInput("DataFoldCount.txt");
-			BufferedReader fin = new BufferedReader(new InputStreamReader(in));
+			BufferedReader fin = new BufferedReader(new InputStreamReader(in,"GBK"));
 			String line = fin.readLine();
 			int count = 0;
 			while(line!=null){
+				logger.error(line);
 				line = line.substring(line.indexOf('=')+1);
+				
 				if(line.indexOf("=")>0){
 					try{
 						count = Integer.parseInt(line.substring(line.indexOf("=")+1).trim());
 					}catch(Exception e){
 						count = 0;
 					}
-					folds.put(line.substring(0,line.indexOf("=")), count);
+					installedfolds.put(line.substring(0,line.indexOf("=")), count);
 				}
 				line = fin.readLine();
 			}
@@ -152,10 +207,10 @@ public class LoadResources {
         try{
     		out = context.openFileOutput("DataFoldCount.txt",Context.MODE_WORLD_READABLE);
 			//查询
-			Iterator it = folds.keySet().iterator();
+			Iterator it = installedfolds.keySet().iterator();
 			while(it.hasNext()){
 				String name = (String)it.next();
-				String value = String.valueOf(folds.get(name));
+				String value = String.valueOf(installedfolds.get(name));
 	    		out.write(("="+name+"="+value+"\n").getBytes("GBK"));
 	    		out.flush();
 			}
@@ -172,7 +227,7 @@ public class LoadResources {
         }
 		
 		
-		return folds;
+		return installedfolds;
 	}
 	
 	/**

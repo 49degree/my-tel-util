@@ -35,19 +35,7 @@ public class CustomUtils {
     public JSONObject queryInfo(){
 		try {
 			LoadResources.initInstalledInfo();// 获取已经下载的文件列表
-			Iterator it = LoadResources.installedInfo.keySet().iterator();
-			while (it.hasNext()) {
-				String key = (String) it.next();
-				JSONObject installed = LoadResources.installedInfo.get(key);
-				try{
-					if (installed!=null&&installed.getString(Constant.fileUnziped) != null)// 有文件为解压
-						continue;
-				}catch(Exception e){
-					return installed;
-				}
-
-			}
-
+			
 			HashMap<String, String> params = new HashMap<String, String>();
 			HttpRequest httpRequest = new HttpRequest(Constant.QUERY_URL,
 					params, context);
@@ -64,10 +52,29 @@ public class CustomUtils {
 
 			JSONArray list = retJson.getJSONArray("updates");
 			for (int i = 0; i < list.length(); i++) {
-				JSONObject installed = list.getJSONObject(i);
-				if (!LoadResources.installedInfo.containsKey(installed
-						.getString("updateId")))
+				try{
+					JSONObject installed = list.getJSONObject(i);
+					logger.error(installed.getString(Constant.updateId));
+					if (!LoadResources.installedInfo.containsKey(installed
+							.getString(Constant.updateId))){
+						LoadResources.updateInstalledInfo(installed);
+					}
+						//return installed;
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			
+			Iterator it = LoadResources.installedInfo.keySet().iterator();
+			while (it.hasNext()) {
+				String key = (String) it.next();
+				JSONObject installed = LoadResources.installedInfo.get(key);
+				try{
+					if (installed!=null&&installed.getString(Constant.fileUnziped) != null)// 有文件为解压
+						continue;
+				}catch(Exception e){
 					return installed;
+				}
 			}
 			
 		} catch (Exception e) {  

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ 	<color name="simiple_button_color">#FFF</color>
+  	<color name="link_color">#FF0066CC</color>  
+  	<color name="bule">#bb3D8CB8</color>
+	<color name="white">#ffffffff</color>
+	<color name="grey">#bb9D9C9C</color>
+	<color name="titile">#8A21D5</color>
+	<color name="dialog_btn_back">#757A80</color>
+	<color name="black">#000000</color>
+	<color name="dialog_line">#DCDCDC</color>
+</resources>

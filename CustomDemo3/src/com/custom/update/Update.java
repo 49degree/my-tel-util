@@ -46,12 +46,12 @@ public class Update extends Activity implements OnClickListener{
         			while(count++<10){
         				//logger.error("开始查询:"+count);
         				//查询
-        				HashMap<String,String> folds = LoadResources.queryDownedFold(Update.this);
+        				HashMap<String,Integer> folds = LoadResources.queryDownedFold(Update.this);
         				Iterator it = folds.keySet().iterator();
         				while(it.hasNext()){
         					String name = (String)it.next();
-        					String value = folds.get(name);
-        					//logger.error("name:"+name+":value:"+value);
+        					int value = folds.get(name);
+        					logger.error("name:"+name+":value:"+value);
         				}
         				Thread.sleep(500);
         			}

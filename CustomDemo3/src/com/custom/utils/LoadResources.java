@@ -21,8 +21,9 @@ public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
 	static boolean secrete = true;
 
-	public static HashMap<String,JSONObject> installedInfo = new HashMap<String,JSONObject>();
+	public final static HashMap<String,JSONObject> installedInfo = new HashMap<String,JSONObject>();
 	private static JSONObject json = null;
+
 	public static void initInstalledInfo(){
 		try{
 			String filePath = Constant.getDataPath()+File.separator+Constant.installedInfo;
@@ -112,10 +113,15 @@ public class LoadResources {
 	/**
 	 * 查询已经下载了多少业务
 	 */
-	public static HashMap<String,String> queryDownedFold(Context context){
+	private final static HashMap<String,Integer> folds = new HashMap<String,Integer>();
+	static{
+		folds.put("语文", 0);
+		folds.put("英语", 0);
+		folds.put("数学", 0);
+	}
+	public static HashMap<String,Integer> queryDownedFold(Context context){
 		//读取数据
 		FileInputStream in = null;
-		HashMap<String,String> folds = new HashMap<String,String>();
 		try{
 			in = context.openFileInput("DataFoldCount.txt");
 			BufferedReader fin = new BufferedReader(new InputStreamReader(in));
@@ -124,7 +130,12 @@ public class LoadResources {
 			while(line!=null){
 				line = line.substring(line.indexOf('=')+1);
 				if(line.indexOf("=")>0){
-					folds.put(line.substring(0,line.indexOf("=")), line.substring(line.indexOf("=")+1).trim());
+					try{
+						count = Integer.parseInt(line.substring(line.indexOf("=")+1).trim());
+					}catch(Exception e){
+						count = 0;
+					}
+					folds.put(line.substring(0,line.indexOf("=")), count);
 				}
 				line = fin.readLine();
 			}
@@ -144,7 +155,7 @@ public class LoadResources {
 			Iterator it = folds.keySet().iterator();
 			while(it.hasNext()){
 				String name = (String)it.next();
-				String value = folds.get(name);
+				String value = String.valueOf(folds.get(name));
 	    		out.write(("="+name+"="+value+"\n").getBytes("GBK"));
 	    		out.flush();
 			}

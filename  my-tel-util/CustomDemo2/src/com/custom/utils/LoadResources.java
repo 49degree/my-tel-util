@@ -9,12 +9,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 
 import com.custom.update.ZipToFile;
 import com.custom.utils.Constant.DirType;
@@ -254,6 +261,65 @@ public class LoadResources {
 		return 0;
 	}
 	
+	/**
+	 * 检查对应的apk文件是否安装
+	 * 如果已经安装则返回包名
+	 * @param apkFile
+	 * @return
+	 */
+	public static String getInstalledPackName(Context context,String apkFile){
+		try{
+			PackageManager pm = context.getPackageManager();      
+	        PackageInfo info = pm.getPackageArchiveInfo(apkFile, PackageManager.GET_ACTIVITIES);      
+	        if(info != null){
+	        	ApplicationInfo appInfo = info.applicationInfo;
+		    	String packageName = appInfo.packageName;  //得到安装包名称 
+		    	try{
+		    		info = pm.getPackageInfo(packageName, 0);
+		    		return info.packageName;
+		    	}catch(NameNotFoundException e){
+		    		return null;
+		    	}
+		    }
+		}catch(Exception e){
+			
+			
+		}
+		return null;
+	}
+
+	/**
+	 * 启动应用
+	 * @param context
+	 * @param packageName
+	 */
+	public static  void startApp(Context context, String packageName) {
+		try {
+			PackageManager pm = context.getPackageManager();
+			PackageInfo pi = pm.getPackageInfo(packageName, 0);
+
+			Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+			resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+			resolveIntent.setPackage(pi.packageName);
+
+			List<ResolveInfo> apps = pm.queryIntentActivities(resolveIntent, 0);
+
+			ResolveInfo ri = apps.iterator().next();
+			if (ri != null) {
+				String className = ri.activityInfo.name;
+
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+				ComponentName cn = new ComponentName(packageName, className);
+
+				intent.setComponent(cn);
+				context.startActivity(intent);
+			}
+		} catch (Exception e) {
+
+		}
+	}
 	
 	/**
 	 * 以下代码没有用到

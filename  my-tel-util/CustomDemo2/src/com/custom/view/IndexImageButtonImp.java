@@ -170,6 +170,11 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 			if(LoadResources.saveToTempFile(context, path, resourceBean.getDirType(),fileName)){
 				intent = new Intent(Intent.ACTION_VIEW);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+				if(type==ResourceBean.ResourceType.apk){
+					String packageName = LoadResources.getInstalledPackName(context, context.getFilesDir().getAbsolutePath()+File.separator+fileName);
+					if(packageName!=null)//已经安装,则打开该activity
+						LoadResources.startApp(context, packageName);
+				}
 				intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+fileName)),intentType);
 				context.startActivity(intent);
 			}

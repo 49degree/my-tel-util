@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Iterator;
 import java.util.List;
 
 import android.content.ComponentName;
@@ -23,6 +24,8 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.custom.bean.ResourceBean;
+import com.custom.bean.ResourceBean.ResourceType;
 import com.custom.update.ZipToFile;
 import com.custom.utils.Constant.DirType;
 
@@ -259,6 +262,28 @@ public class LoadResources {
 			
 		}
 		return 0;
+	}
+	
+	
+	
+	public static int queryDownedFold(Context context,String foldPath){
+		ScanFoldUtils scan = new ScanFoldUtils(context,foldPath);
+		scan.queryRes();
+		int count = 0;
+		if(!Constant.path.equals(foldPath)){
+			count = scan.resourceInfo.size();
+		}
+		
+		Iterator it = scan.resourceInfo.keySet().iterator();
+		while(it.hasNext()){
+			ResourceBean res = scan.resourceInfo.get(it.next());
+			if(res.getRaws()!=null&&res.getRaws().size()>0&&
+					res.getRaws().get(0).getType()==ResourceType.fold){
+				//logger.error("path:"+res.getRaws().get(0).getRawPath());
+				count +=queryDownedFold(context,res.getRaws().get(0).getRawPath());
+			}
+		}
+		return count;
 	}
 	
 	/**

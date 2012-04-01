@@ -16,7 +16,7 @@ public class InitDataFoldReceiver extends BroadcastReceiver {
     @Override      
     public void onReceive(Context context, Intent intent) { 
     	logger.info(intent.getAction());
-        int count = LoadResources.queryDownedFold(context);
+        int count = LoadResources.queryDownedFold(context,Constant.path);//LoadResources.queryDownedFold(context);
         FileOutputStream out = null;
         //更新数据
         try{

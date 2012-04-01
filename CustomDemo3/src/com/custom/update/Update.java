@@ -148,7 +148,7 @@ public class Update extends Activity implements OnClickListener{
                 	try{
                 	   	Iterator it = LoadResources.updateInstalledInfo.keySet().iterator();
                     	logger.error("createNoInstalledfolds");
-                    	while(downThreadStop&&it.hasNext()){
+                    	while(!downThreadStop&&it.hasNext()){
                     		JSONObject install = LoadResources.updateInstalledInfo.get(it.next());
                         	if(install!=null){
             					logger.error(install.getString(Constant.updateId));
@@ -161,6 +161,8 @@ public class Update extends Activity implements OnClickListener{
                         	    }
                         	}
                     	}
+    	    			if(progress.isShowing())
+    	    				progress.dismiss();
             		}catch(Exception e){
             			e.printStackTrace();
             		}
@@ -218,8 +220,10 @@ public class Update extends Activity implements OnClickListener{
 	        					new ToGetFile().downFileFromzip(filePath);
 	        					msgObject.put(Constant.fileUnziped, "true");
 	        					LoadResources.updateInstalledInfo(msgObject);
+	        					LoadResources.addInstalledInfo(msgObject);
 	        					LoadResources.queryInstalledFoldInfo(Update.this);
 	        					createNoInstalledfolds();
+	        					createInstalledfolds();
 	        					if(downThread!=null&&downThread.isAlive())
 	        						downThread.interrupt();
         					}catch(Exception e){
@@ -237,8 +241,7 @@ public class Update extends Activity implements OnClickListener{
 									e1.printStackTrace();
 								}
         					}
-        	    			if(progress.isShowing())
-        	    				progress.dismiss();
+
         				}
         			}.start();
     			}catch(Exception e){

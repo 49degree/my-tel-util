@@ -82,6 +82,39 @@ public class LoadResources {
 	/**
 	 * 查询升级信息
 	 */
+	public static void addInstalledInfo(JSONObject installed){
+		logger.error("addInstalledInfo");
+		String unZipflag = null;
+		try{
+			unZipflag = installed.getString(Constant.fileUnziped);
+		}catch(Exception e){}
+		if ( unZipflag!=null){
+			try{
+				JSONArray contents = installed.getJSONArray(Constant.fileContent);
+				for(int j=0;j<contents.length();j++){
+					logger.error("noInstalledfolds:"+contents.length()+":"+contents.toString());
+					try{
+						JSONObject content = contents.getJSONObject(j);
+						String name = content.getString("name");
+						int value = content.getInt("value");
+						if(installedfolds.containsKey(name)&&installedfolds.get(name)>0)
+							installedfolds.put(name, noInstalledfolds.get(name)+value);
+						else
+							installedfolds.put(name, value);
+						logger.error("installedfolds:"+name+":"+installedfolds.get(name));
+					}catch(Exception e){
+						e.printStackTrace();
+					}		
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}	
+		}
+	}
+	
+	/**
+	 * 查询升级信息
+	 */
 	public static void initInstalledInfo(){
 		logger.error("initInstalledInfo");
 		try{

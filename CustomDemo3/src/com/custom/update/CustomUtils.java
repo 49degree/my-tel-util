@@ -55,7 +55,6 @@ public class CustomUtils {
 					logger.error(installed.getString(Constant.updateId)+":"
 							+LoadResources.updateInstalledInfo.containsKey(installed.getString(Constant.updateId)));
 					if (!LoadResources.updateInstalledInfo.containsKey(installed.getString(Constant.updateId))){
-						logger.error(installed.getString(installed.toString()));
 						LoadResources.updateInstalledInfo(installed);
 					}
 						//return installed;

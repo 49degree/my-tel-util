@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CustomDemo2</string>
-    <string name="fold_name">yuwen</string>
-    <string name="fold_name_ex">语文</string>
+    <string name="fold_name">English</string>
+    <string name="fold_name_ex">英语</string>
     <string name="modify_index">false</string>  
 </resources>

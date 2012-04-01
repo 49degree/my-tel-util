@@ -2,11 +2,15 @@ package com.custom.view;
 
 import java.util.Iterator;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.custom.bean.ResourceBean;
+import com.custom.utils.Constant.BgType;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.MondifyIndexImageIndex;
@@ -43,17 +47,17 @@ public class IndexView extends ViewImp{
 				
 			}
 			setXY(resourceBean);
-			IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
-			imageView.setImageMove(imageCanMove);
-			mLayout.addView(imageView);
+//			IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
+//			imageView.setImageMove(imageCanMove);
+//			mLayout.addView(imageView);
 			
-//			if(scanFoldUtils.bgtype==BgType.pic){
-//				IndexImagePicButton imageView = new IndexImagePicButton(context,scrollView,resourceBean);
-//				mLayout.addView(imageView);
-//			}else{
-//				IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
-//				mLayout.addView(imageView);
-//			}
+			if(scanFoldUtils.bgtype==BgType.pic){
+				IndexImagePicButton imageView = new IndexImagePicButton(context,scrollView,resourceBean);
+				mLayout.addView(imageView);
+			}else{
+				IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
+				mLayout.addView(imageView);
+			}
 		}
 	}
 	@Override
@@ -79,8 +83,7 @@ public class IndexView extends ViewImp{
 	}
 	@Override
 	protected int[] calBackGroudView(Bitmap bm){
-		return super.calBackGroudView(bm);
-		/**
+		//return super.calBackGroudView(bm);
 		int with = bm.getWidth();
 		int height = bm.getHeight();
 		WindowManager manage = ((Activity)context).getWindowManager();
@@ -114,7 +117,7 @@ public class IndexView extends ViewImp{
 		viewXY[0] = with;
 		viewXY[1] = height;
 		return viewXY;
-		*/
+	
 		
 	}
 	

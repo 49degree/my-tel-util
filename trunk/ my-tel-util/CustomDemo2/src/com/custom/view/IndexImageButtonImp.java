@@ -127,7 +127,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		if(type==ResourceBean.ResourceType.apk){
 			fileName = "temp1.apk";
 			intentType = "application/vnd.android.package-archive";
-		}else if(type==ResourceBean.ResourceType.swf){
+		}else if(type==ResourceBean.ResourceType.swf||type==ResourceBean.ResourceType.flv){
 			fileName = "temp1.swf";
 			intentType = "*/*";
 			
@@ -165,6 +165,21 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 			intent.putExtras(bd);
 			context.startActivity(intent);
 			return ;
+		}else if(type==ResourceBean.ResourceType.pdf){
+			fileName = "temp1.pdf";
+			intentType = "application/pdf";
+		}else if(type==ResourceBean.ResourceType.txt){
+			fileName = "temp1.txt";
+			intentType = "text/plain";
+		}else if(type==ResourceBean.ResourceType.ppt){
+			fileName = "temp1.ppt";
+			intentType = "application/vnd.ms-powerpoint";
+		}else if(type==ResourceBean.ResourceType.xls){
+			fileName = "temp1.xls";
+			intentType = "application/vnd.ms-excel";
+		}else if(type==ResourceBean.ResourceType.doc){
+			fileName = "temp1.doc";
+			intentType = "application/msword";
 		}
 		
 		try{

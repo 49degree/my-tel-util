@@ -279,9 +279,25 @@ public class ScanFoldUtils {
 					type = ResourceBean.ResourceType.pic;
 				}else if(Constant.swfType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
 					type = ResourceBean.ResourceType.swf;
-				}else if("apk".equals(lists[i].substring(lists[i].indexOf(".")+1))){
+				}else if("APK".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
 					type = ResourceBean.ResourceType.apk;
+				}else if("TXT".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.txt;
+				}else if("PDF".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.pdf;
+				}else if("FLV".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.flv;
+				}else if("PPT".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.ppt;
+				}else if("XLS".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.xls;
+				}else if("DOC".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.doc;
 				}
+				
+				
+
+				logger.error(lists[i]+":"+type.toString());
 				if(type!=null){
 					if(Constant.raw_first_name.indexOf(btnName.toUpperCase())>-1){
 						raws.add(0, new ResourceBean.ResourceRaws(mFoldPath+"/"+lists[i], type,dirType));
@@ -349,9 +365,22 @@ public class ScanFoldUtils {
 					type = ResourceBean.ResourceType.pic;
 				}else if(Constant.swfType.containsKey(lists[i].substring(lists[i].indexOf(".")+1))){
 					type = ResourceBean.ResourceType.swf;
-				}else if("apk".equals(lists[i].substring(lists[i].indexOf(".")+1))){
+				}else if("APK".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
 					type = ResourceBean.ResourceType.apk;
+				}else if("TXT".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.txt;
+				}else if("PDF".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.pdf;
+				}else if("FLV".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.flv;
+				}else if("PPT".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.ppt;
+				}else if("XLS".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.xls;
+				}else if("DOC".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.doc;
 				}
+				
 				if(type!=null){
 					raws = new ArrayList<ResourceBean.ResourceRaws>();
 					raws.add(new ResourceBean.ResourceRaws(path+File.separator+lists[i], type,dirType));

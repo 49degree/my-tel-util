@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -134,12 +135,12 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 				new Thread(){
 					public void run(){
 						//删除临时文件
-						String[] fileName = context.fileList();
-						for(int i=0;i<fileName.length;i++){
-							if(Constant.backGroundSwfName.equals(fileName[i])||fileName[i].indexOf("temp")>-1)
-								continue;
-							context.deleteFile(fileName[i]);
-						}
+//						String[] fileName = context.fileList();
+//						for(int i=0;i<fileName.length;i++){
+//							if(Constant.backGroundSwfName.equals(fileName[i])||fileName[i].indexOf("temp")>-1)
+//								continue;
+//							context.deleteFile(fileName[i]);
+//						}
 						//复制其他flash文件
 						ResourceBean.ResourceRaws  raw = null;
 						for(int i=1;i<raws.size();i++){
@@ -172,8 +173,10 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
 				if(type==ResourceBean.ResourceType.apk){
 					String packageName = LoadResources.getInstalledPackName(context, context.getFilesDir().getAbsolutePath()+File.separator+fileName);
-					if(packageName!=null)//已经安装,则打开该activity
+					if(packageName!=null){//已经安装,则打开该activity
 						LoadResources.startApp(context, packageName);
+						return ;
+					}
 				}
 				intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+fileName)),intentType);
 				context.startActivity(intent);

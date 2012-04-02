@@ -62,8 +62,9 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 			int distance = 0;
 			switch(action){
 			case MotionEvent.ACTION_DOWN:
-				logger.error("Color.RED");
-				this.setBackgroundColor(Color.RED);
+				//logger.error("Color.RED");
+				this.setBackgroundColor(Color.argb(55, 255,   255, 0));
+				
 				startTouchX = (int)event.getX();
 				startTouchY = (int)event.getY();
 				startTime = System.currentTimeMillis();

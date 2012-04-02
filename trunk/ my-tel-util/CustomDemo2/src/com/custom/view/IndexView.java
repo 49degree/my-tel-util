@@ -10,11 +10,11 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.custom.bean.ResourceBean;
-import com.custom.utils.Constant.BgType;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.MondifyIndexImageIndex;
 import com.custom.utils.SharedPreferencesUtils;
+import com.custom.utils.Constant.BgType;
 
 
 
@@ -120,6 +120,7 @@ public class IndexView extends ViewImp{
 	
 		
 	}
+	
 	
 	@Override
 	public void onPause() {

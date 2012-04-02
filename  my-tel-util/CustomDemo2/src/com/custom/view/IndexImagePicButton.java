@@ -90,7 +90,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 				distance = (int)Math.sqrt(Math.exp(endTouchX-startTouchX)+Math.exp(endTouchY-startTouchY));
 				//Log.e(TAG,"endTime-startTime22:"+(endTime-startTime)+":distance:"+distance);
 				if(endTime-startTime<500&&endTime-startTime>50&&distance<50){
-					Toast.makeText(context, "单击事件", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(context, "单击事件", Toast.LENGTH_SHORT).show();
 					
 					try{
 						Thread.sleep(200);	

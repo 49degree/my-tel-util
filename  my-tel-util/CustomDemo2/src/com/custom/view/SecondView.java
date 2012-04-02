@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.custom.bean.PageNumBean;
 import com.custom.bean.ResourceBean;
+import com.custom.utils.Constant;
 import com.custom.utils.Logger;
 import com.custom.utils.SharedPreferencesUtils;
 
@@ -71,22 +72,34 @@ public class SecondView extends ViewImp{
 			pageNumBean = new PageNumBean(resourceInfo.size());	
 		}
 		
-		pageNumBean.setCurPageNum(curPageNum);
+		
 		
 		frameLayout = new FrameLayout(this.context);
 		LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(
 				screenWidth, screenHeight);
 		frameLayout.setLayoutParams(frameLayoutParams);
+		if(!Constant.noPageNum){
+			pageNumView = new PageNumView(this.context,pageNumBean,scanFoldUtils.foldPath);
+		}
 		
-		pageNumView = new PageNumView(this.context,pageNumBean);
-		pageNumView.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
 		
-		SecondViewGroup viewGroup = new SecondViewGroup(this.context,resourceInfo,pageNumView);
+		if(pageNumView==null){
+			pageNumBean.setButtonPerPage(6);
+		}else{
+			pageNumBean.setButtonPerPage(8);
+		}
+		pageNumBean.setCurPageNum(curPageNum);
+		
+		SecondViewGroup viewGroup = new SecondViewGroup(this.context,resourceInfo,pageNumView,pageNumBean,scanFoldUtils.foldPath);
 		frameLayout.addView(viewGroup);
 
-		frameLayout.addView(pageNumView);
-		pageNumView.initView();
+		if(pageNumView!=null){
+			pageNumView.setLayoutParams(new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
+			frameLayout.addView(pageNumView);
+			pageNumView.initView();
+		}
+
 		mLayout.addView(frameLayout);
 		
 	}

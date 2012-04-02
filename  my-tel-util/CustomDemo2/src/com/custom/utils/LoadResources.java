@@ -31,7 +31,7 @@ import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
-	static boolean secrete = true;
+	static boolean secrete = false;
 	
 	/**
 	 * 根据路径和文件名称获取文件对象
@@ -92,7 +92,7 @@ public class LoadResources {
 	 */
 	public static byte[] loadFile(Context context,String filePath,DirType dirType){
 		InputStream in= null;
-		logger.error("filePath:"+filePath+":dirType:"+dirType);
+		//logger.error("filePath:"+filePath+":dirType:"+dirType);
 
 
 		try{
@@ -116,6 +116,7 @@ public class LoadResources {
 			}
 			return buf;
 		}catch(Exception e){
+			//e.printStackTrace();
 			return null;
 		}finally{
 			if(in!=null){
@@ -128,6 +129,110 @@ public class LoadResources {
 			}
 		}
 	}
+	
+	
+	/**
+	 * 根据路径和路径类型读取本地文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
+	public static byte[] loadLocalFile(Context context,String filePath,DirType dirType){
+		InputStream in= null;
+		//logger.error("filePath:"+filePath+":dirType:"+dirType);
+
+
+		try{
+			if(dirType==DirType.assets){
+				AssetManager assetManager = context.getAssets();
+				in= assetManager.open(filePath);
+			}else if(dirType==DirType.file){
+				in= new FileInputStream(context.getFilesDir().getAbsoluteFile()+File.separator+filePath);
+			}else if(dirType==DirType.sd){
+				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
+			}
+			byte[] buf = new byte[in.available()];
+			if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&LoadResources.secrete){
+				//解密文件头
+				byte[] encrypByte = new byte[ZipToFile.encrypLength];
+				System.arraycopy(buf, 0, encrypByte, 0, ZipToFile.encrypLength);
+				byte[] temp = CryptionControl.getInstance().decryptECB(encrypByte, ZipToFile.rootKey);  
+				System.arraycopy(temp, 0, buf, 0, ZipToFile.encrypLength);
+			}
+			return buf;
+		}catch(Exception e){
+			return null;
+		}finally{
+			if(in!=null){
+				try{
+					in.close();
+				}catch(Exception e){
+					
+				}
+				
+			}
+		}
+	}
+	/**
+	 * 根据文件名称，到3个地方去读取文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
+	public static byte[] loadPrefaceFile(Context context,String filePath){
+		
+		byte[] result = loadFile(context,filePath,DirType.sd);
+		if(result==null)
+			result = loadFile(context,filePath,DirType.file);
+		if(result==null)
+			result = loadFile(context,filePath,DirType.assets);
+		logger.error(filePath+":"+result.length);
+		return result;
+	}
+	
+	/**
+	 * 保存临时文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
+	public static boolean saveToTempFile(Context context,byte[] buffer,String tempSavePath){
+		FileOutputStream fos = null;
+		boolean result = false;
+		if(buffer==null||buffer.length<1)
+			return result;
+		try{
+			//复制文件
+			try{
+				File f = new File(context.getFilesDir().getAbsolutePath()+"/"+tempSavePath);
+				if(f.exists()){
+					logger.error("ffffffffff:"+f.length());
+				}
+				context.deleteFile(tempSavePath);
+				fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE);
+				fos.write(buffer);
+				fos.flush();
+				result = true;
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(fos!=null){
+				try{
+					fos.flush();
+					fos.close();
+				}catch(Exception e){	
+				}
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * 保存临时文件
 	 * @param context

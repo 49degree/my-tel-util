@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.custom.bean.PageNumBean;
 import com.custom.utils.Constant;
-import com.custom.utils.Constant.DirType;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 
@@ -30,10 +29,13 @@ public class PageNumView extends AbsoluteLayout{
 	Context context = null;
 	private ArrayList<View> pageNumViews = new ArrayList<View>();
 	private UnitPageOnclick unitPageOnclick;
-	public PageNumView(Context context,PageNumBean pageNumBean) {
+	private String foldPath;
+	private boolean isFirst = true;
+	public PageNumView(Context context,PageNumBean pageNumBean,String foldPath) {
 		super(context);
 		this.context = context;
 		this.pageNumBean = pageNumBean;
+		this.foldPath = foldPath;
 
 	}
 	/**
@@ -48,6 +50,7 @@ public class PageNumView extends AbsoluteLayout{
 	static Bitmap pageNum2 = null;
 	static Bitmap nextunit =null;
 	static Bitmap upunit = null;
+	static Bitmap title = null;
 	
 	public static void realease(){
 		if(bm==null||bm.isRecycled()){
@@ -64,6 +67,10 @@ public class PageNumView extends AbsoluteLayout{
 		}
 		if(upunit==null||upunit.isRecycled()){
 			upunit.recycle();
+		}
+		
+		if(title==null||title.isRecycled()){
+			title.recycle();
 		}
 		bm = null;
 	    pageNum1 =null;
@@ -89,7 +96,9 @@ public class PageNumView extends AbsoluteLayout{
 			if(bm==null){
 				bm = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"tree.png"); 
 			}
-			
+			if(title==null){
+				title = LoadResources.getBitmap(context, foldPath+File.separator+Constant.foldTilePic); 
+			}
 			
 			WindowManager manage = ((Activity)context).getWindowManager();
 			Display display = manage.getDefaultDisplay();
@@ -105,6 +114,14 @@ public class PageNumView extends AbsoluteLayout{
 					bm.getWidth(), bm.getHeight(),beginX, beginY);
 			imageView.setLayoutParams(layout);
 			this.addView(imageView);
+			
+			
+			ImageView tileView = new ImageView(context);
+			tileView.setImageBitmap(title);
+			AbsoluteLayout.LayoutParams tileViewlayout = new AbsoluteLayout.LayoutParams(
+					title.getWidth(), title.getHeight(),50, 50);
+			tileView.setLayoutParams(tileViewlayout);
+			this.addView(tileView);
 			
 			initPageNumView();
 			
@@ -174,7 +191,7 @@ public class PageNumView extends AbsoluteLayout{
 				//logger.error("beginX:"+i+":"+pageNumBean.getCurPageNum());
 				AbsoluteLayout.LayoutParams layout = null;
 				TextView imageView = new TextView(context);
-				if(i==pageNumBean.getCurPageNum()){
+				if(i==pageNumBean.getCurPageNum()&&!this.isFirst){
 					pageNum = pageNum2;
 					imageView.setTextColor(Color.YELLOW);
 
@@ -202,6 +219,22 @@ public class PageNumView extends AbsoluteLayout{
 				imageView.setLayoutParams(layout);
 				this.addView(imageView);
 				pageNumViews.add(imageView);
+				imageView.setOnClickListener(new OnClickListener(){
+					public void onClick(View v){
+						int num = 0;
+						try{
+							num = Integer.parseInt(((TextView)v).getText().toString())-1;
+						}catch(Exception e){
+							
+						}
+						if(num!=pageNumBean.getCurPageNum()||isFirst){
+							pageNumBean.setCurPageNum(num);
+							unitPageOnclick.fistViewOnclick();
+							isFirst = false;
+						}
+
+					}
+				});
 			}
 
 		}catch(Exception e){
@@ -224,9 +257,20 @@ public class PageNumView extends AbsoluteLayout{
 
 
 
+	public boolean isFirst() {
+		return isFirst;
+	}
+
+	public void setFirst(boolean isFirst) {
+		this.isFirst = isFirst;
+	}
+
+
+
 	public interface UnitPageOnclick{
 		public void upUnitOnclick();
 		public void nextUnitOnclick();
+		public void fistViewOnclick();
 	}
 	
 }

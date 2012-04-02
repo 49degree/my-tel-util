@@ -1,5 +1,6 @@
 package com.custom.view;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
@@ -7,26 +8,25 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.view.Display;
 import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.GestureDetector.OnGestureListener;
 import android.widget.AbsoluteLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Scroller;
+import android.widget.TextView;
 
 import com.custom.bean.PageNumBean;
 import com.custom.bean.ResourceBean;
-import com.custom.utils.Constant.DirType;
+import com.custom.utils.Constant;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
-import com.custom.utils.ScanFoldUtils;
 import com.custom.view.PageNumView.UnitPageOnclick;
 
 public class SecondViewGroup extends LinearLayout {
@@ -35,34 +35,61 @@ public class SecondViewGroup extends LinearLayout {
 	private ArrayList<Entry<String,ResourceBean>> resourceInfo = null;
 	private PageNumView pageNumView = null;
 	private Context context = null;
-	private SecondViewPage secondViewPage = null;
+	private ViewGroup secondViewPage = null;
 	private PageNumBean pageNumBean=null;
 	private int currentScreenIndex = 0;
 	private boolean onFling = true;
 	private int canotFling = 0;
 	private ProgressDialog progress;
 	
-	public SecondViewGroup(Context context,ArrayList<Entry<String,ResourceBean>> resourceInfo,PageNumView pageNumView) {
+	int screenHeight = 0;
+	int screenWidth = 0;
+	String foldPath;
+	public SecondViewGroup(Context context,ArrayList<Entry<String,ResourceBean>> resourceInfo,PageNumView pageNumView,PageNumBean mPageNumBean,String foldPath) {
 		super(context);
 		this.context = context;
 		this.resourceInfo = resourceInfo;
 		this.pageNumView = pageNumView;
-		this.pageNumBean = pageNumView.getPageNumBean();
+		this.foldPath = foldPath;
+		this.pageNumBean = mPageNumBean;
 		
-		this.pageNumView.setUnitPageOnclick(new UnitPageOnclick(){
-			public void upUnitOnclick(){
-				if(pageNumBean.prePageView()){
-					currentScreenIndex = 0;
-					initView();
+		
+		WindowManager manage = ((Activity)context).getWindowManager();
+		Display display = manage.getDefaultDisplay();
+		screenHeight = display.getHeight();
+		screenWidth = display.getWidth();
+		
+		if(pageNumView!=null){
+			
+			this.pageNumView.setUnitPageOnclick(new UnitPageOnclick(){
+				public void upUnitOnclick(){
+					if(pageNumBean.prePageView()){
+						currentScreenIndex = 0;
+						initView();
+					}
 				}
-			}
-			public void nextUnitOnclick(){
-				if(pageNumBean.nextPageView()){
-					currentScreenIndex = 0;
-					initView();
+				public void nextUnitOnclick(){
+					if(pageNumBean.nextPageView()){
+						currentScreenIndex = 0;
+						initView();
+					}
 				}
-			}
-		});
+				
+				public void fistViewOnclick(){
+					if(SecondViewGroup.this.pageNumView.isFirst()){
+						initView();
+					}else{
+						if(secondViewPage!=null){
+		       				final int delta = currentScreenIndex * getWidth();
+		    				secondViewPage.scrollTo(delta, 0); 
+						}
+					}
+					
+				}
+			});
+		}
+		
+
 		
 		initView();
 	}
@@ -105,17 +132,42 @@ public class SecondViewGroup extends LinearLayout {
         	//参数对应doInBackground返回值，也是<ScanFoldUtils, String, ScanFoldUtils>第3个
         	
     		currentScreenIndex = pageNumBean.getCurPageNum()%pageNumBean.getPageNumPerView();
-    		pageNumView.initPageNumView();
-    		secondViewPage = new SecondViewPage(context,resourceInfo,pageNumView);
-    		secondViewPage.post(new Runnable() {
-    			@Override
-    			public void run() { 
-    				final int delta = currentScreenIndex * getWidth();
-    				secondViewPage.scrollTo(delta, 0); 
-    				onFling = true;
-    			}   
-    		});
-    		addView(secondViewPage);
+    		if(pageNumView!=null){
+    			pageNumView.initPageNumView();
+    		}
+    		
+    		if(pageNumView!=null&&pageNumView.isFirst()){
+    			//显示首页介绍
+				LinearLayout.LayoutParams pageLayoutParams = new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+				secondViewPage = new ScrollView(context);
+				secondViewPage.setLayoutParams(pageLayoutParams);
+				addView(secondViewPage);
+				TextView text = new TextView(context);
+				text.setLayoutParams(pageLayoutParams);
+				secondViewPage.addView(text);
+				secondViewPage.setVerticalScrollBarEnabled(false);
+				secondViewPage.setHorizontalScrollBarEnabled(false);
+				secondViewPage.setPadding(200,250, 200, 0);
+				byte[] buffer = LoadResources.loadPrefaceFile(context,foldPath+File.separator+Constant.preface);
+				try{
+					text.setText(new String(buffer,"GBK"));
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+    		}else{
+        		secondViewPage = new SecondViewPage(context,resourceInfo,pageNumView);
+        		secondViewPage.post(new Runnable() {
+        			@Override
+        			public void run() { 
+        				final int delta = currentScreenIndex * getWidth();
+        				secondViewPage.scrollTo(delta, 0); 
+        				onFling = true;
+        			}   
+        		});
+        		addView(secondViewPage);
+    		}
+
 			if(progress!=null)
 				progress.cancel();
         }
@@ -130,8 +182,7 @@ public class SecondViewGroup extends LinearLayout {
 		
 		private GestureDetector gestureDetector;
 		private Context context = null;
-		int screenHeight = 0;
-		int screenWidth = 0;
+
 		// 设置一个标志位，防止底层的onTouch事件重复处理UP事件
 		private boolean fling;
 		public Scroller getScroller() {
@@ -141,10 +192,7 @@ public class SecondViewGroup extends LinearLayout {
 			super(context);
 			this.context = context;
 			
-			WindowManager manage = ((Activity)context).getWindowManager();
-			Display display = manage.getDefaultDisplay();
-			screenHeight = display.getHeight();
-			screenWidth = display.getWidth();
+
 			initView();
 			createIndexButton();
 		}
@@ -303,9 +351,14 @@ public class SecondViewGroup extends LinearLayout {
 			scroller.startScroll(getScrollX(), 0, delta, 0, 200);
 			invalidate();
 			if(currentScreenIndex>whichScreen&&pageNumBean.prePageNum()){
-				pageNumView.initPageNumView();
+				if(pageNumView!=null){
+					pageNumView.initPageNumView();
+				}
+				
 			}else if(currentScreenIndex<whichScreen&&pageNumBean.nextPageNum()){
-				pageNumView.initPageNumView();	
+				if(pageNumView!=null){
+					pageNumView.initPageNumView();
+				}
 			}
 			logger.error("scrollToScreen11:"+getScrollX()+":"+delta);
 		
@@ -350,13 +403,22 @@ public class SecondViewGroup extends LinearLayout {
 			//设置图标的位置
 			// TODO Auto-generated method stub
 			//int[] indexs = MondifyIndexImageIndex.getImageIndexs(resourceBean.getBtnKey());
-//			int[] viewXY = new int[2];
-//			viewXY[0] = screenWidth>screenHeight?screenWidth:screenHeight;
-//			viewXY[1] = screenWidth>screenHeight?screenHeight:screenWidth;
-//			int width = viewXY[0]-250;
-//			int height = viewXY[1]-100;
-			resourceBean.setX(buttonIndex%4*200+50);
-			resourceBean.setY(buttonIndex/4%2*200+150);
+			int[] viewXY = new int[2];
+			viewXY[0] = screenWidth>screenHeight?screenWidth:screenHeight;
+			viewXY[1] = screenWidth>screenHeight?screenHeight:screenWidth;
+
+			int perWidth = viewXY[0]-50*2;
+			int perHeight = viewXY[1]-50*2;
+			int numPerLine = pageNumBean.getButtonPerPage()/2;
+			
+			if(pageNumView!=null){
+				resourceBean.setX(buttonIndex%numPerLine*(perWidth/numPerLine)+50);
+				resourceBean.setY(buttonIndex/numPerLine%2*(perHeight/2)+150);
+			}else{
+				resourceBean.setX(buttonIndex%numPerLine*(perWidth/numPerLine)+50);
+				resourceBean.setY(buttonIndex/numPerLine%2*(perHeight/2)+50);
+			}
+
 		}
 		
 	}

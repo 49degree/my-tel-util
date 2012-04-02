@@ -1,21 +1,21 @@
 package com.custom.view;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -115,6 +115,7 @@ public abstract class ViewImp extends FrameLayout{
 	}
 
 	protected boolean isRestart = false;
+	private MediaPlayer mMediaPlayer = null;
 	public void onRestart(){
 		isRestart = true;
 	}
@@ -127,16 +128,19 @@ public abstract class ViewImp extends FrameLayout{
 			new LoadResAsyncTask().execute(scanFoldUtils);	
 		}
 	}
-	
+	protected boolean isFistStart = true;
 	public void onResume() {
 		logger.error("onResume");
 		if (mWebView != null) {
 			mWebView.resumeTimers();
 			callHiddenWebViewMethod("onResume");
 		}
-		if(isRestart&&scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
+		logger.error("createView(mLayout)"+(!isFistStart)+":"+(scanFoldUtils.bgtype == Constant.BgType.swf)+":"+(mLayout!=null));
+		if(!isFistStart&&scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
 			createView(mLayout);
+			
 		}
+		isFistStart = false;
 	}
 	
 	public void onPause() {
@@ -148,10 +152,13 @@ public abstract class ViewImp extends FrameLayout{
 		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
 			wm.removeView(mLayout);
 		}
+	    if(mMediaPlayer!=null&&mMediaPlayer.isPlaying())
+	    	mMediaPlayer.stop();
 
 	}
 	public void onStop(){
 		logger.error("onStop");
+
 
 	}
 	
@@ -187,6 +194,35 @@ public abstract class ViewImp extends FrameLayout{
     	
         protected ScanFoldUtils doInBackground(ScanFoldUtils... scanFoldUtils) {
             // TODO Auto-generated method stub
+			//播放声音
+			try {
+				String loading = "loading.mp3";
+				LoadResources.saveToTempFile(context, LoadResources.loadPrefaceFile(
+						context, foldPath + File.separator+ Constant.loadSound), loading);
+				byte[] datas = LoadResources.loadLocalFile(context, loading, DirType.file);
+				logger.error("datas:"+datas.length);
+				
+				mMediaPlayer = new MediaPlayer();
+				mMediaPlayer.reset();// 恢复到未初始化的状态
+				mMediaPlayer = MediaPlayer.create(context, Uri
+						.fromFile(new File(context.getFilesDir().getAbsolutePath()+ File.separator + loading)));// 读取音频
+				try {
+					mMediaPlayer.prepare(); // 准备
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				mMediaPlayer.start(); // 播放
+			}catch(Exception e){
+				if(mMediaPlayer!=null){
+					mMediaPlayer.reset();
+				}
+				e.printStackTrace();
+			}
+    		
     		//参数对应<ScanFoldUtils, String, ScanFoldUtils>第1个,返回值对应第3个
             if(scanFoldUtils[0]!=null&&scanFoldUtils[0].resourceInfo==null){
             	scanFoldUtils[0].queryRes();

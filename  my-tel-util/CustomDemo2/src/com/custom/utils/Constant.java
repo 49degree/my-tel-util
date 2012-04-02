@@ -30,7 +30,10 @@ public class Constant {
 	private static String updateDataPath = null;
 	public final static String framePicName = "frame.png";
 	public final static String update_package = "com.custom.update";
-	
+	public final static String preface = "preface.txt";
+	public final static String foldTilePic = "title.png";
+	public final static String loadSound = "loading.mp3";
+	public static boolean noPageNum = false;
 	
 	
 	public final static  HashMap<String,String> picType= new HashMap<String,String>();;
@@ -53,23 +56,30 @@ public class Constant {
 		picType.put("jepg", "");
 		swfType.put("swf", "");
 		swfType.put("SWF", "");
-		
-		String foldName = MainApplication.getInstance().getString(R.string.fold_name);
-		Constant.foldName = foldName;
-		foldName_ex =MainApplication.getInstance().getString(R.string.fold_name_ex);
-		Constant.path = "custom/"+foldName;
-		Constant.pageNumPicPath = "custom/"+foldName+"/pagepic";
-
-		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-			sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+		try{
+			noPageNum =  Boolean.parseBoolean(MainApplication.getInstance().getString(R.string.no_page_num));
+		}catch(Exception e){
+			
 		}
 		try{
+			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+				sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+			}
+			
 			Context friendContext = MainApplication.getInstance().createPackageContext(
 					update_package,Context.CONTEXT_IGNORE_SECURITY);	
 			updateDataPath =  friendContext.getFilesDir().getAbsolutePath();
 		}catch(Exception e){
 			
 		}
+		String foldName = MainApplication.getInstance().getString(R.string.fold_name);
+		Constant.foldName = foldName;
+		foldName_ex =MainApplication.getInstance().getString(R.string.fold_name_ex);
+		Constant.path = "custom/"+foldName;
+		Constant.pageNumPicPath = "custom/"+foldName+"/pagepic";
+
+
+
 		
 		
 		

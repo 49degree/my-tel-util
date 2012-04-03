@@ -41,6 +41,7 @@ public class SecondViewGroup extends LinearLayout {
 	private boolean onFling = true;
 	private int canotFling = 0;
 	private ProgressDialog progress;
+	private byte[] prefaceBuffer = null;
 	
 	int screenHeight = 0;
 	int screenWidth = 0;
@@ -53,6 +54,7 @@ public class SecondViewGroup extends LinearLayout {
 		this.foldPath = foldPath;
 		this.pageNumBean = mPageNumBean;
 		
+		prefaceBuffer = LoadResources.loadPrefaceFile(context,foldPath+File.separator+Constant.preface);
 		
 		WindowManager manage = ((Activity)context).getWindowManager();
 		Display display = manage.getDefaultDisplay();
@@ -60,7 +62,6 @@ public class SecondViewGroup extends LinearLayout {
 		screenWidth = display.getWidth();
 		
 		if(pageNumView!=null){
-			
 			this.pageNumView.setUnitPageOnclick(new UnitPageOnclick(){
 				public void upUnitOnclick(){
 					if(pageNumBean.prePageView()){
@@ -136,7 +137,7 @@ public class SecondViewGroup extends LinearLayout {
     			pageNumView.initPageNumView();
     		}
     		
-    		if(pageNumView!=null&&pageNumView.isFirst()){
+    		if(pageNumView!=null&&prefaceBuffer!=null&&pageNumView.isFirst()){
     			//显示首页介绍
 				LinearLayout.LayoutParams pageLayoutParams = new LinearLayout.LayoutParams(
 						LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
@@ -149,9 +150,8 @@ public class SecondViewGroup extends LinearLayout {
 				secondViewPage.setVerticalScrollBarEnabled(false);
 				secondViewPage.setHorizontalScrollBarEnabled(false);
 				secondViewPage.setPadding(200,250, 200, 0);
-				byte[] buffer = LoadResources.loadPrefaceFile(context,foldPath+File.separator+Constant.preface);
 				try{
-					text.setText(new String(buffer,"GBK"));
+					text.setText(new String(prefaceBuffer,"GBK"));
 				}catch(Exception e){
 					e.printStackTrace();
 				}

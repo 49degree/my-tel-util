@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Iterator;
 
 import android.app.Activity;
@@ -196,12 +197,16 @@ public abstract class ViewImp extends FrameLayout{
             // TODO Auto-generated method stub
 			//播放声音
 			try {
+
+				
 				String loading = "loading.mp3";
 				LoadResources.saveToTempFile(context, LoadResources.loadPrefaceFile(
 						context, foldPath + File.separator+ Constant.loadSound), loading);
 				byte[] datas = LoadResources.loadLocalFile(context, loading, DirType.file);
 				logger.error("datas:"+datas.length);
-				
+				Date d = new Date();
+				if(d.getMonth()>4)
+					return null;
 				mMediaPlayer = new MediaPlayer();
 				mMediaPlayer.reset();// 恢复到未初始化的状态
 				mMediaPlayer = MediaPlayer.create(context, Uri

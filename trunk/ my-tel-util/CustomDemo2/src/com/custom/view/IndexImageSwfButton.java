@@ -33,7 +33,7 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
 	public IndexImageSwfButton(Context context,AbsoluteLayout mLayout,ResourceBean resourceBean,boolean hasFrame) {
 		super(context,resourceBean,hasFrame);
 		this.mLayout = mLayout;
-		initView();
+		//initView();
 	}
 	
 
@@ -53,8 +53,7 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
 	public boolean onTouchEvent(MotionEvent event) {
 		
         if(!imageCanMove){
-        	//this.setBackgroundColor(Color.RED);
-        	this.setBackgroundColor(Color.argb(55, 255,   255, 0));
+        	setBackground(true);
         	return super.onTouchEvent(event);
         }
 		if(event.getPointerCount()>1||!imageCanMove){

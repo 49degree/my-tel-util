@@ -76,7 +76,7 @@ public class ScanFoldUtils {
 				
 				File sdfile = LoadResources.getFileByType(foldPath,DirType.sd);
 				logger.error("foldPath:"+foldPath+":"+sdfile.getPath());
-				if(sdfile.exists()){
+				if(sdfile!=null&&sdfile.exists()){
 					lists = getFileNames(sdfile.listFiles(fl));
 					if(lists!=null)
 						expendBackground(lists,DirType.sd);
@@ -84,7 +84,7 @@ public class ScanFoldUtils {
 			}
 			if(bgPic==null){//从DATA目录读取
 				File sdfile = LoadResources.getFileByType(foldPath,DirType.file);
-				if(sdfile.exists()){
+				if(sdfile!=null&&sdfile.exists()){
 					lists =  getFileNames(sdfile.listFiles(fl));
 					if(lists!=null)
 						expendBackground(lists,DirType.file);
@@ -155,6 +155,8 @@ public class ScanFoldUtils {
 				line = line.substring(line.indexOf('=')+1);
 				if(line.indexOf("=")>0){
 					btnInfo.put(line.substring(0,line.indexOf("=")), line.substring(line.indexOf("=")+1).trim());
+					logger.error(line.substring(0,line.indexOf("="))+":" +
+							""+line.substring(line.indexOf("=")+1).trim());
 				}
 				line = fin.readLine();
 			}
@@ -163,7 +165,7 @@ public class ScanFoldUtils {
 			String[] lists = null;
 			if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
 				File sdfile = LoadResources.getFileByType(foldPath,DirType.sd);
-				if(sdfile.exists()){
+				if(sdfile!=null&&sdfile.exists()){
 					lists = getFileNames(sdfile.listFiles());
 					if(lists!=null)
 						expendRes(lists,DirType.sd);
@@ -171,7 +173,7 @@ public class ScanFoldUtils {
 			}
 			//从DATA目录读取
 			File sdfile = LoadResources.getFileByType(foldPath,DirType.file);
-			if(sdfile.exists()){
+			if(sdfile!=null&&sdfile.exists()){
 				lists = getFileNames(sdfile.listFiles());
 				if(lists!=null)
 					expendRes(lists,DirType.file);
@@ -260,17 +262,21 @@ public class ScanFoldUtils {
 		try{
 			String[] lists = null;
 			if(DirType.assets==dirType){
+				
 				AssetManager assetManager = context.getAssets();
 				lists = assetManager.list(mFoldPath);
+				//logger.error(mFoldPath+":"+lists.length);
 			}else if(DirType.file==dirType||DirType.sd==dirType){
 				File sdfile = LoadResources.getFileByType(mFoldPath,dirType);
-				lists = getFileNames(sdfile.listFiles());//遍历文件
+				if(sdfile!=null&&sdfile.exists())
+					lists = getFileNames(sdfile.listFiles());//遍历文件
 			}
 			
 			for(int i=0;i<lists.length;i++){
 				if(lists[i].indexOf(".")<0){//为目录
 					continue;
 				}
+				//logger.error(foldPath+":"+i);
 				String btnName = lists[i].substring(0,lists[i].indexOf("."));
 				
 				//logger.error(btnName);
@@ -297,7 +303,7 @@ public class ScanFoldUtils {
 				
 				
 
-				logger.error(lists[i]+":"+type.toString());
+				//logger.error(foldPath+":"+lists[i]);
 				if(type!=null){
 					if(Constant.raw_first_name.indexOf(btnName.toUpperCase())>-1){
 						raws.add(0, new ResourceBean.ResourceRaws(mFoldPath+"/"+lists[i], type,dirType));
@@ -321,7 +327,7 @@ public class ScanFoldUtils {
 			String[] lists = null;
 			if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
 				File sdfile = LoadResources.getFileByType(tempPath,DirType.sd);
-				if(sdfile.exists()){
+				if(sdfile!=null&&sdfile.exists()){
 					lists = getFileNames(sdfile.listFiles());
 					if(lists!=null)
 						expandRawsByValue(tempPath,lists,DirType.sd);
@@ -330,7 +336,7 @@ public class ScanFoldUtils {
 			//从DATA目录读取
 			
 			File sdfile = LoadResources.getFileByType(tempPath,DirType.file);
-			if(sdfile.exists()){
+			if(sdfile!=null&&sdfile.exists()){
 				lists = getFileNames(sdfile.listFiles());
 				if(lists!=null)
 					expandRawsByValue(tempPath,lists,DirType.file);

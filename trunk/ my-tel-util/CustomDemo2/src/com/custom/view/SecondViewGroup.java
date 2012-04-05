@@ -42,17 +42,20 @@ public class SecondViewGroup extends LinearLayout {
 	private int canotFling = 0;
 	private ProgressDialog progress;
 	private byte[] prefaceBuffer = null;
+	float zoom = 1f;
 	
 	int screenHeight = 0;
 	int screenWidth = 0;
 	String foldPath;
-	public SecondViewGroup(Context context,ArrayList<Entry<String,ResourceBean>> resourceInfo,PageNumView pageNumView,PageNumBean mPageNumBean,String foldPath) {
+	public SecondViewGroup(Context context,ArrayList<Entry<String,ResourceBean>> resourceInfo,
+			PageNumView pageNumView,PageNumBean mPageNumBean,String foldPath,float zoom) {
 		super(context);
 		this.context = context;
 		this.resourceInfo = resourceInfo;
 		this.pageNumView = pageNumView;
 		this.foldPath = foldPath;
 		this.pageNumBean = mPageNumBean;
+		this.zoom = zoom;
 		
 		prefaceBuffer = LoadResources.loadPrefaceFile(context,foldPath+File.separator+Constant.preface);
 		
@@ -145,6 +148,7 @@ public class SecondViewGroup extends LinearLayout {
 				secondViewPage.setLayoutParams(pageLayoutParams);
 				addView(secondViewPage);
 				TextView text = new TextView(context);
+				text.setTextColor(0xFF8B0000);
 				text.setLayoutParams(pageLayoutParams);
 				secondViewPage.addView(text);
 				secondViewPage.setVerticalScrollBarEnabled(false);
@@ -395,6 +399,8 @@ public class SecondViewGroup extends LinearLayout {
 					IndexImageButtonImp imageView = null;
 					setXY(resourceBean,i);
 					imageView = new IndexImagePicButton(context,null,resourceBean,true);
+					imageView.setZoom(zoom);
+					imageView.initView();
 					pageLayout.addView(imageView);
 				}
 			}
@@ -406,22 +412,40 @@ public class SecondViewGroup extends LinearLayout {
 			int[] viewXY = new int[2];
 			viewXY[0] = screenWidth>screenHeight?screenWidth:screenHeight;
 			viewXY[1] = screenWidth>screenHeight?screenHeight:screenWidth;
-
-			int perWidth = viewXY[0]-50*2;
-			int perHeight = viewXY[1]-50*2;
+			
+			int x = (int)(30*zoom);
+			int y = (int)(190*zoom);
+			int widthLength = (int)(280*zoom);
+			if(Math.round(viewXY[0]/16.0f)==Math.round(viewXY[1]/9.0)){
+				x = (int)(60*zoom);
+				widthLength = (int)(320*zoom);
+			}
+			
+			
 			int numPerLine = pageNumBean.getButtonPerPage()/2;
+			int perWidth = x+buttonIndex%numPerLine*widthLength;
+			int perHeight = y+buttonIndex/numPerLine%2*(int)(290*zoom);
+			
 			
 			if(pageNumView!=null){
-				resourceBean.setX(buttonIndex%numPerLine*(perWidth/numPerLine)+50);
-				resourceBean.setY(buttonIndex/numPerLine%2*(perHeight/2)+150);
+				resourceBean.setX(perWidth);
+				resourceBean.setY(perHeight);
 			}else{
-				resourceBean.setX(buttonIndex%numPerLine*(perWidth/numPerLine)+50);
-				resourceBean.setY(buttonIndex/numPerLine%2*(perHeight/2)+50);
+				resourceBean.setX(perWidth);
+				resourceBean.setY(perHeight);
 			}
 
 		}
 		
 	}
 	
+	public float getZoom() {
+		return zoom;
+	}
+
+
+	public void setZoom(float zoom) {
+		this.zoom = zoom;
+	}	
 
 }

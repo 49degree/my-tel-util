@@ -31,7 +31,7 @@ import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
-	static boolean secrete = false;
+	static boolean secrete = true;
 	
 	/**
 	 * 根据路径和文件名称获取文件对象
@@ -40,9 +40,9 @@ public class LoadResources {
 	 * @return
 	 */
 	public static File getFileByType(String foldPath,DirType dirType){
-		if(DirType.sd == dirType){
+		if(DirType.sd == dirType&&Constant.getSdPath()!=null){
 			return new File( Constant.getSdPath()+File.separator+foldPath);
-		}else if(DirType.file == dirType){
+		}else if(DirType.file == dirType&&Constant.getUpdateDataPath()!=null){
 			return new File( Constant.getUpdateDataPath()+File.separator+foldPath);
 		}
 		return null;
@@ -64,10 +64,6 @@ public class LoadResources {
 				logger.error("buffer size"+buffer.length);
 				BitmapFactory.Options opts = new BitmapFactory.Options();
 				Bitmap bm = BitmapFactory.decodeStream(new BufferedInputStream(new ByteArrayInputStream(buffer)),null,opts);
-				FileOutputStream f = new FileOutputStream(Constant.getSdPath()+File.separator+"test.jpg");
-				f.write(buffer);
-				f.flush();
-				f.close();
 				return bm;
 			}
 		}catch(Exception e){
@@ -99,12 +95,14 @@ public class LoadResources {
 			if(dirType==DirType.assets){
 				AssetManager assetManager = context.getAssets();
 				in= assetManager.open(filePath);
-			}else if(dirType==DirType.file){
+			}else if(dirType==DirType.file&&Constant.getUpdateDataPath()!=null){
 				//in= new FileInputStream(Constant.getDataPath()+File.separator+filePath);
 				in= new FileInputStream(Constant.getUpdateDataPath()+File.separator+filePath);
-			}else if(dirType==DirType.sd){
+			}else if(dirType==DirType.sd&&Constant.getSdPath()!=null){
 				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
 			}
+			if(in==null)
+				return null;
 			byte[] buf = new byte[in.available()];
 			//in.read(buf,0,buf.length);
 			if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&LoadResources.secrete){
@@ -149,9 +147,11 @@ public class LoadResources {
 				in= assetManager.open(filePath);
 			}else if(dirType==DirType.file){
 				in= new FileInputStream(context.getFilesDir().getAbsoluteFile()+File.separator+filePath);
-			}else if(dirType==DirType.sd){
+			}else if(dirType==DirType.sd&&Constant.getSdPath()!=null){
 				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
 			}
+			if(in==null)
+				return null;
 			byte[] buf = new byte[in.available()];
 			if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&LoadResources.secrete){
 				//解密文件头
@@ -251,23 +251,25 @@ public class LoadResources {
 			try{
 				File f = new File(context.getFilesDir().getAbsolutePath()+"/"+tempSavePath);
 				if(f.exists()){
-					logger.error("ffffffffff:"+f.length());
+					context.deleteFile(tempSavePath);
 				}
-				context.deleteFile(tempSavePath);
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE);
-			logger.error("tempfile:"+tempSavePath);
+			//logger.error("tempfile:"+tempSavePath);
 			//读取数据
 			if(dirType==DirType.assets){
 				AssetManager assetManager = context.getAssets();
 				in= assetManager.open(filePath);
-			}else if(dirType==DirType.file){
+			}else if(dirType==DirType.file&&Constant.getUpdateDataPath()!=null){
 				in= new FileInputStream(Constant.getUpdateDataPath()+File.separator+filePath);
-			}else if(dirType==DirType.sd){
+			}else if(dirType==DirType.sd&&Constant.getSdPath()!=null){
 				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
 			}
+			if(in==null)
+				return false;
 			readLength=in.read(buffer);
 			if (readLength >= ZipToFile.encrypLength&&LoadResources.secrete) {
 				// 解密文件头

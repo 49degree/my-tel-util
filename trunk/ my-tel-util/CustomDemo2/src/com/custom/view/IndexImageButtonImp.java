@@ -7,6 +7,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.custom.activity.FlashView;
 import com.custom.activity.IndexActivity;
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
@@ -34,9 +36,11 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 	protected Bitmap bm=null;
 	protected int bmWidth = 0;
 	protected int bmHeight = 0;
-	protected static BitmapDrawable frame = null;
+	protected static BitmapDrawable frame1 = null;
+	protected static BitmapDrawable frame2 = null;
 	protected boolean hasFrame = false;
 	protected boolean imageCanMove = false;
+	protected float zoom = 1f;
 
 	public IndexImageButtonImp(Context context,ResourceBean resourceBean,boolean hasFrame) {
 		super(context);
@@ -51,48 +55,79 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		this(context, resourceBean, false);
 	}  
 	
-	protected void setBackground(){
+	protected void setBackground(boolean onClick){
 		try{
 			if(hasFrame){
-				if(frame==null){
-					frame = new BitmapDrawable(LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+Constant.framePicName));	
+				if(frame1==null){
+					frame1 = new BitmapDrawable(LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+Constant.framePicName1));	
 				}
-				this.setBackgroundDrawable(frame);
+				if(frame2==null){
+					frame2 = new BitmapDrawable(LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+Constant.framePicName2));	
+				}
+				if(onClick){
+					this.setBackgroundDrawable(frame2);
+					this.setPadding(0, (int)(35*zoom), 0, 0);
+				}else{
+					this.setBackgroundDrawable(frame1);
+					this.setPadding(0, (int)(30*zoom), 0, 0);
+				}
 			}else{
-				this.setBackgroundColor(0);
+				if(onClick){
+					this.setBackgroundColor(Color.argb(55, 255,   255, 0));
+				}else{
+					this.setBackgroundColor(0);
+				}
+			}
+			if(onClick){
+				text.setTextColor(Color.WHITE);
+			}else{
+				text.setTextColor(Color.BLACK);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-	
+	TextView text = null;
 	protected void initView() {
-
+		
+		text = new TextView(context);
+		text.setText(resourceBean.getName());
+		LinearLayout.LayoutParams tlayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+		text.setLayoutParams(tlayout);
+		text.setTextSize((int)(10*zoom), zoom*1.8f);
+		text.setGravity(Gravity.CENTER);
+		if(hasFrame){
+			text.setPadding(0, (int)(16*zoom), 0, 0);
+		}
 		try{
-			setBackground();
+			setBackground(false);
 			bm = resourceBean.getBm();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		ImageView jpgView = new ImageView(context);
 		jpgView.setImageBitmap(bm);
-		bmWidth = 100;//bm.getWidth();
-		bmHeight = 100;//bm.getHeight();
+		bmWidth = (int)(bm.getWidth()*zoom);
+		bmHeight = (int)(bm.getHeight()*zoom);
 		LinearLayout.LayoutParams alayout = new LinearLayout.LayoutParams(bmWidth, bmHeight);
 		jpgView.setLayoutParams(alayout);
 		this.addView(jpgView);
-		
-		TextView text = new TextView(context);
-		text.setText(resourceBean.getName());
-		LinearLayout.LayoutParams tlayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-		text.setLayoutParams(tlayout);
 		this.addView(text);
 
 		this.setOrientation(LinearLayout.VERTICAL);
-		this.setGravity(Gravity.CENTER);
+		this.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL);
+		
+		
 		//this.setBackgroundColor(Color.RED);
-		AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(
-				bmWidth+20, bmHeight+60, resourceBean.getX(), resourceBean.getY());
+		AbsoluteLayout.LayoutParams layout = null;
+		if(frame1==null){
+			layout = new AbsoluteLayout.LayoutParams(
+					bmWidth+40, bmHeight+40, resourceBean.getX(), resourceBean.getY());
+		}else{
+			layout = new AbsoluteLayout.LayoutParams(
+					(int)(frame1.getBitmap().getWidth()*zoom), (int)(frame1.getBitmap().getHeight()*zoom), resourceBean.getX(), resourceBean.getY());
+		}
+
 		this.setLayoutParams(layout);
 		
 	}
@@ -113,10 +148,9 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 //		打开PDF——application/pdf
 //		打开VCF——text/x-vcard
 //		打开SWF——flash/*
-		this.setBackground();
+		setBackground(false);
 
 		final List<ResourceBean.ResourceRaws> raws = resourceBean.getRaws();
-		logger.error("raws:"+raws.size());
 		if(raws==null||raws.size()<1){
 			return ;
 		}
@@ -143,18 +177,32 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 //						}
 						//复制其他flash文件
 						ResourceBean.ResourceRaws  raw = null;
-						for(int i=1;i<raws.size();i++){
+						for(int i=0;i<raws.size();i++){
 							raw = raws.get(i);
 							if(raw.getType()==ResourceBean.ResourceType.swf){
 								String tempFile = raw.getRawPath().substring(raw.getRawPath().lastIndexOf(File.separator)+1);
 								LoadResources.saveToTempFile(context, raw.getRawPath(), resourceBean.getDirType(),tempFile);
+								if(i==0){
+//									Intent intent = new Intent(Intent.ACTION_VIEW);
+//									intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+//									intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+tempFile)),"*/*");
+//									context.startActivity(intent);
+									
+									Intent intent = new Intent(context,FlashView.class);
+									Bundle bd = new Bundle();
+									bd.putString(Constant.foldPath, context.getFilesDir().getAbsolutePath()+File.separator+tempFile);
+									intent.putExtras(bd);
+									intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+									context.startActivity(intent);									
+								}
 							}
 						}
 					}
 				}.start();
+				
+				
 			}catch(Exception e){}
-
-			
+			return ;
 		}else if(type==ResourceBean.ResourceType.fold){
 			intent = new Intent(context, IndexActivity.class);   
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -184,17 +232,26 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		
 		try{
 			if(LoadResources.saveToTempFile(context, path, resourceBean.getDirType(),fileName)){
-				intent = new Intent(Intent.ACTION_VIEW);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+ 
 				if(type==ResourceBean.ResourceType.apk){
 					String packageName = LoadResources.getInstalledPackName(context, context.getFilesDir().getAbsolutePath()+File.separator+fileName);
 					if(packageName!=null){//已经安装,则打开该activity
 						LoadResources.startApp(context, packageName);
-						return ;
 					}
+//				}else if(type==ResourceBean.ResourceType.swf){
+//					intent = new Intent(context,FlashView.class);
+//					Bundle bd = new Bundle();
+//					bd.putString(Constant.foldPath, path);
+//					intent.putExtras(bd);
+//					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+//					context.startActivity(intent);
+				}else{
+					intent = new Intent(Intent.ACTION_VIEW);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+					intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+fileName)),intentType);
+					context.startActivity(intent);
 				}
-				intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+fileName)),intentType);
-				context.startActivity(intent);
+
 			}
 				
 		}catch(Exception e){
@@ -212,4 +269,16 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
     public boolean getImageMove(){
     	return imageCanMove;
     }
+
+
+	public float getZoom() {
+		return zoom;
+	}
+
+
+	public void setZoom(float zoom) {
+		this.zoom = zoom;
+	}
+    
+    
 }

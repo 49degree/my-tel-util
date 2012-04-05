@@ -72,7 +72,7 @@ public class SecondView extends ViewImp{
 			pageNumBean = new PageNumBean(resourceInfo.size());	
 		}
 		
-		
+		float zoom = 0.6f;
 		
 		frameLayout = new FrameLayout(this.context);
 		LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(
@@ -81,7 +81,7 @@ public class SecondView extends ViewImp{
 		if(!Constant.noPageNum){
 			pageNumView = new PageNumView(this.context,pageNumBean,scanFoldUtils.foldPath);
 		}
-		
+		pageNumView.setZoom(zoom);
 		
 		if(pageNumView==null){
 			pageNumBean.setButtonPerPage(6);
@@ -90,7 +90,7 @@ public class SecondView extends ViewImp{
 		}
 		pageNumBean.setCurPageNum(curPageNum);
 		
-		SecondViewGroup viewGroup = new SecondViewGroup(this.context,resourceInfo,pageNumView,pageNumBean,scanFoldUtils.foldPath);
+		SecondViewGroup viewGroup = new SecondViewGroup(this.context,resourceInfo,pageNumView,pageNumBean,scanFoldUtils.foldPath,zoom);
 		frameLayout.addView(viewGroup);
 
 		if(pageNumView!=null){

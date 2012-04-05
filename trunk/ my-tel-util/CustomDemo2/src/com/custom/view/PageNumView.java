@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsoluteLayout;
@@ -31,6 +32,9 @@ public class PageNumView extends AbsoluteLayout{
 	private UnitPageOnclick unitPageOnclick;
 	private String foldPath;
 	private boolean isFirst = true;
+	
+	float zoom = 1f;
+	
 	public PageNumView(Context context,PageNumBean pageNumBean,String foldPath) {
 		super(context);
 		this.context = context;
@@ -48,8 +52,10 @@ public class PageNumView extends AbsoluteLayout{
 	static Bitmap bm = null;
 	static Bitmap pageNum1 =null;
 	static Bitmap pageNum2 = null;
-	static Bitmap nextunit =null;
-	static Bitmap upunit = null;
+	static Bitmap nextunit1 =null;
+	static Bitmap upunit1 = null;
+	static Bitmap nextunit2 =null;
+	static Bitmap upunit2 = null;
 	static Bitmap title = null;
 	
 	public static void realease(){
@@ -62,21 +68,28 @@ public class PageNumView extends AbsoluteLayout{
 		if(pageNum2==null||pageNum2.isRecycled()){
 			pageNum2.recycle();
 		}
-		if(nextunit==null||nextunit.isRecycled()){
-			nextunit.recycle();
+		if(nextunit1==null||nextunit1.isRecycled()){
+			nextunit1.recycle();
 		}
-		if(upunit==null||upunit.isRecycled()){
-			upunit.recycle();
+		if(upunit1==null||upunit1.isRecycled()){
+			upunit1.recycle();
 		}
-		
+		if(nextunit2==null||nextunit2.isRecycled()){
+			nextunit2.recycle();
+		}
+		if(upunit2==null||upunit2.isRecycled()){
+			upunit2.recycle();
+		}		
 		if(title==null||title.isRecycled()){
 			title.recycle();
 		}
 		bm = null;
 	    pageNum1 =null;
 	    pageNum2 = null;
-	    nextunit =null;
-	    upunit = null;
+	    nextunit1 =null;
+	    upunit1 = null;
+	    nextunit2 =null;
+	    upunit2 = null;
 	}
 	
 	public void initView(){
@@ -87,11 +100,17 @@ public class PageNumView extends AbsoluteLayout{
 			if(pageNum1==null){
 	    		 pageNum1 = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"pageNum1.png");        	
 			}
-			if(upunit==null){
-				upunit = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"upunit.png"); 
+			if(upunit1==null){
+				upunit1 = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"upunit1.png"); 
 			}
-			if(nextunit==null){
-				nextunit =  LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"nextunit.png"); 
+			if(nextunit1==null){
+				nextunit1 =  LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"nextunit1.png"); 
+			}
+			if(upunit2==null){
+				upunit2 = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"upunit2.png"); 
+			}
+			if(nextunit2==null){
+				nextunit2 =  LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"nextunit2.png"); 
 			}
 			if(bm==null){
 				bm = LoadResources.getBitmap(context, Constant.pageNumPicPath+File.separator+"tree.png"); 
@@ -108,10 +127,10 @@ public class PageNumView extends AbsoluteLayout{
 
 			ImageView imageView = new ImageView(context);
 			imageView.setImageBitmap(bm);
-			beginX = screenWidth-bm.getWidth();
-			beginY = 20;
+			beginX = screenWidth-(int)(bm.getWidth()*zoom);
+			beginY = (int)(20*zoom);
 			AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(
-					bm.getWidth(), bm.getHeight(),beginX, beginY);
+					(int)(bm.getWidth()*zoom), (int)(bm.getHeight()*zoom),beginX, beginY);
 			imageView.setLayoutParams(layout);
 			this.addView(imageView);
 			
@@ -119,7 +138,7 @@ public class PageNumView extends AbsoluteLayout{
 			ImageView tileView = new ImageView(context);
 			tileView.setImageBitmap(title);
 			AbsoluteLayout.LayoutParams tileViewlayout = new AbsoluteLayout.LayoutParams(
-					title.getWidth(), title.getHeight(),50, 50);
+					(int)(title.getWidth()*zoom), (int)(title.getHeight()*zoom),(int)(50*zoom), (int)(50*zoom));
 			tileView.setLayoutParams(tileViewlayout);
 			this.addView(tileView);
 			
@@ -128,28 +147,48 @@ public class PageNumView extends AbsoluteLayout{
 			//上行翻页按钮
 			try{
 				imageView = new ImageView(context);
-
-				imageView.setImageBitmap(nextunit);
+				imageView.setImageBitmap(nextunit1);
 				AbsoluteLayout.LayoutParams nextlayout = new AbsoluteLayout.LayoutParams(
-						200, 100, screenWidth-160,150);
+						(int)(nextunit1.getWidth()*zoom), (int)(nextunit1.getHeight()*zoom), screenWidth-(int)(100*zoom),(int)(188*zoom));
 				imageView.setLayoutParams(nextlayout);
 				this.addView(imageView);
+				
+				imageView.setOnTouchListener(new OnTouchListener(){
+
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+						((ImageView)v).setImageBitmap(nextunit2);
+			        	return onTouchEvent(event);
+					}
+					
+				});
 				imageView.setOnClickListener(new View.OnClickListener(){
 					public void onClick(View v){
+						((ImageView)v).setImageBitmap(nextunit1);
 						unitPageOnclick.nextUnitOnclick();
+						
 					}
 				});
 				
 				ImageView imageView2 = new ImageView(context);
-				
-
-				imageView2.setImageBitmap(upunit);
+				imageView2.setImageBitmap(upunit1);
+				imageView2.setOnTouchListener(new OnTouchListener(){
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+						((ImageView)v).setImageBitmap(upunit2);
+			        	return onTouchEvent(event);
+					}
+					
+				});
 				AbsoluteLayout.LayoutParams uplayout = new AbsoluteLayout.LayoutParams(
-						200, 100, screenWidth-200,210);
+						(int)(upunit1.getWidth()*zoom), (int)(upunit1.getHeight()*zoom), screenWidth-(int)(150*zoom),(int)(295*zoom));
 				imageView2.setLayoutParams(uplayout);
 				this.addView(imageView2);
 				imageView2.setOnClickListener(new View.OnClickListener(){
 					public void onClick(View v){
+						((ImageView)v).setImageBitmap(upunit1);
 						unitPageOnclick.upUnitOnclick();
 					}
 				});
@@ -193,29 +232,52 @@ public class PageNumView extends AbsoluteLayout{
 				TextView imageView = new TextView(context);
 				if(i==pageNumBean.getCurPageNum()&&!this.isFirst){
 					pageNum = pageNum2;
-					imageView.setTextColor(Color.YELLOW);
+					imageView.setTextColor(0xFF8B0000);
+					imageView.setPadding(0, (int)(50*zoom), 0, 0);
 
 				}else{
 					pageNum = pageNum1;
-					imageView.setTextColor(Color.GREEN);
+					imageView.setTextColor(0xFF006400);
+					imageView.setPadding(0, (int)(30*zoom), 0, 0);
 				}
 				if(pageNum!=null){
-					//imageView.setImageBitmap(pageNum);
-					boolean doubleView = (i/pageNumBean.getPageNumPerView()%2==0);
+					int x = 0;
+					int y = 0;
+					switch(i%pageNumBean.getPageNumPerView()){
+					case 0:
+						x = screenWidth-(int)(500*zoom);
+						y = (int)(72*zoom);
+						break;
+					case 1:
+						x = screenWidth-(int)(422*zoom);
+						y = (int)(60*zoom);
+						break;
+					case 2:
+						x = screenWidth-(int)(342*zoom);
+						y = (int)(55*zoom);
+						break;
+					case 3:
+						x = screenWidth-(int)(270*zoom);
+						y = (int)(64*zoom);
+						break;	
+					case 4:
+						x = screenWidth-(int)(196*zoom);
+						y = (int)(60*zoom);
+						break;	
+					default:
+						break;
+						
+					}
 					layout = new AbsoluteLayout.LayoutParams(
-							pageNum.getWidth(), pageNum.getHeight(), 
-							beginX+115+i%pageNumBean.getPageNumPerView()*60, beginY+(((doubleView&&i%2==0)||(!doubleView&&i%2!=0))?65:55));
-//					Bitmap newb = Bitmap.createBitmap( pageNum.getWidth(), pageNum.getHeight(), Config.ARGB_8888 );  
-//		            Canvas canvasTemp = new Canvas( newb );  
-//		            canvasTemp.drawColor(Color.TRANSPARENT);    
-//		            canvasTemp.drawBitmap(pageNum, 0, 0, p);//画图
-//		            canvasTemp.drawText(String.valueOf(i+1), pageNum.getWidth()/3, pageNum.getHeight(), p); 
-		            imageView.setBackgroundDrawable(new BitmapDrawable(pageNum));
-		            
+							(int)(pageNum.getWidth()*zoom), (int)(pageNum.getHeight()*zoom), 
+							x, y);
+		            imageView.setBackgroundDrawable(new BitmapDrawable(pageNum));   
 				}
+				
+				
 				imageView.setText(String.valueOf(i+1));
 				imageView.setGravity(Gravity.CENTER);
-				imageView.setPadding(0, 5, 0, 0);
+				
 				imageView.setLayoutParams(layout);
 				this.addView(imageView);
 				pageNumViews.add(imageView);
@@ -265,7 +327,14 @@ public class PageNumView extends AbsoluteLayout{
 		this.isFirst = isFirst;
 	}
 
+	public float getZoom() {
+		return zoom;
+	}
 
+
+	public void setZoom(float zoom) {
+		this.zoom = zoom;
+	}
 
 	public interface UnitPageOnclick{
 		public void upUnitOnclick();

@@ -28,7 +28,8 @@ public class Constant {
 	public final static String backGroundSwfName = "background.swf";//复制文件
 	private static String sdPath = null;
 	private static String updateDataPath = null;
-	public final static String framePicName = "frame.png";
+	public final static String framePicName1 = "frame1.png";
+	public final static String framePicName2 = "frame2.png";
 	public final static String update_package = "com.custom.update";
 	public final static String preface = "preface.txt";
 	public final static String foldTilePic = "title.png";

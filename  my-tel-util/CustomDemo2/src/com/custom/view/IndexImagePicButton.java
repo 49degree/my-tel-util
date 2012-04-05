@@ -38,7 +38,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 	public IndexImagePicButton(Context context,BackgroundLinearLayout scrollView,ResourceBean resourceBean,boolean hasFrame) {
 		super(context,resourceBean,hasFrame);
 		this.scrollView = scrollView;
-		initView();
+		//initView();
 	}
 	
 	int touchState = 0;
@@ -63,7 +63,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 			switch(action){
 			case MotionEvent.ACTION_DOWN:
 				//logger.error("Color.RED");
-				this.setBackgroundColor(Color.argb(55, 255,   255, 0));
+				setBackground(true);
 				
 				startTouchX = (int)event.getX();
 				startTouchY = (int)event.getY();
@@ -100,8 +100,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 					}
 					super.onClick(this);
 				}
-				this.setBackgroundColor(0);
-				setBackground();
+				setBackground(false);
 			default:
 				break;
 			}

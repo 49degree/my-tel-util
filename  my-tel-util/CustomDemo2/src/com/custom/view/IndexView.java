@@ -30,7 +30,10 @@ public class IndexView extends ViewImp{
         super(context, attr,foldPath,foldDepth);
 		try{
 			imageCanMove = Boolean.parseBoolean(context.getString(R.string.modify_index));
-		}catch(Exception e){}
+			logger.error("imageCanMove:"+imageCanMove);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		MondifyIndexImageIndex.initImageIndexs(context,imageCanMove);//获取按钮位置信息
 	}
 	
@@ -53,9 +56,16 @@ public class IndexView extends ViewImp{
 			
 			if(scanFoldUtils.bgtype==BgType.pic){
 				IndexImagePicButton imageView = new IndexImagePicButton(context,scrollView,resourceBean);
+				imageView.setImageMove(imageCanMove);
+				imageView.setZoom(1.0f);
+				imageView.initView();
 				mLayout.addView(imageView);
+				
 			}else{
 				IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
+				imageView.setImageMove(imageCanMove);
+				imageView.setZoom(1.0f);
+				imageView.initView();
 				mLayout.addView(imageView);
 			}
 		}

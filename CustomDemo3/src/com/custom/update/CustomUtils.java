@@ -62,9 +62,6 @@ public class CustomUtils {
 					e.printStackTrace();
 				}
 			}
-			
-			LoadResources.initInstalledInfo();//区分已经解压和未解压数据
-			
 		} catch (Exception e) {  
             e.printStackTrace();  
         } 
@@ -129,7 +126,7 @@ public class CustomUtils {
 				if(fileExsit){
 					boolean change = false;
 					oSavedFile = new RandomAccessFile(filePath,"rw");
-					if(fileDirType==Constant.FileDirType.data&&fileRealease[1]<length-dowonedLength){
+					if(fileDirType==Constant.FileDirType.data&&fileRealease[1]<length){
 						change = true;
 						if(sdRealease[1]<length){
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
@@ -137,7 +134,7 @@ public class CustomUtils {
 						}
 						filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
 						fileDirType = Constant.FileDirType.sd;
-					}else if(fileDirType==Constant.FileDirType.sd&&sdRealease[1]<length-dowonedLength){
+					}else if(fileDirType==Constant.FileDirType.sd&&sdRealease[1]<length){
 						change = true;
 						if(fileRealease[1]<length){
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了

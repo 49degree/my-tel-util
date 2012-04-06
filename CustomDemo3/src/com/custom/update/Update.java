@@ -89,7 +89,8 @@ public class Update extends Activity implements OnClickListener{
         	public void run(){
         		try{
         			sleep(3000);
-                    LoadResources.queryInstalledFoldInfo(Update.this);
+        			LoadResources.loadUpdateInstalledInfo();
+                    LoadResources.queryInstalledFoldFileInfo(Update.this);
                     MainApplication.getInstance().startNetWorkListen(handler);//监听网络状况
         		}catch(Exception e){}
         	}
@@ -151,7 +152,12 @@ public class Update extends Activity implements OnClickListener{
                     	logger.error("createNoInstalledfolds");
                     	while(!downThreadStop&&it.hasNext()){
                     		JSONObject install = LoadResources.updateInstalledInfo.get(it.next());
-                        	if(install!=null){
+                			String unZipflag = null;
+                			try{
+                				unZipflag = install.getString(Constant.fileUnziped);
+                			}catch(Exception e){}
+                			
+                        	if(install!=null&&unZipflag==null){
             					//logger.error(install.getString(Constant.updateId));
                         		handler.sendMessage(handler.obtainMessage(5));
                         	    customUtils.downFile(install, handler);
@@ -159,7 +165,6 @@ public class Update extends Activity implements OnClickListener{
                         	    	synchronized (this) {
                         	    		wait();
 									}
-                        	    	
                         	    }catch(Exception e){
                         	    	e.printStackTrace();
                         	    }
@@ -229,10 +234,7 @@ public class Update extends Activity implements OnClickListener{
         						ToGetFile toGetFile = new ToGetFile();
         						toGetFile.downFileFromzip(filePath);
 	        					msgObject.put(Constant.fileUnziped, "true");
-	        					LoadResources.updateInstalledInfo(msgObject);
-	        					LoadResources.addInstalledInfo(msgObject);
-	        					LoadResources.queryInstalledFoldInfo(Update.this);
-	        	    			createInstalledfolds();
+	        					LoadResources.updateInstalledInfo(msgObject,true);
 	        					if(downThread!=null&&downThread.isAlive()){
 	        						synchronized (downThread) {
 	        							downThread.notify();
@@ -247,13 +249,7 @@ public class Update extends Activity implements OnClickListener{
 	        							downThread.notify();
 									}
 	        					}
-        						DialogUtils.showMessageAlertDlg(Update.this,"提示", "解压文件异常", null,null);
-        						try {
-									LoadResources.updateInstalledInfo.remove(msgObject.getString(Constant.updateId));
-								} catch (JSONException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
+        						DialogUtils.showMessageAlertDlg(Update.this,"提示", "解压文件异常:"+e.getMessage(), null,null);
         					}
         					logger.error("解压线程结束");
         				}
@@ -317,7 +313,6 @@ public class Update extends Activity implements OnClickListener{
 		if(networkState){
         	customUtils = new CustomUtils(Update.this);
         	customUtils.queryInfo();//联网查询
-			
 			textView1.setText("联网内容更新");
 			linearLayout1.setVisibility(View.VISIBLE);
 			linearLayout4.setVisibility(View.GONE);
@@ -335,10 +330,6 @@ public class Update extends Activity implements OnClickListener{
 		    linearLayout6.setBackgroundColor(0xFFCDCD00);
 			linearLayout8.setVisibility(View.VISIBLE);
 			linearLayout7.setVisibility(View.GONE);
-			
-
-			
-		    
 		}else{
 			linearLayout1.setVisibility(View.GONE);
 			linearLayout4.setVisibility(View.VISIBLE);
@@ -355,8 +346,6 @@ public class Update extends Activity implements OnClickListener{
 				byte[] buffer = LoadResources.loadFile(Update.this,"down.txt",0);
 				textView9.setText(new String(buffer,"GBK"));
 			}catch(Exception e){}
-			
-		
 		}
 		textView5.setText("本机已有内容:");
 		createInstalledfolds();
@@ -364,7 +353,6 @@ public class Update extends Activity implements OnClickListener{
     
     public void createInstalledfolds(){
 		try{
-			LoadResources.queryInstalledFoldInfo(Update.this);
 	    	StringBuffer temp = new StringBuffer();
 	    	Iterator it = LoadResources.installedfolds.keySet().iterator();
 	    	int count = 0;

@@ -44,7 +44,56 @@ public class LoadResources {
 		noInstalledfolds.put("数学", 0);
 	}	
 	
+	/**
+	 * 更新数据
+	 * @param installed
+	 */
+	public static void updateInstalledInfo(JSONObject installed,boolean unZip){
+		updateInstalledInfo(installed);
+		if(unZip){
+			addInstalledInfo(installed);//更新已经获取目录
+		}
+	}
+	/**
+	 * 更新数据
+	 * @param installed
+	 */
+	public static void updateInstalledInfo(JSONObject installed){
+		logger.error("updateInstalledInfo");
+		String filePath = Constant.getDataPath()+File.separator+Constant.installedInfo;
+		try{
+			if(json==null){
+				json = new JSONObject();
+				json.put(Constant.root, new JSONArray());
+				logger.error("new json:"+json.toString());
+			}
 
+			if(updateInstalledInfo.containsKey(installed.getString(Constant.updateId))){
+				JSONArray list = json.getJSONArray(Constant.root);
+				for(int i=0;i<list.length();i++){//如果已经存在，则替换
+					JSONObject temp = list.getJSONObject(i);
+					logger.error("installedInfo json:"+list.length());
+					if(temp.getString(Constant.updateId).equals(installed.getString(Constant.updateId))){
+						list.put(i, installed);
+						break;
+					}
+				}
+			}else{
+				json.getJSONArray(Constant.root).put(installed);
+			}
+			
+			updateInstalledInfo.put(installed.getString(Constant.updateId), installed);
+			initNoInstalledInfo();//更新未获取目录
+			
+			json.put(Constant.modifyTime, new SimpleDateFormat(Constant.timeFormate).format(new Date()));
+			logger.error("update json:"+json.toString());
+			writeFile(filePath,json.toString());
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}	
+	
 	public static void loadUpdateInstalledInfo(){
 		logger.error("loadUpdateInstalledInfo");
 		try{
@@ -95,13 +144,13 @@ public class LoadResources {
 			try{
 				JSONArray contents = installed.getJSONArray(Constant.fileContent);
 				for(int j=0;j<contents.length();j++){
-					logger.error("noInstalledfolds:"+contents.length()+":"+contents.toString());
+					logger.error("Installed:"+contents.length()+":"+contents.toString());
 					try{
 						JSONObject content = contents.getJSONObject(j);
 						String name = content.getString("name");
 						int value = content.getInt("value");
 						if(installedfolds.containsKey(name)&&installedfolds.get(name)>0)
-							installedfolds.put(name, noInstalledfolds.get(name)+value);
+							installedfolds.put(name, installedfolds.get(name)+value);
 						else
 							installedfolds.put(name, value);
 						logger.error("installedfolds:"+name+":"+installedfolds.get(name));
@@ -118,8 +167,8 @@ public class LoadResources {
 	/**
 	 * 查询升级信息
 	 */
-	public static void initInstalledInfo(){
-		logger.error("initInstalledInfo");
+	public static void initNoInstalledInfo(){
+		logger.error("initNoInstalledInfo");
 		try{
 			//清空未安装情况
 			try{
@@ -159,27 +208,6 @@ public class LoadResources {
 						}catch(Exception e){
 							e.printStackTrace();
 						}
-					}else{
-						try{
-							JSONArray contents = installed.getJSONArray(Constant.fileContent);
-							for(int j=0;j<contents.length();j++){
-								logger.error("installedfolds:"+contents.length()+":"+contents.toString());
-								try{
-									JSONObject content = contents.getJSONObject(j);
-									String name = content.getString("name");
-									int value = content.getInt("value");
-									if(installedfolds.containsKey(name)&&installedfolds.get(name)>0)
-										installedfolds.put(name, noInstalledfolds.get(name)+value);
-									else
-										installedfolds.put(name, value);
-									logger.error("installedfolds:"+name+":"+installedfolds.get(name));
-								}catch(Exception e){
-									e.printStackTrace();
-								}		
-							}
-						}catch(Exception e){
-							e.printStackTrace();
-						}	
 					}
 				}catch(Exception e){
 					e.printStackTrace();
@@ -190,44 +218,7 @@ public class LoadResources {
 		}
 	}
 	
-	/**
-	 * 更新数据
-	 * @param installed
-	 */
-	public static void updateInstalledInfo(JSONObject installed){
-		logger.error("updateInstalledInfo");
-		String filePath = Constant.getDataPath()+File.separator+Constant.installedInfo;
-		try{
-			if(json==null){
-				json = new JSONObject();
-				json.put(Constant.root, new JSONArray());
-				logger.error("new json:"+json.toString());
-			}
-			
-			if(updateInstalledInfo.containsKey(installed.getString(Constant.updateId))){
-				JSONArray list = json.getJSONArray(Constant.root);
-				for(int i=0;i<list.length();i++){//如果已经存在，则替换
-					JSONObject temp = list.getJSONObject(i);
-					logger.error("installedInfo json:"+list.length());
-					if(temp.getString(Constant.updateId).equals(Constant.updateId)){
-						list.put(i, updateInstalledInfo);
-						break;
-					}
-				}
-			}else{
-				json.getJSONArray(Constant.root).put(installed);
-			}
-			
-			updateInstalledInfo.put(installed.getString(Constant.updateId), installed);
-			
-			json.put(Constant.modifyTime, new SimpleDateFormat(Constant.timeFormate).format(new Date()));
-			logger.error("update json:"+json.toString());
-			writeFile(filePath,json.toString());
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}	
+
 	
 	/**
 	 * 清空已经下载了多少业务记录
@@ -248,12 +239,11 @@ public class LoadResources {
         			out.close();
             }catch(Exception e){}
         }
-        //queryInstalledFoldInfo(context);
 	}
 	/**
 	 * 查询已经下载了多少业务
 	 */
-	public static HashMap<String,Integer> queryInstalledFoldInfo(Context context){
+	public static HashMap<String,Integer> queryInstalledFoldFileInfo(Context context){
 		logger.error("queryInstalledFoldInfo");
 		//清空未安装情况
 		try{
@@ -266,9 +256,7 @@ public class LoadResources {
 			
 		}
 		//读取数据
-		
 		FileInputStream in = null;
-		
 		try{
 			in = context.openFileInput(Constant.installedFold);
 			BufferedReader fin = new BufferedReader(new InputStreamReader(in,"GBK"));
@@ -278,7 +266,6 @@ public class LoadResources {
 			while(line!=null){
 				logger.error(line);
 				line = line.substring(line.indexOf('=')+1);
-				
 				if(line.indexOf("=")>0){
 					try{
 						count = Integer.parseInt(line.substring(line.indexOf("=")+1).trim());
@@ -297,9 +284,37 @@ public class LoadResources {
 					in.close();
 			}catch(Exception e){}
 		}
-		loadUpdateInstalledInfo();
-		initInstalledInfo();//分析下载文件中的情况
-		
+		//查询没有安装应用的已经下载资源
+		Iterator it = updateInstalledInfo.keySet().iterator();
+		while(it.hasNext()){
+			try{
+				JSONObject installed = updateInstalledInfo.get(it.next());
+				if(installed==null)
+					continue;
+				String unZipflag = null;
+				try{
+					unZipflag = installed.getString(Constant.fileUnziped);
+				}catch(Exception e){}
+				if ( unZipflag!=null){
+					try{
+						JSONArray contents = installed.getJSONArray(Constant.fileContent);
+						logger.error("installedfolds:"+contents.length()+":"+contents.toString());
+						for(int j=0;j<contents.length();j++){
+							JSONObject content = contents.getJSONObject(j);
+							String name = content.getString("name");
+							int value = content.getInt("value");
+							if(!installedfolds.containsKey(name)||(installedfolds.containsKey(name)&&installedfolds.get(name)==0))
+								installedfolds.put(name, value);
+							logger.error("installedfolds:"+installedfolds.get(name));		
+						}
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 		return installedfolds;
 	}
 	

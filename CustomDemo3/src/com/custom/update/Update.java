@@ -16,6 +16,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.Window;
@@ -151,24 +152,31 @@ public class Update extends Activity implements OnClickListener{
                     	while(!downThreadStop&&it.hasNext()){
                     		JSONObject install = LoadResources.updateInstalledInfo.get(it.next());
                         	if(install!=null){
-            					logger.error(install.getString(Constant.updateId));
+            					//logger.error(install.getString(Constant.updateId));
                         		handler.sendMessage(handler.obtainMessage(5));
                         	    customUtils.downFile(install, handler);
                         	    try{
-                        	    	wait();
-                        	    }catch(Exception e){
+                        	    	synchronized (this) {
+                        	    		wait();
+									}
                         	    	
+                        	    }catch(Exception e){
+                        	    	e.printStackTrace();
                         	    }
+                        	    
                         	}
                     	}
     	    			if(progress.isShowing())
     	    				progress.dismiss();
+
             		}catch(Exception e){
             			e.printStackTrace();
             		}
-       
+            		handler.sendMessage(handler.obtainMessage(HandlerWhat.NETWORK_CONNECT_RESULE, new Boolean(true)));
+            		logger.error("下载线程结束");
             	}
             };
+            downThread.setDaemon(true);
             downThread.start();
     	}else if(v.getId()==R.id.update_btn2){
 			Intent mIntent = new Intent("/");
@@ -203,7 +211,7 @@ public class Update extends Activity implements OnClickListener{
     				
         			int downedL = msg.arg1; 
         			int length = msg.arg2;
-        			logger.error("download:"+downedL);
+        			//logger.error("download:"+downedL);
     				progress.setMessage("已经下载"+downedL+"(bytes),共"+length+"(bytes)");
     			}
     			break;//报告下载进度
@@ -216,24 +224,30 @@ public class Update extends Activity implements OnClickListener{
         			final String filePath = msgObject.getString(Constant.filePath);
         			new Thread(){
         				public void run(){
+        					Looper.prepare();
         					try{
-	        					new ToGetFile().downFileFromzip(filePath);
+        						ToGetFile toGetFile = new ToGetFile();
+        						toGetFile.downFileFromzip(filePath);
 	        					msgObject.put(Constant.fileUnziped, "true");
 	        					LoadResources.updateInstalledInfo(msgObject);
 	        					LoadResources.addInstalledInfo(msgObject);
 	        					LoadResources.queryInstalledFoldInfo(Update.this);
-	        					createNoInstalledfolds();
-	        					createInstalledfolds();
-	        					if(downThread!=null&&downThread.isAlive())
-	        						downThread.interrupt();
+	        	    			createInstalledfolds();
+	        					if(downThread!=null&&downThread.isAlive()){
+	        						synchronized (downThread) {
+	        							downThread.notify();
+									}
+	        					}
+	        						
         					}catch(Exception e){
+        						e.printStackTrace();
         						downThreadStop = true;
-	        					if(downThread!=null&&downThread.isAlive())
-	        						downThread.interrupt();
+	        					if(downThread!=null&&downThread.isAlive()){
+	        						synchronized (downThread) {
+	        							downThread.notify();
+									}
+	        					}
         						DialogUtils.showMessageAlertDlg(Update.this,"提示", "解压文件异常", null,null);
-        						if(new File(filePath).exists()){
-        							new File(filePath).delete();
-        						}
         						try {
 									LoadResources.updateInstalledInfo.remove(msgObject.getString(Constant.updateId));
 								} catch (JSONException e1) {
@@ -241,7 +255,7 @@ public class Update extends Activity implements OnClickListener{
 									e1.printStackTrace();
 								}
         					}
-
+        					logger.error("解压线程结束");
         				}
         			}.start();
     			}catch(Exception e){
@@ -262,7 +276,7 @@ public class Update extends Activity implements OnClickListener{
     			DialogUtils.showMessageAlertDlg(Update.this,"提示", "连接异常", null,null);
     			break;//连接异常
     		case 5:
-    			progress.setMessage("开始下载程序");
+    			progress.setMessage("连接下载文件");
     			break;//没有存储空间    		
     		case 6:
     			if(progress.isShowing())
@@ -296,6 +310,7 @@ public class Update extends Activity implements OnClickListener{
     };
     
     public void updateUi(boolean networkState){
+    	logger.error("updateUi");
 		progress.setMessage( "正在查询资源....");
 		if(!progress.isShowing())
 			progress.show();
@@ -309,6 +324,7 @@ public class Update extends Activity implements OnClickListener{
 			linearLayout3.setVisibility(View.VISIBLE);
 		    textView2.setText("最近更新："+LoadResources.lastModifyTime);
 		    int allNum = createNoInstalledfolds();
+		    logger.error("allNum:"+allNum);
 		    if(allNum<1){
 		    	linearLayout3.setVisibility(View.GONE);
 		    	linearLayout5.setVisibility(View.GONE);
@@ -343,9 +359,6 @@ public class Update extends Activity implements OnClickListener{
 		
 		}
 		textView5.setText("本机已有内容:");
-		
-		
-		
 		createInstalledfolds();
     }
     

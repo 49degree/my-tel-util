@@ -16,6 +16,9 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Environment;
+import android.os.StatFs;
+import android.util.Log;
 
 import com.custom.update.Constant;
 
@@ -160,7 +163,7 @@ public class LoadResources {
 						try{
 							JSONArray contents = installed.getJSONArray(Constant.fileContent);
 							for(int j=0;j<contents.length();j++){
-								logger.error("noInstalledfolds:"+contents.length()+":"+contents.toString());
+								logger.error("installedfolds:"+contents.length()+":"+contents.toString());
 								try{
 									JSONObject content = contents.getJSONObject(j);
 									String name = content.getString("name");
@@ -393,4 +396,37 @@ public class LoadResources {
 			}
 		}
 	}
+	
+	public static long[] readSDCard() {   
+        String state = Environment.getExternalStorageState(); 
+        long[] datas = new long[3];
+        if(Environment.MEDIA_MOUNTED.equals(state)) {   
+            File sdcardDir = Environment.getExternalStorageDirectory();   
+            StatFs sf = new StatFs(sdcardDir.getPath());   
+            long blockSize = sf.getBlockSize();   
+            long blockCount = sf.getBlockCount();   
+            long availCount = sf.getAvailableBlocks();   
+            logger.error("block大小:"+ blockSize+",block数目:"+ blockCount+",总大小:"+blockSize*blockCount/1024+"KB");   
+            logger.error("可用的block数目：:"+ availCount+",剩余空间:"+ availCount*blockSize/1024+"KB");   
+            datas[0] = blockSize*blockCount;
+            datas[1] = availCount*blockSize;
+            datas[2] = datas[0]-datas[1];
+       }      
+       return datas;
+   }
+	public static long[] readSystem() {   
+        File root = Environment.getRootDirectory();   
+        long[] datas = new long[3];
+        StatFs sf = new StatFs(root.getPath());   
+        long blockSize = sf.getBlockSize();   
+        long blockCount = sf.getBlockCount();   
+        long availCount = sf.getAvailableBlocks();   
+        logger.error("block大小:"+ blockSize+",block数目:"+ blockCount+",总大小:"+blockSize*blockCount/1024+"KB");   
+        logger.error("可用的block数目：:"+ availCount+",可用大小:"+ availCount*blockSize/1024+"KB");   
+        datas[0] = blockSize*blockCount;
+        datas[1] = availCount*blockSize;
+        datas[2] = datas[0]-datas[1];
+        return datas;
+	}
+	
 }

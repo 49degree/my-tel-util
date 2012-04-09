@@ -61,7 +61,7 @@ public class LoadResources {
 		try{
 			byte[] buffer = LoadResources.loadFile(context, filePath, dirType);
 			if(buffer!=null){
-				logger.error("buffer size"+buffer.length);
+				//logger.error("buffer size"+buffer.length);
 				BitmapFactory.Options opts = new BitmapFactory.Options();
 				Bitmap bm = BitmapFactory.decodeStream(new BufferedInputStream(new ByteArrayInputStream(buffer)),null,opts);
 				return bm;

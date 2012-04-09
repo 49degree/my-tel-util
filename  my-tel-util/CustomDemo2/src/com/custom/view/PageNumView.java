@@ -133,6 +133,7 @@ public class PageNumView extends AbsoluteLayout{
 					(int)(bm.getWidth()*zoom), (int)(bm.getHeight()*zoom),beginX, beginY);
 			imageView.setLayoutParams(layout);
 			this.addView(imageView);
+			imageView.setBackgroundColor(Color.RED);
 			
 			
 			ImageView tileView = new ImageView(context);

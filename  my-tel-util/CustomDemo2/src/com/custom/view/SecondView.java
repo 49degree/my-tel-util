@@ -155,7 +155,7 @@ public class SecondView extends ViewImp{
 			for(int i=0;i<resourceInfo.size();i++){
 				ResourceBean resourceBean = resourceInfo.get(i).getValue();
 				if(resourceBean.getBm()!=null&&!resourceBean.getBm().isRecycled()){
-					logger.error("+++++++++++onDestroy resourceBean:"+resourceBean.getBm().hashCode());
+					//logger.error("+++++++++++onDestroy resourceBean:"+resourceBean.getBm().hashCode());
 					resourceBean.getBm().recycle();
 				}
 			}

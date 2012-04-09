@@ -64,7 +64,7 @@ public class ScanFoldUtils {
 	    	FilenameFilter fl = new FilenameFilter() {//过滤文件名称
 				@Override
 				public boolean accept(File arg0, String arg1) {
-					logger.error("accept(File arg0, String arg1):"+arg1);
+					//logger.error("accept(File arg0, String arg1):"+arg1);
 					if(arg1.indexOf(".")<0)
 						return false;
 					return Constant.bgPicName.equals(arg1.substring(0,arg1.indexOf(".")).toUpperCase());
@@ -155,8 +155,7 @@ public class ScanFoldUtils {
 				line = line.substring(line.indexOf('=')+1);
 				if(line.indexOf("=")>0){
 					btnInfo.put(line.substring(0,line.indexOf("=")), line.substring(line.indexOf("=")+1).trim());
-					logger.error(line.substring(0,line.indexOf("="))+":" +
-							""+line.substring(line.indexOf("=")+1).trim());
+					//logger.error(line.substring(0,line.indexOf("="))+":" +""+line.substring(line.indexOf("=")+1).trim());
 				}
 				line = fin.readLine();
 			}

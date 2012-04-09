@@ -48,11 +48,11 @@ public class SecondViewGroup extends LinearLayout {
 	int screenWidth = 0;
 	String foldPath;
 	public SecondViewGroup(Context context,ArrayList<Entry<String,ResourceBean>> resourceInfo,
-			PageNumView pageNumView,PageNumBean mPageNumBean,String foldPath,float zoom) {
+			PageNumView mPageNumView,PageNumBean mPageNumBean,String foldPath,float zoom) {
 		super(context);
 		this.context = context;
 		this.resourceInfo = resourceInfo;
-		this.pageNumView = pageNumView;
+		this.pageNumView = mPageNumView;
 		this.foldPath = foldPath;
 		this.pageNumBean = mPageNumBean;
 		this.zoom = zoom;
@@ -80,12 +80,16 @@ public class SecondViewGroup extends LinearLayout {
 				}
 				
 				public void fistViewOnclick(){
+					logger.error("fistViewOnclick");
 					if(SecondViewGroup.this.pageNumView.isFirst()){
 						initView();
 					}else{
 						if(secondViewPage!=null){
+							logger.error("fistViewOnclick secondViewPage");
+							currentScreenIndex = pageNumBean.getCurPageNum(); 
 		       				final int delta = currentScreenIndex * getWidth();
 		    				secondViewPage.scrollTo(delta, 0); 
+		    				pageNumView.initPageNumView();
 						}
 					}
 					

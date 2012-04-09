@@ -31,7 +31,7 @@ import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
-	static boolean secrete = true;
+	static boolean secrete = false;
 	
 	/**
 	 * 根据路径和文件名称获取文件对象
@@ -257,7 +257,7 @@ public class LoadResources {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE);
+			fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
 			//logger.error("tempfile:"+tempSavePath);
 			//读取数据
 			if(dirType==DirType.assets){

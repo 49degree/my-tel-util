@@ -31,7 +31,7 @@ import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
-	static boolean secrete = false;
+	static boolean secrete = true;
 	
 	/**
 	 * 根据路径和文件名称获取文件对象
@@ -268,8 +268,11 @@ public class LoadResources {
 			}else if(dirType==DirType.sd&&Constant.getSdPath()!=null){
 				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
 			}
-			if(in==null)
+			if(in==null){
+				//logger.error("in==null:");
 				return false;
+			}
+				
 			readLength=in.read(buffer);
 			if (readLength >= ZipToFile.encrypLength&&LoadResources.secrete) {
 				// 解密文件头

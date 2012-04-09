@@ -122,7 +122,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		AbsoluteLayout.LayoutParams layout = null;
 		if(frame1==null){
 			layout = new AbsoluteLayout.LayoutParams(
-					bmWidth+40, bmHeight+40, resourceBean.getX(), resourceBean.getY());
+					bmWidth+(int)(20*zoom), bmHeight+(int)(20*zoom), resourceBean.getX(), resourceBean.getY());
 		}else{
 			layout = new AbsoluteLayout.LayoutParams(
 					(int)(frame1.getBitmap().getWidth()*zoom), (int)(frame1.getBitmap().getHeight()*zoom), resourceBean.getX(), resourceBean.getY());

@@ -157,7 +157,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		String path = raws.get(0).getRawPath();
 		ResourceBean.ResourceType type = raws.get(0).getType();
 		String intentType = "*";
-		
+		logger.error(type.toString());
 		if(type==ResourceBean.ResourceType.apk){
 			fileName = "temp1.apk";
 			intentType = "application/vnd.android.package-archive";
@@ -237,20 +237,13 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 					String packageName = LoadResources.getInstalledPackName(context, context.getFilesDir().getAbsolutePath()+File.separator+fileName);
 					if(packageName!=null){//已经安装,则打开该activity
 						LoadResources.startApp(context, packageName);
+						return ;
 					}
-//				}else if(type==ResourceBean.ResourceType.swf){
-//					intent = new Intent(context,FlashView.class);
-//					Bundle bd = new Bundle();
-//					bd.putString(Constant.foldPath, path);
-//					intent.putExtras(bd);
-//					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-//					context.startActivity(intent);
-				}else{
-					intent = new Intent(Intent.ACTION_VIEW);
-					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-					intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+fileName)),intentType);
-					context.startActivity(intent);
 				}
+				intent = new Intent(Intent.ACTION_VIEW);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+				intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+fileName)),intentType);
+				context.startActivity(intent);
 
 			}
 				

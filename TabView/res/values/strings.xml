@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, TabViewActivity!</string>
+    <string name="app_name">TabView</string>
+    <string name="header_back">返回</string>
+     <string name="header_bussback">反馈</string>
+    <string name="title_mine">我的</string>
+    <string name="content_mine">tom_achai</string>
+    <string name="table_mine_message">我的消息</string>
+    <string name="table_mine_order">我的订单</string>
+    <string name="table_mine_fav">我的收藏</string>
+    <string name="table_mine_swtich">切换城市</string>
+    <string name="table_mine_set">设置首页</string>
+    <string name="table_mine_update">版本更新</string>
+    <string name="content_fav_rating">评分</string>
+    <string name="title_fav">我的收藏</string>
+
+</resources>

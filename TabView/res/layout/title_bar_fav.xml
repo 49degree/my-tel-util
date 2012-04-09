@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_shape" >
+
+        <Button
+            android:id="@+id/title_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_selector_title_back"
+            android:drawableLeft="@drawable/header_back"
+            android:gravity="center|left"
+            android:paddingLeft="10dip"
+            android:text="@string/header_back"
+            android:textColor="#ffffff"
+            android:textSize="24sp" />
+
+        <Spinner
+            android:id="@+id/location2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="0dip"
+            
+            android:background="#0026b3e7" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView2"
+            android:layout_alignBottom="@+id/textView2"
+            android:layout_centerHorizontal="true"
+            android:text="@string/title_fav"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </RelativeLayout>

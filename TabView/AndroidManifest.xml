@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="longma.achai"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="8" />
+    <instrumentation android:targetPackage="longma.achai" android:name="android.test.InstrumentationTestRunner" />
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <activity
+            android:name=".TabViewActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".InstallAppDemo"
+            android:label="测试" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>       
+        <activity android:name="longma.achai.FavActivity"></activity>
+		<!-- 开机接收广播 -->
+		<receiver android:name="longma.achai.StartServiceReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.ACTION_TIME_CHANGED" />
+			</intent-filter>
+		</receiver>    
+		<!-- 提供其他服务调用服务 -->
+		<service android:name="longma.achai.AidlRunService"
+			android:process=":remote">
+		</service>		    
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+</manifest>

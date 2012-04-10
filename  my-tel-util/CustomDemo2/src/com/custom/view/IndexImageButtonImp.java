@@ -190,7 +190,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 									
 									Intent intent = new Intent(context,FlashView.class);
 									Bundle bd = new Bundle();
-									bd.putString(Constant.foldPath, context.getFilesDir().getAbsolutePath()+File.separator+tempFile);
+									bd.putString(Constant.foldPath, tempFile);
 									intent.putExtras(bd);
 									intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 									context.startActivity(intent);									

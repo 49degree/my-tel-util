@@ -21,6 +21,7 @@ public class Constant {
 	public final static int fistFoldDepth=0;
 	public final static String foldDepth="foldDepth";
 	public final static String swfView = "file:///android_asset/swf_view.htm";
+	public final static String swfView2 = "swf_view.htm";
 	public final static String viewClass="viewClass";
 	public final static String secondViewClass="com.custom.view.SecondView";
 	public final static String resourceFoldEnd="_raw";

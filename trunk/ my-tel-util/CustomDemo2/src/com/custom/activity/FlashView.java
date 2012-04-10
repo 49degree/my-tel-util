@@ -13,6 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.custom.utils.Constant;
+import com.custom.utils.Constant.DirType;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.view.R;
@@ -53,7 +54,14 @@ public class FlashView extends Activity {
 				}
 			}
 		});
-		mWebView.loadUrl(Constant.swfView);
+		
+		File f = new File(this.getFilesDir().getAbsolutePath()+File.separator+Constant.swfView2);
+		if(!f.exists()){
+			LoadResources.saveToTempFile(this, Constant.swfView2, DirType.assets,Constant.swfView2);
+		}else{
+			logger.error("f.exists()");
+		}
+		mWebView.loadUrl("file://"+this.getFilesDir().getAbsolutePath()+File.separator+Constant.swfView2);
 	}
 	
 	/**

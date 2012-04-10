@@ -1,25 +1,11 @@
 package com.custom.view;
 
 
-import java.io.InputStream;
-
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
-import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.AbsoluteLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.custom.bean.ResourceBean;
 import com.custom.utils.Constant;
@@ -62,7 +48,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 			int distance = 0;
 			switch(action){
 			case MotionEvent.ACTION_DOWN:
-				//logger.error("Color.RED");
+				logger.error("Color.RED");
 				setBackground(true);
 				
 				startTouchX = (int)event.getX();
@@ -84,6 +70,7 @@ public class IndexImagePicButton extends IndexImageButtonImp{
 					return false;
 				}
 			case MotionEvent.ACTION_UP:
+				logger.error("Color.RED2");
 				onBackGroundTouchEvent(event);
 				endTouchX = (int)event.getX();
 				endTouchY = (int)event.getY();

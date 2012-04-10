@@ -31,7 +31,7 @@ import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
-	static boolean secrete = true;
+	static boolean secrete = false;
 	
 	/**
 	 * 根据路径和文件名称获取文件对象
@@ -209,10 +209,10 @@ public class LoadResources {
 			try{
 				File f = new File(context.getFilesDir().getAbsolutePath()+"/"+tempSavePath);
 				if(f.exists()){
-					logger.error("ffffffffff:"+f.length());
+					f.delete();
 				}
 				context.deleteFile(tempSavePath);
-				fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE);
+				fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE+ Context.MODE_WORLD_WRITEABLE);
 				fos.write(buffer);
 				fos.flush();
 				result = true;
@@ -240,7 +240,7 @@ public class LoadResources {
 	 * @param dirType
 	 * @return
 	 */
-	public static boolean saveToTempFile(Context context,String filePath,DirType dirType,String tempSavePath){
+	public static boolean saveToTempFile(Context context,String filePath,DirType dirType,String tempSavePath,boolean secrete){
 		FileOutputStream fos = null;
 		InputStream in = null;
 		byte[] buffer = new byte[1024];
@@ -249,7 +249,7 @@ public class LoadResources {
 		try{
 			//复制文件
 			try{
-				File f = new File(context.getFilesDir().getAbsolutePath()+"/"+tempSavePath);
+				File f = new File(context.getFilesDir().getAbsolutePath()+File.separator+tempSavePath);
 				if(f.exists()){
 					context.deleteFile(tempSavePath);
 				}
@@ -258,7 +258,7 @@ public class LoadResources {
 				e.printStackTrace();
 			}
 			fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
-			//logger.error("tempfile:"+tempSavePath);
+			logger.error("tempfile:"+tempSavePath);
 			//读取数据
 			if(dirType==DirType.assets){
 				AssetManager assetManager = context.getAssets();
@@ -274,7 +274,7 @@ public class LoadResources {
 			}
 				
 			readLength=in.read(buffer);
-			if (readLength >= ZipToFile.encrypLength&&LoadResources.secrete) {
+			if (readLength >= ZipToFile.encrypLength&&secrete) {
 				// 解密文件头
 				byte[] encrypByte = new byte[ZipToFile.encrypLength];
 				System.arraycopy(buffer, 0, encrypByte, 0,ZipToFile.encrypLength);
@@ -305,7 +305,18 @@ public class LoadResources {
 				}
 			}
 		}
-		return result;
+		return result;		
+	}
+	
+	/**
+	 * 保存临时文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
+	public static boolean saveToTempFile(Context context,String filePath,DirType dirType,String tempSavePath){
+		return LoadResources.saveToTempFile(context, filePath, dirType, tempSavePath, LoadResources.secrete);
 	}
 	
 	public static Bitmap getBitmap(Context context,String filePath){

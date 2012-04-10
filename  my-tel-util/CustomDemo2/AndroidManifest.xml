@@ -3,7 +3,7 @@
       package="com.custom.view"
       android:versionCode="1"
       android:versionName="1.0"
-      android:sharedUserId="com.custom.my1">
+      android:sharedUserId="com.custom">
     <application android:name="com.custom.utils.MainApplication"  android:icon="@drawable/icon" android:label="@string/app_name">
 
        <!-- 

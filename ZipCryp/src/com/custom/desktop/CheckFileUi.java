@@ -56,8 +56,8 @@ public class CheckFileUi extends JFrame {
 		BorderLayout lay = new BorderLayout();
 		setLayout(lay);
 
-//		ButtonPanel buttonPanel = new ButtonPanel();
-		DecodeLogFilePanel buttonPanel = new DecodeLogFilePanel();
+		ButtonPanel buttonPanel = new ButtonPanel();
+//		DecodeLogFilePanel buttonPanel = new DecodeLogFilePanel();
 		contentPane.add(buttonPanel, BorderLayout.CENTER);
 		setVisible(true);
 
@@ -230,6 +230,7 @@ public class CheckFileUi extends JFrame {
 	ZipToFile zipTofile = null;
 	ThreadDiag prossThread = null; 
 	public class ButtonPanel extends JPanel {
+		boolean encode = true;
 		public ButtonPanel() {
 			super();
 			GridBagLayout lay = new GridBagLayout();
@@ -277,9 +278,8 @@ public class CheckFileUi extends JFrame {
 					new Thread(){
 						public void run(){
 							try{
-								boolean encode = true;
 								zipTofile = new ZipToFile();
-								zipTofile.zipFile(rootFile.getAbsolutePath(),rootFile.getAbsolutePath()+File.separator+rootFile.getName(),encode);
+								zipTofile.zipFile(rootFile.getAbsolutePath(),rootFile.getParentFile().getAbsolutePath()+File.separator+rootFile.getName(),encode);
 							}catch(Exception e){
 								e.printStackTrace();
 								createDialog(e.getMessage());
@@ -338,7 +338,7 @@ public class CheckFileUi extends JFrame {
 					new Thread(){
 						public void run(){
 							try{
-								boolean encode = true;
+								
 								zipTofile = new ZipToFile();
 								String path = rootFile.getAbsolutePath();
 								zipTofile.upZipFile(path,path.substring(0,path.lastIndexOf(".")),encode);

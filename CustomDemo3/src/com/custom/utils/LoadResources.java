@@ -18,9 +18,10 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.os.StatFs;
-import android.util.Log;
 
 import com.custom.update.Constant;
+import com.custom.update.ZipToFile;
+import com.custom.update.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
@@ -383,7 +384,73 @@ public class LoadResources {
 		}
 	}
 	
+	/**
+	 * 根据路径和文件名称获取文件对象
+	 * @param foldPath
+	 * @param dirType
+	 * @return
+	 */
+	public static File getFileByType(String foldPath,DirType dirType){
+		if(DirType.sd == dirType&&Constant.getSdPath()!=null){
+			return new File( Constant.getSdPath()+File.separator+foldPath);
+		}else if(DirType.file == dirType&&Constant.getDataPath()!=null){
+			return new File( Constant.getDataPath()+File.separator+foldPath);
+		}else if(DirType.extSd == dirType&&Constant.getExtSdPath()!=null){
+			return new File( Constant.getExtSdPath()+File.separator+foldPath);
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据路径和路径类型读取文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
+	public static byte[] loadFile(Context context,String filePath,DirType dirType){
+		InputStream in= null;
+		//logger.error("filePath:"+filePath+":dirType:"+dirType);
 
+
+		try{
+			if(dirType==DirType.assets){
+				AssetManager assetManager = context.getAssets();
+				in= assetManager.open(filePath);
+			}else if(dirType==DirType.file&&Constant.getDataPath()!=null){
+				//in= new FileInputStream(Constant.getDataPath()+File.separator+filePath);
+				in= new FileInputStream(Constant.getDataPath()+File.separator+filePath);
+			}else if(dirType==DirType.sd&&Constant.getSdPath()!=null){
+				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
+			}else if(dirType==DirType.extSd&&Constant.getExtSdPath()!=null){
+				in= new FileInputStream(Constant.getExtSdPath()+File.separator+filePath);
+			}
+			if(in==null)
+				return null;
+			byte[] buf = new byte[in.available()];
+			//in.read(buf,0,buf.length);
+			if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&LoadResources.secrete){
+				//解密文件头
+				byte[] encrypByte = new byte[ZipToFile.encrypLength];
+				System.arraycopy(buf, 0, encrypByte, 0, ZipToFile.encrypLength);
+				byte[] temp = CryptionControl.getInstance().decryptECB(encrypByte, ZipToFile.rootKey);  
+				System.arraycopy(temp, 0, buf, 0, ZipToFile.encrypLength);
+			}
+			return buf;
+		}catch(Exception e){
+			//e.printStackTrace();
+			return null;
+		}finally{
+			if(in!=null){
+				try{
+					in.close();
+				}catch(Exception e){
+					
+				}
+				
+			}
+		}
+	}
 	
 	/**
 	 * 根据路径和路径类型读取文件
@@ -412,11 +479,11 @@ public class LoadResources {
 		}
 	}
 	
-	public static long[] readSDCard() {   
+	public static long[] readExtSDCard() {   
         String state = Environment.getExternalStorageState(); 
+        File sdcardDir = new File(Constant.getExtSdPath());  
         long[] datas = new long[3];
-        if(Environment.MEDIA_MOUNTED.equals(state)) {   
-            File sdcardDir = Environment.getExternalStorageDirectory();   
+        if(Environment.MEDIA_MOUNTED.equals(state)&&sdcardDir.exists()) {   
             StatFs sf = new StatFs(sdcardDir.getPath());   
             long blockSize = sf.getBlockSize();   
             long blockCount = sf.getBlockCount();   
@@ -429,18 +496,20 @@ public class LoadResources {
        }      
        return datas;
    }
-	public static long[] readSystem() {   
-        File root = Environment.getRootDirectory();   
+	public static long[] readSDCard() {   
+        File root = new File(Constant.getSdPath());   
         long[] datas = new long[3];
-        StatFs sf = new StatFs(root.getPath());   
-        long blockSize = sf.getBlockSize();   
-        long blockCount = sf.getBlockCount();   
-        long availCount = sf.getAvailableBlocks();   
-        logger.error("block大小:"+ blockSize+",block数目:"+ blockCount+",总大小:"+blockSize*blockCount/1024+"KB");   
-        logger.error("可用的block数目：:"+ availCount+",可用大小:"+ availCount*blockSize/1024+"KB");   
-        datas[0] = blockSize*blockCount;
-        datas[1] = availCount*blockSize;
-        datas[2] = datas[0]-datas[1];
+        if(root.exists()){
+            StatFs sf = new StatFs(root.getPath());   
+            long blockSize = sf.getBlockSize();   
+            long blockCount = sf.getBlockCount();   
+            long availCount = sf.getAvailableBlocks();   
+            logger.error("block大小:"+ blockSize+",block数目:"+ blockCount+",总大小:"+blockSize*blockCount/1024+"KB");   
+            logger.error("可用的block数目：:"+ availCount+",可用大小:"+ availCount*blockSize/1024+"KB");   
+            datas[0] = blockSize*blockCount;
+            datas[1] = availCount*blockSize;
+            datas[2] = datas[0]-datas[1];
+        }
         return datas;
 	}
 	

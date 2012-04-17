@@ -2,14 +2,17 @@ package com.custom.update;
 
 import android.os.Environment;
 
+import com.custom.utils.Logger;
 import com.custom.utils.MainApplication;
 
 public class Constant {
+	static Logger logger = Logger.getLogger(Constant.class);
 	public  static String QUERY_URL = "";
 	public  static String INSTALLED_URL = "";
 	public final static String installedInfo = "installedInfo.txt";
 	public final static String installedFold = "DataFoldCount.txt";
 	private static String sdPath = null;
+	private static String extSdPath = null;
 	private static String dataPath = null;
 	public final static String path="custom";
 	public final static String timeFormate = "yyyy-MM-dd HH:mm-ss";
@@ -29,24 +32,33 @@ public class Constant {
 	public final static String filePath="filePath";
 	public final static String fileUnziped="fileUnziped";
 	public final static String fileContent="content";
+	
+	public static String inited_file_fold = "custom/inited";
+	public static String inited_file_info_file = "inited_file_info.txt";
 
 	public enum FileDirType{
-		data,sd
+		data,sd,extSd
 	}
-	
+	public enum DirType{
+		assets,file,sd,extSd
+	}
 	static{
 		QUERY_URL = MainApplication.getInstance().getString(R.string.QUERY_URL);
 		INSTALLED_URL = MainApplication.getInstance().getString(R.string.INSTALLED_URL);
-		
+		sdPath = MainApplication.getInstance().getString(R.string.D_ROOT);
 		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-			sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+			extSdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 		}
 		dataPath =  MainApplication.getInstance().getFilesDir().getAbsolutePath();
+		logger.error("sdPath:"+sdPath);
+		logger.error("extSdPath:"+extSdPath);
 	}
 	public static String getSdPath(){
 		return sdPath;
 	}
-	
+	public static String getExtSdPath(){
+		return extSdPath;
+	}	
 	public static String getDataPath(){
 		return dataPath;
 	}

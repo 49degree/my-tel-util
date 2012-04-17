@@ -2,16 +2,15 @@ package com.custom.update;
 
 import java.io.File;
 
-import com.custom.utils.MainApplication;
+import com.custom.utils.Logger;
 
 public class ToGetFile {
-	
+	private static final Logger logger = Logger.getLogger(ToGetFile.class);
 	public void downFileFromzip(String filePath){
 		try{
-			new ZipToFile().upZipFile(filePath,
-					MainApplication.getInstance().getFilesDir().getAbsolutePath(),false,"custom"); 
-			System.out.println(filePath);
-			delteDownFile(filePath);
+			new ZipToFile().upZipFile(filePath,false,"custom");
+			logger.error(filePath);
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}

@@ -92,10 +92,10 @@ public class CustomUtils {
 			}
 		}
 		if(!fileExsit){
-			sdfile = new File( Constant.getDataPath()+File.separator+Constant.path+File.separator+fileName);
+			sdfile = new File( Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName);
 			if(fileExsit = sdfile.exists()){
-				filePath = Constant.getDataPath()+File.separator+Constant.path+File.separator+fileName;
-				fileDirType = Constant.FileDirType.data;
+				filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
+				fileDirType = Constant.FileDirType.extSd;
 			}
 		}
 		if(fileExsit)
@@ -121,12 +121,12 @@ public class CustomUtils {
 				length = conn.getContentLength();
 				InputStream in = conn.getInputStream(); 
 				logger.error("length:"+length);
-				long[] fileRealease = LoadResources.readSystem();
-				long[] sdRealease = LoadResources.readSDCard();
+				long[] sdRealease= LoadResources.readSDCard();
+				long[] fileRealease = LoadResources.readExtSDCard();
 				if(fileExsit){
 					boolean change = false;
 					oSavedFile = new RandomAccessFile(filePath,"rw");
-					if(fileDirType==Constant.FileDirType.data&&fileRealease[1]<length){
+					if(fileDirType==Constant.FileDirType.extSd&&fileRealease[1]<length){
 						change = true;
 						if(sdRealease[1]<length){
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
@@ -140,8 +140,8 @@ public class CustomUtils {
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
 						    return ;
 						}
-						filePath = Constant.getDataPath()+File.separator+Constant.path+File.separator+fileName;
-						fileDirType = Constant.FileDirType.data;
+						filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
+						fileDirType = Constant.FileDirType.extSd;
 					}
 					if(change){
 						RandomAccessFile oldSavefile  = oSavedFile;
@@ -168,8 +168,8 @@ public class CustomUtils {
 							filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
 							fileDirType = Constant.FileDirType.sd;
 						}else if(fileRealease[1]>length){
-							filePath = Constant.getDataPath()+File.separator+Constant.path+File.separator+fileName;
-							fileDirType = Constant.FileDirType.data;
+							filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
+							fileDirType = Constant.FileDirType.extSd;
 						}else{
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
 							return ;

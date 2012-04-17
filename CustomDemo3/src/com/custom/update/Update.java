@@ -1,9 +1,15 @@
 package com.custom.update;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
+import java.util.HashMap;
 import java.util.Iterator;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -26,6 +32,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.custom.update.Constant.DirType;
 import com.custom.utils.DialogUtils;
 import com.custom.utils.HandlerWhat;
 import com.custom.utils.LoadResources;
@@ -233,6 +240,7 @@ public class Update extends Activity implements OnClickListener{
         					try{
         						ToGetFile toGetFile = new ToGetFile();
         						toGetFile.downFileFromzip(filePath);
+        						//toGetFile.delteDownFile(filePath);
 	        					msgObject.put(Constant.fileUnziped, "true");
 	        					LoadResources.updateInstalledInfo(msgObject,true);
 	        					if(downThread!=null&&downThread.isAlive()){
@@ -308,6 +316,10 @@ public class Update extends Activity implements OnClickListener{
     public void updateUi(boolean networkState){
     	logger.error("updateUi");
 		progress.setMessage( "正在查询资源....");
+		
+		initFile();//以下为加压SD卡内容
+		
+		
 		if(!progress.isShowing())
 			progress.show();
 		if(networkState){
@@ -395,4 +407,99 @@ public class Update extends Activity implements OnClickListener{
     	handler.sendMessage(handler.obtainMessage(9, msg1));
     	return allNum;
     }
+    
+    /**
+     * 以下为加压SD卡内容
+     */
+    private void initFile(){
+    	FilenameFilter fl = new FilenameFilter() {//过滤文件名称
+			@Override
+			public boolean accept(File arg0, String arg1) {
+				//logger.error("accept(File arg0, String arg1):"+arg1);
+				if(arg1.indexOf(".")<0)
+					return false;
+				return "ZIP".equals(arg1.substring(arg1.indexOf(".")+1).toUpperCase());
+			}
+		};
+		
+		HashMap<String,String> btnInfo = new HashMap<String,String> ();
+		try{
+			byte[] buf = LoadResources.loadFile(this, Constant.inited_file_fold+File.separator+Constant.inited_file_info_file, DirType.sd);
+			if(buf!=null){
+				BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
+				String line = fin.readLine();
+				
+				while(line!=null){
+					btnInfo.put(line,line);
+					line = fin.readLine();
+				}
+			}
+		}catch(Exception e){
+			
+		}
+
+        //查询扩展SD卡中是否有需要解压的资源
+		if(Constant.getExtSdPath()!=null&&!"".equals(Constant.getExtSdPath())){
+			File sdfile = LoadResources.getFileByType(Constant.inited_file_fold,DirType.extSd);
+			String[] lists = getFileNames(sdfile.listFiles(fl));
+			ToGetFile toGetFile = new ToGetFile();
+			if(lists!=null){
+    			for(int i = 0;i<lists.length;i++){
+    				if(!btnInfo.containsKey(lists[i])){
+    					toGetFile.downFileFromzip(Constant.getExtSdPath()+
+    							File.separator+Constant.inited_file_fold+
+    							File.separator+lists[i]);
+    					
+    					btnInfo.put(lists[i], lists[i]);
+    				}
+    			}
+        		//保存文件
+        		modifyInitedFile(btnInfo);
+			}
+
+		}
+    }
+    
+	/**
+	 * 获取文件名称
+	 * @param files
+	 * @return
+	 */
+	private String[] getFileNames(File[] files){
+		String[] lists = null;
+		if(files!=null&&files.length>0){
+			
+			lists = new String[files.length];
+			for(int i=0;i<lists.length;i++){
+				lists[i] = files[i].getName();
+			}
+			
+		}
+		return lists;
+	}
+	
+	public void modifyInitedFile(HashMap<String,String> btnInfo){
+		try{
+			String filePath = Constant.getExtSdPath()+File.separator+Constant.inited_file_fold
+			+File.separator+Constant.inited_file_info_file;
+			//清空文件
+			RandomAccessFile   raf   =   new   RandomAccessFile(filePath,   "rw"); 
+			raf.setLength(0); 
+			raf.close(); 
+			FileOutputStream fos = new FileOutputStream(new File(filePath));
+			Iterator it = btnInfo.keySet().iterator();
+
+			while(it.hasNext()){
+				String key = (String)it.next();
+				key = key+"\n"; 
+				fos.write(key.getBytes());
+			}
+			fos.getChannel().force(true);
+			fos.flush();
+			fos.close();
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}		
+	}
 }

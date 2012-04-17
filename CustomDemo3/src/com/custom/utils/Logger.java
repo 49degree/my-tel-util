@@ -7,6 +7,8 @@ import java.util.Date;
 
 import org.apache.http.util.EncodingUtils;
 
+import com.custom.update.Constant;
+
 import android.os.Environment;
 import android.util.Log;
 
@@ -18,8 +20,7 @@ import android.util.Log;
  */
 public class Logger {
 	private Class operateClass = null;
-	private static String logPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ File.separator + "custom"+File.separator +"logs";
+	private String logPath;
 	private static String logFile = ".log";
 	private static SimpleDateFormat fileTimeFormat  = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat dataTimeFormat  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -52,6 +53,7 @@ public class Logger {
 	public Logger(Class operateClass){
 		localLevel = Logger.overallLevel;
 		this.operateClass = operateClass;	
+		logPath = Constant.getSdPath()+ File.separator + "custom"+File.separator +"logs";
 	}
 	
 	/**
@@ -160,8 +162,8 @@ public class Logger {
 	 * @param logInfo
 	 */
 	private void logInfo(String logInfo,StringBuffer traceInfo) {
-		return ;
-		/*
+		//return ;
+		
 		String fileName = new StringBuffer().append(this.getDataTime(fileTimeFormat)).append(logFile).toString();
 
 		StringBuffer info = new StringBuffer(this.getDataTime(dataTimeFormat)).append("-").append(traceInfo).append("  ").append(logInfo).append("\n");
@@ -188,7 +190,7 @@ public class Logger {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
-		*/
+		
 	}
 
 	

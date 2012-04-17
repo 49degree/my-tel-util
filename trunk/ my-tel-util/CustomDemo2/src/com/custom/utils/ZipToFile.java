@@ -1,4 +1,4 @@
-package com.custom.update;
+package com.custom.utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -15,10 +15,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import android.os.Environment;
-
-import com.custom.utils.Constant;
 import com.custom.utils.CryptionControl;
+import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.TypeConversion;
 
@@ -27,11 +25,13 @@ public class ZipToFile {
 	public static byte[] rootKey = TypeConversion.hexStringToByte("DBED28F6415162BD");
 	public static final int BUFFER = 1024;// 缓存大小
 	public final static int encrypLength = 128;
+	private String extSdPath = null;
 	private String sdPath = null;
 	boolean stopZipFile = false;
 	
 	public ZipToFile(){
 		sdPath = Constant.getSdPath();
+		extSdPath = Constant.getExtSdPath();
 
 	}
 	
@@ -151,8 +151,8 @@ public class ZipToFile {
 	 * 
 	 * @throws Exception
 	 */
-	public void upZipFile(String zipFile,String unZipDir,boolean decrypt) throws Exception {
-		this.upZipFile(zipFile, unZipDir, decrypt, null);
+	public void upZipFile(String zipFile,boolean decrypt) throws Exception {
+		this.upZipFile(zipFile, decrypt, null);
 
 	}
 
@@ -161,8 +161,8 @@ public class ZipToFile {
 	 * 
 	 * @throws Exception
 	 */
-	public final static long setAside = 500*1024*1024;//内存要预留50M空间
-	public void upZipFile(String zipFile,String unZipDir,boolean decrypt,String specifiedDir) throws Exception {
+	//public final static long setAside = 500*1024*1024;//内存要预留50M空间
+	public void upZipFile(String zipFile,boolean decrypt,String specifiedDir) throws Exception {
 		ZipFile zfile = new ZipFile(zipFile);
 		Enumeration zList = zfile.entries();
 		ZipEntry ze = null;
@@ -170,8 +170,13 @@ public class ZipToFile {
 		byte[] encrypByte = new byte[encrypLength];
 		int readLen = 0;
 		
+		long[] sDCardRealease = LoadResources.readSDCard();
+		long[] extSDCardRealease = LoadResources.readExtSDCard();
+		
 		while (zList.hasMoreElements()) {
+			
 			ze = (ZipEntry) zList.nextElement();
+			//logger.error("解压文件："+ze.getName());
 			if(stopZipFile){//如果停止了，则退出
 				break;
 			}
@@ -180,47 +185,43 @@ public class ZipToFile {
 				continue;
 			
 			if (ze.isDirectory()) {
-				File f = new File(unZipDir + ze.getName());
+				File f = new File(sdPath + ze.getName());
 				f.mkdir();
 				continue;
 			}
-			File tempFile = getRealFileName(unZipDir, ze.getName(),specifiedDir);
-			RandomAccessFile os = new RandomAccessFile(tempFile.getAbsoluteFile(),"rw");
+			File tempFile = null;
+			RandomAccessFile os = null;
 			try{
-				os.setLength(ze.getSize()+setAside);//判断是否存在空间
-				os.setLength(ze.getSize());
-				logger.error("解压文件："+ze.getName());
-			}catch(IOException e){
-				//空间不足则保存到sd卡中
-				if(sdPath==null)
-					break;
-				if(tempFile.exists())
-					tempFile.delete();
-				tempFile = getRealFileName(sdPath, ze.getName(),specifiedDir);
-				os = new RandomAccessFile(tempFile.getAbsoluteFile(),"rw");
-				try{
-					os.setLength(ze.getSize()+setAside);//判断是否存在空间
-					os.setLength(ze.getSize());
-				}catch(IOException ex){
-					//空间不足则保存到sd卡中
-					break;
+				if(sDCardRealease[1]>=ze.getSize()){
+					tempFile = getRealFileName(sdPath, ze.getName(),specifiedDir);
+					os = new RandomAccessFile(tempFile.getAbsoluteFile(),"rw");
+					sDCardRealease[1] = sDCardRealease[1]-ze.getSize();
+				}else if(extSDCardRealease[1]>=ze.getSize()){
+					tempFile = getRealFileName(extSdPath, ze.getName(),specifiedDir);
+					os = new RandomAccessFile(tempFile.getAbsoluteFile(),"rw");
+					extSDCardRealease[1] = extSDCardRealease[1]-ze.getSize();
+				}else{
+					throw new IOException("空间不足");
 				}
-				
-			}
-			InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
-			readLen = is.read(buf, 0, BUFFER);
-			if(decrypt){
-				//解密文件头
-				System.arraycopy(buf, 0, encrypByte, 0, encrypLength);
-				byte[] temp = CryptionControl.getInstance().decryptECB(encrypByte, rootKey);  
-				System.arraycopy(temp, 0, buf, 0, encrypLength);
-			}
-			while (readLen != -1) {
-				os.write(buf, 0, readLen);
+				//logger.error("解压文件："+ze.getName());
+				InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
 				readLen = is.read(buf, 0, BUFFER);
+				if(decrypt){
+					//解密文件头
+					System.arraycopy(buf, 0, encrypByte, 0, encrypLength);
+					byte[] temp = CryptionControl.getInstance().decryptECB(encrypByte, rootKey);  
+					System.arraycopy(temp, 0, buf, 0, encrypLength);
+				}
+				while (readLen != -1) {
+					os.write(buf, 0, readLen);
+					readLen = is.read(buf, 0, BUFFER);
+				}
+				is.close();
+				os.close();
+			}catch(IOException e){
+				throw new IOException("解压失败");
 			}
-			is.close();
-			os.close();
+
 		}
 		zfile.close();
 	}

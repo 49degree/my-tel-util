@@ -28,6 +28,7 @@ public class Constant {
 	public final static String resourceFold="raw";
 	public final static String backGroundSwfName = "background.swf";//复制文件
 	private static String sdPath = null;
+	private static String extSdPath = null;
 	private static String updateDataPath = null;
 	public final static String framePicName1 = "frame1.png";
 	public final static String framePicName2 = "frame2.png";
@@ -37,6 +38,9 @@ public class Constant {
 	public final static String loadSound = "loading.mp3";
 	public static boolean noPageNum = false;
 	
+	public static String inited_file_fold = "custom/inited";
+	public static String inited_file_info_file = "inited_file_info.txt";
+	
 	
 	public final static  HashMap<String,String> picType= new HashMap<String,String>();;
 	public final static  HashMap<String,String> swfType= new HashMap<String,String>();
@@ -44,7 +48,7 @@ public class Constant {
 		pic,swf
 	}
 	public enum DirType{
-		assets,file,sd
+		assets,file,sd,extSd
 	}
 	
 	static{
@@ -64,10 +68,10 @@ public class Constant {
 			
 		}
 		try{
+			sdPath = MainApplication.getInstance().getString(R.string.D_ROOT);
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-				sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+				extSdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 			}
-			
 			Context friendContext = MainApplication.getInstance().createPackageContext(
 					update_package,Context.CONTEXT_IGNORE_SECURITY);	
 			updateDataPath =  friendContext.getFilesDir().getAbsolutePath();
@@ -89,6 +93,10 @@ public class Constant {
 	public static String getSdPath(){
 		return sdPath;
 	}
+	
+	public static String getExtSdPath(){
+		return extSdPath;
+	}	
 	
 	public static String getUpdateDataPath(){
 		return updateDataPath;

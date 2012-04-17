@@ -174,6 +174,11 @@ public class SecondViewGroup extends LinearLayout {
         			}   
         		});
         		addView(secondViewPage);
+        		if(pageNumView!=null){
+            		pageNumView.setFirst(false);
+            		pageNumView.initPageNumView();
+        		}
+
     		}
 
 			if(progress!=null)
@@ -435,6 +440,15 @@ public class SecondViewGroup extends LinearLayout {
 				resourceBean.setX(perWidth);
 				resourceBean.setY(perHeight);
 			}else{
+				//widthLength = (int)(320*zoom);
+				int borderX = (int)(100*zoom);
+				if(Math.round(viewXY[0]/16.0f)==Math.round(viewXY[1]/9.0)){
+					borderX = (int)(250*zoom);
+				}
+				widthLength = (viewXY[0]-2*borderX)/numPerLine;
+				
+				perWidth = borderX+buttonIndex%numPerLine*widthLength;
+				perHeight = y+buttonIndex/numPerLine%2*(int)(290*zoom);
 				resourceBean.setX(perWidth);
 				resourceBean.setY(perHeight);
 			}

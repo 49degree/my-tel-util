@@ -1,26 +1,27 @@
 package com.custom.view;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -28,16 +29,18 @@ import android.webkit.WebViewClient;
 import android.widget.AbsoluteLayout;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.custom.bean.ResourceBean;
+import com.custom.activity.IndexActivity;
 import com.custom.utils.Constant;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.ScanFoldUtils;
+import com.custom.utils.ToGetFile;
 import com.custom.utils.Constant.DirType;
 
-public abstract class ViewImp extends FrameLayout{
+
+
+public class InitView extends FrameLayout{
 	private static final Logger logger = Logger.getLogger(IndexView.class);
 	protected Context context = null;
 	protected BackgroundLinearLayout scrollView = null;
@@ -53,31 +56,12 @@ public abstract class ViewImp extends FrameLayout{
 	protected Bitmap bm = null;
 	protected ProgressDialog progress = null; 
 
-	public ViewImp(Context context,String foldPath,int foldDepth){
-        this(context,null,foldPath,foldDepth);
-	}
 	
-	public ViewImp(Context context, AttributeSet attr,String foldPath,int foldDepth){
-        super(context, attr);
+	public InitView(Context context,String foldPath,int foldDepth){
+        super(context);
         this.context = context;
         this.foldPath = foldPath; 
         this.foldDepth = foldDepth;
-        
-		WindowManager manage = ((Activity)context).getWindowManager();
-		Display display = manage.getDefaultDisplay();
-		screenHeight = display.getHeight();
-		screenWidth = display.getWidth();
-	}
-
-	public ViewImp(Context context, ScanFoldUtils scanFoldUtils){
-        super(context);
-        this.scanFoldUtils = scanFoldUtils;
-        
-		WindowManager manage = ((Activity)context).getWindowManager();
-		Display display = manage.getDefaultDisplay();
-		screenHeight = display.getHeight();
-		screenWidth = display.getWidth();
-
 	}
 
 	/**
@@ -159,33 +143,65 @@ public abstract class ViewImp extends FrameLayout{
 	}
 	public void onStop(){
 		logger.error("onStop");
-
+		logger.equals("onDestroy");
+		if(bm!=null&&!bm.isRecycled()){
+			logger.error("onDestroy:"+bm.hashCode());
+			bm.recycle();
+		}
+		bm = null;
+		scanFoldUtils = null;
 
 	}
 	
 	public void onDestroy(){
-		logger.equals("onDestroy");
-		if(bm!=null&&!bm.isRecycled()){
-			//logger.error("onDestroy:"+bm.hashCode());
-			bm.recycle();
-		}
-		bm = null;
-		if(scanFoldUtils.resourceInfo!=null){
-			Iterator it = scanFoldUtils.resourceInfo.keySet().iterator();
-			while(it.hasNext()){
-				ResourceBean resourceBean = scanFoldUtils.resourceInfo.get(it.next());
-				
-				if(resourceBean.getBm()!=null&&!resourceBean.getBm().isRecycled()){
-					//logger.error("onDestroy resourceBean:"+resourceBean.getBm().hashCode());
-					resourceBean.getBm().recycle();
-				}
-			}
-		}
-		scanFoldUtils = null;	
+	
 	}	
 	
     private class LoadResAsyncTask extends AsyncTask<ScanFoldUtils, Integer, ScanFoldUtils>{
 
+    	
+    	/**
+    	 * 获取文件名称
+    	 * @param files
+    	 * @return
+    	 */
+    	private String[] getFileNames(File[] files){
+    		String[] lists = null;
+    		if(files!=null&&files.length>0){
+    			
+    			lists = new String[files.length];
+    			for(int i=0;i<lists.length;i++){
+    				lists[i] = files[i].getName();
+    			}
+    			
+    		}
+    		return lists;
+    	}
+    	
+    	public void modifyInitedFile(HashMap<String,String> btnInfo){
+    		try{
+    			String filePath = Constant.getExtSdPath()+File.separator+Constant.inited_file_fold+File.separator+Constant.inited_file_info_file;
+    			//清空文件
+    			RandomAccessFile   raf   =   new   RandomAccessFile(filePath,   "rw"); 
+    			raf.setLength(0); 
+    			raf.close(); 
+    			FileOutputStream fos = new FileOutputStream(new File(filePath));
+    			Iterator it = btnInfo.keySet().iterator();
+
+    			while(it.hasNext()){
+    				String key = (String)it.next();
+    				key = key+"\n"; 
+    				fos.write(key.getBytes());
+    			}
+    			fos.getChannel().force(true);
+    			fos.flush();
+    			fos.close();
+    			
+    		}catch(Exception e){
+    			e.printStackTrace();
+    		}		
+    	}
+    	
     	@Override
     	protected void onPreExecute() {  
     		// 任务启动，可以在这里显示一个对话框，这里简单处
@@ -195,42 +211,54 @@ public abstract class ViewImp extends FrameLayout{
     	
         protected ScanFoldUtils doInBackground(ScanFoldUtils... scanFoldUtils) {
             // TODO Auto-generated method stub
-			//播放声音
-			try {
-
-				
-				String loading = "loading.mp3";
-				LoadResources.saveToTempFile(context, LoadResources.loadPrefaceFile(
-						context, foldPath + File.separator+ Constant.loadSound), loading);
-				byte[] datas = LoadResources.loadLocalFile(context, loading, DirType.file);
-				if(datas!=null){
-					mMediaPlayer = new MediaPlayer();
-					mMediaPlayer.reset();// 恢复到未初始化的状态
-					mMediaPlayer = MediaPlayer.create(context, Uri
-							.fromFile(new File(context.getFilesDir().getAbsolutePath()+ File.separator + loading)));// 读取音频
-					try {
-						mMediaPlayer.prepare(); // 准备
-					} catch (IllegalStateException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+	    	FilenameFilter fl = new FilenameFilter() {//过滤文件名称
+				@Override
+				public boolean accept(File arg0, String arg1) {
+					//logger.error("accept(File arg0, String arg1):"+arg1);
+					if(arg1.indexOf(".")<0)
+						return false;
+					return "ZIP".equals(arg1.substring(arg1.indexOf(".")+1).toUpperCase());
+				}
+			};
+			
+			HashMap<String,String> btnInfo = new HashMap<String,String> ();
+			try{
+				byte[] buf = LoadResources.loadFile(context, Constant.inited_file_fold+File.separator+Constant.inited_file_info_file, DirType.sd);
+				if(buf!=null){
+					BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
+					String line = fin.readLine();
+					
+					while(line!=null){
+						btnInfo.put(line,line);
+						line = fin.readLine();
 					}
-					mMediaPlayer.start(); // 播放
 				}
-
 			}catch(Exception e){
-				if(mMediaPlayer!=null){
-					mMediaPlayer.reset();
-				}
-				e.printStackTrace();
+				
 			}
+
+            //查询扩展SD卡中是否有需要解压的资源
+    		if(Constant.getExtSdPath()!=null&&!"".equals(Constant.getExtSdPath())){
+    			File sdfile = LoadResources.getFileByType(Constant.inited_file_fold,DirType.extSd);
+    			String[] lists = getFileNames(sdfile.listFiles(fl));
+    			ToGetFile toGetFile = new ToGetFile();
+    			if(lists!=null){
+        			for(int i = 0;i<lists.length;i++){
+        				if(!btnInfo.containsKey(lists[i])){
+        					toGetFile.downFileFromzip(Constant.getExtSdPath()+
+        							File.separator+Constant.inited_file_fold+
+        							File.separator+lists[i]);
+        					
+        					btnInfo.put(lists[i], lists[i]);
+        				}
+        			}
+            		//保存文件
+            		modifyInitedFile(btnInfo);
+    			}
+
+    		}
+
     		
-    		//参数对应<ScanFoldUtils, String, ScanFoldUtils>第1个,返回值对应第3个
-            if(scanFoldUtils[0]!=null&&scanFoldUtils[0].resourceInfo==null){
-            	scanFoldUtils[0].queryRes();
-            }
             return scanFoldUtils[0];
         }
     	
@@ -243,9 +271,14 @@ public abstract class ViewImp extends FrameLayout{
         @Override
         protected void onPostExecute(ScanFoldUtils scanFoldUtils) {
         	//参数对应doInBackground返回值，也是<ScanFoldUtils, String, ScanFoldUtils>第3个
-			initView();
 			if(progress!=null)
 				progress.dismiss();
+			Intent i = new Intent();
+			i.setClass(context.getApplicationContext(),IndexActivity.class);
+			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(i);
+			((Activity)context).finish();
+			
         }
         @Override
         protected void onCancelled(){
@@ -257,27 +290,7 @@ public abstract class ViewImp extends FrameLayout{
 	 * 构建界面
 	 */
 	
-	public void initView(){
-		try{
-			if(scanFoldUtils.resourceInfo==null||scanFoldUtils.resourceInfo.size()<1){
-				TextView text = new TextView(context);
-				text.setBackgroundColor(Color.RED);
-				text.setText("未找到资源文件");
-				LinearLayout.LayoutParams tlayout = new LinearLayout.LayoutParams(
-						LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT);
-				tlayout.gravity = Gravity.CENTER;
-				text.setLayoutParams(tlayout);
-				
-				this.addView(text);
-				return;
-			}
-			logger.error("createIndexButton");
-			this.createIndexButton();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-	}
+	public void initView(){}
 	
 	protected void initBackground(){
 		try {
@@ -376,28 +389,7 @@ public abstract class ViewImp extends FrameLayout{
 		// 设置Window flag
 		wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
 				| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-		/*
-		 * 下面的flags属性的效果形同“锁定”。 悬浮窗不可触摸，不接受任何事件,同时不影响后面的事件响应。
-		 * wmParams.flags=LayoutParams.FLAG_NOT_TOUCH_MODAL |
-		 * LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
-		 */
-		// wmParams.gravity=Gravity.LEFT|Gravity.TOP; //调整悬浮窗口至左上角
-		// 以屏幕左上角为原点，设置x、y初始值
 
-//		int[] indexs = MondifyIndexImageIndex.getImageIndexs(resourceBean.getBtnKey());
-//		if(indexs==null||indexs.length<2){
-//			wmParams.x = 100;
-//			wmParams.y = 100;
-//		}else{
-//			wmParams.x = indexs[0];
-//			wmParams.y = indexs[1];
-//			logger.error(indexs[0]+":"+indexs[1]);
-//		}
-
-		
-		// 设置悬浮窗口长宽数据
-//		wmParams.width = 300;
-//		wmParams.height = 300;
 		// 显示myFloatView图像
 		wm.addView(view, wmParams);
 	}
@@ -409,8 +401,5 @@ public abstract class ViewImp extends FrameLayout{
 		return viewXY;
 		
 	}
-	protected abstract void setXY(ResourceBean resourceBean);
-	protected abstract void createIndexButton() ;
 
 }
-

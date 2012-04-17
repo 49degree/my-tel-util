@@ -1,19 +1,18 @@
 package com.custom.activity;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.custom.update.ToGetFile;
 import com.custom.utils.Constant;
 import com.custom.view.IndexView;
+import com.custom.view.R;
+import com.custom.view.SecondView;
 import com.custom.view.ViewImp;
 
 public class IndexActivity  extends Activity {
@@ -29,8 +28,14 @@ public class IndexActivity  extends Activity {
 
 		Bundle bundle = this.getIntent().getExtras();
 		if(bundle==null||bundle.get(Constant.foldPath)==null){
-			v = new IndexView(this,Constant.path,Constant.fistFoldDepth);
-			setContentView(v);
+			if("true".equals(this.getString(R.string.Fold_three))){
+				v = new SecondView(this,Constant.path,Constant.fistFoldDepth,true);
+				//((SecondView)v).setFirstPage(true);
+				setContentView(v);
+			}else{
+				v = new IndexView(this,Constant.path,Constant.fistFoldDepth);
+				setContentView(v);
+			}
 
 		}else{
 			try{

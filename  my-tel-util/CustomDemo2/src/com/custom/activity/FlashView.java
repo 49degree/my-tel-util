@@ -57,11 +57,11 @@ public class FlashView extends Activity {
 		
 		File f = new File(this.getFilesDir().getAbsolutePath()+File.separator+Constant.swfView2);
 
-//		if(!f.exists()){
+		if(!f.exists()){
 			LoadResources.saveToTempFile(this, Constant.swfView2, DirType.assets,Constant.swfView2,false);
-//		}else{
-//			logger.error("f.exists()");
-//		}
+		}else{
+			logger.error("f.exists()");
+		}
 		mWebView.loadUrl("file://"+this.getFilesDir().getAbsolutePath()+File.separator+Constant.swfView2);
 	}
 	

@@ -30,6 +30,13 @@ public class SecondView extends ViewImp{
 	PageNumView pageNumView = null;
 	SecondViewGroup viewGroup = null;
 	FrameLayout frameLayout = null;
+	public boolean isFirstPage = false;
+	
+	public SecondView(Context context,String foldPath,int foldDepth,boolean isFirstPage){
+		super(context,foldPath,foldDepth);
+		this.isFirstPage = isFirstPage;
+		
+	}
 	
 	public SecondView(Context context,String foldPath,int foldDepth){
 		super(context,foldPath,foldDepth);
@@ -78,10 +85,11 @@ public class SecondView extends ViewImp{
 		LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(
 				screenWidth, screenHeight);
 		frameLayout.setLayoutParams(frameLayoutParams);
-		if(!Constant.noPageNum){
+		if(!isFirstPage&&!Constant.noPageNum){
 			pageNumView = new PageNumView(this.context,pageNumBean,scanFoldUtils.foldPath);
+			pageNumView.setZoom(zoom);
 		}
-		pageNumView.setZoom(zoom);
+		
 		
 		if(pageNumView==null){
 			pageNumBean.setButtonPerPage(6);
@@ -163,6 +171,14 @@ public class SecondView extends ViewImp{
 		resourceInfo = null;
 		super.onDestroy();
 		
+	}
+
+	public boolean isFirstPage() {
+		return isFirstPage;
+	}
+
+	public void setFirstPage(boolean isFirstPage) {
+		this.isFirstPage = isFirstPage;
 	}
 	
 }

@@ -18,8 +18,7 @@ import android.util.Log;
  */
 public class Logger {
 	private Class operateClass = null;
-	private static String logPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ File.separator + "custom"+File.separator +"logs";
+	private static String logPath;
 	private static String logFile = ".log";
 	private static SimpleDateFormat fileTimeFormat  = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat dataTimeFormat  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -61,6 +60,8 @@ public class Logger {
 	public Logger(Class operateClass,int localLevel){
 		this.localLevel = localLevel;
 		this.operateClass = operateClass;	
+		logPath = Constant.getSdPath()
+		+ File.separator + "custom"+File.separator +"logs";
 	}
 	
 	/**

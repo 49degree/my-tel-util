@@ -18,20 +18,21 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.os.StatFs;
 
 import com.custom.bean.ResourceBean;
 import com.custom.bean.ResourceBean.ResourceType;
-import com.custom.update.ZipToFile;
 import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
-	static boolean secrete = false;
+	static boolean secrete = true;
 	
 	/**
 	 * 根据路径和文件名称获取文件对象
@@ -44,6 +45,8 @@ public class LoadResources {
 			return new File( Constant.getSdPath()+File.separator+foldPath);
 		}else if(DirType.file == dirType&&Constant.getUpdateDataPath()!=null){
 			return new File( Constant.getUpdateDataPath()+File.separator+foldPath);
+		}else if(DirType.extSd == dirType&&Constant.getExtSdPath()!=null){
+			return new File( Constant.getExtSdPath()+File.separator+foldPath);
 		}
 		return null;
 	}
@@ -100,6 +103,8 @@ public class LoadResources {
 				in= new FileInputStream(Constant.getUpdateDataPath()+File.separator+filePath);
 			}else if(dirType==DirType.sd&&Constant.getSdPath()!=null){
 				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
+			}else if(dirType==DirType.extSd&&Constant.getExtSdPath()!=null){
+				in= new FileInputStream(Constant.getExtSdPath()+File.separator+filePath);
 			}
 			if(in==null)
 				return null;
@@ -149,6 +154,8 @@ public class LoadResources {
 				in= new FileInputStream(context.getFilesDir().getAbsoluteFile()+File.separator+filePath);
 			}else if(dirType==DirType.sd&&Constant.getSdPath()!=null){
 				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
+			}else if(dirType==DirType.extSd&&Constant.getExtSdPath()!=null){
+				in= new FileInputStream(Constant.getExtSdPath()+File.separator+filePath);
 			}
 			if(in==null)
 				return null;
@@ -185,10 +192,12 @@ public class LoadResources {
 		
 		byte[] result = loadFile(context,filePath,DirType.sd);
 		if(result==null)
+			result = loadFile(context,filePath,DirType.extSd);		
+		if(result==null)
 			result = loadFile(context,filePath,DirType.file);
 		if(result==null)
 			result = loadFile(context,filePath,DirType.assets);
-		logger.error(filePath+":"+result.length);
+		
 		return result;
 	}
 	
@@ -321,9 +330,17 @@ public class LoadResources {
 	
 	public static Bitmap getBitmap(Context context,String filePath){
 		Bitmap bm = null;
+		
 		if(bm==null){
 			try{
 				bm = LoadResources.loadBitmap(context, filePath, DirType.sd);	
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		if(bm==null){
+			try{
+				bm = LoadResources.loadBitmap(context, filePath, DirType.extSd);	
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -357,6 +374,9 @@ public class LoadResources {
 			if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
 				buf = LoadResources.loadFile(context, filePath, DirType.sd);
 			}
+			if(Constant.getExtSdPath()!=null&&!"".equals(Constant.getExtSdPath())){//SD卡上找
+				buf = LoadResources.loadFile(context, filePath, DirType.extSd);
+			}			
 			if(buf==null){//从DATA目录读取
 				buf = LoadResources.loadFile(context, filePath, DirType.file);
 			}
@@ -466,6 +486,42 @@ public class LoadResources {
 
 		}
 	}
+	
+	
+	public static long[] readExtSDCard() {   
+        String state = Environment.getExternalStorageState(); 
+        File sdcardDir = new File(Constant.getExtSdPath());  
+        long[] datas = new long[3];
+        if(Environment.MEDIA_MOUNTED.equals(state)&&sdcardDir.exists()) {   
+            StatFs sf = new StatFs(sdcardDir.getPath());   
+            long blockSize = sf.getBlockSize();   
+            long blockCount = sf.getBlockCount();   
+            long availCount = sf.getAvailableBlocks();   
+            logger.error("block大小:"+ blockSize+",block数目:"+ blockCount+",总大小:"+blockSize*blockCount/1024+"KB");   
+            logger.error("可用的block数目：:"+ availCount+",剩余空间:"+ availCount*blockSize/1024+"KB");   
+            datas[0] = blockSize*blockCount;
+            datas[1] = availCount*blockSize;
+            datas[2] = datas[0]-datas[1];
+       }      
+       return datas;
+   }
+	public static long[] readSDCard() {   
+        File root = new File(Constant.getSdPath());   
+        long[] datas = new long[3];
+        if(root.exists()){
+            StatFs sf = new StatFs(root.getPath());   
+            long blockSize = sf.getBlockSize();   
+            long blockCount = sf.getBlockCount();   
+            long availCount = sf.getAvailableBlocks();   
+            logger.error("block大小:"+ blockSize+",block数目:"+ blockCount+",总大小:"+blockSize*blockCount/1024+"KB");   
+            logger.error("可用的block数目：:"+ availCount+",可用大小:"+ availCount*blockSize/1024+"KB");   
+            datas[0] = blockSize*blockCount;
+            datas[1] = availCount*blockSize;
+            datas[2] = datas[0]-datas[1];
+        }
+        return datas;
+	}
+	
 	
 	/**
 	 * 以下代码没有用到
@@ -590,4 +646,6 @@ public class LoadResources {
             close();
         }
 	}
+	
+	
 }

@@ -116,9 +116,10 @@ public class ZipToFile {
 			real = real.getParentFile();
 			if (real == null)
 				break;
-			if (real.equals(base))
+			if (real.equals(base)){
+				ret = real.getName() + "/" + ret;
 				break;
-			else
+			}else
 				ret = real.getName() + "/" + ret;
 		}
 		return ret;

@@ -26,12 +26,15 @@
 			</intent-filter>
 		</activity>  
 		-->
-		<activity android:name="com.custom.activity.IndexActivity" 
+		<activity android:name="com.custom.activity.InitActivity" 
 			android:configChanges="orientation|keyboardHidden" android:screenOrientation="landscape">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" /> 
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+		</activity>
+		<activity android:name="com.custom.activity.IndexActivity" 
+			android:configChanges="orientation|keyboardHidden" android:screenOrientation="landscape">
 		</activity>
 		<activity android:name="com.custom.activity.FlashView" 
 			android:configChanges="orientation|keyboardHidden" android:screenOrientation="landscape">

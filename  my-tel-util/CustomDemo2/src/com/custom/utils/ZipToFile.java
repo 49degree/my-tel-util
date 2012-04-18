@@ -118,9 +118,10 @@ public class ZipToFile {
 			real = real.getParentFile();
 			if (real == null)
 				break;
-			if (real.equals(base))
+			if (real.equals(base)){
+				ret = real.getName() + "/" + ret;
 				break;
-			else
+			}else
 				ret = real.getName() + "/" + ret;
 		}
 		return ret;
@@ -169,19 +170,17 @@ public class ZipToFile {
 		byte[] buf = new byte[BUFFER];
 		byte[] encrypByte = new byte[encrypLength];
 		int readLen = 0;
-		
+		logger.error("解压文件："+zipFile);
 		long[] sDCardRealease = LoadResources.readSDCard();
 		long[] extSDCardRealease = LoadResources.readExtSDCard();
 		
 		while (zList.hasMoreElements()) {
-			
 			ze = (ZipEntry) zList.nextElement();
-			//logger.error("解压文件："+ze.getName());
 			if(stopZipFile){//如果停止了，则退出
 				break;
 			}
 			
-			if(specifiedDir!=null&&ze.getName().indexOf(specifiedDir)<0)
+			if(specifiedDir!=null&&!"..".equals(specifiedDir)&&ze.getName().indexOf(specifiedDir)<0)
 				continue;
 			
 			if (ze.isDirectory()) {
@@ -203,7 +202,7 @@ public class ZipToFile {
 				}else{
 					throw new IOException("空间不足");
 				}
-				//logger.error("解压文件："+ze.getName());
+				logger.error("解压文件："+ze.getName());
 				InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
 				readLen = is.read(buf, 0, BUFFER);
 				if(decrypt){
@@ -236,14 +235,23 @@ public class ZipToFile {
 	 * @return java.io.File 实际的文件
 	 */
 	public static File getRealFileName(String baseDir, String absFileName,String specifiedDir) {
-		if(specifiedDir!=null){
-			absFileName = absFileName.substring(absFileName.indexOf(specifiedDir));	
+		String[] dirs = absFileName.split(File.separator);
+		int begin = 0;
+		if(specifiedDir!=null&&dirs.length > 0){
+			if("..".equals(specifiedDir)){
+				begin = 1;
+			}else{
+				for (int i = 0; i < dirs.length - 1; i++) {
+					if(specifiedDir.equals(dirs[i])){
+						begin = i;
+					}
+				}
+			}
 		}
-		String[] dirs = absFileName.split("/");
 		File ret = new File(baseDir);
 		if (dirs.length > 0) {
 			
-			for (int i = 0; i < dirs.length - 1; i++) {
+			for (int i = begin; i < dirs.length - 1; i++) {
 				ret = new File(ret, dirs[i]);
 			}
 			if (!ret.exists())
@@ -269,3 +277,4 @@ public class ZipToFile {
 
 
 }
+

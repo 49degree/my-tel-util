@@ -66,10 +66,10 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 				}
 				if(onClick){
 					this.setBackgroundDrawable(frame2);
-					this.setPadding(0, (int)(35*zoom), 0, 0);
+					this.setPadding(0, (int)(25*zoom), 0, 0);
 				}else{
 					this.setBackgroundDrawable(frame1);
-					this.setPadding(0, (int)(30*zoom), 0, 0);
+					this.setPadding(0, (int)(20*zoom), 0, 0);
 				}
 			}else{
 				if(onClick){
@@ -94,10 +94,10 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		text.setText(resourceBean.getName());
 		LinearLayout.LayoutParams tlayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
 		text.setLayoutParams(tlayout);
-		text.setTextSize((int)(10*zoom), zoom*1.8f);
+		text.setTextSize((int)(15*zoom));
 		text.setGravity(Gravity.CENTER);
 		if(hasFrame){
-			text.setPadding(0, (int)(16*zoom), 0, 0);
+			text.setPadding(0, 0, 0, (int)(5*zoom));
 		}
 		try{
 			setBackground(false);
@@ -122,7 +122,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		AbsoluteLayout.LayoutParams layout = null;
 		if(frame1==null){
 			layout = new AbsoluteLayout.LayoutParams(
-					bmWidth+(int)(20*zoom), bmHeight+(int)(20*zoom), resourceBean.getX(), resourceBean.getY());
+					bmWidth+(int)(20*zoom), bmHeight+(int)(30*zoom), resourceBean.getX(), resourceBean.getY());
 		}else{
 			layout = new AbsoluteLayout.LayoutParams(
 					(int)(frame1.getBitmap().getWidth()*zoom), (int)(frame1.getBitmap().getHeight()*zoom), resourceBean.getX(), resourceBean.getY());

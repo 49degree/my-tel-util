@@ -33,8 +33,13 @@ public class Constant {
 	public final static String fileUnziped="fileUnziped";
 	public final static String fileContent="content";
 	
+	public static String root_fold = "custom";
+	
 	public static String inited_file_fold = "custom/inited";
 	public static String inited_file_info_file = "inited_file_info.txt";
+	
+	public static String copy_file_fold = "custom/copy_file";
+	public static String copy_file_info_file = "copy_file_info.txt";
 
 	public enum FileDirType{
 		data,sd,extSd

@@ -318,7 +318,7 @@ public class Update extends Activity implements OnClickListener{
 		progress.setMessage( "正在查询资源....");
 		
 		initFile();//以下为加压SD卡内容
-		
+		copyFile();//
 		
 		if(!progress.isShowing())
 			progress.show();
@@ -408,10 +408,61 @@ public class Update extends Activity implements OnClickListener{
     	return allNum;
     }
     
+    
+    /**
+     * 以下COPY SD卡内容
+     */
+    private void copyFile(){
+    	if(Constant.getExtSdPath()==null||"".equals(Constant.getExtSdPath())){
+    		return;
+    	}
+		HashMap<String,String> btnInfo = new HashMap<String,String> ();
+		try{
+			byte[] buf = LoadResources.loadFile(this, Constant.root_fold+File.separator+Constant.copy_file_info_file, DirType.sd,false);
+			if(buf!=null){
+				BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
+				String line = fin.readLine();
+				
+				while(line!=null){
+					btnInfo.put(line,line);
+					line = fin.readLine();
+				}
+			}
+		}catch(Exception e){
+			
+		}
+        //查询扩展SD卡中是否有需要解压的资源
+		File sdfile = LoadResources.getFileByType(Constant.copy_file_fold,DirType.extSd);
+		String[] lists = getFileNames(sdfile.listFiles());
+		ZipToFile zipToFile = new ZipToFile();//.upZipFile(filePath,false,"custom");
+		if(lists!=null){
+			for(int i = 0;i<lists.length;i++){
+				if(!btnInfo.containsKey(lists[i])){
+					try{
+						zipToFile.upZipFile(Constant.getExtSdPath()+
+								File.separator+Constant.copy_file_fold+
+								File.separator+lists[i],true,"..");
+						
+						btnInfo.put(lists[i], lists[i]);
+					}catch(Exception e){
+						
+					}
+
+				}
+			}
+			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.copy_file_info_file;
+    		//保存文件
+    		modifyInitedFile(btnInfo,filePath);
+		}
+    }
+    
     /**
      * 以下为加压SD卡内容
      */
     private void initFile(){
+    	if(Constant.getExtSdPath()==null||"".equals(Constant.getExtSdPath())){
+    		return;
+    	}
     	FilenameFilter fl = new FilenameFilter() {//过滤文件名称
 			@Override
 			public boolean accept(File arg0, String arg1) {
@@ -424,7 +475,7 @@ public class Update extends Activity implements OnClickListener{
 		
 		HashMap<String,String> btnInfo = new HashMap<String,String> ();
 		try{
-			byte[] buf = LoadResources.loadFile(this, Constant.inited_file_fold+File.separator+Constant.inited_file_info_file, DirType.sd);
+			byte[] buf = LoadResources.loadFile(this, Constant.root_fold+File.separator+Constant.inited_file_info_file, DirType.sd,false);
 			if(buf!=null){
 				BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
 				String line = fin.readLine();
@@ -439,25 +490,25 @@ public class Update extends Activity implements OnClickListener{
 		}
 
         //查询扩展SD卡中是否有需要解压的资源
-		if(Constant.getExtSdPath()!=null&&!"".equals(Constant.getExtSdPath())){
-			File sdfile = LoadResources.getFileByType(Constant.inited_file_fold,DirType.extSd);
-			String[] lists = getFileNames(sdfile.listFiles(fl));
-			ToGetFile toGetFile = new ToGetFile();
-			if(lists!=null){
-    			for(int i = 0;i<lists.length;i++){
-    				if(!btnInfo.containsKey(lists[i])){
-    					toGetFile.downFileFromzip(Constant.getExtSdPath()+
-    							File.separator+Constant.inited_file_fold+
-    							File.separator+lists[i]);
-    					
-    					btnInfo.put(lists[i], lists[i]);
-    				}
-    			}
-        		//保存文件
-        		modifyInitedFile(btnInfo);
+		File sdfile = LoadResources.getFileByType(Constant.inited_file_fold,DirType.extSd);
+		String[] lists = getFileNames(sdfile.listFiles(fl));
+		ToGetFile toGetFile = new ToGetFile();
+		if(lists!=null){
+			for(int i = 0;i<lists.length;i++){
+				if(!btnInfo.containsKey(lists[i])){
+					toGetFile.downFileFromzip(Constant.getExtSdPath()+
+							File.separator+Constant.inited_file_fold+
+							File.separator+lists[i]);
+					
+					btnInfo.put(lists[i], lists[i]);
+				}
 			}
-
+			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.inited_file_info_file;
+    		//保存文件
+    		modifyInitedFile(btnInfo,filePath);
 		}
+		
+		
     }
     
 	/**
@@ -478,10 +529,10 @@ public class Update extends Activity implements OnClickListener{
 		return lists;
 	}
 	
-	public void modifyInitedFile(HashMap<String,String> btnInfo){
+	public void modifyInitedFile(HashMap<String,String> btnInfo,String filePath){
 		try{
-			String filePath = Constant.getExtSdPath()+File.separator+Constant.inited_file_fold
-			+File.separator+Constant.inited_file_info_file;
+			//String filePath = Constant.getSdPath()+File.separator+Constant.inited_file_fold+File.separator+Constant.inited_file_info_file;
+			
 			//清空文件
 			RandomAccessFile   raf   =   new   RandomAccessFile(filePath,   "rw"); 
 			raf.setLength(0); 

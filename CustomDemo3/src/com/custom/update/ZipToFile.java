@@ -170,7 +170,7 @@ public class ZipToFile {
 		byte[] buf = new byte[BUFFER];
 		byte[] encrypByte = new byte[encrypLength];
 		int readLen = 0;
-		
+		logger.error("解压文件："+zipFile);
 		long[] sDCardRealease = LoadResources.readSDCard();
 		long[] extSDCardRealease = LoadResources.readExtSDCard();
 		
@@ -180,7 +180,7 @@ public class ZipToFile {
 				break;
 			}
 			
-			if(specifiedDir!=null&&ze.getName().indexOf(specifiedDir)<0)
+			if(specifiedDir!=null&&!"..".equals(specifiedDir)&&ze.getName().indexOf(specifiedDir)<0)
 				continue;
 			
 			if (ze.isDirectory()) {
@@ -237,8 +237,10 @@ public class ZipToFile {
 	public static File getRealFileName(String baseDir, String absFileName,String specifiedDir) {
 		String[] dirs = absFileName.split(File.separator);
 		int begin = 0;
-		if(specifiedDir!=null){
-			if (dirs.length > 0) {
+		if(specifiedDir!=null&&dirs.length > 0){
+			if("..".equals(specifiedDir)){
+				begin = 1;
+			}else{
 				for (int i = 0; i < dirs.length - 1; i++) {
 					if(specifiedDir.equals(dirs[i])){
 						begin = i;

@@ -214,7 +214,7 @@ public class InitView extends FrameLayout{
         	}
     		HashMap<String,String> btnInfo = new HashMap<String,String> ();
     		try{
-    			byte[] buf = LoadResources.loadFile(context, Constant.root_fold+File.separator+Constant.copy_file_info_file, DirType.sd);
+    			byte[] buf = LoadResources.loadFile(context, Constant.root_fold+File.separator+Constant.copy_file_info_file, DirType.sd,false);
     			if(buf!=null){
     				BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
     				String line = fin.readLine();
@@ -271,7 +271,7 @@ public class InitView extends FrameLayout{
     		
     		HashMap<String,String> btnInfo = new HashMap<String,String> ();
     		try{
-    			byte[] buf = LoadResources.loadFile(context, Constant.root_fold+File.separator+Constant.inited_file_info_file, DirType.sd);
+    			byte[] buf = LoadResources.loadFile(context, Constant.root_fold+File.separator+Constant.inited_file_info_file, DirType.sd,false);
     			if(buf!=null){
     				BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
     				String line = fin.readLine();

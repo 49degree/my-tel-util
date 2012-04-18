@@ -81,7 +81,6 @@ public class LoadResources {
 		}
 		return null;
 	}
-	
 	/**
 	 * 根据路径和路径类型读取文件
 	 * @param context
@@ -90,6 +89,16 @@ public class LoadResources {
 	 * @return
 	 */
 	public static byte[] loadFile(Context context,String filePath,DirType dirType){
+		return loadFile(context,filePath,dirType,LoadResources.secrete);
+	}
+	/**
+	 * 根据路径和路径类型读取文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
+	public static byte[] loadFile(Context context,String filePath,DirType dirType,boolean secrete){
 		InputStream in= null;
 		//logger.error("filePath:"+filePath+":dirType:"+dirType);
 
@@ -110,7 +119,7 @@ public class LoadResources {
 				return null;
 			byte[] buf = new byte[in.available()];
 			//in.read(buf,0,buf.length);
-			if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&LoadResources.secrete){
+			if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&secrete){
 				//解密文件头
 				byte[] encrypByte = new byte[ZipToFile.encrypLength];
 				System.arraycopy(buf, 0, encrypByte, 0, ZipToFile.encrypLength);
@@ -133,6 +142,16 @@ public class LoadResources {
 		}
 	}
 	
+	/**
+	 * 根据路径和路径类型读取文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
+	public static byte[] loadLocalFile(Context context,String filePath,DirType dirType){
+		return loadLocalFile(context,filePath,dirType,LoadResources.secrete);
+	}
 	
 	/**
 	 * 根据路径和路径类型读取本地文件
@@ -141,7 +160,7 @@ public class LoadResources {
 	 * @param dirType
 	 * @return
 	 */
-	public static byte[] loadLocalFile(Context context,String filePath,DirType dirType){
+	public static byte[] loadLocalFile(Context context,String filePath,DirType dirType,boolean secrete){
 		InputStream in= null;
 		//logger.error("filePath:"+filePath+":dirType:"+dirType);
 
@@ -160,7 +179,7 @@ public class LoadResources {
 			if(in==null)
 				return null;
 			byte[] buf = new byte[in.available()];
-			if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&LoadResources.secrete){
+			if(in.read(buf,0,buf.length)>=ZipToFile.encrypLength&&secrete){
 				//解密文件头
 				byte[] encrypByte = new byte[ZipToFile.encrypLength];
 				System.arraycopy(buf, 0, encrypByte, 0, ZipToFile.encrypLength);

@@ -299,7 +299,7 @@ public class CheckFileUi extends JFrame {
 				}
 			});
 
-			
+			/*
 			JLabel decodeLable = new JLabel("解密文件：");
 			final JTextField decodePath = new JTextField(15);
 			JButton decodeBtn = new JButton("选择");
@@ -341,7 +341,7 @@ public class CheckFileUi extends JFrame {
 								
 								zipTofile = new ZipToFile();
 								String path = rootFile.getAbsolutePath();
-								zipTofile.upZipFile(path,path.substring(0,path.lastIndexOf(".")),encode);
+								zipTofile.upZipFile(path,path.substring(0,path.lastIndexOf(File.separator)),encode,"custom");
 								//System.out.println("prossThread111");
 							}catch(Exception e){
 								e.printStackTrace();
@@ -360,7 +360,7 @@ public class CheckFileUi extends JFrame {
 					//System.out.println("prossThrea22");
 				}
 			});
-
+			*/
 
 			GridBagConstraints constraints = new GridBagConstraints();
 			constraints.fill = GridBagConstraints.NONE;
@@ -370,13 +370,13 @@ public class CheckFileUi extends JFrame {
 			add(dirPath, constraints, 2, 1, 1, 1);
 			add(choiseBtn, constraints, 3, 1, 1, 1);
 			add(sureBtn, constraints, 4, 1, 1, 1);
-			
+			/*
 			add(decodeLable, constraints, 1, 2, 1, 1);
 			add(decodePath, constraints, 2, 2, 1, 1);
 			add(decodeBtn, constraints, 3, 2, 1, 1);
 			add(decodesureBtn, constraints, 4, 2, 1, 1);
 			
-			
+			*/
 
 		}
 

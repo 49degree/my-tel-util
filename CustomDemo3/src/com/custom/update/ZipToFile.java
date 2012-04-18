@@ -235,7 +235,7 @@ public class ZipToFile {
 	 * @return java.io.File 实际的文件
 	 */
 	public static File getRealFileName(String baseDir, String absFileName,String specifiedDir) {
-		String[] dirs = absFileName.split("/");
+		String[] dirs = absFileName.split(File.separator);
 		int begin = 0;
 		if(specifiedDir!=null){
 			if (dirs.length > 0) {

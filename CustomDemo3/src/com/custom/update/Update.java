@@ -240,7 +240,7 @@ public class Update extends Activity implements OnClickListener{
         					try{
         						ToGetFile toGetFile = new ToGetFile();
         						toGetFile.downFileFromzip(filePath);
-        						//toGetFile.delteDownFile(filePath);
+        						toGetFile.delteDownFile(filePath);
 	        					msgObject.put(Constant.fileUnziped, "true");
 	        					LoadResources.updateInstalledInfo(msgObject,true);
 	        					if(downThread!=null&&downThread.isAlive()){

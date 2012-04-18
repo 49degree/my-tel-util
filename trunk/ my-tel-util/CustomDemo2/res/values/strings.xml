@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CustomDemo2</string>
-    <string name="fold_name">yuwen</string>
+    <string name="fold_name">english</string>
     <string name="fold_name_ex">英语</string>
     <string name="modify_index">false</string> 
     <string name="no_page_num">false</string> 
     <string name="D_ROOT">mnt/sdcard</string> 
-    <string name="Fold_three">true</string>      
+    <string name="Fold_three">false</string>      
 </resources>

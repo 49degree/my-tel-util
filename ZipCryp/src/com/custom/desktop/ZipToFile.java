@@ -217,8 +217,10 @@ public class ZipToFile {
 		
 		String[] dirs = absFileName.split("/");
 		int begin = 0;
-		if(specifiedDir!=null){
-			if (dirs.length > 0) {
+		if(specifiedDir!=null&&dirs.length > 0){
+			if("..".equals(specifiedDir)){
+				begin = 1;
+			}else{
 				for (int i = 0; i < dirs.length - 1; i++) {
 					if(specifiedDir.equals(dirs[i])){
 						begin = i;

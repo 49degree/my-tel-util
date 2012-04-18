@@ -32,11 +32,12 @@ import android.widget.LinearLayout;
 
 import com.custom.activity.IndexActivity;
 import com.custom.utils.Constant;
+import com.custom.utils.Constant.DirType;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.ScanFoldUtils;
 import com.custom.utils.ToGetFile;
-import com.custom.utils.Constant.DirType;
+import com.custom.utils.ZipToFile;
 
 
 
@@ -178,9 +179,10 @@ public class InitView extends FrameLayout{
     		return lists;
     	}
     	
-    	public void modifyInitedFile(HashMap<String,String> btnInfo){
+    	public void modifyInitedFile(HashMap<String,String> btnInfo,String filePath){
     		try{
-    			String filePath = Constant.getExtSdPath()+File.separator+Constant.inited_file_fold+File.separator+Constant.inited_file_info_file;
+    			//String filePath = Constant.getSdPath()+File.separator+Constant.inited_file_fold+File.separator+Constant.inited_file_info_file;
+    			
     			//清空文件
     			RandomAccessFile   raf   =   new   RandomAccessFile(filePath,   "rw"); 
     			raf.setLength(0); 
@@ -202,63 +204,117 @@ public class InitView extends FrameLayout{
     		}		
     	}
     	
+    	
+        /**
+         * 以下COPY SD卡内容
+         */
+        private void copyFile(){
+        	if(Constant.getExtSdPath()==null||"".equals(Constant.getExtSdPath())){
+        		return;
+        	}
+    		HashMap<String,String> btnInfo = new HashMap<String,String> ();
+    		try{
+    			byte[] buf = LoadResources.loadFile(context, Constant.root_fold+File.separator+Constant.copy_file_info_file, DirType.sd);
+    			if(buf!=null){
+    				BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
+    				String line = fin.readLine();
+    				
+    				while(line!=null){
+    					btnInfo.put(line,line);
+    					line = fin.readLine();
+    				}
+    			}
+    		}catch(Exception e){
+    			
+    		}
+            //查询扩展SD卡中是否有需要解压的资源
+    		File sdfile = LoadResources.getFileByType(Constant.copy_file_fold,DirType.extSd);
+    		String[] lists = getFileNames(sdfile.listFiles());
+    		ZipToFile zipToFile = new ZipToFile();//.upZipFile(filePath,false,"custom");
+    		if(lists!=null){
+    			for(int i = 0;i<lists.length;i++){
+    				if(!btnInfo.containsKey(lists[i])){
+    					try{
+    						zipToFile.upZipFile(Constant.getExtSdPath()+
+    								File.separator+Constant.copy_file_fold+
+    								File.separator+lists[i],true,"..");
+    						
+    						btnInfo.put(lists[i], lists[i]);
+    					}catch(Exception e){
+    						
+    					}
+
+    				}
+    			}
+    			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.copy_file_info_file;
+        		//保存文件
+        		modifyInitedFile(btnInfo,filePath);
+    		}
+        }
+        
+        /**
+         * 以下为加压SD卡内容
+         */
+        private void initFile(){
+        	if(Constant.getExtSdPath()==null||"".equals(Constant.getExtSdPath())){
+        		return;
+        	}
+        	FilenameFilter fl = new FilenameFilter() {//过滤文件名称
+    			@Override
+    			public boolean accept(File arg0, String arg1) {
+    				//logger.error("accept(File arg0, String arg1):"+arg1);
+    				if(arg1.indexOf(".")<0)
+    					return false;
+    				return "ZIP".equals(arg1.substring(arg1.indexOf(".")+1).toUpperCase());
+    			}
+    		};
+    		
+    		HashMap<String,String> btnInfo = new HashMap<String,String> ();
+    		try{
+    			byte[] buf = LoadResources.loadFile(context, Constant.root_fold+File.separator+Constant.inited_file_info_file, DirType.sd);
+    			if(buf!=null){
+    				BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
+    				String line = fin.readLine();
+    				
+    				while(line!=null){
+    					btnInfo.put(line,line);
+    					line = fin.readLine();
+    				}
+    			}
+    		}catch(Exception e){
+    			
+    		}
+
+            //查询扩展SD卡中是否有需要解压的资源
+    		File sdfile = LoadResources.getFileByType(Constant.inited_file_fold,DirType.extSd);
+    		String[] lists = getFileNames(sdfile.listFiles(fl));
+    		ToGetFile toGetFile = new ToGetFile();
+    		if(lists!=null){
+    			for(int i = 0;i<lists.length;i++){
+    				if(!btnInfo.containsKey(lists[i])){
+    					toGetFile.downFileFromzip(Constant.getExtSdPath()+
+    							File.separator+Constant.inited_file_fold+
+    							File.separator+lists[i]);
+    					
+    					btnInfo.put(lists[i], lists[i]);
+    				}
+    			}
+    			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.inited_file_info_file;
+        		//保存文件
+        		modifyInitedFile(btnInfo,filePath);
+    		}
+    		
+    		
+        }
     	@Override
     	protected void onPreExecute() {  
     		// 任务启动，可以在这里显示一个对话框，这里简单处
     	}   
         
     	@Override
-    	
         protected ScanFoldUtils doInBackground(ScanFoldUtils... scanFoldUtils) {
-            // TODO Auto-generated method stub
-	    	FilenameFilter fl = new FilenameFilter() {//过滤文件名称
-				@Override
-				public boolean accept(File arg0, String arg1) {
-					//logger.error("accept(File arg0, String arg1):"+arg1);
-					if(arg1.indexOf(".")<0)
-						return false;
-					return "ZIP".equals(arg1.substring(arg1.indexOf(".")+1).toUpperCase());
-				}
-			};
-			
-			HashMap<String,String> btnInfo = new HashMap<String,String> ();
-			try{
-				byte[] buf = LoadResources.loadFile(context, Constant.inited_file_fold+File.separator+Constant.inited_file_info_file, DirType.sd);
-				if(buf!=null){
-					BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
-					String line = fin.readLine();
-					
-					while(line!=null){
-						btnInfo.put(line,line);
-						line = fin.readLine();
-					}
-				}
-			}catch(Exception e){
-				
-			}
-
-            //查询扩展SD卡中是否有需要解压的资源
-    		if(Constant.getExtSdPath()!=null&&!"".equals(Constant.getExtSdPath())){
-    			File sdfile = LoadResources.getFileByType(Constant.inited_file_fold,DirType.extSd);
-    			String[] lists = getFileNames(sdfile.listFiles(fl));
-    			ToGetFile toGetFile = new ToGetFile();
-    			if(lists!=null){
-        			for(int i = 0;i<lists.length;i++){
-        				if(!btnInfo.containsKey(lists[i])){
-        					toGetFile.downFileFromzip(Constant.getExtSdPath()+
-        							File.separator+Constant.inited_file_fold+
-        							File.separator+lists[i]);
-        					
-        					btnInfo.put(lists[i], lists[i]);
-        				}
-        			}
-            		//保存文件
-            		modifyInitedFile(btnInfo);
-    			}
-
-    		}
-
-    		
+    		initFile();
+    		copyFile();
             return scanFoldUtils[0];
         }
     	

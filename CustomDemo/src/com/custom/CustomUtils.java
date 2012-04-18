@@ -172,6 +172,7 @@ public class CustomUtils {
             XMLReader xmlReader = saxParserFactory.newSAXParser().getXMLReader();  
             XMLHandler handler = new XMLHandler(); 
             xmlReader.setContentHandler(handler);  
+            
             xmlReader.parse(new InputSource(new StringReader(retStr)));
             //每次获取到的软件列表要复盖之前写到那个文件中的软件列表，防止安装过期的软件
             if(handler.getAppInfo().keySet().size()>0){
@@ -185,7 +186,7 @@ public class CustomUtils {
             	String[] info = handler.getAppInfo().get(key);
             	StringBuffer infoBuffer = new StringBuffer();
             	for(int i=0;i<info.length;i++){
-            		infoBuffer.append(info[i]).append("|");
+            		infoBuffer.append(info[i]).append("|"); 
             	}
             	//Log.i("getAppInfo", "===================:"+key+":"+infoBuffer.toString());
             	SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.NEW_APP_INFO, key, infoBuffer.toString());

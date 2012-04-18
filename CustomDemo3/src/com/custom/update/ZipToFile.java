@@ -118,9 +118,10 @@ public class ZipToFile {
 			real = real.getParentFile();
 			if (real == null)
 				break;
-			if (real.equals(base))
+			if (real.equals(base)){
+				ret = real.getName() + "/" + ret;
 				break;
-			else
+			}else
 				ret = real.getName() + "/" + ret;
 		}
 		return ret;
@@ -234,14 +235,21 @@ public class ZipToFile {
 	 * @return java.io.File 实际的文件
 	 */
 	public static File getRealFileName(String baseDir, String absFileName,String specifiedDir) {
-		if(specifiedDir!=null){
-			absFileName = absFileName.substring(absFileName.indexOf(specifiedDir));	
-		}
 		String[] dirs = absFileName.split("/");
+		int begin = 0;
+		if(specifiedDir!=null){
+			if (dirs.length > 0) {
+				for (int i = 0; i < dirs.length - 1; i++) {
+					if(specifiedDir.equals(dirs[i])){
+						begin = i;
+					}
+				}
+			}
+		}
 		File ret = new File(baseDir);
 		if (dirs.length > 0) {
 			
-			for (int i = 0; i < dirs.length - 1; i++) {
+			for (int i = begin; i < dirs.length - 1; i++) {
 				ret = new File(ret, dirs[i]);
 			}
 			if (!ret.exists())

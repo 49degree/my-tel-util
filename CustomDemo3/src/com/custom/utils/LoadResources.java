@@ -35,14 +35,14 @@ public class LoadResources {
 	public final static HashMap<String,Integer> installedfolds = new HashMap<String,Integer>();
 	public final static HashMap<String,Integer> noInstalledfolds = new HashMap<String,Integer>();
 	static{
-		installedfolds.put("语文", 0);
-		installedfolds.put("英语", 0);
-		installedfolds.put("数学", 0);
+//		installedfolds.put("语文", 0);
+//		installedfolds.put("英语", 0);
+//		installedfolds.put("数学", 0);
 	}
 	static{
-		noInstalledfolds.put("语文", 0);
-		noInstalledfolds.put("英语", 0);
-		noInstalledfolds.put("数学", 0);
+//		noInstalledfolds.put("语文", 0);
+//		noInstalledfolds.put("英语", 0);
+//		noInstalledfolds.put("数学", 0);
 	}	
 	
 	/**

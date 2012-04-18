@@ -51,9 +51,9 @@
 			<TextView android:textColor="@color/black"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
 				android:text="内容更新" android:paddingTop="15px" />
-			<TextView android:textColor="@color/black"
+			<TextView android:textColor="@color/black" android:id="@+id/TextView10"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="123456@163.com" android:paddingTop="15px" />
+				android:text="" android:paddingTop="15px" />
 		</LinearLayout>
 
 		<LinearLayout android:layout_height="fill_parent"

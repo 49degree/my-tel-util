@@ -54,6 +54,7 @@ public class Update extends Activity implements OnClickListener{
 	TextView textView6 = null;
 	TextView textView8 = null;
 	TextView textView9 = null;
+	TextView textView10 = null;
 	LinearLayout linearLayout1 = null;
 	LinearLayout linearLayout3 = null;
 	LinearLayout linearLayout4 = null;
@@ -124,6 +125,7 @@ public class Update extends Activity implements OnClickListener{
         textView6 = (TextView)this.findViewById(R.id.TextView6);
         textView8 = (TextView)this.findViewById(R.id.TextView8);
         textView9 = (TextView)this.findViewById(R.id.TextView9);
+        textView10 = (TextView)this.findViewById(R.id.TextView10);
         Button1 = (Button)this.findViewById(R.id.Button1);
         Button1.setOnClickListener(this);
         
@@ -342,6 +344,7 @@ public class Update extends Activity implements OnClickListener{
 		    linearLayout6.setBackgroundColor(0xFFCDCD00);
 			linearLayout8.setVisibility(View.VISIBLE);
 			linearLayout7.setVisibility(View.GONE);
+			textView10.setText("已联网");
 		}else{
 			linearLayout1.setVisibility(View.GONE);
 			linearLayout4.setVisibility(View.VISIBLE);
@@ -358,6 +361,7 @@ public class Update extends Activity implements OnClickListener{
 				byte[] buffer = LoadResources.loadFile(Update.this,"down.txt",0);
 				textView9.setText(new String(buffer,"GBK"));
 			}catch(Exception e){}
+			textView10.setText("未联网");
 		}
 		textView5.setText("本机已有内容:");
 		createInstalledfolds();

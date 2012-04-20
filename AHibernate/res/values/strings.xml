@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello, AHibernate! <br />
+欢迎访问博客: http://blog.csdn.net/lk_blog 这里有这个框架的使用范例和源码</string>
+    <string name="app_name">AHibernate2</string>
+
+</resources>

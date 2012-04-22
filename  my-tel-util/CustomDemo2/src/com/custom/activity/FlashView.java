@@ -5,22 +5,31 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.custom.utils.Constant;
-import com.custom.utils.Constant.DirType;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
+import com.custom.utils.Constant.DirType;
+import com.custom.view.BackButton;
 import com.custom.view.R;
 
 public class FlashView extends Activity {
 	private static final Logger logger = Logger.getLogger(FlashView.class);
 	private WebView mWebView = null;
+	protected WindowManager.LayoutParams wmParams =null;
+	protected WindowManager wm = null;
+	BackButton backButton = null;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,6 +72,13 @@ public class FlashView extends Activity {
 			logger.error("f.exists()");
 		}
 		mWebView.loadUrl("file://"+this.getFilesDir().getAbsolutePath()+File.separator+Constant.swfView2);
+		
+		backButton = new BackButton(this);
+		backButton.setZoom(Constant.zoom);
+		backButton.initView(this);
+
+		createView(backButton);
+		
 	}
 	
 	/**
@@ -99,7 +115,43 @@ public class FlashView extends Activity {
 
 		}
 	}
-	
+	protected void createView(View view) {
+		// 获取WindowManager
+		wm = (WindowManager) this
+				.getSystemService(Context.WINDOW_SERVICE);
+		wmParams =new WindowManager.LayoutParams();
+		/**
+		 * 以下都是WindowManager.LayoutParams的相关属性 具体用途可参考SDK文档
+		 */
+		wmParams.type = WindowManager.LayoutParams.TYPE_PHONE; // 设置window type
+		wmParams.format = PixelFormat.RGBA_8888; // 设置图片格式，效果为背景透明
+		// 设置Window flag
+
+		/*
+		 * 下面的flags属性的效果形同“锁定”。 悬浮窗不可触摸，不接受任何事件,同时不影响后面的事件响应。*/
+		wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+		 
+		wmParams.gravity=Gravity.RIGHT|Gravity.BOTTOM; //调整悬浮窗口至左上角
+		// 以屏幕左上角为原点，设置x、y初始值
+
+//		int[] indexs = MondifyIndexImageIndex.getImageIndexs(resourceBean.getBtnKey());
+//		if(indexs==null||indexs.length<2){
+//			wmParams.x = 100;
+//			wmParams.y = 100;
+//		}else{
+//			wmParams.x = indexs[0];
+//			wmParams.y = indexs[1];
+//			logger.error(indexs[0]+":"+indexs[1]);
+//		}
+
+		
+		// 设置悬浮窗口长宽数据
+		wmParams.width = 100;
+		wmParams.height = 100;
+
+		wm.addView(view, wmParams);
+	}
+
 	public void onResume() {
 		super.onResume();
 		logger.error("onResume");
@@ -124,6 +176,7 @@ public class FlashView extends Activity {
 			mWebView.pauseTimers();
 			callHiddenWebViewMethod("onDestroy");
 		}
+		wm.removeView(backButton);
 		super.onDestroy();
 	}	
 

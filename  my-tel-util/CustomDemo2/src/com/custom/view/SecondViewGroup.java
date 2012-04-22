@@ -85,7 +85,6 @@ public class SecondViewGroup extends LinearLayout {
 						initView();
 					}else{
 						if(secondViewPage!=null){
-							logger.error("fistViewOnclick secondViewPage");
 							currentScreenIndex = pageNumBean.getCurPageNum(); 
 		       				final int delta = currentScreenIndex * getWidth();
 		    				secondViewPage.scrollTo(delta, 0); 
@@ -126,7 +125,7 @@ public class SecondViewGroup extends LinearLayout {
         protected Integer doInBackground(Integer... values) {
             // TODO Auto-generated method stub
 
-            return values[0];
+            return values[0]; 
         }
     	
     	@Override
@@ -163,6 +162,20 @@ public class SecondViewGroup extends LinearLayout {
 				}catch(Exception e){
 					e.printStackTrace();
 				}
+				secondViewPage.setOnTouchListener(new OnTouchListener(){
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+						removeView(secondViewPage);
+		        		secondViewPage = new SecondViewPage(context,resourceInfo,pageNumView);
+		        		addView(secondViewPage);
+		        		if(pageNumView!=null){
+		        			pageNumView.setFirst(false);
+		            		pageNumView.initPageNumView();
+		        		}
+						return false;
+					}
+				});
     		}else{
         		secondViewPage = new SecondViewPage(context,resourceInfo,pageNumView);
         		secondViewPage.post(new Runnable() {

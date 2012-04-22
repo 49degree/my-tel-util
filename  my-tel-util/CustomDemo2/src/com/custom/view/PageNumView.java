@@ -59,28 +59,28 @@ public class PageNumView extends AbsoluteLayout{
 	static Bitmap title = null;
 	
 	public static void realease(){
-		if(bm==null||bm.isRecycled()){
+		if(bm!=null&&!bm.isRecycled()){
 			bm.recycle();
 		}
-		if(pageNum1==null||pageNum1.isRecycled()){
+		if(pageNum1!=null&&!pageNum1.isRecycled()){
 			pageNum1.recycle();
 		}
-		if(pageNum2==null||pageNum2.isRecycled()){
+		if(pageNum2!=null&&!pageNum2.isRecycled()){
 			pageNum2.recycle();
 		}
-		if(nextunit1==null||nextunit1.isRecycled()){
+		if(nextunit1!=null&&!nextunit1.isRecycled()){
 			nextunit1.recycle();
 		}
-		if(upunit1==null||upunit1.isRecycled()){
+		if(upunit1!=null&&!upunit1.isRecycled()){
 			upunit1.recycle();
 		}
-		if(nextunit2==null||nextunit2.isRecycled()){
+		if(nextunit2!=null&&!nextunit2.isRecycled()){
 			nextunit2.recycle();
 		}
-		if(upunit2==null||upunit2.isRecycled()){
+		if(upunit2!=null&&!upunit2.isRecycled()){
 			upunit2.recycle();
 		}		
-		if(title==null||title.isRecycled()){
+		if(title!=null&&!title.isRecycled()){
 			title.recycle();
 		}
 		bm = null;
@@ -90,6 +90,7 @@ public class PageNumView extends AbsoluteLayout{
 	    upunit1 = null;
 	    nextunit2 =null;
 	    upunit2 = null;
+	    title = null;
 	}
 	
 	public void initView(){

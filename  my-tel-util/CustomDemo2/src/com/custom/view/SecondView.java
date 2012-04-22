@@ -79,7 +79,7 @@ public class SecondView extends ViewImp{
 			pageNumBean = new PageNumBean(resourceInfo.size());	
 		}
 		
-		float zoom = 0.6f;
+		
 		
 		frameLayout = new FrameLayout(this.context);
 		LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(
@@ -87,7 +87,7 @@ public class SecondView extends ViewImp{
 		frameLayout.setLayoutParams(frameLayoutParams);
 		if(!isFirstPage&&!Constant.noPageNum){
 			pageNumView = new PageNumView(this.context,pageNumBean,scanFoldUtils.foldPath);
-			pageNumView.setZoom(zoom);
+			pageNumView.setZoom(Constant.zoom);
 		}
 		
 		
@@ -98,7 +98,7 @@ public class SecondView extends ViewImp{
 		}
 		pageNumBean.setCurPageNum(curPageNum);
 		
-		SecondViewGroup viewGroup = new SecondViewGroup(this.context,resourceInfo,pageNumView,pageNumBean,scanFoldUtils.foldPath,zoom);
+		SecondViewGroup viewGroup = new SecondViewGroup(this.context,resourceInfo,pageNumView,pageNumBean,scanFoldUtils.foldPath,Constant.zoom);
 		frameLayout.addView(viewGroup);
 
 		if(pageNumView!=null){
@@ -109,6 +109,12 @@ public class SecondView extends ViewImp{
 		}
 
 		mLayout.addView(frameLayout);
+		
+		BackButton backButton = new BackButton(context);
+		backButton.setZoom(Constant.zoom);
+		backButton.initView(context);
+		
+		mLayout.addView(backButton);
 		
 	}
 	@Override
@@ -153,7 +159,8 @@ public class SecondView extends ViewImp{
 	
 	public void onDestroy(){
 		logger.equals("onDestroy");
-		
+		SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
+				SharedPreferencesUtils.CURPAGENUM, String.valueOf(0));
 		if(bm!=null&&!bm.isRecycled()){
 			logger.error("onDestroy:"+bm.hashCode());
 			bm.recycle();
@@ -169,6 +176,12 @@ public class SecondView extends ViewImp{
 			}
 		}
 		resourceInfo = null;
+		
+		if(pageNumView==null){
+			BackButton.realease();
+		}else{
+			PageNumView.realease();
+		}
 		super.onDestroy();
 		
 	}

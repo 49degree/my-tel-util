@@ -5,11 +5,16 @@ import java.util.Iterator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.custom.bean.ResourceBean;
+import com.custom.utils.Constant;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.MondifyIndexImageIndex;
@@ -57,18 +62,34 @@ public class IndexView extends ViewImp{
 			if(scanFoldUtils.bgtype==BgType.pic){
 				IndexImagePicButton imageView = new IndexImagePicButton(context,scrollView,resourceBean);
 				imageView.setImageMove(imageCanMove);
-				imageView.setZoom(1.0f);
+				imageView.setZoom(Constant.zoom);
 				imageView.initView();
 				mLayout.addView(imageView);
 				
 			}else{
 				IndexImageSwfButton imageView = new IndexImageSwfButton(context,mLayout,resourceBean);
 				imageView.setImageMove(imageCanMove);
-				imageView.setZoom(1.0f);
+				imageView.setZoom(Constant.zoom);
 				imageView.initView();
 				mLayout.addView(imageView);
 			}
 		}
+		BackButton backButton = new BackButton(context);
+		backButton.setZoom(Constant.zoom);
+		backButton.initView(context);
+		if(scanFoldUtils.bgtype==BgType.pic){
+			LinearLayout.LayoutParams mLayoutParams = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+			backButton.setGravity(Gravity.BOTTOM|Gravity.RIGHT);
+			backButton.setPadding(0, 0, (int)(30*Constant.zoom), (int)(30*Constant.zoom));
+			backButton.setLayoutParams(mLayoutParams);
+			
+			this.addView(backButton);
+		}else{
+			mLayout.addView(backButton);
+		}
+
+		
 	}
 	@Override
 	protected void setXY(ResourceBean resourceBean) {
@@ -134,9 +155,14 @@ public class IndexView extends ViewImp{
 	
 	@Override
 	public void onPause() {
-		SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
-				SharedPreferencesUtils.CURPAGENUM, String.valueOf(0));
+
 		super.onPause();
 
+	}
+	
+	public void onDestroy(){
+		BackButton.realease();
+		super.onDestroy();
+		
 	}
 }

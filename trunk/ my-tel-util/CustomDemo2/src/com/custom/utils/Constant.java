@@ -12,7 +12,7 @@ public class Constant {
 	public static String foldName="";
 	public static String foldName_ex = "";
 	public static String path = "";
-	
+	public final static float zoom = 0.6f;
 	public static String pageNumPicPath="";
 	public final static String bgPicName = "BACKGROUP";
 	public final static String raw_first_name = "INDEX|PLAY";
@@ -36,6 +36,10 @@ public class Constant {
 	public final static String preface = "preface.txt";
 	public final static String foldTilePic = "title.png";
 	public final static String loadSound = "loading.mp3";
+	
+	public final static String backPicName1 = "back1.png";
+	public final static String backPicName2 = "back2.png";
+	
 	public static boolean noPageNum = false;
 	
 	public static String root_fold = "custom";

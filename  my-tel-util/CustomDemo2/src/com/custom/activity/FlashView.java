@@ -74,9 +74,10 @@ public class FlashView extends Activity {
 		mWebView.loadUrl("file://"+this.getFilesDir().getAbsolutePath()+File.separator+Constant.swfView2);
 		
 		backButton = new BackButton(this);
+		if(backButton==null)
+			return;
 		backButton.setZoom(Constant.zoom);
 		backButton.initView(this);
-
 		createView(backButton);
 		
 	}

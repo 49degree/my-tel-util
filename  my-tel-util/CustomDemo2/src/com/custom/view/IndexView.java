@@ -75,6 +75,8 @@ public class IndexView extends ViewImp{
 			}
 		}
 		BackButton backButton = new BackButton(context);
+		if(backButton==null)
+			return;
 		backButton.setZoom(Constant.zoom);
 		backButton.initView(context);
 		if(scanFoldUtils.bgtype==BgType.pic){

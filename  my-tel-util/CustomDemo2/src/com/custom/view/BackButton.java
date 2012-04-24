@@ -43,6 +43,9 @@ public class BackButton extends LinearLayout{
 		}catch(Exception e){
 			
 		}
+		if(backBitMap1==null||backBitMap2==null){
+			return;
+		}
 		
 		back1 = new BitmapDrawable(backBitMap1);
 		back2 = new BitmapDrawable(backBitMap2);

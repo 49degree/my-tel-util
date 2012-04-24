@@ -111,6 +111,9 @@ public class SecondView extends ViewImp{
 		mLayout.addView(frameLayout);
 		
 		BackButton backButton = new BackButton(context);
+		if(backButton==null)
+			return;
+		
 		backButton.setZoom(Constant.zoom);
 		backButton.initView(context);
 		

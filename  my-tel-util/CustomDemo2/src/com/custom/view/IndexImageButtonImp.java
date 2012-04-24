@@ -97,7 +97,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		text.setTextSize((int)(15*zoom));
 		text.setGravity(Gravity.CENTER);
 		if(hasFrame){
-			text.setPadding(0, 0, 0, (int)(5*zoom));
+			text.setPadding(0, (int)(30*zoom), 0, 0);
 		}
 		try{
 			setBackground(false);

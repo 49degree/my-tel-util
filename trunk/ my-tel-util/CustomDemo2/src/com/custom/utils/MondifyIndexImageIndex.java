@@ -34,6 +34,9 @@ public class MondifyIndexImageIndex {
 				if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
 					buf = LoadResources.loadFile(context,filePath, DirType.sd);
 				}
+				if(Constant.getExtSdPath()!=null&&!"".equals(Constant.getExtSdPath())){//SD卡上找
+					buf = LoadResources.loadFile(context, filePath, DirType.extSd);
+				}
 				if(buf==null){//从DATA目录读取
 					buf = LoadResources.loadFile(context, filePath, DirType.file);
 				}

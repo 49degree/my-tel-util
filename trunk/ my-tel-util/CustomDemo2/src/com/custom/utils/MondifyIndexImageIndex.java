@@ -31,12 +31,14 @@ public class MondifyIndexImageIndex {
 			}else{
 				//读取配置文件,首先在SD卡上找,在从data目录找，最后在assets目录找
 				filePath = Constant.path+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
-				if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
-					buf = LoadResources.loadFile(context,filePath, DirType.sd);
-				}
 				if(Constant.getExtSdPath()!=null&&!"".equals(Constant.getExtSdPath())){//SD卡上找
 					buf = LoadResources.loadFile(context, filePath, DirType.extSd);
 				}
+				
+				if(buf==null&&Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
+					buf = LoadResources.loadFile(context,filePath, DirType.sd);
+				}
+
 				if(buf==null){//从DATA目录读取
 					buf = LoadResources.loadFile(context, filePath, DirType.file);
 				}

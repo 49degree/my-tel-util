@@ -147,12 +147,15 @@ public class ScanFoldUtils {
 		try{
 			//读取配置文件,首先在SD卡上找,在从data目录找，最后在assets目录找
 			byte[] buf = null;
-			if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
-				buf = LoadResources.loadFile(context, foldPath+File.separator+Constant.mapFileName, DirType.sd);
-			}
+
 			if(Constant.getExtSdPath()!=null&&!"".equals(Constant.getExtSdPath())){//SD卡上找
 				buf = LoadResources.loadFile(context, foldPath+File.separator+Constant.mapFileName, DirType.extSd);
 			}
+			
+			if(buf==null && Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){//SD卡上找
+				buf = LoadResources.loadFile(context, foldPath+File.separator+Constant.mapFileName, DirType.sd);
+			}
+			
 			if(buf==null){//从DATA目录读取
 				buf = LoadResources.loadFile(context, foldPath+File.separator+Constant.mapFileName, DirType.file);
 			}

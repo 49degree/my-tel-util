@@ -1,5 +1,6 @@
 package com.custom.utils;
 
+import java.io.File;
 import java.util.HashMap;
 
 import android.content.Context;
@@ -79,7 +80,9 @@ public class Constant {
 		try{
 			sdPath = MainApplication.getInstance().getString(R.string.D_ROOT);
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-				extSdPath =  MainApplication.getInstance().getString(R.string.TF_ROOT);;
+				extSdPath =  MainApplication.getInstance().getString(R.string.TF_ROOT);
+				if(!(new File(extSdPath).exists()))
+					extSdPath = null;
 			}
 			Context friendContext = MainApplication.getInstance().createPackageContext(
 					update_package,Context.CONTEXT_IGNORE_SECURITY);	

@@ -68,9 +68,9 @@ public class FlashView extends Activity {
 
 		if(!f.exists()){
 			LoadResources.saveToTempFile(this, Constant.swfView2, DirType.assets,Constant.swfView2,false);
-		}else{
-			logger.error("f.exists()");
 		}
+
+
 		mWebView.loadUrl("file://"+this.getFilesDir().getAbsolutePath()+File.separator+Constant.swfView2);
 		
 		backButton = new BackButton(this);
@@ -152,7 +152,18 @@ public class FlashView extends Activity {
 
 		wm.addView(view, wmParams);
 	}
-
+	boolean first = true;
+	public void onRestart(){
+		if(!first){
+			try{
+				createView(backButton);
+			}catch(Exception e){
+				
+			}
+			first=false;
+		}
+		
+	}
 	public void onResume() {
 		super.onResume();
 		logger.error("onResume");
@@ -168,16 +179,25 @@ public class FlashView extends Activity {
 			mWebView.pauseTimers();
 			callHiddenWebViewMethod("onPause");
 		}
+		try{
+			wm.removeView(backButton);
+		}catch(Exception e){
+			
+		}
 		super.onPause();
 	}	
 	
 	public void onDestroy() {
 		logger.error("onPause");
 		if (mWebView != null) {
-			mWebView.pauseTimers();
 			callHiddenWebViewMethod("onDestroy");
 		}
-		wm.removeView(backButton);
+		try{
+			wm.removeView(backButton);
+		}catch(Exception e){
+			
+		}
+		
 		super.onDestroy();
 	}	
 

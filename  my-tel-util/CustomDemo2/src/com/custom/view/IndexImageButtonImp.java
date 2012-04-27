@@ -181,8 +181,8 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 							raw = raws.get(i);
 							if(raw.getType()==ResourceBean.ResourceType.swf){
 								String tempFile = raw.getRawPath().substring(raw.getRawPath().lastIndexOf(File.separator)+1);
-								LoadResources.saveToTempFile(context, raw.getRawPath(), resourceBean.getDirType(),tempFile);
-								if(i==0){
+								LoadResources.saveToTempFile(context, raw.getRawPath(), raw.getDirType(),tempFile);
+								if(i==0){ 
 //									Intent intent = new Intent(Intent.ACTION_VIEW);
 //									intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 //									intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+tempFile)),"*/*");

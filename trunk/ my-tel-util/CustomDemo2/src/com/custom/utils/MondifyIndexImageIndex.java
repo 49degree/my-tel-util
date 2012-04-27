@@ -23,11 +23,11 @@ public class MondifyIndexImageIndex {
 	private static HashMap<String,int[]> imageIndexs = new HashMap<String,int[]>();
 	public static void initImageIndexs(Context context,boolean imageCanMove){
 		try{
-			String filePath = Constant.path+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
+			String filePath = "";
 			byte[] buf = null;
-			if(imageCanMove){
-				filePath = Constant.getExtSdPath()+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
-				buf = LoadResources.loadFile(context,filePath, DirType.sd);
+			if(imageCanMove){//配置位置时
+				filePath = Constant.foldName+"_"+Constant.imageIndexFileName;
+				buf = LoadResources.loadFile(context,filePath, DirType.extSd,false);
 			}else{
 				//读取配置文件,首先在SD卡上找,在从data目录找，最后在assets目录找
 				filePath = Constant.path+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;

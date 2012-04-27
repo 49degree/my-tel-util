@@ -285,7 +285,7 @@ public class LoadResources {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
+			fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE);
 			logger.error("tempfile:"+tempSavePath);
 			//读取数据
 			if(dirType==DirType.assets){
@@ -295,6 +295,8 @@ public class LoadResources {
 				in= new FileInputStream(Constant.getUpdateDataPath()+File.separator+filePath);
 			}else if(dirType==DirType.sd&&Constant.getSdPath()!=null){
 				in= new FileInputStream(Constant.getSdPath()+File.separator+filePath);
+			}else if(dirType==DirType.extSd&&Constant.getExtSdPath()!=null){
+				in= new FileInputStream(Constant.getExtSdPath()+File.separator+filePath);
 			}
 			if(in==null){
 				//logger.error("in==null:");

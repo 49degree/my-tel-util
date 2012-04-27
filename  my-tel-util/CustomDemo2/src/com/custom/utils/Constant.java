@@ -79,7 +79,7 @@ public class Constant {
 		try{
 			sdPath = MainApplication.getInstance().getString(R.string.D_ROOT);
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-				extSdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+				extSdPath =  MainApplication.getInstance().getString(R.string.TF_ROOT);;
 			}
 			Context friendContext = MainApplication.getInstance().createPackageContext(
 					update_package,Context.CONTEXT_IGNORE_SECURITY);	

@@ -26,7 +26,7 @@ public class MondifyIndexImageIndex {
 			String filePath = Constant.path+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
 			byte[] buf = null;
 			if(imageCanMove){
-				filePath = Environment.getExternalStorageDirectory()+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
+				filePath = Constant.getExtSdPath()+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
 				buf = LoadResources.loadFile(context,filePath, DirType.sd);
 			}else{
 				//读取配置文件,首先在SD卡上找,在从data目录找，最后在assets目录找
@@ -71,7 +71,7 @@ public class MondifyIndexImageIndex {
 	}
 	public static void modifyImageIndexs(Context context){
 		try{
-			String filePath = Environment.getExternalStorageDirectory()+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
+			String filePath = Constant.getExtSdPath()+File.separator+Constant.foldName+"_"+Constant.imageIndexFileName;
 			//清空文件
 			RandomAccessFile   raf   =   new   RandomAccessFile(filePath,   "rw"); 
 			raf.setLength(0); 

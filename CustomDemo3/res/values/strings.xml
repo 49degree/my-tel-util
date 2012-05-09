@@ -5,4 +5,5 @@
     <string name="QUERY_URL">http://www.gainseed.com/update/updateinfo.htm</string>
     <string name="INSTALLED_URL">http://www.gainseed.com/update/</string>
     <string name="D_ROOT">mnt/sdcard</string>
+    <string name="TF_ROOT">mnt/sdcard</string>
 </resources>

@@ -156,7 +156,7 @@ public class SecondViewGroup extends LinearLayout {
 				secondViewPage.addView(text);
 				secondViewPage.setVerticalScrollBarEnabled(false);
 				secondViewPage.setHorizontalScrollBarEnabled(false);
-				secondViewPage.setPadding(200,250, 200, 0);
+				secondViewPage.setPadding(80,200, 120, 0);
 				try{
 					text.setText(new String(prefaceBuffer,"GBK"));
 				}catch(Exception e){

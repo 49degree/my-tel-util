@@ -52,7 +52,7 @@ public class Constant {
 		INSTALLED_URL = MainApplication.getInstance().getString(R.string.INSTALLED_URL);
 		sdPath = MainApplication.getInstance().getString(R.string.D_ROOT);
 		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-			extSdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+			extSdPath =  MainApplication.getInstance().getString(R.string.TF_ROOT);;
 		}
 		dataPath =  MainApplication.getInstance().getFilesDir().getAbsolutePath();
 		logger.error("sdPath:"+sdPath);

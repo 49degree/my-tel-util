@@ -199,15 +199,15 @@ public abstract class ViewImp extends FrameLayout{
 			try {
 
 				
-				String loading = "loading.mp3";
+				//String loading = "loading.mp3";
 				LoadResources.saveToTempFile(context, LoadResources.loadPrefaceFile(
-						context, foldPath + File.separator+ Constant.loadSound), loading);
-				byte[] datas = LoadResources.loadLocalFile(context, loading, DirType.file);
+						context, foldPath + File.separator+ Constant.loadSound), Constant.loadSound);
+				byte[] datas = LoadResources.loadLocalFile(context, Constant.loadSound, DirType.file);
 				if(datas!=null){
 					mMediaPlayer = new MediaPlayer();
 					mMediaPlayer.reset();// 恢复到未初始化的状态
 					mMediaPlayer = MediaPlayer.create(context, Uri
-							.fromFile(new File(context.getFilesDir().getAbsolutePath()+ File.separator + loading)));// 读取音频
+							.fromFile(new File(context.getFilesDir().getAbsolutePath()+ File.separator + Constant.loadSound)));// 读取音频
 					try {
 						mMediaPlayer.prepare(); // 准备
 					} catch (IllegalStateException e) {

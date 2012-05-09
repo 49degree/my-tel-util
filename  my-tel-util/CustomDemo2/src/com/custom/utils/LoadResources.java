@@ -286,7 +286,6 @@ public class LoadResources {
 				e.printStackTrace();
 			}
 			fos = context.openFileOutput(tempSavePath, Context.MODE_WORLD_READABLE);
-			logger.error("tempfile:"+tempSavePath);
 			//读取数据
 			if(dirType==DirType.assets){
 				AssetManager assetManager = context.getAssets();

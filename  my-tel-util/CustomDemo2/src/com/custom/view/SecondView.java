@@ -59,6 +59,7 @@ public class SecondView extends ViewImp{
 							return object1.getKey().compareTo(object2.getKey());
 						}
 					}); 
+			
 		}
 
 //		Entry<String,ResourceBean> data=  resourceInfo.get(0);

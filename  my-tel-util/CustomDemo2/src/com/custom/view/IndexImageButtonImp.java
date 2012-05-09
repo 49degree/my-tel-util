@@ -94,10 +94,11 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		text.setText(resourceBean.getName());
 		LinearLayout.LayoutParams tlayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
 		text.setLayoutParams(tlayout);
-		text.setTextSize((int)(15*zoom));
+		text.setTextSize((int)(18*zoom));
 		text.setGravity(Gravity.CENTER);
 		if(hasFrame){
-			text.setPadding(0, (int)(30*zoom), 0, 0);
+			text.setTextSize((int)(24*zoom));
+			text.setPadding(0, (int)(20*zoom), 0, 0);
 		}
 		try{
 			setBackground(false);
@@ -122,7 +123,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		AbsoluteLayout.LayoutParams layout = null;
 		if(frame1==null){
 			layout = new AbsoluteLayout.LayoutParams(
-					bmWidth+(int)(20*zoom), bmHeight+(int)(30*zoom), resourceBean.getX(), resourceBean.getY());
+					bmWidth+(int)(20*zoom), bmHeight+(int)(40*zoom), resourceBean.getX(), resourceBean.getY());
 		}else{
 			layout = new AbsoluteLayout.LayoutParams(
 					(int)(frame1.getBitmap().getWidth()*zoom), (int)(frame1.getBitmap().getHeight()*zoom), resourceBean.getX(), resourceBean.getY());
@@ -161,26 +162,51 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		if(type==ResourceBean.ResourceType.apk){
 			fileName = "temp1.apk";
 			intentType = "application/vnd.android.package-archive";
-		}else if(type==ResourceBean.ResourceType.swf||type==ResourceBean.ResourceType.flv){
+		}else if(type==ResourceBean.ResourceType.swf){
 			fileName = "temp1.swf";
 			intentType = "*/*";
 			
 			try{
 				new Thread(){
 					public void run(){
-						//删除临时文件
-//						String[] fileName = context.fileList();
-//						for(int i=0;i<fileName.length;i++){
-//							if(Constant.backGroundSwfName.equals(fileName[i])||fileName[i].indexOf("temp")>-1)
-//								continue;
-//							context.deleteFile(fileName[i]);
-//						}
-						//复制其他flash文件
+						//播放第一个文件
 						ResourceBean.ResourceRaws  raw = null;
-						for(int i=0;i<raws.size();i++){
+						raw = raws.get(0);
+						String tempFile = null;
+						if(raw.getType()==ResourceBean.ResourceType.swf){
+							tempFile = raw.getRawPath().substring(raw.getRawPath().lastIndexOf(File.separator)+1);
+							LoadResources.saveToTempFile(context, raw.getRawPath(), raw.getDirType(),tempFile);
+							
+//							Intent intent = new Intent(Intent.ACTION_VIEW);
+//							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+//							intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+tempFile)),"*/*");
+//							context.startActivity(intent);
+							
+							Intent intent = new Intent(context,FlashView.class);
+							Bundle bd = new Bundle();
+							bd.putString(Constant.foldPath, tempFile);
+							intent.putExtras(bd);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+							context.startActivity(intent);	
+						}
+						
+						
+						//删除临时文件
+						String[] fileName = context.fileList();
+						for(int i=0;i<fileName.length;i++){
+							if(tempFile.equals(fileName[i])||
+									Constant.backGroundSwfName.equals(fileName[i])||
+									fileName[i].indexOf(".swf")<1||
+									fileName[i].indexOf(".SWF")<1)
+								continue;
+							context.deleteFile(fileName[i]);
+						}
+						//复制其他flash文件
+						
+						for(int i=1;i<raws.size();i++){
 							raw = raws.get(i);
 							if(raw.getType()==ResourceBean.ResourceType.swf){
-								String tempFile = raw.getRawPath().substring(raw.getRawPath().lastIndexOf(File.separator)+1);
+								tempFile = raw.getRawPath().substring(raw.getRawPath().lastIndexOf(File.separator)+1);
 								LoadResources.saveToTempFile(context, raw.getRawPath(), raw.getDirType(),tempFile);
 								if(i==0){ 
 //									Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -228,6 +254,12 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		}else if(type==ResourceBean.ResourceType.doc){
 			fileName = "temp1.doc";
 			intentType = "application/msword";
+		}else if(type==ResourceBean.ResourceType.flv){
+			fileName = "temp1.flv";
+			intentType = "*/*";
+		}else{
+			fileName = "temp1"+path.substring(path.lastIndexOf("."));
+			intentType = "*/*";
 		}
 		
 		try{

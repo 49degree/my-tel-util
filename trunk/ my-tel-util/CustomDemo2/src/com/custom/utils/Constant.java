@@ -84,9 +84,13 @@ public class Constant {
 				if(!(new File(extSdPath).exists()))
 					extSdPath = null;
 			}
+			/**
+			 * 使用本地目录
 			Context friendContext = MainApplication.getInstance().createPackageContext(
 					update_package,Context.CONTEXT_IGNORE_SECURITY);	
 			updateDataPath =  friendContext.getFilesDir().getAbsolutePath();
+			*/
+			updateDataPath =  MainApplication.getInstance().getFilesDir().getAbsolutePath();
 		}catch(Exception e){
 			
 		}

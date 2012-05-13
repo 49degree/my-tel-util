@@ -247,6 +247,9 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 			bd.putString(Constant.viewClass, Constant.secondViewClass);
 			intent.putExtras(bd);
 			context.startActivity(intent);
+			if(progress.isShowing()){
+				progress.dismiss();
+			}
 			return ;
 		}else if(type==ResourceBean.ResourceType.pdf){
 			fileName = "temp1.pdf";
@@ -278,6 +281,9 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 					String packageName = LoadResources.getInstalledPackName(context, context.getFilesDir().getAbsolutePath()+File.separator+fileName);
 					if(packageName!=null){//已经安装,则打开该activity
 						LoadResources.startApp(context, packageName);
+						if(progress.isShowing()){
+							progress.dismiss();
+						}
 						return ;
 					}
 				}

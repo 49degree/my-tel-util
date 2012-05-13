@@ -142,6 +142,8 @@ public abstract class ViewImp extends FrameLayout{
 			
 		}
 		isFistStart = false;
+		
+		logger.error("isFistStart = false;");
 	}
 	
 	public void onPause() {
@@ -151,7 +153,12 @@ public abstract class ViewImp extends FrameLayout{
 			callHiddenWebViewMethod("onPause");
 		}
 		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
-			wm.removeView(mLayout);
+			try {
+				wm.removeView(mLayout);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	    if(mMediaPlayer!=null&&mMediaPlayer.isPlaying())
 	    	mMediaPlayer.stop();
@@ -159,8 +166,6 @@ public abstract class ViewImp extends FrameLayout{
 	}
 	public void onStop(){
 		logger.error("onStop");
-
-
 	}
 	
 	public void onDestroy(){

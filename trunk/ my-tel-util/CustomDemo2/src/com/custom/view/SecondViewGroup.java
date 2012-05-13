@@ -211,6 +211,9 @@ public class SecondViewGroup extends LinearLayout {
         }
     }
     
+    private int oldStart = -1;
+    private int oldEnd = -1;
+    
 	public class SecondViewPage extends ViewGroup{
 		private Scroller scroller;
 		
@@ -225,10 +228,29 @@ public class SecondViewGroup extends LinearLayout {
 		public SecondViewPage(Context context,ArrayList<Entry<String,ResourceBean>> resourceInfo,PageNumView pageNumView) {
 			super(context);
 			this.context = context;
-			
-
+			if(oldStart>-1){
+				realeasOldBitmap();
+			}
 			initView();
 			createIndexButton();
+
+			
+		}
+		
+		/**
+		 * 释放上次的图片资源
+		 */
+		private void realeasOldBitmap(){
+			if(resourceInfo!=null){
+				for(int i=oldStart;i<=oldEnd&&i<resourceInfo.size();i++){
+					ResourceBean resourceBean = resourceInfo.get(i).getValue();
+					if(resourceBean.getBm()!=null&&!resourceBean.getBm().isRecycled()){
+						//logger.error("+++++++++++onDestroy resourceBean:"+resourceBean.getBm().hashCode());
+						resourceBean.getBm().recycle();
+						resourceBean.setBm(null);
+					}
+				}
+			}
 		}
 
 		private void initView() {
@@ -405,6 +427,7 @@ public class SecondViewGroup extends LinearLayout {
 		private void snapToDestination() {
 			scrollToScreen((getScrollX() + (getWidth() / 2)) / getWidth());
 		}
+		
 		protected void createIndexButton() {
 			logger.error("createIndexButton++++++++++++++++++++++");
 			//this.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT) );
@@ -416,6 +439,10 @@ public class SecondViewGroup extends LinearLayout {
 				this.addView(pageLayout);
 				int[] index = pageNumBean.getButtonIndexbyPageNum(pageNum);
 				//logger.error("index:"+Arrays.toString(index)+":"+pageNumBean.getButtonCount());
+				if(pageNum==pageNumBean.getStartPageNum())
+					oldStart = index[0];
+				if(pageNum==pageNumBean.getEndPageNum())
+					oldEnd = index[1];
 				
 				for(int i=index[0];i<=index[1];i++){
 					ResourceBean resourceBean = resourceInfo.get(i).getValue();

@@ -416,6 +416,8 @@ public class ScanFoldUtils {
 					type = ResourceBean.ResourceType.xls;
 				}else if("DOC".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
 					type = ResourceBean.ResourceType.doc;
+				}else if("MP3".equals(lists[i].substring(lists[i].indexOf(".")+1).toUpperCase())){
+					type = ResourceBean.ResourceType.mp3;
 				}
 				
 				if(type!=null){

@@ -163,7 +163,11 @@ public class IndexView extends ViewImp{
 	}
 	
 	public void onDestroy(){
+
+		PageNumView.realease();
 		BackButton.realease();
+
+		
 		super.onDestroy();
 		
 	}

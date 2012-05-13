@@ -277,6 +277,8 @@ public class PageNumView extends AbsoluteLayout{
 				
 				
 				imageView.setText(String.valueOf(i+1));
+				imageView.getPaint().setFakeBoldText(true);
+
 				imageView.setGravity(Gravity.CENTER);
 				
 				imageView.setLayoutParams(layout);

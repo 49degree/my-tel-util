@@ -170,7 +170,6 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 			intentType = "application/vnd.android.package-archive";
 		}else if(type==ResourceBean.ResourceType.swf){
 			fileName = "temp1.swf";
-			intentType = "*/*";
 			
 			try{
 				new Thread(){
@@ -194,6 +193,9 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 							intent.putExtras(bd);
 							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 							context.startActivity(intent);	
+							if(progress.isShowing()){
+								progress.dismiss();
+							}
 						}
 						
 						
@@ -214,24 +216,9 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 							if(raw.getType()==ResourceBean.ResourceType.swf){
 								tempFile = raw.getRawPath().substring(raw.getRawPath().lastIndexOf(File.separator)+1);
 								LoadResources.saveToTempFile(context, raw.getRawPath(), raw.getDirType(),tempFile);
-								if(i==0){ 
-//									Intent intent = new Intent(Intent.ACTION_VIEW);
-//									intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-//									intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+tempFile)),"*/*");
-//									context.startActivity(intent);
-									
-									Intent intent = new Intent(context,FlashView.class);
-									Bundle bd = new Bundle();
-									bd.putString(Constant.foldPath, tempFile);
-									intent.putExtras(bd);
-									intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-									context.startActivity(intent);									
-								}
 							}
 						}
-						if(progress.isShowing()){
-							progress.dismiss();
-						}
+
 					}
 				}.start();
 				
@@ -268,7 +255,13 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 			intentType = "application/msword";
 		}else if(type==ResourceBean.ResourceType.flv){
 			fileName = "temp1.flv";
-			intentType = "*/*";
+			intentType = "video/*";
+		}else if(type==ResourceBean.ResourceType.pic){
+			fileName = "temp1.jpg";
+			intentType = "image/*";
+		}else if(type==ResourceBean.ResourceType.mp3){
+			fileName = "temp1.mp3";
+			intentType = "audio/*";			
 		}else{
 			fileName = "temp1"+path.substring(path.lastIndexOf("."));
 			intentType = "*/*";
@@ -288,6 +281,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 					}
 				}
 				intent = new Intent(Intent.ACTION_VIEW);
+				
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 				intent.setDataAndType(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath()+File.separator+fileName)),intentType);
 				context.startActivity(intent);

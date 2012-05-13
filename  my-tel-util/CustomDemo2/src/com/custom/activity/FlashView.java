@@ -177,6 +177,12 @@ public class FlashView extends Activity {
 	
 	public void onStop(){
 		try{
+			mWebView.stopLoading();
+		}catch(Exception e){
+			
+		}
+		
+		try{
 			wm.removeView(backButton);
 		}catch(Exception e){
 			
@@ -185,6 +191,13 @@ public class FlashView extends Activity {
 	}
 	
 	public void onDestroy() {
+		try{
+			mWebView.destroyDrawingCache();
+			mWebView.destroy();
+		}catch(Exception e){
+			
+		}
+		
 		super.onDestroy();
 	}	
 

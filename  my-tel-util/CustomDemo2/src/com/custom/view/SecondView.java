@@ -142,6 +142,7 @@ public class SecondView extends ViewImp{
 	
 	@Override
 	public void onStop() {
+		logger.error("onStop");
 		if(this.pageNumBean!=null){
 			SharedPreferencesUtils.setConfigString(SharedPreferencesUtils.COMFIG_INFO, 
 					SharedPreferencesUtils.CURPAGENUM, String.valueOf(this.pageNumBean.getCurPageNum()));	
@@ -181,11 +182,7 @@ public class SecondView extends ViewImp{
 		}
 		resourceInfo = null;
 		
-		if(pageNumView==null){
-			BackButton.realease();
-		}else{
-			PageNumView.realease();
-		}
+
 		super.onDestroy();
 		
 	}

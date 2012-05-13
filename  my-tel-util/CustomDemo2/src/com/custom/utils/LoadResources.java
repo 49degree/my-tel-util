@@ -430,10 +430,7 @@ public class LoadResources {
 	public static int queryDownedFold(Context context,String foldPath){
 		ScanFoldUtils scan = new ScanFoldUtils(context,foldPath);
 		scan.queryRes();
-		int count = 0;
-		if(!Constant.path.equals(foldPath)){
-			count = scan.resourceInfo.size();
-		}
+		int count = scan.resourceInfo.size();
 		
 		Iterator it = scan.resourceInfo.keySet().iterator();
 		while(it.hasNext()){
@@ -441,6 +438,7 @@ public class LoadResources {
 			if(res.getRaws()!=null&&res.getRaws().size()>0&&
 					res.getRaws().get(0).getType()==ResourceType.fold){
 				//logger.error("path:"+res.getRaws().get(0).getRawPath());
+				count--;
 				count +=queryDownedFold(context,res.getRaws().get(0).getRawPath());
 			}
 		}

@@ -8,7 +8,7 @@ import com.custom.utils.Constant.DirType;
 
 public class ResourceBean {
 	public enum ResourceType{
-		fold,apk,swf,pic,txt,pdf,flv,doc,xls,ppt
+		fold,apk,swf,pic,txt,pdf,flv,doc,xls,ppt,mp3
 	}
 	public static class ResourceRaws{
 		String rawPath = null;

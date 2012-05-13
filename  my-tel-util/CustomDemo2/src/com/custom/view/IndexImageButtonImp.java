@@ -4,12 +4,12 @@ package com.custom.view;
 import java.io.File;
 import java.util.List;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -67,9 +67,13 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 				if(onClick){
 					this.setBackgroundDrawable(frame2);
 					this.setPadding(0, (int)(25*zoom), 0, 0);
+					if(text!=null)
+						text.setPadding(0, (int)(35*zoom), 0, 0);
 				}else{
 					this.setBackgroundDrawable(frame1);
 					this.setPadding(0, (int)(20*zoom), 0, 0);
+					if(text!=null)
+						text.setPadding(0, (int)(25*zoom), 0, 0);
 				}
 			}else{
 				if(onClick){
@@ -98,7 +102,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		text.setGravity(Gravity.CENTER);
 		if(hasFrame){
 			text.setTextSize((int)(24*zoom));
-			text.setPadding(0, (int)(20*zoom), 0, 0);
+			text.setPadding(0, (int)(30*zoom), 0, 0);
 		}
 		try{
 			setBackground(false);
@@ -133,9 +137,11 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		
 	}
 	
+	
+	ProgressDialog progress = null;
 	@Override
 	public void onClick(View v){
-		
+		progress = ProgressDialog.show(context, "请稍候", "正在打开文件....");
 		String fileName = null;
 		Intent intent = null;
 		
@@ -223,6 +229,9 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 								}
 							}
 						}
+						if(progress.isShowing()){
+							progress.dismiss();
+						}
 					}
 				}.start();
 				
@@ -283,7 +292,9 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 			e.printStackTrace();
 		}
 		
-		
+		if(progress.isShowing()){
+			progress.dismiss();
+		}
 
 	}
 	

@@ -153,6 +153,7 @@ public class SecondViewGroup extends LinearLayout {
 				TextView text = new TextView(context);
 				text.setTextColor(0xFF8B0000);
 				text.setLayoutParams(pageLayoutParams);
+				text.setTextSize(40*zoom);
 				secondViewPage.addView(text);
 				secondViewPage.setVerticalScrollBarEnabled(false);
 				secondViewPage.setHorizontalScrollBarEnabled(false);
@@ -162,17 +163,24 @@ public class SecondViewGroup extends LinearLayout {
 				}catch(Exception e){
 					e.printStackTrace();
 				}
+				
 				secondViewPage.setOnTouchListener(new OnTouchListener(){
+					boolean hasTouch = false;
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
 						// TODO Auto-generated method stub
-						removeView(secondViewPage);
-		        		secondViewPage = new SecondViewPage(context,resourceInfo,pageNumView);
-		        		addView(secondViewPage);
-		        		if(pageNumView!=null){
-		        			pageNumView.setFirst(false);
-		            		pageNumView.initPageNumView();
-		        		}
+						logger.error("secondViewPage onTouch+++++++++++++++++");
+						if(!hasTouch){
+							hasTouch = true;
+							removeView(secondViewPage);
+			        		secondViewPage = new SecondViewPage(context,resourceInfo,pageNumView);
+			        		addView(secondViewPage);
+			        		if(pageNumView!=null){
+			        			pageNumView.setFirst(false);
+			            		pageNumView.initPageNumView();
+			        		}
+						}
+	
 						return false;
 					}
 				});
@@ -398,6 +406,7 @@ public class SecondViewGroup extends LinearLayout {
 			scrollToScreen((getScrollX() + (getWidth() / 2)) / getWidth());
 		}
 		protected void createIndexButton() {
+			logger.error("createIndexButton++++++++++++++++++++++");
 			//this.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT) );
 			for(int pageNum=pageNumBean.getStartPageNum();pageNum<=pageNumBean.getEndPageNum();pageNum++){
 				LinearLayout.LayoutParams pageLayoutParams = new LinearLayout.LayoutParams(

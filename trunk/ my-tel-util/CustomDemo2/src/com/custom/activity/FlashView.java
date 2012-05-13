@@ -1,7 +1,6 @@
 package com.custom.activity;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import android.app.Activity;
@@ -13,7 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -44,7 +43,8 @@ public class FlashView extends Activity {
 	    mWebView.setHorizontalScrollBarEnabled(false);
 	    mWebView.setVerticalScrollBarEnabled(false);
 		mWebView.getSettings().setJavaScriptEnabled(true);
-		mWebView.getSettings().setPluginsEnabled(true);
+		//mWebView.getSettings().setPluginsEnabled(true);
+		mWebView.getSettings().setPluginState(WebSettings.PluginState.ON);//
 		
 		Bundle bundle = this.getIntent().getExtras();
 		final String foldPath = bundle.getString(Constant.foldPath);
@@ -52,7 +52,6 @@ public class FlashView extends Activity {
 		mWebView.setWebViewClient(new WebViewClient() {
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				view.loadUrl(url);
-				Log.e("shouldOverrideUrlLoading", "shouldOverrideUrlLoading");
 				return true;
 			}
 			@Override
@@ -60,6 +59,7 @@ public class FlashView extends Activity {
 				try {
 					mWebView.loadUrl("javascript:showgame('"+foldPath+"')");
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		});
@@ -69,10 +69,7 @@ public class FlashView extends Activity {
 		if(!f.exists()){
 			LoadResources.saveToTempFile(this, Constant.swfView2, DirType.assets,Constant.swfView2,false);
 		}
-
-
 		mWebView.loadUrl("file://"+this.getFilesDir().getAbsolutePath()+File.separator+Constant.swfView2);
-		
 		backButton = new BackButton(this);
 		if(backButton==null)
 			return;
@@ -100,18 +97,8 @@ public class FlashView extends Activity {
 				Method method = WebView.class.getMethod(name);
 				method.invoke(mWebView); // 调用
 
-			} catch (NoSuchMethodException e) { // 没有这样的方法
-
-				Log.i("No such method: " + name, e.toString());
-
-			} catch (IllegalAccessException e) { // 非法访问
-
-				Log.i("Illegal Access: " + name, e.toString());
-
-			} catch (InvocationTargetException e) { // 调用的目标异常
-
-				Log.d("Invocation Target Exception: " + name, e.toString());
-
+			}catch(Exception e){ 
+				e.printStackTrace();
 			}
 
 		}
@@ -154,6 +141,7 @@ public class FlashView extends Activity {
 	}
 	boolean first = true;
 	public void onRestart(){
+		super.onRestart();
 		if(!first){
 			try{
 				createView(backButton);
@@ -187,17 +175,16 @@ public class FlashView extends Activity {
 		super.onPause();
 	}	
 	
-	public void onDestroy() {
-		logger.error("onPause");
-		if (mWebView != null) {
-			callHiddenWebViewMethod("onDestroy");
-		}
+	public void onStop(){
 		try{
 			wm.removeView(backButton);
 		}catch(Exception e){
 			
 		}
-		
+		super.onStop();
+	}
+	
+	public void onDestroy() {
 		super.onDestroy();
 	}	
 

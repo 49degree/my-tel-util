@@ -2,7 +2,7 @@
 <resources>
 
     <string name="hello">Hello World, TabViewActivity!</string>
-    <string name="app_name">TabView</string>
+    <string name="app_name">TabView_test</string>
     <string name="header_back">返回</string>
      <string name="header_bussback">反馈</string>
     <string name="title_mine">我的</string>

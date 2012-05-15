@@ -6,6 +6,6 @@
 		android:layout_width="fill_parent" android:layout_height="fill_parent" android:gravity="center">
 		<Button android:id="@+id/btn_install" android:layout_gravity="center"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="安装" android:textSize="24sp" android:layout_marginLeft="25px"/>
+			android:text="运行" android:textSize="24sp" android:layout_marginLeft="25px"/>
 	</LinearLayout>
 </LinearLayout>

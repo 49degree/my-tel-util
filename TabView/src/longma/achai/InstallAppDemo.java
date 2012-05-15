@@ -71,8 +71,27 @@ public class InstallAppDemo extends Activity implements OnClickListener{
     public void onDestroy(){
     	stop = true;
     	Log.e(TAG, "onDestroy");
+    	if(mKeyguardLock!=null){
+			try{
+				mKeyguardLock.reenableKeyguard();
+			}catch(Exception e){
+				
+			}
+    		
+    	}
+    	if(wl!=null){
+    		
+			try{
+				wl.release();
+			}catch(Exception e){
+				
+			}
+    	}
     	super.onDestroy();
     }
+    
+    PowerManager.WakeLock wl = null;
+    KeyguardLock mKeyguardLock = null;
     int times = 0;
     boolean stop = false;
     @Override
@@ -83,10 +102,10 @@ public class InstallAppDemo extends Activity implements OnClickListener{
     		
     		//打开屏幕并解锁
     		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE); 
-    		final PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | 
+    		wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | 
     				PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
     		KeyguardManager mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-    		final KeyguardLock mKeyguardLock  = mKeyguardManager.newKeyguardLock("");  
+    	    mKeyguardLock  = mKeyguardManager.newKeyguardLock("");  
     		
 			WindowManager manage = getWindowManager();
 			Display display = manage.getDefaultDisplay();
@@ -128,6 +147,7 @@ public class InstallAppDemo extends Activity implements OnClickListener{
 		    			}
 		    		}
 		    		
+		    		mKeyguardLock.reenableKeyguard();
 		    		wl.release();
 				}
 			};

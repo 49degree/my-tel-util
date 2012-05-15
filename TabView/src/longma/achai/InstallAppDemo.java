@@ -1,18 +1,16 @@
 package longma.achai;
 
-import jackpal.androidterm.Exec;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
 import longma.achai.test.R;
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.app.KeyguardManager;
+import android.app.KeyguardManager.KeyguardLock;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,9 +22,14 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.PowerManager;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 
 public class InstallAppDemo extends Activity implements OnClickListener{
@@ -61,7 +64,6 @@ public class InstallAppDemo extends Activity implements OnClickListener{
                 }
 
             };
-
             t.start();
 
     }
@@ -71,43 +73,41 @@ public class InstallAppDemo extends Activity implements OnClickListener{
     	Log.e(TAG, "onDestroy");
     	super.onDestroy();
     }
-
+    int times = 0;
     boolean stop = false;
     @Override
     public void onClick(View v){
     	switch(v.getId()){
     	case R.id.btn_install:
-
-			//Context friendContext = this.createPackageContext("",Context.CONTEXT_IGNORE_SECURITY);
+    		startApp(this,"com.testGrid");
     		
-//    		startInstrumentation(new ComponentName("longma.achai.test", "android.test.InstrumentationTestRunner"), null, null);
-    		//startApp(this,"longma.achai");
-//    		Intent i = new Intent();
-//    		i.setClassName(this.getPackageName(), "longma.achai.TabViewActivity");
-//    		this.startActivity(i);
-//			try{
-//				Thread.sleep(500);
-//			}catch(Exception e){
-//				
-//			}
-			
-    		/*
+    		//打开屏幕并解锁
+    		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE); 
+    		final PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | 
+    				PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+    		KeyguardManager mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+    		final KeyguardLock mKeyguardLock  = mKeyguardManager.newKeyguardLock("");  
+    		
 			WindowManager manage = getWindowManager();
 			Display display = manage.getDefaultDisplay();
 			final int screenHeight = display.getHeight();
 			final int screenWidth = display.getWidth();
-			
-			Log.e(TAG, "Instrumentation:"+screenWidth+":"+screenHeight );
 			Thread t = new Thread(){
 				public void run(){
-					int times = 0;
-		    		while (times++ < 1000&&!stop) {
-		    			
+					times = 0;
+		    		while (times++ < 50&&!stop) {
 		        		handler.post(new Runnable() {
 		        			public void run() {
+		    
+		        				
 		    					float x = (float)Math.random() * screenWidth;
 		    					float y = (float)Math.random() * screenHeight;
-		    					Log.e(TAG, "Instrumentation:"+x+":"+y );
+		    					Log.e(TAG, times+"Instrumentation:"+x+":"+y );
+		    					
+		        				if(times>10&&times<20){
+		        					wl.acquire();
+		        					mKeyguardLock.disableKeyguard();
+		        				}
 		    					if(y<30)
 		    						y+=30;
 		    					try{
@@ -127,31 +127,13 @@ public class InstallAppDemo extends Activity implements OnClickListener{
 		    				
 		    			}
 		    		}
+		    		
+		    		wl.release();
 				}
 			};
 			t.setDaemon(true);
 			t.start();
-			*/
 
-    		try {
-    			Thread.sleep(1000);
-				/* Missing read/write permission, trying to chmod the file */
-				//Process su;
-				String cmd = "monkey -p longma.achai -v --pct-touch 100 --throttle 300 50";
-//				cmd="dalvikvm -cp /sdcard/Foo.jar Foo";
-//				do_exec(cmd);
-			
-				cmd = "export CLASSPATH=/system/framework/monkey.jar";
-				do_exec(cmd);
-				Thread.sleep(1000);
-				cmd = "app_process /system/bin com.android.commands.monkey.Monkey -p longma.achai -v --pct-touch 100 --throttle 300 50";
-				do_exec(cmd);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				//throw new SecurityException();
-			}
-    		//new Thread(new TestRunner(this)).start();
     		break;
     	default:
     		break;
@@ -159,12 +141,40 @@ public class InstallAppDemo extends Activity implements OnClickListener{
     	
     }
     
+    
 	/**
 	 * 启动应用
 	 * @param context
 	 * @param packageName
 	 */
-	public static  void startApp(Context context, String packageName) {
+	public void startApp(Context context, String packageName) {
+		try {
+			/*
+			 * 都知道，Context中有一个startActivity方法，
+			 * Activity继承自Context，重载了startActivity方法。
+			 * 如果使用Activity的startActivity方法，不会有任何限制，
+			 * 而如果使用Context的startActivity方法的话，就需要开启一个新的task，
+			 * 遇到上面那个异常的，都是因为使用了Context的startActivity方法。解决办法是，加一个flag。 
+			 */
+			PackageManager packageManager = context.getPackageManager();
+			Intent intent = new Intent();
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+			intent = packageManager
+					.getLaunchIntentForPackage(packageName);
+			context.startActivity(intent);
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 启动应用
+	 * @param context
+	 * @param packageName
+	 */
+	public static  void startApp1(Context context, String packageName) {
 		try {
 			PackageManager pm = context.getPackageManager();
 			PackageInfo pi = pm.getPackageInfo(packageName, 0);

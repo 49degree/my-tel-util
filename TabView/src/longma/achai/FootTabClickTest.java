@@ -2,21 +2,34 @@ package longma.achai;
 
 import java.util.ArrayList;
 
-import longma.achai.TabViewActivity;
-
+import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.RadioButton;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class FootTabClickTest extends
-		ActivityInstrumentationTestCase2<TabViewActivity> {
-	// 1,创建一个自动化测试对象
+
+@SuppressWarnings("rawtypes")
+public class FootTabClickTest extends ActivityInstrumentationTestCase2 {
+	public Solo solo;
+	public Activity activity;
+	private static Class<?> launchActivityClass;
 	private Solo tabSolo;
- 
+	static {
+		try {
+			launchActivityClass = Class.forName("com.swftest.TestActivity");
+		} catch (ClassNotFoundException e) {
+
+			throw new RuntimeException(e);
+
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
 	public FootTabClickTest() {
-		super("longma.achai", TabViewActivity.class);
+		super("com.swftest", launchActivityClass);
 	}
 
 	@Override
@@ -47,9 +60,16 @@ public class FootTabClickTest extends
 	}
 
 	@Override
-	protected void tearDown() throws Exception {
-		// TODO Auto-generated method stub
+	public void tearDown() throws Exception {
+		try {
+			this.solo.finishOpenedActivities();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		this.activity.finish();
+
 		super.tearDown();
+
 	}
 
 }

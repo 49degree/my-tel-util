@@ -1,0 +1,73 @@
+1、hibernate中使用条件修改删除语句会清空相关对象的二级缓存
+2、Session的clear方法后二级缓存中的对象不会清除，但是会导致当前Session对象关联的缓存中的对象在二级缓存中也无法命中，创建新的Session对象可以命中二级缓存中原有的对象
+   Session的close后则对象在二级缓存中可以命中
+3、save提交前只会加入一级缓存，commit以后才会加入二级缓存，并且commit前是不会做主键检查的
+4、使用对象和hql的区别
+   使用对象update()后commit前不会执行相关sql语句，只会在hibernate一级缓存中更新数据,commit后执行语句并更新到数据实体,并更新二级缓存数据（删除原对象，put新对象），而flush后则会删除二级缓存中原对象，commit后才对在二级缓存中保存对象
+   使用hql调excuteUpdate()后commit前执行相关sql语句，只会在数据库服务器缓存中更新数据，并清空被修改对象类的所有对象的二级缓存，不会对hibernate一、二级缓存中更新数据，commit后更新数据到数据库实体
+   所以在使用excuteUpdate()后，如果session中之前存在被修改的记录的缓存，excuteUpdate()后再get这个对象是从session缓存中得到的，将与数据库实体中的数据不一致，最好清理下session中对应对象的缓存
+5、由第4点可知道hibernate中的一级缓存和数据库中的记录不一定完全一致，二级缓存中应该是完全一致的。
+6、get和load都能使用一、二级缓存，load返回的是对象的代理类，只有在用到对象时才去数据库查询数据（延迟加载，延迟加载的对象也会放入一二级缓存中），如果返回的是缓存中对象则不用查询数据库，get方法则是立即加载对象并放入一二级缓存中，一二级缓存中存在代理对象则使用该对象并查询数据库数据填充该实体对象，hibernate对于load方法认为该数据在数据库中一定存在，可以放心的使用代理来延迟加载，如果在使用过程中发现了问题，只能抛异常；而对于get方法，hibernate一定要获取到真实的数据，否则返回null
+7、调用flush()函数 ，hibernate会检查session缓存，执行sql语句，强迫数据库状态与session缓存中数据状态一致，如果sesion中缓存的某个对象有变化则清除二级缓存中的该对象，但是flush()并不提交事务，只是执行sql语句，执行flush后数据库服务器缓存和session中的数据状态一致，但是数据库中的信息并不会改变，commit事务后数据库中的数据才会变化，并保存更新后的对象到二级缓存中。
+
+
+
+
+
+
+1、日志功能，要确定记录那些东西以及加密情况
+2、休眠时停止，如果以后由应用打开POS，则不存在这个问题，目前可以停止接收音频数据，也可以停止service,但是升级线程怎么处理
+
+1、Android service如果是由activity bindService启动，则service自己的onCreate(),onBind()，onServiceConnected()按照这个顺序被调用，
+则在该activity调用onDestroy()方法时不论是否调用unBindService方法，service自己的onUnbind方法都会被调用，但是如果不调用unBindService方法，
+则在bindService方法中会抛android.app.ServiceConnectionLeaked: ******.MainActivity has leaked ServiceConnection 异常，这中情况不会影响service及activity
+2、bindService及unBindService方法可多次调用，在调用unBindService方法前连续调bindService对应的onBind()只会调用一次，
+连续多次调用unBindService对应的onUnbind方法只会调用一次
+3、第一次调用startService-->bindeService-->unBindService对应的调service方法为onCreate()->onBind()->onServiceConnected()->onStart()（其中startService与bindeService的顺序没有关系，onStart在onBind()前还是后可能是受service 的onCreate()方法执行时间影响）
+在Service stop前不论是在当前activity还是其他对象中继续调用startService-->bindeService-->unBindService这些方法对应的调service方法为onStart()->onServiceConnected()(在同一对象如果调过bindService后在调用unBindService前重复调bindService，则onServiceConnected()方法不会重复调用),不会再调用onBind()方法和onUnbind()方法（在service的生命周期中onBind()方法和onUnbind()只会被调用一次即使在不同对象调了多次bindeService和unBindService）。
+4、如果在activity1中startService,在activity2中onBindServie,则在activity2调unBindService前在activity1中调stopService则不能立即调service的onDestroy,只有在activity2调unBindService后才会调service的onDestroy.如果只在activity1中startService和onBindServie则可在unBindService前调stopService使service的onDestroy被调用。
+
+
+总结：startService和bindService及stopService和unBindService都可以多次调用，只是在Service关闭之前重复调用startService方法会重复调service的onStart()，重复调bindeService只会调onServiceConnected()而不会调onBind()，重复调unBindService是不会调onUnbind()方法的。
+      stopService只有在所有调过bindServie的对象（调stopService的对象除外，可不用unBindeService）中都调了unBindService以后调才能使service的onDestroy被调用。
+      onServiceDisconnected方法在意外连接断开或者系统资源不够的时候调用，或者service stop后，则之前调了几次unBindService则调几次onServiceDisconnected方法
+
+
+
+以上过程全部在2.3中测试得到的结果
+
+
+
+
+
+
+1、屏幕关闭时当前的activity对象对调用onDestroy()-->onCreate(),屏幕打开是会再调onDestroy()-->onCreate()。
+所以如果在打开activity后关闭屏幕前连接上pos机或者相反，则关闭屏幕后会导致识别码不匹配错误。
+2、由于通过bindService的方法打开service的方法容易受到打开它的activity的影响，所以通过startService 方法打开然后不用时自己关闭比较好。
+3、目前神行太保中是通过getApllication().bindService()打开的，如果不进行getApllication().unBindService()将在service中无法自动关闭
+可联系神行太保修改启动方式为startService(),或者在离开支付界面是getApllication().unBindService()，推荐后者。
+
+
+
+
+public boolean onInterceptTouchEvent(MotionEvent ev)
+返回true为后续的动作不再传到onInterceptTouchEvent方法，也不会传导到子视图的onInterceptTouchEvent和onTouchEvent方法。
+返回false为后续动作会传导到onInterceptTouchEvent方法，也会传导到子视图的onInterceptTouchEvent和onTouchEvent方法。
+
+
+public boolean onTouchEvent(MotionEvent event)
+返回true则后续动作会继续传导到onTouchEvent方法，返回false则后续动作不会再传到onTouchEvent方法。
+onTouchEvent方法的返回值和动作是否传导到子视图没有关系,子视图中onTouchEvent方法返回true，则父视图onTouchEvent方法不再执行。
+
+
+由于onInterceptTouchEvent()的机制比较复杂，上面的说明写的也比较复杂，总结一下，基本的规则是：
+1.       down事件首先会传递到onInterceptTouchEvent()方法
+2.       如果该ViewGroup的onInterceptTouchEvent()在接收到down事件处理完成之后return false，那么后续的move, up等事件将继续会先传递给该ViewGroup，之后才和down事件一样传递给最终的目标view的onTouchEvent()处理。
+3.       如果该ViewGroup的onInterceptTouchEvent()在接收到down事件处理完成之后return true，那么后续的move, up等事件将不再传递给onInterceptTouchEvent()，而是和down事件一样传递给该ViewGroup的onTouchEvent()处理，注意，目标view将接收不到任何事件。
+4.       如果最终需要处理事件的view的onTouchEvent()返回了false，那么该事件将被传递至其上一层次的view的onTouchEvent()处理。
+5.       如果最终需要处理事件的view 的onTouchEvent()返回了true，那么后续事件将可以继续传递给该view的onTouchEvent()处理。
+
+
+
+
+

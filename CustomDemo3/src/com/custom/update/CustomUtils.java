@@ -182,11 +182,12 @@ public class CustomUtils {
 					logger.error("filePath:"+filePath);
 					if(oSavedFile!=null)
 						oSavedFile.seek(dowonedLength);
+					long fileSize = dowonedLength+length;
 					while(!stop&&(readLength=in.read(buffer))>0){
 						oSavedFile.write(buffer,0,readLength);
 						dowonedLength +=readLength;
 						//logger.error("dowonedLength +=readLength:"+dowonedLength);
-						handler.sendMessage(handler.obtainMessage(2, (int)dowonedLength, length));//报告进度
+						handler.sendMessage(handler.obtainMessage(2, (int)dowonedLength, (int)fileSize));//报告进度
 					}
 					if(stop)
 						return ;

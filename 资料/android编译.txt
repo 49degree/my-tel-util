@@ -1,0 +1,6 @@
+javac -encoding GB18030 -target 1.6 -bootclasspath E:\program\android-sdk_r10-windows\android-sdk-windows\platforms\android-8\android.jar Foo.java
+dx --dex --output=F:\foo\Foo.jar F:\foo
+dx --dex --output=F:\foo\Foo.dex F:\foo\
+
+export CLASSPATH=/system/framework/monkey.jar
+$ exec app_process $/system/bin com.android.commands.monkey.Monkey -p longma.achai -v --pct-touch 100 --throttle 300 500

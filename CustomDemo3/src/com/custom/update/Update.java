@@ -87,6 +87,7 @@ public class Update extends Activity implements OnClickListener{
 			}
 		});
     	progress.show();
+    	progress.setCanceledOnTouchOutside(false);
     	
     	logger.error("开始查询");
     	LoadResources.clearInstalledFoldInfo(this);

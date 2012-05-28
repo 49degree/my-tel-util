@@ -9,17 +9,23 @@ import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,10 +35,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.custom.update.Constant.DirType;
+import com.custom.update.CustomUtils.FileInfo;
 import com.custom.utils.DialogUtils;
 import com.custom.utils.HandlerWhat;
 import com.custom.utils.LoadResources;
@@ -46,6 +54,7 @@ public class Update extends Activity implements OnClickListener{
     CustomUtils customUtils = null;
 	Button btn = null;
 	Button btn2 = null;
+	ImageButton btn_back = null;
 	TextView textView1 = null;
 	TextView textView2 = null;
 	TextView textView3 = null;
@@ -89,6 +98,7 @@ public class Update extends Activity implements OnClickListener{
     	progress.show();
     	progress.setCanceledOnTouchOutside(false);
     	
+    	
     	logger.error("开始查询");
     	LoadResources.clearInstalledFoldInfo(this);
         Intent query = new Intent();//发送查询已经安装广播
@@ -108,8 +118,10 @@ public class Update extends Activity implements OnClickListener{
         
         btn = (Button)this.findViewById(R.id.update_btn);
         btn2 = (Button)this.findViewById(R.id.update_btn2);
+        btn_back = (ImageButton)this.findViewById(R.id.update_back);
         btn.setOnClickListener(this);
         btn2.setOnClickListener(this);
+        btn_back.setOnClickListener(this);
         
         linearLayout1 = (LinearLayout)this.findViewById(R.id.LinearLayout1);
         linearLayout3 = (LinearLayout)this.findViewById(R.id.LinearLayout3);
@@ -194,20 +206,30 @@ public class Update extends Activity implements OnClickListener{
             downThread.setDaemon(true);
             downThread.start();
     	}else if(v.getId()==R.id.update_btn2){
-			Intent mIntent = new Intent("/");
-			ComponentName comp = new ComponentName("com.android.settings",
-					"com.android.settings.WirelessSettings");
-			mIntent.setComponent(comp);
-			mIntent.setAction("android.intent.action.VIEW");
-			startActivity(mIntent);
+
+    		if(Build.VERSION.SDK_INT>13){
+    			startApp(this,"com.android.settings");
+    		}else{
+    			Intent mIntent = new Intent("/");
+    			ComponentName comp = new ComponentName("com.android.settings",
+    					"com.android.settings.WirelessSettings");
+    			mIntent.setComponent(comp);
+    			mIntent.setAction("android.intent.action.VIEW");
+    			startActivity(mIntent);
+    		}
+			
+			
+			
     	}else if(v.getId()==R.id.Button1){
 			Intent mIntent = new Intent(this,Help.class);
 			startActivity(mIntent);
+    	}else if(v.getId()==R.id.update_back){
+    		finish();
     	}
 
     }
     
-    
+    boolean hasNotify = false;
     private Handler handler = new Handler(){
     	int times = 0;
     	JSONObject msgObject = null;
@@ -224,10 +246,9 @@ public class Update extends Activity implements OnClickListener{
     			times++;
     			if(times%5==0){
     				
-        			int downedL = msg.arg1; 
-        			int length = msg.arg2;
+    				FileInfo fileInfo = (FileInfo)msg.obj;
         			//logger.error("download:"+downedL);
-    				progress.setMessage("已经下载"+downedL+"(bytes),共"+length+"(bytes)");
+    				progress.setMessage("已经下载"+fileInfo.downLength+"(bytes),共"+fileInfo.allLength+"(bytes)");
     			}
     			break;//报告下载进度
     		case 3:
@@ -338,7 +359,11 @@ public class Update extends Activity implements OnClickListener{
 		    if(allNum<1){
 		    	linearLayout3.setVisibility(View.GONE);
 		    	linearLayout5.setVisibility(View.GONE);
-		    	DialogUtils.showMessageAlertDlg(Update.this,"提示", "已经更新到最新版本，无需更新", null,null);
+				if(!hasNotify){
+					DialogUtils.showMessageAlertDlg(Update.this,"提示", "已经更新到最新版本，无需更新", null,null);
+					hasNotify = true;
+				}
+		    	
 		    }else{
 		    	linearLayout5.setVisibility(View.VISIBLE);
 		    }
@@ -557,5 +582,39 @@ public class Update extends Activity implements OnClickListener{
 		}catch(Exception e){
 			e.printStackTrace();
 		}		
+	}
+	
+
+	/**
+	 * 启动应用
+	 * @param context
+	 * @param packageName
+	 */
+	public static  void startApp(Context context, String packageName) {
+		try {
+			PackageManager pm = context.getPackageManager();
+			PackageInfo pi = pm.getPackageInfo(packageName, 0);
+
+			Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+			resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+			resolveIntent.setPackage(pi.packageName);
+
+			List<ResolveInfo> apps = pm.queryIntentActivities(resolveIntent, 0);
+
+			ResolveInfo ri = apps.iterator().next();
+			if (ri != null) {
+				String className = ri.activityInfo.name;
+
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+				ComponentName cn = new ComponentName(packageName, className);
+
+				intent.setComponent(cn);
+				context.startActivity(intent);
+			}
+		} catch (Exception e) {
+
+		}
 	}
 }

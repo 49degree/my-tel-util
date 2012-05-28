@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:background="#D8D8BF">
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:background="#D8D8BF">
 
 	<LinearLayout android:layout_height="fill_parent"
 		android:layout_width="fill_parent" android:background="#9ACD32"
 		android:layout_weight="3" android:orientation="horizontal">
-		<LinearLayout android:layout_height="fill_parent"
-			android:layout_width="wrap_content" android:orientation="vertical"
-			android:gravity="bottom|right">
-			<ImageView android:layout_height="wrap_content"
-				android:layout_width="wrap_content" android:src="@drawable/logo" />
-		</LinearLayout>
-		<LinearLayout android:id="@+id/LinearLayout8"
-			android:layout_height="fill_parent" android:layout_width="fill_parent"
-			android:orientation="vertical" android:gravity="bottom|right"
-			android:paddingRight="20px" >
-			<Button android:id="@+id/Button1" android:layout_height="100px"
-				android:layout_width="100px" android:background="@drawable/help"/>
-				
-			<TextView android:textColor="@color/black"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="帮助中心  " />		
-		</LinearLayout>
+			<LinearLayout android:layout_height="fill_parent"
+				android:layout_width="fill_parent" android:orientation="vertical"
+				android:gravity="bottom|left" android:layout_weight="1">
+				<ImageView android:layout_height="wrap_content"
+					android:layout_width="wrap_content" android:src="@drawable/logo" />
+			</LinearLayout>
+
+			<LinearLayout android:id="@+id/LinearLayout8"
+				android:layout_height="fill_parent" android:layout_width="fill_parent"
+				android:orientation="vertical" android:gravity="center_horizontal|bottom"
+				android:layout_weight="4" android:paddingRight="20px">
+				<Button android:id="@+id/Button1" android:layout_height="100px"
+					android:layout_width="100px" android:background="@drawable/help" />
+				<TextView android:textColor="@color/black"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="帮助中心   " />
+				<TextView android:layout_width="40px"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
 	</LinearLayout>
 
 	<LinearLayout android:id="@+id/linearLayout2"
@@ -60,3 +65,11 @@
 	</LinearLayout>
 
 </LinearLayout>
+	<LinearLayout android:layout_height="fill_parent"
+		android:layout_width="fill_parent" android:orientation="vertical"
+		android:gravity="bottom|right" android:layout_weight="1" android:paddingRight="20px" 
+		android:paddingBottom="20px">
+		<ImageButton android:id="@+id/update_back" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:background="@drawable/back" />
+	</LinearLayout>
+</FrameLayout>

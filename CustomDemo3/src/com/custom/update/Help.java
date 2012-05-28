@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class Help extends Activity {
 	TextView textView9 = null;
 	
 	ImageView ImageView1= null;
+	ImageButton btn_back = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,13 @@ public class Help extends Activity {
 			byte[] buffer = LoadResources.loadFile(Help.this,"help.txt",0);
 			textView9.setText(new String(buffer,"GBK"));
 		}catch(Exception e){}
+		
+		btn_back = (ImageButton)this.findViewById(R.id.update_back);
+		btn_back.setOnClickListener(new OnClickListener(){
+			public void onClick(View v){
+				finish();
+			}
+		});
 
     }
 

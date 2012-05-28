@@ -22,6 +22,7 @@ import android.util.Log;
  * @version 1.0
  */
 public class NetWorkTools {
+	static Logger logger = Logger.getLogger(NetWorkTools.class);
 	/*当前网络连接类型*/
 	/**无网络连接*/
 	public final static int NET_TYPE_NONE = 0;		
@@ -86,6 +87,17 @@ public class NetWorkTools {
 		mReceiver = new ConnectionChangeReciver();
 	    IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 	    mContext.registerReceiver(mReceiver, filter);
+	    logger.error("NetWorkTools start");
+	    if(NetWorkTools.checkInternet(context)){
+			Message msg = mHandler.obtainMessage(
+					HandlerWhat.NETWORK_CONNECT_RESULE,new Boolean(true));
+			mHandler.sendMessage(msg);	
+	    }else{
+			Message msg = mHandler.obtainMessage(
+					HandlerWhat.NETWORK_CONNECT_RESULE,new Boolean(false));
+			mHandler.sendMessage(msg);	
+	    }
+
 		// TODO Auto-generated constructor stub
 	}	
 	
@@ -320,13 +332,14 @@ public class NetWorkTools {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			logger.error("onReceive start");
 			// TODO Auto-generated method stub		
 			String action = intent.getAction();
 			if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {	
 				ConnectivityManager connec = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 				NetworkInfo activeNetInfo = connec.getActiveNetworkInfo();
 				if (activeNetInfo != null && activeNetInfo.isAvailable()) {
-					LogCat.v(TAG, "连接创建成功");
+					Log.e(TAG, "连接创建成功");
 					mIsConnected = true;
 					if (mTimer != null) {
 						mTimer.purge();

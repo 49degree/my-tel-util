@@ -100,7 +100,7 @@ public class HttpRequest {
 					e.printStackTrace();
 					this.responsString = "{\"success\":false,\"type\":1,\"msg\":\"请求失败:URL(" + this.requestUrl + ")无法访问！\"}";
 				}
-				this.responsJSON = new JSONObject(this.responsString);
+				this.responsJSON = new JSONObject(this.responsString.trim());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -159,17 +159,18 @@ public class HttpRequest {
 	private void httpGet() throws Exception {
 		HttpClient client = null;
         try {
-        	StringBuffer bufferParas = new StringBuffer("?");
+        	StringBuffer bufferParas = new StringBuffer();
             client = new DefaultHttpClient();
            
 			//设置请求参数
 			if (this.paramMap != null) {
 				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(this.paramMap.size());
 				for (String key : this.paramMap.keySet()) {
+					if(bufferParas.length()==0)
+						bufferParas.append("?");
 					bufferParas.append(key).append("=").append(this.paramMap.get(key)).append("&");
 				}
 			}
-			//Log.i(TAG, "==================="+this.requestUrl+bufferParas.toString());
 			 HttpGet get = new HttpGet(this.requestUrl+bufferParas.toString());
             
 			 httpResponse = client.execute(get);

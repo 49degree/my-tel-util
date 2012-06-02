@@ -50,7 +50,8 @@ public class Constant {
 	
 	public static String copy_file_fold = "custom/copy_file";
 	public static String copy_file_info_file = "copy_file_info.txt";
-	
+	public static String check_mac_info_file = "check_mac_info.txt";
+	public static String check_mac_url = "";
 	
 	public final static  HashMap<String,String> picType= new HashMap<String,String>();;
 	public final static  HashMap<String,String> swfType= new HashMap<String,String>();
@@ -99,6 +100,8 @@ public class Constant {
 		foldName_ex =MainApplication.getInstance().getString(R.string.fold_name_ex);
 		Constant.path = "custom/"+foldName;
 		Constant.pageNumPicPath = "custom/"+foldName+"/pagepic";
+		
+		check_mac_url = MainApplication.getInstance().getString(R.string.check_mac_url);
 
 
 

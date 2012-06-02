@@ -267,7 +267,7 @@ public abstract class ViewImp extends FrameLayout{
 			if(scanFoldUtils.resourceInfo==null||scanFoldUtils.resourceInfo.size()<1){
 				TextView text = new TextView(context);
 				text.setBackgroundColor(Color.RED);
-				text.setText("未找到资源文件");
+				text.setText("设备不匹配");
 				LinearLayout.LayoutParams tlayout = new LinearLayout.LayoutParams(
 						LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT);
 				tlayout.gravity = Gravity.CENTER;

@@ -471,7 +471,32 @@ public class LoadResources {
 		}
 		return null;
 	}
-
+	/**
+	 * 根据路径和路径类型读取文件
+	 * @param context
+	 * @param filePath
+	 * @param dirType
+	 * @return
+	 */
+	public static void writeFile(String filePath,String value){
+		FileOutputStream in= null;
+		try{
+			in= new FileOutputStream(filePath);
+			byte[] buff = value.getBytes("GBK");
+			in.write(buff);
+			in.flush();
+		}catch(Exception e){
+		}finally{
+			if(in!=null){
+				try{
+					in.close();
+				}catch(Exception e){
+					
+				}
+				
+			}
+		}
+	}
 	/**
 	 * 启动应用
 	 * @param context

@@ -12,14 +12,20 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -29,15 +35,19 @@ import android.webkit.WebViewClient;
 import android.widget.AbsoluteLayout;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.custom.activity.IndexActivity;
+import com.custom.network.HttpRequest;
 import com.custom.utils.Constant;
-import com.custom.utils.Constant.DirType;
+import com.custom.utils.CryptionControl;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.ScanFoldUtils;
 import com.custom.utils.ToGetFile;
+import com.custom.utils.TypeConversion;
 import com.custom.utils.ZipToFile;
+import com.custom.utils.Constant.DirType;
 
 
 
@@ -99,6 +109,82 @@ public class InitView extends FrameLayout{
 
 		}
 	}
+	boolean checkMacResult = false;
+	/**
+	 * 验证
+	 * @return
+	 */
+	private void registMac(){
+		WifiManager wifi_service = (WifiManager) context.getSystemService(Context.WIFI_SERVICE); 
+		WifiInfo wifiinfo = wifi_service.getConnectionInfo();
+		try{
+			final String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.check_mac_info_file;
+			byte[] buf = LoadResources.loadFile(context, Constant.root_fold+File.separator+Constant.check_mac_info_file, DirType.sd,false);
+			final String macStr = wifiinfo.getMacAddress();
+			if(buf!=null){
+				String s = new String(buf,"GBK");
+				byte[] macBuffer = TypeConversion.stringToAscii(macStr);
+				byte[] temp = new byte[macBuffer.length%8==0?macBuffer.length:(macBuffer.length/8+1)*8];
+				System.arraycopy(macBuffer, 0, temp, 0, macBuffer.length);
+				
+				String encodeMac = TypeConversion.byte2hex(CryptionControl.getInstance().encryptoECB(temp, CryptionControl.rootKey));
+				if(s.equals(encodeMac))
+					checkMacResult = true;
+			}
+			
+			if(!checkMacResult){
+				
+    			AlertDialog.Builder alertDialog = new AlertDialog.Builder(context).setTitle("提示");
+    			alertDialog.setMessage("请点击确定联网获得正版授权认证") ;
+    			alertDialog.setPositiveButton("确定", 
+		        new DialogInterface.OnClickListener(){
+	                    public void onClick(DialogInterface dialoginterface, int i){ 
+	                    	progress = ProgressDialog.show(context, "请稍候", "正在加载资源....");
+	                    	
+	            			HashMap<String, String> params = new HashMap<String, String>();
+	            			HttpRequest httpRequest = new HttpRequest(Constant.check_mac_url+"&mac="+macStr,
+	            					params, context);
+	            			JSONObject retJson = httpRequest.getResponsJSON(false);
+	            			logger.error("查询返回："+httpRequest.getResponsString(false));
+	            			// 解析数据
+	            			try{
+	            				if(retJson.getBoolean("result")){
+	            					checkMacResult = true;
+	            					LoadResources.writeFile(filePath,retJson.getString("mac"));
+	            					Toast.makeText(context, "验证成功", Toast.LENGTH_LONG).show();
+	            					initBackground();
+	            					new LoadResAsyncTask().execute(scanFoldUtils);	
+	            					
+	            				}else{
+	            					if(progress!=null){
+	            						progress.dismiss();
+	            					}
+	            					Toast.makeText(context, "验证失败", Toast.LENGTH_LONG).show();
+	            					((Activity)context).finish();
+	            					
+	            				}
+	            			}catch(Exception e){
+	            				
+	            				if(progress!=null){
+	            					progress.dismiss();
+	            				}
+	            				Toast.makeText(context, "验证失败", Toast.LENGTH_LONG).show();
+	            				((Activity)context).finish();
+	            				
+	            			}
+                        } 
+                });
+
+    			alertDialog.show();
+			}
+		}catch(Exception e){
+			if(progress!=null){
+				progress.dismiss();
+			}
+			((Activity)context).finish();
+			e.printStackTrace();
+		}
+	}
 
 	protected boolean isRestart = false;
 	private MediaPlayer mMediaPlayer = null;
@@ -109,9 +195,12 @@ public class InitView extends FrameLayout{
 	public void onStart() {
 		logger.error("onStart");
 		if(!isRestart){
-			progress = ProgressDialog.show(context, "请稍候", "正在加载资源....");
-			initBackground();
-			new LoadResAsyncTask().execute(scanFoldUtils);	
+			registMac();
+			if(checkMacResult){
+				initBackground();
+				progress = ProgressDialog.show(context, "请稍候", "正在加载资源....");
+				new LoadResAsyncTask().execute(scanFoldUtils);	
+			}
 		}
 	}
 	protected boolean isFistStart = true;
@@ -121,7 +210,7 @@ public class InitView extends FrameLayout{
 			mWebView.resumeTimers();
 			callHiddenWebViewMethod("onResume");
 		}
-		logger.error("createView(mLayout)"+(!isFistStart)+":"+(scanFoldUtils.bgtype == Constant.BgType.swf)+":"+(mLayout!=null));
+		//logger.error("createView(mLayout)"+(!isFistStart)+":"+(scanFoldUtils.bgtype == Constant.BgType.swf)+":"+(mLayout!=null));
 		if(!isFistStart&&scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
 			createView(mLayout);
 			
@@ -131,15 +220,20 @@ public class InitView extends FrameLayout{
 	
 	public void onPause() {
 		logger.error("onPause");
-		if (mWebView != null) {
-			mWebView.pauseTimers();
-			callHiddenWebViewMethod("onPause");
+		try{
+			if (mWebView != null) {
+				mWebView.pauseTimers();
+				callHiddenWebViewMethod("onPause");
+			}
+			if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
+				wm.removeView(mLayout);
+			}
+		    if(mMediaPlayer!=null&&mMediaPlayer.isPlaying())
+		    	mMediaPlayer.stop();
+		}catch(Exception e){
+			
 		}
-		if(scanFoldUtils.bgtype == Constant.BgType.swf&&wm!=null&&mLayout!=null){
-			wm.removeView(mLayout);
-		}
-	    if(mMediaPlayer!=null&&mMediaPlayer.isPlaying())
-	    	mMediaPlayer.stop();
+
 
 	}
 	public void onStop(){
@@ -203,6 +297,8 @@ public class InitView extends FrameLayout{
     			e.printStackTrace();
     		}		
     	}
+    	
+
     	
     	
         /**
@@ -303,9 +399,9 @@ public class InitView extends FrameLayout{
         		//保存文件
         		modifyInitedFile(btnInfo,filePath);
     		}
-    		
-    		
         }
+        
+        
     	@Override
     	protected void onPreExecute() {  
     		// 任务启动，可以在这里显示一个对话框，这里简单处
@@ -315,6 +411,7 @@ public class InitView extends FrameLayout{
         protected ScanFoldUtils doInBackground(ScanFoldUtils... scanFoldUtils) {
     		initFile();
     		copyFile();
+
             return scanFoldUtils[0];
         }
     	
@@ -327,6 +424,7 @@ public class InitView extends FrameLayout{
         @Override
         protected void onPostExecute(ScanFoldUtils scanFoldUtils) {
         	//参数对应doInBackground返回值，也是<ScanFoldUtils, String, ScanFoldUtils>第3个
+
 			if(progress!=null)
 				progress.dismiss();
 			Intent i = new Intent();
@@ -334,7 +432,6 @@ public class InitView extends FrameLayout{
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(i);
 			((Activity)context).finish();
-			
         }
         @Override
         protected void onCancelled(){

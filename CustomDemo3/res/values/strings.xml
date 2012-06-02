@@ -6,4 +6,6 @@
     <string name="INSTALLED_URL">http://www.gainseed.com/update/</string>
     <string name="D_ROOT">mnt/sdcard</string>
     <string name="TF_ROOT">mnt/sdcard</string>
+    <string name="check_mac_url">http://qidsoftweb.gotoip55.com/demo/black/address_check.do?method=checkMac</string>    
+    
 </resources>

@@ -40,6 +40,8 @@ public class Constant {
 	
 	public static String copy_file_fold = "custom/copy_file";
 	public static String copy_file_info_file = "copy_file_info.txt";
+	public static String check_mac_info_file = "check_mac_info.txt";
+	public static String check_mac_url = "";
 
 	public enum FileDirType{
 		data,sd,extSd
@@ -55,8 +57,8 @@ public class Constant {
 			extSdPath =  MainApplication.getInstance().getString(R.string.TF_ROOT);;
 		}
 		dataPath =  MainApplication.getInstance().getFilesDir().getAbsolutePath();
-		logger.error("sdPath:"+sdPath);
-		logger.error("extSdPath:"+extSdPath);
+		check_mac_url = MainApplication.getInstance().getString(R.string.check_mac_url);
+
 	}
 	public static String getSdPath(){
 		return sdPath;

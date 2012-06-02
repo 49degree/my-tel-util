@@ -14,6 +14,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -38,14 +39,18 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.custom.network.HttpRequest;
 import com.custom.update.Constant.DirType;
 import com.custom.update.CustomUtils.FileInfo;
+import com.custom.utils.CryptionControl;
 import com.custom.utils.DialogUtils;
 import com.custom.utils.HandlerWhat;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 import com.custom.utils.MainApplication;
+import com.custom.utils.TypeConversion;
 
 public class Update extends Activity implements OnClickListener{
 	private static final Logger logger = Logger.getLogger(Update.class);
@@ -81,8 +86,11 @@ public class Update extends Activity implements OnClickListener{
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //隐藏标题栏        
         setContentView(R.layout.main);
         
-
-
+        registMac();
+        if(!checkMacResult){
+        	return;
+        }
+        	
         
         progress = new ProgressDialog(this);
     	progress.setTitle("请稍候");
@@ -145,6 +153,88 @@ public class Update extends Activity implements OnClickListener{
         
 
     }
+    
+    
+	boolean checkMacResult = false;
+	/**
+	 * 验证
+	 * @return
+	 */
+	private void registMac(){
+		WifiManager wifi_service = (WifiManager) this.getSystemService(Context.WIFI_SERVICE); 
+		WifiInfo wifiinfo = wifi_service.getConnectionInfo();
+		try{
+			final String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.check_mac_info_file;
+			byte[] buf = LoadResources.loadFile(this, Constant.root_fold+File.separator+Constant.check_mac_info_file, DirType.sd,false);
+			final String macStr = wifiinfo.getMacAddress();
+			if(buf!=null){
+				String s = new String(buf,"GBK");
+				byte[] macBuffer = TypeConversion.stringToAscii(macStr);
+				byte[] temp = new byte[macBuffer.length%8==0?macBuffer.length:(macBuffer.length/8+1)*8];
+				System.arraycopy(macBuffer, 0, temp, 0, macBuffer.length);
+				
+				String encodeMac = TypeConversion.byte2hex(CryptionControl.getInstance().encryptoECB(temp, CryptionControl.rootKey));
+				if(s.equals(encodeMac))
+					checkMacResult = true;
+			}
+			
+			if(!checkMacResult){
+				
+    			AlertDialog.Builder alertDialog = new AlertDialog.Builder(Update.this).setTitle("提示");
+    			alertDialog.setMessage("请点击确定联网获得正版授权认证") ;
+    			alertDialog.setPositiveButton("确定", 
+		        new DialogInterface.OnClickListener(){
+	                    public void onClick(DialogInterface dialoginterface, int i){ 
+	                    	progress = ProgressDialog.show(Update.this, "请稍候", "正在加载资源....");
+	                    	
+	            			HashMap<String, String> params = new HashMap<String, String>();
+	            			HttpRequest httpRequest = new HttpRequest(Constant.check_mac_url+"&mac="+macStr,
+	            					params, Update.this);
+	            			JSONObject retJson = httpRequest.getResponsJSON(false);
+	            			logger.error("retJson:"+retJson);
+	            			// 解析数据
+	            			try{
+	            				if(retJson.getBoolean("result")){
+	            					checkMacResult = true;
+	            					LoadResources.writeFile(filePath,retJson.getString("mac"));
+	            					Toast.makeText(Update.this, "验证成功", Toast.LENGTH_LONG).show();
+	            					
+	            					Intent intent = new Intent();
+	            					intent.setClass(Update.this.getApplicationContext(),Update.class);
+	            					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	            					Update.this.startActivity(intent);
+	            					finish();
+	            					
+	            				}else{
+	            					if(progress!=null){
+	            						progress.dismiss();
+	            					}
+	            					Toast.makeText(Update.this, "验证失败", Toast.LENGTH_LONG).show();
+	            					((Activity)Update.this).finish();
+	            					
+	            				}
+	            			}catch(Exception e){
+	            				
+	            				if(progress!=null){
+	            					progress.dismiss();
+	            				}
+	            				Toast.makeText(Update.this, "验证失败", Toast.LENGTH_LONG).show();
+	            				((Activity)Update.this).finish();
+	            				
+	            			}
+                        } 
+                });
+
+    			alertDialog.show();
+			}
+		}catch(Exception e){
+			if(progress!=null){
+				progress.dismiss();
+			}
+			((Activity)Update.this).finish();
+			e.printStackTrace();
+		}
+	}    
     @Override
     public void onPause(){
     	MainApplication.getInstance().stopNetWorkListen();

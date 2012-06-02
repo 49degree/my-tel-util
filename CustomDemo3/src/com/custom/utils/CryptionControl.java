@@ -16,7 +16,7 @@ import javax.crypto.spec.DESKeySpec;
 public class CryptionControl {
 	public static Logger logger = Logger.getLogger(CryptionControl.class);//日志对象
 	public final static String DES_TYPE = "DES/ECB/NoPadding";//DES加密类型
-	private static byte[] rootKey = TypeConversion.hexStringToByte("DBED28F6415162BD");
+	public final  static byte[] rootKey = TypeConversion.hexStringToByte("DBED28F6415162BD");
 	private static CryptionControl instance = new CryptionControl();
 	public static CryptionControl getInstance(){
 		return instance;

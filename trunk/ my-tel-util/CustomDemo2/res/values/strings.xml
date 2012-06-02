@@ -6,6 +6,7 @@
     <string name="modify_index">false</string> 
     <string name="no_page_num">false</string> 
     <string name="D_ROOT">mnt/sdcard</string>
-    <string name="TF_ROOT">mnt/sdcard</string> 
-    <string name="Fold_three">false</string>      
+    <string name="TF_ROOT">mnt/extern_sd</string> 
+    <string name="Fold_three">false</string>  
+    <string name="check_mac_url">http://qidsoftweb.gotoip55.com/demo/black/address_check.do?method=checkMac</string>    
 </resources>

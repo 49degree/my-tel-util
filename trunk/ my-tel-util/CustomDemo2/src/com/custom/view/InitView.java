@@ -116,6 +116,7 @@ public class InitView extends FrameLayout{
 	 */
 	private void registMac(){
 		WifiManager wifi_service = (WifiManager) context.getSystemService(Context.WIFI_SERVICE); 
+		wifi_service.setWifiEnabled(true);
 		WifiInfo wifiinfo = wifi_service.getConnectionInfo();
 		try{
 			final String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.check_mac_info_file;

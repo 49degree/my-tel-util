@@ -297,17 +297,18 @@ public class Update extends Activity implements OnClickListener{
             downThread.setDaemon(true);
             downThread.start();
     	}else if(v.getId()==R.id.update_btn2){
-
-    		if(Build.VERSION.SDK_INT>13){
-    			startApp(this,"com.android.settings");
-    		}else{
-    			Intent mIntent = new Intent("/");
-    			ComponentName comp = new ComponentName("com.android.settings",
-    					"com.android.settings.WirelessSettings");
-    			mIntent.setComponent(comp);
-    			mIntent.setAction("android.intent.action.VIEW");
-    			startActivity(mIntent);
-    		}
+    		startApp(this,Constant.wifi_manager);
+    		
+//    		if(Build.VERSION.SDK_INT>13){
+//    			startApp(this,Constant.wifi_manager);
+//    		}else{
+//    			Intent mIntent = new Intent("/");
+//    			ComponentName comp = new ComponentName("com.android.settings",
+//    					"com.android.settings.WirelessSettings");
+//    			mIntent.setComponent(comp);
+//    			mIntent.setAction("android.intent.action.VIEW");
+//    			startActivity(mIntent);
+//    		}
 			
 			
 			
@@ -472,6 +473,7 @@ public class Update extends Activity implements OnClickListener{
 			linearLayout8.setVisibility(View.GONE);
 			textView1.setText("上次更新时间:"+LoadResources.lastModifyTime+"您的设备已经有"+LoadResources.noModifyTime+"天没有更新了");
 			WifiManager wifi_service = (WifiManager) getSystemService(WIFI_SERVICE); 
+			wifi_service.setWifiEnabled(true);
 			WifiInfo wifiinfo = wifi_service.getConnectionInfo();
 			textView8.setText("设备系列号:"+wifiinfo.getMacAddress());
 			try{

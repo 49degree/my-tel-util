@@ -17,7 +17,7 @@
 			<LinearLayout android:id="@+id/LinearLayout7"
 				android:layout_height="fill_parent" android:layout_width="fill_parent"
 				android:orientation="vertical" android:gravity="center_horizontal|bottom"
-				android:paddingRight="20px" android:layout_weight="4">
+				android:paddingRight="20px" android:layout_weight="3">
 				<TextView android:textColor="@color/black" android:id="@+id/TextView7"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:text="系统版本   V1.0" />
@@ -30,7 +30,7 @@
 			<LinearLayout android:id="@+id/LinearLayout8"
 				android:layout_height="fill_parent" android:layout_width="fill_parent"
 				android:orientation="vertical" android:gravity="center_horizontal|bottom"
-				android:layout_weight="4" android:paddingRight="20px"
+				android:layout_weight="3" android:paddingRight="20px"
 				android:visibility="gone">
 				<Button android:id="@+id/Button1" android:layout_height="100px"
 					android:layout_width="100px" android:background="@drawable/help" />

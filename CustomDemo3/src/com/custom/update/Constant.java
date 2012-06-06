@@ -42,6 +42,8 @@ public class Constant {
 	public static String copy_file_info_file = "copy_file_info.txt";
 	public static String check_mac_info_file = "check_mac_info.txt";
 	public static String check_mac_url = "";
+	public static String wifi_manager = "";
+	
 
 	public enum FileDirType{
 		data,sd,extSd
@@ -58,7 +60,7 @@ public class Constant {
 		}
 		dataPath =  MainApplication.getInstance().getFilesDir().getAbsolutePath();
 		check_mac_url = MainApplication.getInstance().getString(R.string.check_mac_url);
-
+		wifi_manager = MainApplication.getInstance().getString(R.string.wifi_manager);
 	}
 	public static String getSdPath(){
 		return sdPath;

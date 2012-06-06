@@ -50,7 +50,7 @@ public class Constant {
 	
 	public static String copy_file_fold = "custom/copy_file";
 	public static String copy_file_info_file = "copy_file_info.txt";
-	public static String check_mac_info_file = "check_mac_info.txt";
+	public static String check_mac_info_file = "check_info.txt";
 	public static String check_mac_url = "";
 	
 	public final static  HashMap<String,String> picType= new HashMap<String,String>();;

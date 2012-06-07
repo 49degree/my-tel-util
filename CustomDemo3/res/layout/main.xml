@@ -17,7 +17,7 @@
 			<LinearLayout android:id="@+id/LinearLayout7"
 				android:layout_height="fill_parent" android:layout_width="fill_parent"
 				android:orientation="vertical" android:gravity="center_horizontal|bottom"
-				android:paddingRight="20px" android:layout_weight="3">
+				android:paddingRight="20px" android:layout_weight="2">
 				<TextView android:textColor="@color/black" android:id="@+id/TextView7"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:text="系统版本   V1.0" />

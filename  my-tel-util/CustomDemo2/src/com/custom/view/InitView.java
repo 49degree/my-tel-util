@@ -119,7 +119,7 @@ public class InitView extends FrameLayout{
 		WifiManager wifi_service = (WifiManager) context.getSystemService(Context.WIFI_SERVICE); 
 		wifi_service.setWifiEnabled(true);
 		try{
-			while(wifi_service.getWifiState()!=wifi_service.WIFI_STATE_ENABLED&&times++<100)
+			while(!wifi_service.isWifiEnabled()&&times++<200)
 				Thread.sleep(50);
 			
 			WifiInfo wifiinfo = wifi_service.getConnectionInfo();

@@ -125,6 +125,7 @@ public abstract class ViewImp extends FrameLayout{
 		logger.error("onStart");
 		if(!isRestart){
 			progress = ProgressDialog.show(context, "请稍候", "正在加载资源....");
+			progress.setCanceledOnTouchOutside(false);
 			initBackground();
 			new LoadResAsyncTask().execute(scanFoldUtils);	
 		}

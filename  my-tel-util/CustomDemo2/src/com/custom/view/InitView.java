@@ -27,6 +27,7 @@ import android.media.MediaPlayer;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -115,17 +116,14 @@ public class InitView extends FrameLayout{
 	 * @return
 	 */
 	private void registMac(){
-		int times = 0;
-		WifiManager wifi_service = (WifiManager) context.getSystemService(Context.WIFI_SERVICE); 
-		wifi_service.setWifiEnabled(true);
+
 		try{
-			while(!wifi_service.isWifiEnabled()&&times++<200)
-				Thread.sleep(50);
-			
-			WifiInfo wifiinfo = wifi_service.getConnectionInfo();
+	    	TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+	    	final String macStr = tm.getDeviceId();       //取出IMEI
+	    	
 			final String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.check_mac_info_file;
 			byte[] buf = LoadResources.loadFile(context, Constant.root_fold+File.separator+Constant.check_mac_info_file, DirType.sd,false);
-			final String macStr = wifiinfo.getMacAddress();
+			
 			if(buf!=null){
 				String s = new String(buf,"GBK");
 				byte[] macBuffer = TypeConversion.stringToAscii(macStr);
@@ -140,6 +138,7 @@ public class InitView extends FrameLayout{
 			if(!checkMacResult){
 				
     			AlertDialog.Builder alertDialog = new AlertDialog.Builder(context).setTitle("提示");
+    			alertDialog.setCancelable(false);
     			alertDialog.setMessage("请点击确定联网获得正版授权认证") ;
     			alertDialog.setPositiveButton("确定", 
 		        new DialogInterface.OnClickListener(){
@@ -204,6 +203,7 @@ public class InitView extends FrameLayout{
 			if(checkMacResult){
 				initBackground();
 				progress = ProgressDialog.show(context, "请稍候", "正在加载资源....");
+				progress.setCanceledOnTouchOutside(false);
 				new LoadResAsyncTask().execute(scanFoldUtils);	
 			}
 		}

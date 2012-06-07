@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -161,18 +162,13 @@ public class Update extends Activity implements OnClickListener{
 	 * @return
 	 */
 	private void registMac(){
-		int times = 0;
-		WifiManager wifi_service = (WifiManager) this.getSystemService(Context.WIFI_SERVICE); 
-		wifi_service.setWifiEnabled(true);
 
 		try{
-			while(!wifi_service.isWifiEnabled()&&times++<200)
-				Thread.sleep(50);
-			WifiInfo wifiinfo = wifi_service.getConnectionInfo();
+	    	TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+	    	final String macStr = tm.getDeviceId();       //取出IMEI
 			
 			final String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.check_mac_info_file;
 			byte[] buf = LoadResources.loadFile(this, Constant.root_fold+File.separator+Constant.check_mac_info_file, DirType.sd,false);
-			final String macStr = wifiinfo.getMacAddress();
 			if(buf!=null){
 				String s = new String(buf,"GBK");
 				byte[] macBuffer = TypeConversion.stringToAscii(macStr);
@@ -187,6 +183,7 @@ public class Update extends Activity implements OnClickListener{
 			if(!checkMacResult){
 				
     			AlertDialog.Builder alertDialog = new AlertDialog.Builder(Update.this).setTitle("提示");
+    			alertDialog.setCancelable(false);
     			alertDialog.setMessage("请点击确定联网获得正版授权认证") ;
     			alertDialog.setPositiveButton("确定", 
 		        new DialogInterface.OnClickListener(){
@@ -477,10 +474,12 @@ public class Update extends Activity implements OnClickListener{
 			linearLayout7.setVisibility(View.VISIBLE);
 			linearLayout8.setVisibility(View.GONE);
 			textView1.setText("上次更新时间:"+LoadResources.lastModifyTime+"您的设备已经有"+LoadResources.noModifyTime+"天没有更新了");
-			WifiManager wifi_service = (WifiManager) getSystemService(WIFI_SERVICE); 
-			wifi_service.setWifiEnabled(true);
-			WifiInfo wifiinfo = wifi_service.getConnectionInfo();
-			textView8.setText("设备系列号:"+wifiinfo.getMacAddress());
+
+
+	    	TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+	    	final String macStr = tm.getDeviceId();       //取出IMEI
+	    	
+			textView8.setText("设备系列号:"+macStr);
 			try{
 				byte[] buffer = LoadResources.loadFile(Update.this,"down.txt",0);
 				textView9.setText(new String(buffer,"GBK"));

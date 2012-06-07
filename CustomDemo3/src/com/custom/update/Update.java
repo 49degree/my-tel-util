@@ -166,7 +166,7 @@ public class Update extends Activity implements OnClickListener{
 		wifi_service.setWifiEnabled(true);
 
 		try{
-			while(wifi_service.getWifiState()!=wifi_service.WIFI_STATE_ENABLED&&times++<100)
+			while(!wifi_service.isWifiEnabled()&&times++<200)
 				Thread.sleep(50);
 			WifiInfo wifiinfo = wifi_service.getConnectionInfo();
 			

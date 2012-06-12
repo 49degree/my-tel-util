@@ -177,7 +177,8 @@ public class PicCutDemoActivity extends Activity implements OnClickListener {
 		switch (requestCode) {
 		// 如果是直接从相册获取
 		case 1:
-			startPhotoZoom(data.getData());
+			if(data != null)
+				startPhotoZoom(data.getData());
 			break;
 		// 如果是调用相机拍照时
 		case 2:
@@ -273,25 +274,26 @@ public class PicCutDemoActivity extends Activity implements OnClickListener {
 			Log.e("", photo.getWidth()+":"+photo.getHeight()+"++++++++++++++++++++++++++");
 			ImageFilter imageFilter = new ImageFilter(photo);
 			
-			imageFilter.minGrey();//最小值灰度
+			imageFilter.addAvaGrey();//最小值灰度
 			Bitmap picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
 			Drawable drawable = new BitmapDrawable(picture);
 			iv1.setBackgroundDrawable(drawable);
 			
-			imageFilter.medianFilter(0,255);
-			picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
-			drawable = new BitmapDrawable(picture);
-			iv2.setBackgroundDrawable(drawable);
+//			imageFilter.medianFilter(0,180);
+//			picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
+//			drawable = new BitmapDrawable(picture);
+//			iv2.setBackgroundDrawable(drawable);
+//			
+//			imageFilter.avaFilter(180,255);
+//			picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
+//			drawable = new BitmapDrawable(picture);
+//			iv3.setBackgroundDrawable(drawable);
 			
-			imageFilter.avaFilter(0,255);
-			picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
-			drawable = new BitmapDrawable(picture);
-			iv3.setBackgroundDrawable(drawable);
-			
-			imageFilter.changeGrey();
+			imageFilter.changeGrey(70);
 			picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
 			drawable = new BitmapDrawable(picture);
 			iv4.setBackgroundDrawable(drawable);
+
 			
 			
 			

@@ -161,9 +161,8 @@ public class ImageFilter {
 	/** 
 	 * 图像二值化
 	 */
-	public void changeGrey() {
+	public void changeGrey(int grey) {
 		// 设定二值化的域值，默认值为100
-		int grey = 100;
 		// 对图像进行二值化处理，Alpha值保持不变
 		int red;
 		for (int i = 0; i < iw * ih; i++) {

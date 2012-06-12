@@ -14,7 +14,7 @@ package com.xiaoma.piccut.demo;
 //AL, Apache License, V2.0 or later, http://www.apache.org/licenses
 //BSD, BSD License, http://www.opensource.org/licenses/bsd-license.php
 /**
-* A Base64 encoder/decoder.
+* A Base64 encoder/decoder. 
 *
 * <p>
 * This class is used to encode and decode data in Base64 format as described in RFC 1521.

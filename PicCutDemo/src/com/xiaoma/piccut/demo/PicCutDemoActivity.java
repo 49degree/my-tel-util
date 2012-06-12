@@ -4,20 +4,25 @@ import java.io.File;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -53,10 +58,14 @@ public class PicCutDemoActivity extends Activity implements OnClickListener {
     private static final String DEFAULT_LANGUAGE = "eng";
     private static final String EXPECTED_FILE = TESSBASE_PATH + "tessdata/" + DEFAULT_LANGUAGE + ".traineddata";
 	
-	private ImageButton ib = null;
-	private ImageView iv = null;
+	private ImageView ib = null;
+	private ImageView iv1 = null;
+	private ImageView iv2 = null;
+	private ImageView iv3 = null;
+	private ImageView iv4 = null;
 	private Button btn = null;
 	private String tp = null;
+	private EditText edit_text = null;
 	private TessBaseAPI baseApi = null;//new TessBaseAPI();
    
 
@@ -73,11 +82,14 @@ public class PicCutDemoActivity extends Activity implements OnClickListener {
 	 * 初始化方法实现
 	 */
 	private void init() {
-		ib = (ImageButton) findViewById(R.id.imageButton1);
-		iv = (ImageView) findViewById(R.id.imageView1);
+		ib = (ImageView) findViewById(R.id.imageButton1);
+		iv1 = (ImageView) findViewById(R.id.imageView1);
+		iv2 = (ImageView) findViewById(R.id.imageView2);
+		iv3 = (ImageView) findViewById(R.id.imageView3);
+		iv4 = (ImageView) findViewById(R.id.imageView4);
 		btn = (Button) findViewById(R.id.button1);
-		ib.setOnClickListener(this);
-		iv.setOnClickListener(this);
+		edit_text = (EditText)findViewById(R.id.edit_text);
+
 		btn.setOnClickListener(this);
 		
 		baseApi = new TessBaseAPI();
@@ -185,6 +197,7 @@ public class PicCutDemoActivity extends Activity implements OnClickListener {
 			 */
 			if(data != null){
 				setPicToView(data);
+				
 			}
 			break;
 		default:
@@ -228,7 +241,11 @@ public class PicCutDemoActivity extends Activity implements OnClickListener {
 		Bundle extras = picdata.getExtras();
 		if (extras != null) {
 			Bitmap photo = extras.getParcelable("data");
-			Drawable drawable = new BitmapDrawable(photo);
+			Drawable drawable1 = new BitmapDrawable(photo);
+			ib.setBackgroundDrawable(drawable1);
+			
+			
+			
 			
 			/**
 			 * 下面注释的方法是将裁剪之后的图片以Base64Coder的字符方式上
@@ -249,18 +266,71 @@ public class PicCutDemoActivity extends Activity implements OnClickListener {
 			Bitmap dBitmap = BitmapFactory.decodeFile(tp);
 			Drawable drawable = new BitmapDrawable(dBitmap);
 			*/
-			ib.setBackgroundDrawable(drawable);
-			iv.setBackgroundDrawable(drawable);
 			
-			Bitmap picture = Bitmap.createBitmap( photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );   
-			picture.setPixels(pixels, offset, stride, x, y, width, height)
-			baseApi.setImage(photo);
 			
-			String text = baseApi.getUTF8Text();
+
+
+			Log.e("", photo.getWidth()+":"+photo.getHeight()+"++++++++++++++++++++++++++");
+			ImageFilter imageFilter = new ImageFilter(photo);
 			
-			Toast.makeText(this, "结果："+text, Toast.LENGTH_LONG).show();
+			imageFilter.minGrey();//最小值灰度
+			Bitmap picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
+			Drawable drawable = new BitmapDrawable(picture);
+			iv1.setBackgroundDrawable(drawable);
+			
+			imageFilter.medianFilter(0,255);
+			picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
+			drawable = new BitmapDrawable(picture);
+			iv2.setBackgroundDrawable(drawable);
+			
+			imageFilter.avaFilter(0,255);
+			picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
+			drawable = new BitmapDrawable(picture);
+			iv3.setBackgroundDrawable(drawable);
+			
+			imageFilter.changeGrey();
+			picture = Bitmap.createBitmap(imageFilter.getPixels(), photo.getWidth(), photo.getHeight(), Config.ARGB_8888 );
+			drawable = new BitmapDrawable(picture);
+			iv4.setBackgroundDrawable(drawable);
+			
+			
+			
+
+
+			
+			decodeBitmap(picture);
 			
 		}
+	}
+	
+	public void decodeBitmap(final Bitmap photo){
+		final ProgressDialog progress = new ProgressDialog(this);
+    	progress.setTitle("请稍候");
+    	progress.setMessage( "正在打开....");
+    	progress.setCancelable(true);
+    	progress.setOnCancelListener(new OnCancelListener(){
+			public void onCancel(DialogInterface dialog){
+				baseApi.clear();
+			}
+		});
+    	progress.show();
+    	progress.setCanceledOnTouchOutside(false);
+		
+		new Handler().post(new Runnable(){
+			public void run(){
+				long st = System.currentTimeMillis();
+
+				
+				baseApi.setImage(photo);
+				
+				String text = baseApi.getUTF8Text();
+				progress.cancel();
+				edit_text.setText(text);
+				System.err.println("耗时(ms):"+(System.currentTimeMillis()-st));
+				
+			}
+		});
+
 	}
 
 }

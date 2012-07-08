@@ -12,11 +12,11 @@ import javax.swing.JPanel;
 public class LeftPanel extends JPanel {
 	public LeftPanel(){
 		super();
-		setOpaque(false);//±³¾°É«ÉèÎªÍ¸Ã÷µÄÁË
+		setOpaque(false);//èƒŒæ™¯è‰²è®¾ä¸ºé€æ˜Žçš„äº†
 		JLabel  label = new JLabel ();
-		label.setText("PADÒÑ¾­Á¬½ÓµçÄÔ");
+		label.setText("PADå·²ç»è¿žæŽ¥ç”µè„‘");
 		
-		label.setOpaque(false);//±³¾°É«ÉèÎªÍ¸Ã÷µÄÁË
+		label.setOpaque(false);//èƒŒæ™¯è‰²è®¾ä¸ºé€æ˜Žçš„äº†
         
 		label.setLayout(null); 
 		label.setPreferredSize(new   Dimension(420,100)); 
@@ -31,7 +31,7 @@ public class LeftPanel extends JPanel {
 				super.paintComponent(g);
 			}
 		};
-        panel.setOpaque(false);//±³¾°É«ÉèÎªÍ¸Ã÷µÄÁË
+        panel.setOpaque(false);//èƒŒæ™¯è‰²è®¾ä¸ºé€æ˜Žçš„äº†
         
         panel.setLayout(null); 
         panel.setPreferredSize(new   Dimension(420,100)); 

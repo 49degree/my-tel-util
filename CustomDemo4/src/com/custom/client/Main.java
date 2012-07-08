@@ -19,7 +19,7 @@ public class Main extends JFrame{
 	ImageIcon img;
 	public static String imgPath;
 	public Main() {
-		super("资源管理");
+		super("璧勬簮绠＄悊");
 		imgPath = System.getProperty("user.dir")+"\\img\\";
 		img = new ImageIcon(imgPath+"Backgroud.png");
 		
@@ -27,7 +27,7 @@ public class Main extends JFrame{
 		HEIGHT = img.getIconHeight();
 		
 		setSize(WIDTH, HEIGHT);
-		setLocation(screenX, screenY);// 定位
+		setLocation(screenX, screenY);// 瀹氫綅
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		this.setUndecorated(true);
 
@@ -37,7 +37,7 @@ public class Main extends JFrame{
 				super.paintComponent(g);
 			}
 		};
-        panel.setOpaque(false);//背景色设为透明的了
+        panel.setOpaque(false);//鑳屾櫙鑹茶涓洪�忔槑鐨勪簡
 
         try {
             //jbInit();
@@ -50,7 +50,7 @@ public class Main extends JFrame{
 		contentPane.add(panel, BorderLayout.CENTER);
 		
 
-		//左边布局
+		//宸﹁竟甯冨眬
 		JPanel leftPanel = new JPanel(); 
 		leftPanel.setLayout(null); 
 		leftPanel.setPreferredSize(new   Dimension(420,100)); 
@@ -59,7 +59,7 @@ public class Main extends JFrame{
 		leftPanel.setOpaque(false);
 		panel.add(leftPanel);
 		
-		//右边布局
+		//鍙宠竟甯冨眬
 		JPanel rightPanel = new JPanel(); 
 		rightPanel.setLayout(null); 
 		rightPanel.setPreferredSize(new   Dimension(420,100)); 
@@ -68,7 +68,7 @@ public class Main extends JFrame{
 		rightPanel.setOpaque(false);
 		panel.add(rightPanel);		
 		
-		//按钮
+		//鎸夐挳
 		BottomPannel buttonPanel = new BottomPannel(leftPanel,rightPanel);
 		buttonPanel.setLayout(null); 
 		buttonPanel.setPreferredSize(new   Dimension(420,100)); 

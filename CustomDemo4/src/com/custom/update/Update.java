@@ -9,38 +9,27 @@ import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+
+import javax.swing.JPanel;
 
 import org.json.JSONObject;
 
-
-
-import com.custom.network.HttpRequest;
 import com.custom.update.Constant.DirType;
-import com.custom.update.CustomUtils.FileInfo;
-import com.custom.utils.CryptionControl;
 import com.custom.utils.HandlerWhat;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
-import com.custom.utils.TypeConversion;
 
-public class Update{
+public class Update extends JPanel{
 	private static final Logger logger = Logger.getLogger(Update.class);
     /** Called when the activity is first created. */
 
     CustomUtils customUtils = null;
 	
 	
-    public void onCreate() {
-
-        
-
-    	
-    	
+	public Update(){
+		super();
+		setOpaque(false);//背景色设为透明的了
 		LoadResources.loadUpdateInstalledInfo();
-        
-        
-
     }
     
     Thread downThread = null;

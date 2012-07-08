@@ -12,6 +12,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.custom.update.Update;
+
 public class BottomPannel extends JPanel {
 	JPanel leftPanel,rightPanel;
 	public BottomPannel(JPanel leftPanel,JPanel rightPanel) {
@@ -32,16 +34,16 @@ public class BottomPannel extends JPanel {
 		chLeftPanel.setLayout(null); 
 		chLeftPanel.setPreferredSize(new   Dimension(420,100)); 
 		chLeftPanel.setBounds(0, 0, 125, 235);
-		chLeftPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
+		//chLeftPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
 		this.leftPanel.add(chLeftPanel);
 		
 		
-		RightPanel chRightPanel = new RightPanel();
+		Update chRightPanel = new Update();
 		
 		chRightPanel.setLayout(null); 
 		chRightPanel.setPreferredSize(new   Dimension(420,100)); 
 		chRightPanel.setBounds(0, 0, 125, 235);
-		chRightPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
+		//chRightPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
 		this.rightPanel.add(chRightPanel);	
 		
 		JButton MYPADBtn = new MyButton(MYPAD);

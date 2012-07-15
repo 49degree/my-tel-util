@@ -1,5 +1,7 @@
 package com.custom.update;
 
+import java.io.File;
+
 import android.os.Environment;
 
 import com.custom.utils.Logger;
@@ -18,10 +20,8 @@ public class Constant {
 	public final static String timeFormate = "yyyy-MM-dd HH:mm-ss";
 	
 	//升级文件信息
-//	{"updates":[
-//    {"updateId":"1","updateTime":"2012-3-26 18:00:00","fileName":"file1.zip"},
-//    {"updateId":"2","updateTime":"2012-3-28 18:00:00","fileName":"file2.zip"},
-//   ]}
+//	{"updates":[ {"updateId":"2","updateTime":"2012-3-26 18:00:00","fileName":"update1.zip","content":[{"name":"语文","value":4},{"name":"数学","value":1}]}, ]} 
+	
 	public final static String success="success";
 	public final static String root="updates";
 	public final static String modifyTime="modifyTime";
@@ -43,6 +43,8 @@ public class Constant {
 	public static String check_mac_info_file = "check_info.txt";
 	public static String check_mac_url = "";
 	public static String wifi_manager = "";
+	public static String sdFlagFile = "sdFlagFile";
+	public static String extSdFlagFile = "extSdFlagFile";
 	
 
 	public enum FileDirType{
@@ -71,4 +73,9 @@ public class Constant {
 	public static String getDataPath(){
 		return dataPath;
 	}
+	
+
+
+	
+	
 }

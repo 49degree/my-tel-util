@@ -24,9 +24,6 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -86,7 +83,7 @@ public class Update extends Activity implements OnClickListener{
 				WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //隐藏标题栏        
         setContentView(R.layout.main);
-        
+        creadFlagFile();
         registMac();
         if(!checkMacResult){
         	return;
@@ -155,6 +152,48 @@ public class Update extends Activity implements OnClickListener{
 
     }
     
+    /**
+     * 创建SDCARD和扩展SDCARD文件
+     */
+    private void creadFlagFile(){
+    	File sd = new File(Constant.getSdPath());
+    	
+    	if(sd.exists()){
+    		File cust = new File(Constant.getSdPath()+File.separator+Constant.path);
+    		if(!cust.exists())
+    			cust.mkdir();
+    		
+    		File flasFile = new File(Constant.getSdPath()
+    				+File.separator+Constant.path
+    				+File.separator+Constant.sdFlagFile);
+    		try{
+        		if(!flasFile.exists())
+        			flasFile.createNewFile();
+    		}catch(Exception e){
+    			
+    		}
+
+    	}
+    	
+    	File extSd = new File(Constant.getExtSdPath());
+    	if(extSd.exists()){
+    		File cust = new File(Constant.getExtSdPath()+File.separator+Constant.path);
+    		if(!cust.exists())
+    			cust.mkdir();
+    		
+    		File flasFile = new File(Constant.getExtSdPath()
+    				+File.separator+Constant.path
+    				+File.separator+Constant.extSdFlagFile);
+    		try{
+        		if(!flasFile.exists())
+        			flasFile.createNewFile();
+    		}catch(Exception e){
+    			
+    		}
+    	}
+    	
+    	
+    }
     
 	boolean checkMacResult = false;
 	/**
@@ -166,7 +205,7 @@ public class Update extends Activity implements OnClickListener{
 		try{
 	    	TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 	    	final String macStr = tm.getDeviceId();       //取出IMEI
-			
+			logger.error(macStr);
 			final String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.check_mac_info_file;
 			byte[] buf = LoadResources.loadFile(this, Constant.root_fold+File.separator+Constant.check_mac_info_file, DirType.sd,false);
 			if(buf!=null){

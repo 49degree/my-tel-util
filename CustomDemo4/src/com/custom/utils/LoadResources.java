@@ -1,11 +1,9 @@
 package com.custom.utils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,10 +12,8 @@ import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
-import com.custom.update.Constant;
 import com.custom.update.ZipToFile;
-import com.custom.update.Constant.DirType;
+import com.custom.utils.Constant.DirType;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
@@ -57,7 +53,7 @@ public class LoadResources {
 	 */
 	public static void updateInstalledInfo(JSONObject installed){
 		logger.error("updateInstalledInfo");
-		String filePath = Constant.getDataPath()+File.separator+Constant.installedInfo;
+		String filePath = Constant.getSdPath()+File.separator+Constant.installedInfo;
 		try{
 			if(json==null){
 				json = new JSONObject();
@@ -94,7 +90,7 @@ public class LoadResources {
 	public static void loadUpdateInstalledInfo(){
 		logger.error("loadUpdateInstalledInfo");
 		try{
-			String filePath = Constant.getDataPath()+File.separator+Constant.installedInfo;
+			String filePath = Constant.getSdPath()+File.separator+Constant.installedInfo;
 			byte[] buf = LoadResources.loadFile(filePath);
 			if(buf==null){
 				return ;
@@ -376,16 +372,39 @@ public class LoadResources {
 	}
 	
 	public static long[] readExtSDCard() {   
-        File sdcardDir = new File(Constant.getExtSdPath());  
+          
         long[] datas = new long[3];
-     
+        String path = Constant.getWinSdPath(1);
+        if(path!=null) {   
+        	File sdcardDir = new File(path);
+            long blockSize = sdcardDir.getTotalSpace();   
+            //long blockCount = sf.getBlockCount();   
+            long availCount = sdcardDir.getFreeSpace();   
+            logger.error("总大小:"+blockSize/(1024) +"KB");   
+            logger.error("剩余空间:"+ availCount/(1024) +"KB");   
+            datas[0] = blockSize;
+            datas[2] = availCount;
+       }      
        return datas;
+     
    }
 	public static long[] readSDCard() {   
-        File root = new File(Constant.getSdPath());   
         long[] datas = new long[3];
-
-        return datas;
+        String path = Constant.getWinSdPath(0);
+        if(path!=null) {   
+        	File sdcardDir = new File(path);
+            long blockSize = sdcardDir.getTotalSpace();   
+            //long blockCount = sf.getBlockCount();   
+            long availCount = sdcardDir.getFreeSpace();   
+            logger.error("总大小:"+blockSize/1024+"KB");   
+            logger.error("剩余空间:"+ availCount/1024+"KB");   
+            datas[0] = blockSize;
+            datas[2] = availCount;
+       }      
+       return datas;
 	}
-	
+	 public static void main(String[] args) {
+		 readExtSDCard();
+		 readSDCard();
+	 }
 }

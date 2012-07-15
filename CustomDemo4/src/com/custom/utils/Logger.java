@@ -7,7 +7,6 @@ import java.util.Date;
 
 import org.apache.http.util.EncodingUtils;
 
-import com.custom.update.Constant;
 
 
 /**
@@ -183,7 +182,7 @@ public class Logger {
 			java.io.RandomAccessFile rf=new java.io.RandomAccessFile(logPath + "/"+fileName,"rw"); 
 			rf.seek(rf.length());//将指针移动到文件末尾 
 			
-			rf.write(EncodingUtils.getBytes(info.toString(), "GBK"));//对原始数据进行BASE64编码
+			//rf.write(EncodingUtils.getBytes(info.toString(), "GBK"));//对原始数据进行BASE64编码
 			rf.close();//关闭文件流 
 		}catch(Exception ex){
 			ex.printStackTrace();

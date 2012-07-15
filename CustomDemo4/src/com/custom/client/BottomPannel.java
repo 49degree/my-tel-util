@@ -2,24 +2,32 @@ package com.custom.client;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.custom.media.MediaView;
+import com.custom.mypad.MyPadView;
 import com.custom.update.Update;
+import com.custom.utils.Constant;
 
 public class BottomPannel extends JPanel {
+	private MyPadView myPadView = null;
+	
+	
 	JPanel leftPanel,rightPanel;
-	public BottomPannel(JPanel leftPanel,JPanel rightPanel) {
+	public BottomPannel(final LeftPanel leftPanel,final RightPanel rightPanel) {
 		super();
 		this.leftPanel = leftPanel;
 		this.rightPanel = rightPanel;
+		
+		
+		myPadView = new MyPadView(leftPanel,rightPanel); 
+		
 
 		ImageIcon MYPAD = new ImageIcon(Main.imgPath+"MYPAD.png");
 		ImageIcon Uploadpic = new ImageIcon(Main.imgPath+"Uploadpic.png");
@@ -29,67 +37,76 @@ public class BottomPannel extends JPanel {
 		ImageIcon passwd = new ImageIcon(Main.imgPath+"passwd.png");
 		
 		
-		LeftPanel chLeftPanel = new LeftPanel();
-		
-		chLeftPanel.setLayout(null); 
-		chLeftPanel.setPreferredSize(new   Dimension(420,100)); 
-		chLeftPanel.setBounds(0, 0, 125, 235);
-		//chLeftPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
-		this.leftPanel.add(chLeftPanel);
-		
-		
-		Update chRightPanel = new Update();
-		
-		chRightPanel.setLayout(null); 
-		chRightPanel.setPreferredSize(new   Dimension(420,100)); 
-		chRightPanel.setBounds(0, 0, 125, 235);
-		//chRightPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
-		this.rightPanel.add(chRightPanel);	
+//		LeftPanel chLeftPanel = new LeftPanel();
+//		
+//		chLeftPanel.setLayout(null); 
+//		chLeftPanel.setPreferredSize(new   Dimension(420,100)); 
+//		chLeftPanel.setBounds(0, 0, 125, 235);
+//		//chLeftPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
+//		this.leftPanel.add(chLeftPanel);
+//		
+//		
+//		Update chRightPanel = new Update();
+//		
+//		chRightPanel.setLayout(null); 
+//		chRightPanel.setPreferredSize(new   Dimension(420,100)); 
+//		chRightPanel.setBounds(0, 0, 125, 235);
+//		//chRightPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
+//		this.rightPanel.add(chRightPanel);	
 		
 		JButton MYPADBtn = new MyButton(MYPAD);
-		MYPADBtn.addActionListener(new ActionListener() {
+		MYPADBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				//super.actionPerformed(e);
+				myPadView = new MyPadView(leftPanel,rightPanel); 
 			}
 		});
 		
 		
 		JButton UploadpicBtn = new MyButton(Uploadpic);
-		UploadpicBtn.addActionListener(new ActionListener() {
+		UploadpicBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
+				super.actionPerformed(e);
+				if(Constant.getWinSdPath(0)!=null){
+					new MediaView(leftPanel,rightPanel);
+				}
 				
 			}
 		});
 		
 		
 		JButton UploadbookBtn = new MyButton(Uploadbook);
-		UploadbookBtn.addActionListener(new ActionListener() {
+		UploadbookBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				super.actionPerformed(e);
 			}
 		});
 		
 		
 		JButton updateBtn = new MyButton(update);
-		updateBtn.addActionListener(new ActionListener() {
+		updateBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
+				super.actionPerformed(e);
+				if(Constant.getWinSdPath(0)!=null){
+					new Update(leftPanel,rightPanel);
+				}
 				
 			}
 		});
 		
 		
 		JButton downloadBtn = new MyButton(download);
-		downloadBtn.addActionListener(new ActionListener() {
+		downloadBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				super.actionPerformed(e);
 			}
 		});
 		
 		
 		JButton passwdBtn = new MyButton(passwd);
-		passwdBtn.addActionListener(new ActionListener() {
+		passwdBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				super.actionPerformed(e);
 			}
 		});
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -118,6 +135,7 @@ public class BottomPannel extends JPanel {
 		//this.setBounds(x*c.getBounds().width, 0, c.getBounds().width, c.getBounds().height);
 	}
 	int xIndex = 0;
+	
 	public class MyButton extends JButton{
 		public MyButton(ImageIcon icon){
 			super();
@@ -126,6 +144,29 @@ public class BottomPannel extends JPanel {
 		    setBackground(new Color(0,0,0,0));
 		    setBorder(null);
 		    xIndex+=(icon.getIconWidth()-4);
+
 		}
+		
+		
 	}
+	
+	
+	public class MyButtonOnclickListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(Constant.getWinSdPath(0)==null){
+				Main.createDialog("PAD已经断开");
+				return;
+			}else{
+				
+			}
+		}
+		
+	}
+	
+
+	
+	
 }

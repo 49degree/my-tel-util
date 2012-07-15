@@ -1,0 +1,241 @@
+package com.custom.media;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.RandomAccessFile;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import com.custom.client.LeftConnectView;
+import com.custom.client.LeftPanel;
+import com.custom.client.Main;
+import com.custom.client.RightPanel;
+import com.custom.utils.Constant;
+import com.custom.utils.LoadResources;
+import com.custom.utils.Logger;
+import com.custom.utils.PrcessTaskThread;
+import com.custom.utils.PrcessTaskThread.CloseLintener;
+
+public class MediaView {
+	private static final Logger logger = Logger.getLogger(MediaView.class);
+    private LeftPanel leftPanel;
+    private RightPanel rightPanel;
+    private JTextArea text=null;
+    
+    private int movies = 0 ;
+    private int pics = 0 ;
+    private int mp3s = 0 ;
+    
+    private Map<String,String> filePaths = new HashMap<String,String>();
+    
+    public MediaView(LeftPanel leftPanel,RightPanel rightPanel) {
+    	logger.info("Update(LeftPanel leftPanel,RightPanel rightPanel)");
+    	this.leftPanel = leftPanel;
+    	this.rightPanel = rightPanel; 
+    	
+    	this.leftPanel.removeAll();
+    	this.rightPanel.removeAll();
+    	
+		//已经连接左边视图
+		final JPanel connectPanel = new LeftConnectView();
+		leftPanel.setPannel(connectPanel);
+		
+
+
+		
+		
+        //连接右边视图
+        text=new JTextArea();
+        text.setLineWrap(true);
+        text.setOpaque(false);//背景色设为透明的了       
+        text.setLayout(null); 
+        text.setBounds(10, 10, 230, 215);
+        text.setBorder(BorderFactory.createLineBorder(Color.black)); 
+
+        
+        
+		JScrollPane scroll = new JScrollPane(text); 
+		scroll.setOpaque(false);//背景色设为透明的了 
+		scroll.getViewport().setOpaque(false); 
+		//把定义的JTextArea放到JScrollPane里面去 
+		scroll.setHorizontalScrollBarPolicy( 
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); 
+		scroll.setVerticalScrollBarPolicy( 
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+		scroll.setPreferredSize(new   Dimension(420,100)); 
+        scroll.setBounds(10, 10, 230, 190);
+        
+        MediaBottomPannel mediaBottomPannel = new MediaBottomPannel(this);
+        mediaBottomPannel.setOpaque(false);//背景色设为透明的了       
+        mediaBottomPannel.setLayout(null); 
+        mediaBottomPannel.setPreferredSize(new   Dimension(420,100)); 
+        mediaBottomPannel.setBounds(10, 200, 230, 30);
+
+        leftPanel.setPannel(connectPanel);
+        rightPanel.setPannel(scroll);
+         
+        setText();
+        
+        rightPanel.setPannel(mediaBottomPannel);
+    }
+
+    public class BooleanObject{
+    	boolean value = false;
+    }
+    /**
+     * 0=视频；1=图片；2=MP3
+     */
+    public void uploadFile(){
+    	final BooleanObject stop = new BooleanObject();
+    	int lessSpace = 10*1024*1024;//10M
+    	String fileSpaceStr = "";
+    	int fileSpace = 0;
+    	
+    	String readedSpaceStr = "";
+    	long readedSpace = 0;
+    	
+    	for(String filePath:filePaths.keySet()){
+    		File file = new File(filePath);
+    		byte[] bufer = new byte[1024];
+    		int readLength = 0;
+    		if(!file.exists()||file.isDirectory())
+    			continue;
+			long[] extsdSpace = LoadResources.readExtSDCard();
+			long[] sdSpace = LoadResources.readSDCard();
+			
+			fileSpaceStr = doubleFormat(file.length()/(1024*1024.0));
+			fileSpace = (int)file.length()/(1024*1024);
+			
+			if((extsdSpace[0]==0||extsdSpace[2]<file.length())
+					&&sdSpace[2]<=file.length()+lessSpace){
+				Main.createDialog("磁盘空间不足");
+				break;
+			}
+			String rootPath = null;
+			if(extsdSpace[2]>file.length()){
+				rootPath = Constant.getExtSdPath()+File.separator+Constant.mediaDirName+File.separator+"media"+File.separator;
+			}else if(sdSpace[2]>file.length()+lessSpace){
+				rootPath = Constant.getSdPath()+File.separator+Constant.mediaDirName+File.separator+"media"+File.separator;
+			}
+			
+			if(!new File(rootPath).exists()||new File(rootPath).isFile()){
+				new File(rootPath).mkdirs();
+			}
+			File temp = new File(rootPath+file.getName());
+			int i=0;
+			//如果已经有这个文件，使用别名
+			while(temp.exists()&&temp.isFile()){
+				int pointIndex = file.getName().indexOf(".");
+				temp = new File(rootPath
+						+file.getName().substring(0,pointIndex+1)+(i++)
+						+file.getName().substring(pointIndex));
+			}
+			
+			PrcessTaskThread prcessTaskThread = new PrcessTaskThread(
+					"复制文件","正在复制"+file.getName()+"("+0+"/"+fileSpace+"M)"
+					,0,(int)file.length()/(1024*1024),new CloseLintener(){
+						public void close(){
+							stop.value = true;
+						}
+					});
+			
+			RandomAccessFile oSavedFile = null;
+			FileInputStream in = null;
+			try{
+				in = new FileInputStream(file); 
+				oSavedFile = new RandomAccessFile(temp.getAbsolutePath(),"rw");
+				oSavedFile.setLength(file.length());
+				while(!stop.value&&(readLength = in.read(bufer))>0){
+					readedSpace += readLength;
+					oSavedFile.write(bufer,0,readLength);
+					prcessTaskThread.setValue(
+							"正在复制"+file.getName()+"("+doubleFormat(readedSpace/(1024*1024.0))
+							+"/"+fileSpace+"M)",(int)readedSpace/(1024*1024),(int)file.length()/(1024*1024));
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				try{
+					if(in!=null)
+						in.close();
+				}catch(Exception e){}
+				try{
+					if(oSavedFile!=null)
+						oSavedFile.close();
+				}catch(Exception e){}
+			}
+			if(stop.value)
+				break;
+    	}
+
+    }
+    
+    /**
+     * 0=视频；1=图片；2=MP3
+     */
+    public void addFilePath(String filePath,int type){
+    	if(!filePaths.containsKey(filePath)){
+        	this.filePaths.put(filePath,filePath);
+    		if(type==0){
+    			movies++;
+    		}else if(type==1){
+    			pics++;
+    		}else if(type==2)
+    			mp3s++;
+        	setText();
+    	}
+
+    }
+    
+    public void clearFilePath(){
+    	filePaths.clear();
+    	movies = 0;
+    	pics = 0;
+    	pics = 0;
+    	setText();
+    }   
+    
+    public void setText(){
+		try {
+			text.setText("");
+			if (movies == 0 && pics == 0 && mp3s == 0) {
+				text.append("您还没有选择资源");
+			} else {
+				text.append("您已经选择了");
+
+				StringBuffer bu = new StringBuffer();
+				if (movies > 0) {
+					bu.append((bu.length() == 0 ? "" : ";") + movies + "个视频");
+				}
+				if (pics > 0) {
+					bu.append((bu.length() == 0 ? "" : ";") + pics + "张图片");
+				}
+				if (mp3s > 0) {
+					bu.append((bu.length() == 0 ? "" : ";") + mp3s + "个MP3");
+				}
+				text.append(bu.toString());
+			}
+			text.append("\n");
+			for(String filePath:filePaths.keySet()){
+				text.append(filePath);
+				text.append("\n");
+			}
+			text.setCaretPosition(0);
+		}catch(Exception e){
+      	
+      }
+    }
+    
+    public static String doubleFormat(double d){   
+        DecimalFormat df = new DecimalFormat("0.##");   
+        return df.format(d);                   
+    }
+}

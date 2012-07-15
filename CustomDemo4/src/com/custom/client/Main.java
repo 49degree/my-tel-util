@@ -1,26 +1,34 @@
 package com.custom.client;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import com.custom.utils.Constant;
 
 
 public class Main extends JFrame{
-	static int WIDTH = 400;
-	static int HEIGHT = 300;
+	public static int WIDTH = 400;
+	public static int HEIGHT = 300;
 	static int screenX = 200;
 	static int screenY = 200;
 	ImageIcon img;
 	public static String imgPath;
+	public static String textPath;
+	
+	public static Main mainInstance = null;
 	public Main() {
 		super("资源管理");
+		mainInstance = this;
 		imgPath = System.getProperty("user.dir")+"\\img\\";
+		textPath = System.getProperty("user.dir")+"\\text\\";
+		
 		img = new ImageIcon(imgPath+"Backgroud.png");
 		
 		WIDTH = img.getIconWidth();
@@ -39,11 +47,6 @@ public class Main extends JFrame{
 		};
         panel.setOpaque(false);//背景色设为透明的了
 
-        try {
-            //jbInit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 		
 		Container contentPane = this.getContentPane();
 		panel.setLayout(null); 
@@ -51,21 +54,11 @@ public class Main extends JFrame{
 		
 
 		//左边布局
-		JPanel leftPanel = new JPanel(); 
-		leftPanel.setLayout(null); 
-		leftPanel.setPreferredSize(new   Dimension(420,100)); 
-		leftPanel.setBounds(95, 65, 125, 235);
-		leftPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
-		leftPanel.setOpaque(false);
+		LeftPanel leftPanel = new LeftPanel(); 
 		panel.add(leftPanel);
 		
 		//右边布局
-		JPanel rightPanel = new JPanel(); 
-		rightPanel.setLayout(null); 
-		rightPanel.setPreferredSize(new   Dimension(420,100)); 
-		rightPanel.setBounds(228, 65, 250, 235);
-		rightPanel.setBorder(BorderFactory.createLineBorder(Color.black)); 
-		rightPanel.setOpaque(false);
+		RightPanel rightPanel = new RightPanel(); 
 		panel.add(rightPanel);		
 		
 		//按钮
@@ -78,8 +71,32 @@ public class Main extends JFrame{
 		panel.add(buttonPanel); 
 		
 		setVisible(true);
+		
+		//监听是否连接PAD
+		new Thread(){
+			public void run(){
+				while(true){
+					Constant.getWinSdPath(0);
+					try{
+						Thread.sleep(1000);
+					}catch(Exception e){}
+				}
+			}
+		}.start();
+		
 	}
+	
+	public static void createDialog(String msg){
+		JDialog diolog = new JDialog(Main.mainInstance,"提示");
+		JLabel lable = new JLabel(msg);
+		diolog.getContentPane().add(lable, BorderLayout.CENTER);
 
+		diolog.setLocation(Main.mainInstance.location().x+(Main.mainInstance.WIDTH-200)/2, Main.mainInstance.location().y+100);// 定位
+
+		diolog.setSize(200, 100);
+		diolog.setModal(true);
+		diolog.show();
+	}
 
 	public static void main(String[] args){
 		new Main();

@@ -1,82 +1,91 @@
 package com.custom.update;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.swing.JPanel;
-
 import org.json.JSONObject;
 
-import com.custom.update.Constant.DirType;
+import com.custom.client.LeftPanel;
+import com.custom.client.RightPanel;
+import com.custom.utils.Constant;
 import com.custom.utils.HandlerWhat;
 import com.custom.utils.LoadResources;
 import com.custom.utils.Logger;
 
-public class Update extends JPanel{
+public class Update{
 	private static final Logger logger = Logger.getLogger(Update.class);
     /** Called when the activity is first created. */
 
     CustomUtils customUtils = null;
-	
-	
-	public Update(){
-		super();
-		setOpaque(false);//背景色设为透明的了
-		LoadResources.loadUpdateInstalledInfo();
+    LeftPanel leftPanel;
+    RightPanel rightPanel;
+    public Update(LeftPanel leftPanel,RightPanel rightPanel) {
+    	System.out.println("Update(LeftPanel leftPanel,RightPanel rightPanel)");
+    	
+    	logger.info("Update(LeftPanel leftPanel,RightPanel rightPanel)");
+    	
+    	this.leftPanel = leftPanel;
+    	this.rightPanel = rightPanel; 
+    	customUtils = new CustomUtils();
+    	customUtils.queryInfo();//联网查询
+    	
+    	LoadResources.loadUpdateInstalledInfo();
+    	createInstalledfolds();
+    	
     }
+	
     
     Thread downThread = null;
     boolean downThreadStop = false;
-    public void onClick(){
 
-   	 downThread = new Thread(){
-           	public void run(){
-               	customUtils = new CustomUtils();
-               	customUtils.queryInfo();
-               	logger.error("JSONObject installed = customUtils.queryInfo();");
-               	try{
-               	   	Iterator it = LoadResources.updateInstalledInfo.keySet().iterator();
-                   	logger.error("createNoInstalledfolds");
-                   	while(!downThreadStop&&it.hasNext()){
-                   		JSONObject install = LoadResources.updateInstalledInfo.get(it.next());
-               			String unZipflag = null;
-               			try{
-               				unZipflag = install.getString(Constant.fileUnziped);
-               			}catch(Exception e){}
-               			
-                       	if(install!=null&&unZipflag==null){
-           					//logger.error(install.getString(Constant.updateId));
-                       		handler.sendMessage(handler.obtainMessage(5));
-                       	    customUtils.downFile(install, handler);
-                       	    try{
-                       	    	synchronized (this) {
-                       	    		wait();
-									}
-                       	    }catch(Exception e){
-                       	    	e.printStackTrace();
-                       	    }
-                       	    
-                       	}
-                   	}
-           		}catch(Exception e){
-           			e.printStackTrace();
-           		}
-           		handler.sendMessage(handler.obtainMessage(HandlerWhat.NETWORK_CONNECT_RESULE, new Boolean(true)));
-           		logger.error("下载线程结束");
-           	}
-           };
-           downThread.setDaemon(true);
-           downThread.start();
-   	
+	public void onClick() {
+		downThread = new Thread() {
+			public void run() {
+				customUtils = new CustomUtils();
+				customUtils.queryInfo();
+				logger.error("JSONObject installed = customUtils.queryInfo();");
+				try {
+					Iterator it = LoadResources.updateInstalledInfo.keySet()
+							.iterator();
+					logger.error("createNoInstalledfolds");
+					while (!downThreadStop && it.hasNext()) {
+						JSONObject install = LoadResources.updateInstalledInfo
+								.get(it.next());
+						String unZipflag = null;
+						try {
+							unZipflag = install.getString(Constant.fileUnziped);
+						} catch (Exception e) {
+						}
 
-    }
+						if (install != null && unZipflag == null) {
+							// logger.error(install.getString(Constant.updateId));
+							handler.sendMessage(handler.obtainMessage(5));
+							customUtils.downFile(install, handler);
+							try {
+								synchronized (this) {
+									wait();
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				handler.sendMessage(handler.obtainMessage(
+						HandlerWhat.NETWORK_CONNECT_RESULE, new Boolean(true)));
+				logger.error("下载线程结束");
+			}
+		};
+		downThread.setDaemon(true);
+		downThread.start();
+
+	}
     
     boolean hasNotify = false;
     private Handler handler = new Handler(){
@@ -159,11 +168,6 @@ public class Update extends JPanel{
     };
     
     public void updateUi(boolean networkState){
-    	logger.error("updateUi");
-
-		initFile();//以下为加压SD卡内容
-		copyFile();//
-	
 		createInstalledfolds();
     }
     
@@ -212,108 +216,7 @@ public class Update extends JPanel{
     	return allNum;
     }
     
-    
-    /**
-     * 以下COPY SD卡内容
-     */
-    private void copyFile(){
-    	if(Constant.getExtSdPath()==null||"".equals(Constant.getExtSdPath())){
-    		return;
-    	}
-		HashMap<String,String> btnInfo = new HashMap<String,String> ();
-		try{
-			byte[] buf = LoadResources.loadFile(Constant.root_fold+File.separator+Constant.copy_file_info_file, DirType.sd,false);
-			if(buf!=null){
-				BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
-				String line = fin.readLine();
-				
-				while(line!=null){
-					btnInfo.put(line,line);
-					line = fin.readLine();
-				}
-			}
-		}catch(Exception e){
-			
-		}
-        //查询扩展SD卡中是否有需要解压的资源
-		File sdfile = LoadResources.getFileByType(Constant.copy_file_fold,DirType.extSd);
-		String[] lists = getFileNames(sdfile.listFiles());
-		ZipToFile zipToFile = new ZipToFile();//.upZipFile(filePath,false,"custom");
-		if(lists!=null){
-			for(int i = 0;i<lists.length;i++){
-				if(!btnInfo.containsKey(lists[i])){
-					try{
-						zipToFile.upZipFile(Constant.getExtSdPath()+
-								File.separator+Constant.copy_file_fold+
-								File.separator+lists[i],true,"..");
-						
-						btnInfo.put(lists[i], lists[i]);
-					}catch(Exception e){
-						
-					}
 
-				}
-			}
-			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.copy_file_info_file;
-    		//保存文件
-    		modifyInitedFile(btnInfo,filePath);
-		}
-    }
-    
-    /**
-     * 以下为加压SD卡内容
-     */
-    private void initFile(){
-    	if(Constant.getExtSdPath()==null||"".equals(Constant.getExtSdPath())){
-    		return;
-    	}
-    	FilenameFilter fl = new FilenameFilter() {//过滤文件名称
-			@Override
-			public boolean accept(File arg0, String arg1) {
-				//logger.error("accept(File arg0, String arg1):"+arg1);
-				if(arg1.indexOf(".")<0)
-					return false;
-				return "ZIP".equals(arg1.substring(arg1.indexOf(".")+1).toUpperCase());
-			}
-		};
-		
-		HashMap<String,String> btnInfo = new HashMap<String,String> ();
-		try{
-			byte[] buf = LoadResources.loadFile(Constant.root_fold+File.separator+Constant.inited_file_info_file, DirType.sd,false);
-			if(buf!=null){
-				BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
-				String line = fin.readLine();
-				
-				while(line!=null){
-					btnInfo.put(line,line);
-					line = fin.readLine();
-				}
-			}
-		}catch(Exception e){
-			
-		}
-
-        //查询扩展SD卡中是否有需要解压的资源
-		File sdfile = LoadResources.getFileByType(Constant.inited_file_fold,DirType.extSd);
-		String[] lists = getFileNames(sdfile.listFiles(fl));
-		ToGetFile toGetFile = new ToGetFile();
-		if(lists!=null){
-			for(int i = 0;i<lists.length;i++){
-				if(!btnInfo.containsKey(lists[i])){
-					toGetFile.downFileFromzip(Constant.getExtSdPath()+
-							File.separator+Constant.inited_file_fold+
-							File.separator+lists[i]);
-					
-					btnInfo.put(lists[i], lists[i]);
-				}
-			}
-			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.inited_file_info_file;
-    		//保存文件
-    		modifyInitedFile(btnInfo,filePath);
-		}
-		
-		
-    }
     
 	/**
 	 * 获取文件名称
@@ -335,8 +238,6 @@ public class Update extends JPanel{
 	
 	public void modifyInitedFile(HashMap<String,String> btnInfo,String filePath){
 		try{
-			//String filePath = Constant.getSdPath()+File.separator+Constant.inited_file_fold+File.separator+Constant.inited_file_info_file;
-			
 			//清空文件
 			RandomAccessFile   raf   =   new   RandomAccessFile(filePath,   "rw"); 
 			raf.setLength(0); 

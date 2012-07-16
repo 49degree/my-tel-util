@@ -34,7 +34,7 @@ public class MediaView {
     private int pics = 0 ;
     private int mp3s = 0 ;
     
-    private Map<String,String> filePaths = new HashMap<String,String>();
+    private Map<String,Boolean> filePaths = new HashMap<String,Boolean>();
     
     public MediaView(LeftPanel leftPanel,RightPanel rightPanel) {
     	logger.info("Update(LeftPanel leftPanel,RightPanel rightPanel)");
@@ -94,88 +94,126 @@ public class MediaView {
      * 0=视频；1=图片；2=MP3
      */
     public void uploadFile(){
-    	final BooleanObject stop = new BooleanObject();
-    	int lessSpace = 10*1024*1024;//10M
-    	String fileSpaceStr = "";
-    	int fileSpace = 0;
-    	
-    	String readedSpaceStr = "";
-    	long readedSpace = 0;
-    	
-    	for(String filePath:filePaths.keySet()){
-    		File file = new File(filePath);
-    		byte[] bufer = new byte[1024];
-    		int readLength = 0;
-    		if(!file.exists()||file.isDirectory())
-    			continue;
-			long[] extsdSpace = LoadResources.readExtSDCard();
-			long[] sdSpace = LoadResources.readSDCard();
-			
-			fileSpaceStr = doubleFormat(file.length()/(1024*1024.0));
-			fileSpace = (int)file.length()/(1024*1024);
-			
-			if((extsdSpace[0]==0||extsdSpace[2]<file.length())
-					&&sdSpace[2]<=file.length()+lessSpace){
-				Main.createDialog("磁盘空间不足");
-				break;
-			}
-			String rootPath = null;
-			if(extsdSpace[2]>file.length()){
-				rootPath = Constant.getExtSdPath()+File.separator+Constant.mediaDirName+File.separator+"media"+File.separator;
-			}else if(sdSpace[2]>file.length()+lessSpace){
-				rootPath = Constant.getSdPath()+File.separator+Constant.mediaDirName+File.separator+"media"+File.separator;
-			}
-			
-			if(!new File(rootPath).exists()||new File(rootPath).isFile()){
-				new File(rootPath).mkdirs();
-			}
-			File temp = new File(rootPath+file.getName());
-			int i=0;
-			//如果已经有这个文件，使用别名
-			while(temp.exists()&&temp.isFile()){
-				int pointIndex = file.getName().indexOf(".");
-				temp = new File(rootPath
-						+file.getName().substring(0,pointIndex+1)+(i++)
-						+file.getName().substring(pointIndex));
-			}
-			
-			PrcessTaskThread prcessTaskThread = new PrcessTaskThread(
-					"复制文件","正在复制"+file.getName()+"("+0+"/"+fileSpace+"M)"
-					,0,(int)file.length()/(1024*1024),new CloseLintener(){
-						public void close(){
-							stop.value = true;
-						}
-					});
-			
-			RandomAccessFile oSavedFile = null;
-			FileInputStream in = null;
-			try{
-				in = new FileInputStream(file); 
-				oSavedFile = new RandomAccessFile(temp.getAbsolutePath(),"rw");
-				oSavedFile.setLength(file.length());
-				while(!stop.value&&(readLength = in.read(bufer))>0){
-					readedSpace += readLength;
-					oSavedFile.write(bufer,0,readLength);
-					prcessTaskThread.setValue(
-							"正在复制"+file.getName()+"("+doubleFormat(readedSpace/(1024*1024.0))
-							+"/"+fileSpace+"M)",(int)readedSpace/(1024*1024),(int)file.length()/(1024*1024));
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}finally{
-				try{
-					if(in!=null)
-						in.close();
-				}catch(Exception e){}
-				try{
-					if(oSavedFile!=null)
-						oSavedFile.close();
-				}catch(Exception e){}
-			}
-			if(stop.value)
-				break;
-    	}
+    	Thread t = new Thread(){
+    		public void run(){
+    	    	final BooleanObject stop = new BooleanObject();
+    	    	int lessSpace = 10*1024*1024;//10M
+    	    	
+    	    	String fileSpaceStr = "";
+    	    	int fileSpace = 0;
+    	    	long readedSpace = 0;
+    	    	
+				PrcessTaskThread prcessTaskThread = new PrcessTaskThread(
+						"复制文件","正在复制文件"
+						,0,0,new CloseLintener(){
+							public void close(){
+								stop.value = true;
+							}
+						});
+    	    	for(Map.Entry<String,Boolean> filePath:filePaths.entrySet()){
+    	    		if(filePath.getValue()){
+    	    			continue;
+    	    		}
+    	    		
+    	    		File file = new File(filePath.getKey());
+    	    		
+    	    		
+    	    		byte[] bufer = new byte[1024];
+    	    		int readLength = 0;
+    	    		if(!file.exists()||file.isDirectory())
+    	    			continue;
+    				long[] extsdSpace = LoadResources.readExtSDCard();
+    				long[] sdSpace = LoadResources.readSDCard();
+    				
+    				fileSpaceStr = doubleFormat(file.length()/(1024*1024.0));
+    				fileSpace = (int)file.length()/(1024*1024);
+    				readedSpace = 0;
+    				
+    				if((extsdSpace[0]==0||extsdSpace[2]<file.length())
+    						&&sdSpace[2]<=file.length()+lessSpace){
+    					Main.createDialog("磁盘空间不足");
+    					break;
+    				}
+    				String rootPath = null;
+    				if(extsdSpace[2]>file.length()){
+    					rootPath = Constant.getExtSdPath()+File.separator+Constant.mediaDirName+File.separator+"media"+File.separator;
+    				}else if(sdSpace[2]>file.length()+lessSpace){
+    					rootPath = Constant.getSdPath()+File.separator+Constant.mediaDirName+File.separator+"media"+File.separator;
+    				}
+    				
+    				if(!new File(rootPath).exists()||new File(rootPath).isFile()){
+    					new File(rootPath).mkdirs();
+    				}
+    				File temp = new File(rootPath+file.getName());
+    				int bakTimes=0;
+    				//如果已经有这个文件，使用别名
+    				while(temp.exists()&&temp.isFile()){
+    					int pointIndex = file.getName().indexOf(".");
+    					temp = new File(rootPath
+    							+file.getName().substring(0,pointIndex)+"("+(bakTimes++)+")"
+    							+file.getName().substring(pointIndex));
+    				}
+    				
 
+
+    				RandomAccessFile oSavedFile = null;
+    				FileInputStream in = null;
+    				try{
+    					in = new FileInputStream(file); 
+    					oSavedFile = new RandomAccessFile(temp.getAbsolutePath(),"rw");
+    					oSavedFile.setLength(file.length());
+    					bakTimes=0;
+    					while(!stop.value&&(readLength = in.read(bufer))>0){
+    						readedSpace += readLength;
+    						oSavedFile.write(bufer,0,readLength);
+    						
+    						if(bakTimes%50==0||readedSpace>=file.length()){
+    							//logger.debug(doubleFormat(readedSpace/(1024*1024.0))+"/"+fileSpaceStr);
+    							if(readedSpace>=file.length()){
+        							prcessTaskThread.setValue(
+        									"正在复制"+file.getName()+"("+fileSpaceStr+"/"+fileSpaceStr+"M)",
+        									(int)readedSpace/(1024*1024),
+        									fileSpace);
+    								break;
+    							}else{
+        							prcessTaskThread.setValue(
+        									"正在复制"+file.getName()+"("+doubleFormat(readedSpace/(1024*1024.0))+"/"+fileSpaceStr+"M)",
+        									(int)readedSpace/(1024*1024),
+        									fileSpace);
+    							}
+    								
+    						}
+    						bakTimes++;
+    					}
+    					//logger.debug(System.currentTimeMillis()+":"+ file.getName()+"copyed 11");
+    				}catch(Exception e){
+    					e.printStackTrace();
+    				}finally{
+    					prcessTaskThread.setValue("正在保存文件"+file.getName(),100,100);
+    					//logger.debug(System.currentTimeMillis()+":"+ file.getName()+"copyed 12");
+    					try{
+    						if(in!=null)
+    							in.close();
+    					}catch(Exception e){}
+    					try{
+    						if(oSavedFile!=null)
+    							oSavedFile.close();
+    					}catch(Exception e){}
+    					//logger.debug(System.currentTimeMillis()+":"+ file.getName()+"copyed 13");
+    				}
+    				
+    				if(stop.value)
+    					break;
+    				filePath.setValue(true);
+    				setText();
+    			
+    	    	}
+    	    	
+				prcessTaskThread.setValue("完成",100,100);
+    		}
+    	};
+    	t.setDaemon(true);
+    	t.start();
     }
     
     /**
@@ -183,7 +221,7 @@ public class MediaView {
      */
     public void addFilePath(String filePath,int type){
     	if(!filePaths.containsKey(filePath)){
-        	this.filePaths.put(filePath,filePath);
+        	this.filePaths.put(filePath,false);
     		if(type==0){
     			movies++;
     		}else if(type==1){
@@ -199,7 +237,7 @@ public class MediaView {
     	filePaths.clear();
     	movies = 0;
     	pics = 0;
-    	pics = 0;
+    	mp3s = 0;
     	setText();
     }   
     
@@ -226,6 +264,7 @@ public class MediaView {
 			text.append("\n");
 			for(String filePath:filePaths.keySet()){
 				text.append(filePath);
+				text.append(filePaths.get(filePath)==true?"(OK)":"");
 				text.append("\n");
 			}
 			text.setCaretPosition(0);

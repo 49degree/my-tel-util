@@ -35,33 +35,37 @@ public class PrcessTaskThread extends JDialog {
 	 * 初始化对话框
 	 */
 	public void init() {
-		this.setTitle(title);
-		this.setModal(true);
+		
+		setTitle(title);
+		setModal(true);
 		proBar = new JProgressBar();
+		proBar.setOpaque(false);//背景色设为透明的了       
+		proBar.setString(msg);
 		proBar.setValue(0);
+		proBar.setMaximum(max);
 		proBar.setStringPainted(true);// 设置显示字符串
-		this.add(proBar);
+		add(proBar);
 		proThread = new TaskThread();
 		proThread.start();
 		
+
 		new Thread(){
 			public void run(){
-				setLocation(Main.mainInstance.location().x
-						+(Main.mainInstance.WIDTH-200)/2, 
-						Main.mainInstance.location().y+100);// 定位
-
-				setSize(200, 100);
-				setLocationRelativeTo(null);
+				setLocation(Main.mainInstance.location().x, 
+						Main.mainInstance.location().y);// 定位
+				setSize(250, 70);
+				setLocationRelativeTo(Main.mainInstance);
 				setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 				// 添加窗口关闭事件
 				addWindowListener(new WindowAdapter() {
 					public void windowClosing(WindowEvent e) {
+						stopBar();
 						if(closeLintener!=null)
 							closeLintener.close();
 						dispose();
 					}
 				});
-				setVisible(true);
+				PrcessTaskThread.this.setVisible(true);
 			}
 		}.start();
 	}
@@ -85,12 +89,14 @@ public class PrcessTaskThread extends JDialog {
 
 			Runnable runner = new Runnable() {
 				public void run() {
+					proBar.setMaximum(max);
+					proBar.setString(msg);
+					proBar.setValue(min);
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					proBar.setValue(min);
 				}
 			};
 			while(!stop){
@@ -108,6 +114,28 @@ public class PrcessTaskThread extends JDialog {
 	
 	public interface CloseLintener{
 		public void close();
+	}
+	
+	
+	public static void main(String[] args){
+		new Main();
+		PrcessTaskThread prcessTaskThread = new PrcessTaskThread(
+				"复制文件","正在复制"
+				,0,100,new CloseLintener(){
+					public void close(){
+					}
+				});
+		for(int i=0;i<100;i++){
+			prcessTaskThread.setValue("正在复制("+i+"/"+100+"M)"
+					,i,100);
+			try{
+				Thread.sleep(500);
+			}catch(Exception e){
+				
+			}
+			
+		}
+
 	}
 
 }

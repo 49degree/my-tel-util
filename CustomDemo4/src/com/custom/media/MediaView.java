@@ -42,7 +42,6 @@ public class MediaView {
     private Map<String,Boolean> filePaths = new HashMap<String,Boolean>();
     
     public MediaView(LeftPanel leftPanel,RightPanel rightPanel,int buttonType) {
-    	logger.info("Update(LeftPanel leftPanel,RightPanel rightPanel)");
     	this.leftPanel = leftPanel;
     	this.rightPanel = rightPanel; 
     	this.buttonType = buttonType;

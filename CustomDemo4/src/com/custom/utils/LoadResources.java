@@ -53,7 +53,7 @@ public class LoadResources {
 	 */
 	public static void updateInstalledInfo(JSONObject installed){
 		logger.error("updateInstalledInfo");
-		String filePath = Constant.getSdPath()+File.separator+Constant.installedInfo;
+		String filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+Constant.installedInfo;
 		try{
 			if(json==null){
 				json = new JSONObject();
@@ -90,7 +90,7 @@ public class LoadResources {
 	public static void loadUpdateInstalledInfo(){
 		logger.error("loadUpdateInstalledInfo");
 		try{
-			String filePath = Constant.getSdPath()+File.separator+Constant.installedInfo;
+			String filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+Constant.installedInfo;
 			byte[] buf = LoadResources.loadFile(filePath);
 			if(buf==null){
 				return ;

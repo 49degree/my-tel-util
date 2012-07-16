@@ -23,9 +23,7 @@ public class Update{
     LeftPanel leftPanel;
     RightPanel rightPanel;
     public Update(LeftPanel leftPanel,RightPanel rightPanel) {
-    	System.out.println("Update(LeftPanel leftPanel,RightPanel rightPanel)");
-    	
-    	logger.info("Update(LeftPanel leftPanel,RightPanel rightPanel)");
+
     	
     	this.leftPanel = leftPanel;
     	this.rightPanel = rightPanel; 

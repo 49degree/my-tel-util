@@ -57,7 +57,6 @@ public class BookBottomPannel extends JPanel {
 		sendBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
 				super.actionPerformed(e);
-				logger.debug("actionPerformed(ActionEvent e)");
 				mediaView.uploadFile();
 			}
 		});
@@ -140,7 +139,6 @@ public class BookBottomPannel extends JPanel {
 		if(type==0){
 			chooser.setFileFilter(new MYFileFilter(Constant.bookTypes));
 		}else if(type==1){
-			logger.debug(Arrays.toString(Constant.docTypes));
 			chooser.setFileFilter(new MYFileFilter(Constant.docTypes));
 		}
 		

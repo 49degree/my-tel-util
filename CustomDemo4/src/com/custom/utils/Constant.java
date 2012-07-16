@@ -76,8 +76,8 @@ public class Constant {
 		}
 
 
-		QUERY_URL = properties.getProperty(QUERY_URL);
-		INSTALLED_URL = properties.getProperty(INSTALLED_URL);
+		QUERY_URL = properties.getProperty("QUERY_URL");
+		INSTALLED_URL = properties.getProperty("INSTALLED_URL");
 //		sdPath = properties.getProperty("D_ROOT");
 //		extSdPath =  properties.getProperty("TF_ROOT");
 		check_mac_url = properties.getProperty(check_mac_url);

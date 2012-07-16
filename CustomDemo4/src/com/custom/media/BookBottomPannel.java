@@ -33,7 +33,7 @@ public class BookBottomPannel extends JPanel {
 			
 		
 		JButton mediaBtn = new MyButton(backguandPic);
-		mediaBtn.setText("电子书1");
+		mediaBtn.setText("电子书");
 		
 		mediaBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -43,7 +43,7 @@ public class BookBottomPannel extends JPanel {
 		});
 		
 		JButton picBtn = new MyButton(backguandPic);
-		picBtn.setText("电子书1");
+		picBtn.setText("文档");
 		picBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
 				super.actionPerformed(e);
@@ -127,7 +127,7 @@ public class BookBottomPannel extends JPanel {
 	}
 	
 	/**
-	 * 0=视频；1=图片；2=MP3
+	 * 0=电子书；1=文档
 	 * @param type
 	 */
 	public void createChooser(int type) {
@@ -138,12 +138,10 @@ public class BookBottomPannel extends JPanel {
 		chooser.setAcceptAllFileFilterUsed(true);
 		chooser.setMultiSelectionEnabled(true);
 		if(type==0){
-			chooser.setFileFilter(new MYFileFilter(Constant.mediaTypes));
+			chooser.setFileFilter(new MYFileFilter(Constant.bookTypes));
 		}else if(type==1){
-			logger.debug(Arrays.toString(Constant.picTypes));
-			chooser.setFileFilter(new MYFileFilter(Constant.picTypes));
-		}else if(type==2){
-			chooser.setFileFilter(new MYFileFilter(Constant.mp3Types));
+			logger.debug(Arrays.toString(Constant.docTypes));
+			chooser.setFileFilter(new MYFileFilter(Constant.docTypes));
 		}
 		
 		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {

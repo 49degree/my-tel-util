@@ -36,6 +36,9 @@ public class MediaView {
     private int pics = 0 ;
     private int mp3s = 0 ;
     
+    private int books = 0 ;
+    private int docs = 0 ;
+    
     private Map<String,Boolean> filePaths = new HashMap<String,Boolean>();
     
     public MediaView(LeftPanel leftPanel,RightPanel rightPanel,int buttonType) {
@@ -112,7 +115,7 @@ public class MediaView {
     		}
     		
     	}else if(buttonType==1){//电子书
-			if(movies+pics+mp3s==0){
+			if(books+docs==0){
 				Main.createDialog("没有选择文件");
 				return ;
 			}
@@ -264,11 +267,10 @@ public class MediaView {
         			mp3s++;
         	}else if(buttonType==1){//电子书
         		if(type==0){
-        			movies++;
+        			books++;
         		}else if(type==1){
-        			pics++;
-        		}else if(type==2)
-        			mp3s++;
+        			docs++;
+        		}
         	}
 
         	setText();
@@ -285,9 +287,9 @@ public class MediaView {
         	pics = 0;
         	mp3s = 0;
     	}else if(buttonType==1){//电子书
-        	movies = 0;
-        	pics = 0;
-        	mp3s = 0;
+    		books = 0;
+        	docs = 0;
+        
     	}
     	setText();
     }   
@@ -295,7 +297,7 @@ public class MediaView {
     public void setText(){
 		try {
 			text.setText("");
-			if (movies == 0 && pics == 0 && mp3s == 0) {
+			if ((movies == 0 && pics == 0 && mp3s == 0)&&(books==0&&docs==0)) {
 				text.append("您还没有选择资源");
 			} else {
 				text.append("您已经选择了");
@@ -313,14 +315,11 @@ public class MediaView {
 						bu.append((bu.length() == 0 ? "" : ";") + mp3s + "个MP3");
 					}
 		    	}else if(buttonType==1){//电子书
-					if (movies > 0) {
-						bu.append((bu.length() == 0 ? "" : ";") + movies + "个视频");
+					if (books > 0) {
+						bu.append((bu.length() == 0 ? "" : ";") + books + "个电子书");
 					}
-					if (pics > 0) {
-						bu.append((bu.length() == 0 ? "" : ";") + pics + "张图片");
-					}
-					if (mp3s > 0) {
-						bu.append((bu.length() == 0 ? "" : ";") + mp3s + "个MP3");
+					if (docs > 0) {
+						bu.append((bu.length() == 0 ? "" : ";") + docs + "个文档");
 					}
 		    	}
 				

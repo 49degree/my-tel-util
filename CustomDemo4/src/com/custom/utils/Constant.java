@@ -54,6 +54,10 @@ public class Constant {
 	public static String[] mediaTypes = null;
 	public static String[] picTypes = null;
 	public static String[] mp3Types = null;
+	
+	public static String[] bookTypes = null;
+	public static String[] docTypes = null;
+
 	public static String mediaDirName = null;
 	
 	public enum FileDirType{
@@ -89,6 +93,13 @@ public class Constant {
 		}
 		if(properties.getProperty("mp3Type")!=null){
 			mp3Types = properties.getProperty("mp3Type").split(":");
+		}
+		
+		if(properties.getProperty("bookType")!=null){
+			bookTypes = properties.getProperty("bookType").split(":");
+		}
+		if(properties.getProperty("docType")!=null){
+			docTypes = properties.getProperty("docType").split(":");
 		}
 
 		mediaDirName = properties.getProperty("mediaDirName");

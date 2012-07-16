@@ -30,17 +30,19 @@ public class MediaView {
     private RightPanel rightPanel;
     private JTextArea text=null;
     
+    private int buttonType = -1 ;//面板类型 0=多媒体；1=电子书
+    
     private int movies = 0 ;
     private int pics = 0 ;
     private int mp3s = 0 ;
     
     private Map<String,Boolean> filePaths = new HashMap<String,Boolean>();
     
-    public MediaView(LeftPanel leftPanel,RightPanel rightPanel) {
+    public MediaView(LeftPanel leftPanel,RightPanel rightPanel,int buttonType) {
     	logger.info("Update(LeftPanel leftPanel,RightPanel rightPanel)");
     	this.leftPanel = leftPanel;
     	this.rightPanel = rightPanel; 
-    	
+    	this.buttonType = buttonType;
     	this.leftPanel.removeAll();
     	this.rightPanel.removeAll();
     	
@@ -72,19 +74,28 @@ public class MediaView {
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
 		scroll.setPreferredSize(new   Dimension(420,100)); 
         scroll.setBounds(10, 10, 230, 190);
-        
-        MediaBottomPannel mediaBottomPannel = new MediaBottomPannel(this);
-        mediaBottomPannel.setOpaque(false);//背景色设为透明的了       
-        mediaBottomPannel.setLayout(null); 
-        mediaBottomPannel.setPreferredSize(new   Dimension(420,100)); 
-        mediaBottomPannel.setBounds(10, 200, 230, 30);
+        if(this.buttonType==0){
+            MediaBottomPannel mediaBottomPannel = new MediaBottomPannel(this);
+            mediaBottomPannel.setOpaque(false);//背景色设为透明的了       
+            mediaBottomPannel.setLayout(null); 
+            mediaBottomPannel.setPreferredSize(new   Dimension(420,100)); 
+            mediaBottomPannel.setBounds(10, 200, 230, 30);
+            leftPanel.setPannel(connectPanel);
+            rightPanel.setPannel(scroll);
+            setText();
+            rightPanel.setPannel(mediaBottomPannel);
+        }else if(this.buttonType == 1 ){
+            BookBottomPannel bookBottomPannel = new BookBottomPannel(this);
+            bookBottomPannel.setOpaque(false);//背景色设为透明的了       
+            bookBottomPannel.setLayout(null); 
+            bookBottomPannel.setPreferredSize(new   Dimension(420,100)); 
+            bookBottomPannel.setBounds(10, 200, 230, 30);
+            leftPanel.setPannel(connectPanel);
+            rightPanel.setPannel(scroll);
+            setText();
+            rightPanel.setPannel(bookBottomPannel);
+        }
 
-        leftPanel.setPannel(connectPanel);
-        rightPanel.setPannel(scroll);
-         
-        setText();
-        
-        rightPanel.setPannel(mediaBottomPannel);
     }
 
     public class BooleanObject{
@@ -94,8 +105,30 @@ public class MediaView {
      * 0=视频；1=图片；2=MP3
      */
     public void uploadFile(){
+    	if(buttonType==0){//多媒体
+    		if(movies+pics+mp3s==0){
+    			Main.createDialog("没有选择文件");
+    			return;
+    		}
+    		
+    	}else if(buttonType==1){//电子书
+			if(movies+pics+mp3s==0){
+				Main.createDialog("没有选择文件");
+				return ;
+			}
+			
+    	}
+    	
+    	
     	Thread t = new Thread(){
     		public void run(){
+    			String dirName = "";
+            	if(buttonType==0){//多媒体
+            		dirName = "media";
+            	}else if(buttonType==1){//电子书
+            		dirName = "book";
+            	}
+    			
     	    	final BooleanObject stop = new BooleanObject();
     	    	int lessSpace = 10*1024*1024;//10M
     	    	
@@ -136,9 +169,9 @@ public class MediaView {
     				}
     				String rootPath = null;
     				if(extsdSpace[2]>file.length()){
-    					rootPath = Constant.getExtSdPath()+File.separator+Constant.mediaDirName+File.separator+"media"+File.separator;
+    					rootPath = Constant.getExtSdPath()+File.separator+Constant.mediaDirName+File.separator+dirName+File.separator;
     				}else if(sdSpace[2]>file.length()+lessSpace){
-    					rootPath = Constant.getSdPath()+File.separator+Constant.mediaDirName+File.separator+"media"+File.separator;
+    					rootPath = Constant.getSdPath()+File.separator+Constant.mediaDirName+File.separator+dirName+File.separator;
     				}
     				
     				if(!new File(rootPath).exists()||new File(rootPath).isFile()){
@@ -222,12 +255,22 @@ public class MediaView {
     public void addFilePath(String filePath,int type){
     	if(!filePaths.containsKey(filePath)){
         	this.filePaths.put(filePath,false);
-    		if(type==0){
-    			movies++;
-    		}else if(type==1){
-    			pics++;
-    		}else if(type==2)
-    			mp3s++;
+        	if(buttonType==0){//多媒体
+        		if(type==0){
+        			movies++;
+        		}else if(type==1){
+        			pics++;
+        		}else if(type==2)
+        			mp3s++;
+        	}else if(buttonType==1){//电子书
+        		if(type==0){
+        			movies++;
+        		}else if(type==1){
+        			pics++;
+        		}else if(type==2)
+        			mp3s++;
+        	}
+
         	setText();
     	}
 
@@ -235,9 +278,17 @@ public class MediaView {
     
     public void clearFilePath(){
     	filePaths.clear();
-    	movies = 0;
-    	pics = 0;
-    	mp3s = 0;
+
+    	
+    	if(buttonType==0){//多媒体
+        	movies = 0;
+        	pics = 0;
+        	mp3s = 0;
+    	}else if(buttonType==1){//电子书
+        	movies = 0;
+        	pics = 0;
+        	mp3s = 0;
+    	}
     	setText();
     }   
     
@@ -250,15 +301,30 @@ public class MediaView {
 				text.append("您已经选择了");
 
 				StringBuffer bu = new StringBuffer();
-				if (movies > 0) {
-					bu.append((bu.length() == 0 ? "" : ";") + movies + "个视频");
-				}
-				if (pics > 0) {
-					bu.append((bu.length() == 0 ? "" : ";") + pics + "张图片");
-				}
-				if (mp3s > 0) {
-					bu.append((bu.length() == 0 ? "" : ";") + mp3s + "个MP3");
-				}
+				
+		    	if(buttonType==0){//多媒体
+					if (movies > 0) {
+						bu.append((bu.length() == 0 ? "" : ";") + movies + "个视频");
+					}
+					if (pics > 0) {
+						bu.append((bu.length() == 0 ? "" : ";") + pics + "张图片");
+					}
+					if (mp3s > 0) {
+						bu.append((bu.length() == 0 ? "" : ";") + mp3s + "个MP3");
+					}
+		    	}else if(buttonType==1){//电子书
+					if (movies > 0) {
+						bu.append((bu.length() == 0 ? "" : ";") + movies + "个视频");
+					}
+					if (pics > 0) {
+						bu.append((bu.length() == 0 ? "" : ";") + pics + "张图片");
+					}
+					if (mp3s > 0) {
+						bu.append((bu.length() == 0 ? "" : ";") + mp3s + "个MP3");
+					}
+		    	}
+				
+
 				text.append(bu.toString());
 			}
 			text.append("\n");

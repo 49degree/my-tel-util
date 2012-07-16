@@ -68,7 +68,7 @@ public class BottomPannel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				super.actionPerformed(e);
 				if(Constant.getWinSdPath(0)!=null){
-					new MediaView(leftPanel,rightPanel);
+					new MediaView(leftPanel,rightPanel,0);//多媒体
 				}
 				
 			}
@@ -79,6 +79,9 @@ public class BottomPannel extends JPanel {
 		UploadbookBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
 				super.actionPerformed(e);
+				if(Constant.getWinSdPath(0)!=null){
+					new MediaView(leftPanel,rightPanel,1);//电子书
+				}
 			}
 		});
 		

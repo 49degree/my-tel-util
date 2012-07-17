@@ -89,7 +89,6 @@ public class Update{
 							});
 					downFile();
 				}
-				
 			}
 		});
 		updateBtn.setBounds(50, 192, 60, 20);

@@ -30,6 +30,7 @@ public class PrcessTaskThread extends JDialog {
 	
 	public void stopBar(){
 		this.stop = true;
+		dispose();
 	}
 	/**
 	 * 初始化对话框
@@ -40,6 +41,7 @@ public class PrcessTaskThread extends JDialog {
 		setModal(true);
 		proBar = new JProgressBar();
 		proBar.setOpaque(false);//背景色设为透明的了       
+
 		proBar.setString(msg);
 		proBar.setValue(0);
 		proBar.setMaximum(max);
@@ -68,6 +70,8 @@ public class PrcessTaskThread extends JDialog {
 				PrcessTaskThread.this.setVisible(true);
 			}
 		}.start();
+		
+
 	}
 	
 	public void setValue(String msg,int minValue,int maxValue){

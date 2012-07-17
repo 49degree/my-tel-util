@@ -74,7 +74,6 @@ public class MyPadView {
     		String line = fin.readLine();
     		while(line!=null){
     			if(line!=null){
-    				System.out.println(line);
     				noConnectText.append(line);
     				noConnectText.append("\n");
     			}

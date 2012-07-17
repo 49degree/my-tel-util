@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -118,20 +119,22 @@ public class CustomUtils {
 				logger.error("length:"+length);
 				long[] sdRealease= LoadResources.readSDCard();
 				long[] fileRealease = LoadResources.readExtSDCard();
+				logger.error("sdRealease:"+Arrays.toString(sdRealease));
+				logger.error("fileRealease:"+Arrays.toString(fileRealease));
 				if(fileExsit){
 					boolean change = false;
 					oSavedFile = new RandomAccessFile(filePath,"rw");
-					if(fileDirType==Constant.FileDirType.extSd&&fileRealease[1]<length){
+					if(fileDirType==Constant.FileDirType.extSd&&fileRealease[2]<length){
 						change = true;
-						if(sdRealease[1]<length){
+						if(sdRealease[2]<length){
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
 						    return ;
 						}
 						filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
 						fileDirType = Constant.FileDirType.sd;
-					}else if(fileDirType==Constant.FileDirType.sd&&sdRealease[1]<length){
+					}else if(fileDirType==Constant.FileDirType.sd&&sdRealease[2]<length){
 						change = true;
-						if(fileRealease[1]<length){
+						if(fileRealease[2]<length){
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
 						    return ;
 						}
@@ -159,13 +162,15 @@ public class CustomUtils {
 					}
 				}else{
 					try{
-						if(sdRealease[1]>length){
+						
+						if(sdRealease[2]>length){
 							filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
 							fileDirType = Constant.FileDirType.sd;
-						}else if(fileRealease[1]>length){
+						}else if(fileRealease[2]>length){
 							filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
 							fileDirType = Constant.FileDirType.extSd;
 						}else{
+							logger.error("handler.sendMessage(handler.obtainMessage(1))");
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
 							return ;
 						}
@@ -189,6 +194,7 @@ public class CustomUtils {
 					if(stop)
 						return ;
 				}catch(IOException e2){
+					e2.printStackTrace();
 					//没有存储空间了
 					handler.sendMessage(handler.obtainMessage(1));
 					return ;

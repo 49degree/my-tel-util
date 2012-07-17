@@ -58,6 +58,7 @@ public class MediaView {
 		
         //连接右边视图
         text=new JTextArea();
+        text.setEditable(false);
         text.setLineWrap(true);
         text.setOpaque(false);//背景色设为透明的了       
         text.setLayout(null); 

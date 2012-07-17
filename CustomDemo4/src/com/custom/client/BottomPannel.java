@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import com.custom.media.MediaView;
 import com.custom.mypad.MyPadView;
 import com.custom.update.Update;
+import com.custom.userinfo.UserInfoView;
 import com.custom.utils.Constant;
 
 public class BottomPannel extends JPanel {
@@ -110,6 +111,9 @@ public class BottomPannel extends JPanel {
 		passwdBtn.addActionListener(new MyButtonOnclickListener() {
 			public void actionPerformed(ActionEvent e) {
 				super.actionPerformed(e);
+				if(Constant.getWinSdPath(0)!=null){
+					new UserInfoView(leftPanel,rightPanel);
+				}
 			}
 		});
 		GridBagConstraints constraints = new GridBagConstraints();

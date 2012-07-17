@@ -100,6 +100,7 @@ public class LoadResources {
 		try{
 			String filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+Constant.installedInfo;
 			byte[] buf = LoadResources.loadFile(filePath);
+			updateInstalledInfo.clear();
 			if(buf==null){
 				return ;
 			}

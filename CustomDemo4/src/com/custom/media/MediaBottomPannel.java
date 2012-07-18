@@ -166,7 +166,7 @@ public class MediaBottomPannel extends JPanel {
 	*自己定义文件选择过滤器，只要实现filefilter这个接口就可以了
 	*这是个简单的实现，可以增加允许类型集合字段以更方便的进行使用
 	*/
-	private class MYFileFilter extends FileFilter{
+	public static class MYFileFilter extends FileFilter{
 		    String[] types = null;
 		    public MYFileFilter(String[] types){
 		    	this.types = types;

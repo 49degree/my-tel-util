@@ -17,7 +17,7 @@ public class RightPanel extends JPanel {
 		setLayout(null); 
 		setPreferredSize(new   Dimension(420,100)); 
 		setBounds(228, 65, 250, 235);
-		setBorder(BorderFactory.createLineBorder(Color.black)); 
+		//setBorder(BorderFactory.createLineBorder(Color.black)); 
         
 	}
 	

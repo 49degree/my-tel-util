@@ -51,7 +51,7 @@ public class Update{
     	this.leftPanel.removeAll();
     	this.rightPanel.removeAll();
 		//已经连接左边视图
-		final JPanel connectPanel = new LeftConnectView();
+		final JPanel connectPanel = new LeftConnectView(Constant.leftPic4);
 		leftPanel.setPannel(connectPanel);
 		
 

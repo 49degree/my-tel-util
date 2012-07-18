@@ -14,7 +14,7 @@ public class LeftPanel extends JPanel {
 		setLayout(null); 
 		setPreferredSize(new   Dimension(420,100)); 
 		setBounds(95, 65, 125, 235);
-		setBorder(BorderFactory.createLineBorder(Color.black)); 
+		//setBorder(BorderFactory.createLineBorder(Color.black)); 
 		setOpaque(false);
 		
 

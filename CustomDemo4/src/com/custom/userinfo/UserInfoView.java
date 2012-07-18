@@ -45,7 +45,7 @@ public class UserInfoView {
 
     	
 		//已经连接左边视图
-		final JPanel connectPanel = new LeftConnectView();
+		final JPanel connectPanel = new LeftConnectView(Constant.leftPic6);
 		leftPanel.setPannel(connectPanel);
     	
     	
@@ -70,7 +70,7 @@ public class UserInfoView {
     	
     	
 		JButton nameBtn = new MyButton(backguandPic);
-		nameBtn.setText("昵称");
+		nameBtn.setText("修改昵称");
 		nameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -80,10 +80,10 @@ public class UserInfoView {
 				mainPanel.repaint();
 			}
 		});
-		nameBtn.setBounds(50, 200, 60, 20);
+		nameBtn.setBounds(40, 200, 80, 20);
 		
 		JButton psdBtn = new MyButton(backguandPic);
-		psdBtn.setText("密码");
+		psdBtn.setText("修改密码");
 		psdBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				creatPasswordView();
@@ -92,7 +92,7 @@ public class UserInfoView {
 				mainPanel.repaint();
 			}
 		});
-		psdBtn.setBounds(130, 200, 60, 20);
+		psdBtn.setBounds(140, 200, 80, 20);
 		
 		creatNameView();
 		mainPanel.removeAll();
@@ -140,6 +140,11 @@ public class UserInfoView {
 						
 						properties.store(fos, "");
 						fos.close();// 关闭流 
+						
+						//已经连接左边视图
+						final JPanel connectPanel = new LeftConnectView(Constant.leftPic6);
+						leftPanel.removeAll();
+						leftPanel.setPannel(connectPanel);
 						Main.createDialog("修改成功");
 					}catch(Exception e1){
 						
@@ -181,8 +186,8 @@ public class UserInfoView {
     	psdEdit.setBounds(80, 10, 70, 20);
 
 		
-		if(properties.getProperty("userPsd")!=null&&
-				!"".equals(properties.getProperty("userPsd").trim())){
+		if(properties.getProperty(Constant.userPsd)!=null&&
+				!"".equals(properties.getProperty(Constant.userPsd).trim())){
 			passwordPanel.add(psdLeble);
 			passwordPanel.add(psdEdit);
 		}

@@ -59,8 +59,20 @@ public class Constant {
 	public static String[] docTypes = null;
 
 	public static String mediaDirName = null;
+	public static String helpFileName = null;
+	public static String leftPic1 = null;
+	public static String leftPic2 = null;
+	public static String leftPic3 = null;
+	public static String leftPic4 = null;
+	public static String leftPic5 = null;
+	public static String leftPic6 = null;
+	
 	public final static String userName="userName";
 	public final static String userPsd="userPsd";
+	public final static String headerPic="headerPic";
+	
+	
+	
 	
 	public enum FileDirType{
 		data,sd,extSd
@@ -102,7 +114,26 @@ public class Constant {
 		if(properties.getProperty("docType")!=null){
 			docTypes = properties.getProperty("docType").split(":");
 		}
-
+		
+		if(properties.getProperty("leftPic1")!=null){
+			leftPic1 = properties.getProperty("leftPic1");
+		}
+		if(properties.getProperty("leftPic2")!=null){
+			leftPic2 = properties.getProperty("leftPic2");
+		}
+		if(properties.getProperty("leftPic3")!=null){
+			leftPic3 = properties.getProperty("leftPic3");
+		}
+		if(properties.getProperty("leftPic4")!=null){
+			leftPic4 = properties.getProperty("leftPic4");
+		}
+		if(properties.getProperty("leftPic5")!=null){
+			leftPic5 = properties.getProperty("leftPic5");
+		}
+		if(properties.getProperty("leftPic6")!=null){
+			leftPic6 = properties.getProperty("leftPic6");
+		}
+		helpFileName = properties.getProperty("helpFileName");
 		mediaDirName = properties.getProperty("mediaDirName");
 
 	}

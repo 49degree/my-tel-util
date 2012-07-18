@@ -47,9 +47,14 @@ public class MediaView {
     	this.buttonType = buttonType;
     	this.leftPanel.removeAll();
     	this.rightPanel.removeAll();
-    	
+    	String connectViewPic = "update_left.png";
+    	 if(this.buttonType==0){
+    		 connectViewPic = Constant.leftPic2;
+    	 }else  if(this.buttonType==1){
+    		 connectViewPic = Constant.leftPic3;
+    	 }
 		//已经连接左边视图
-		final JPanel connectPanel = new LeftConnectView();
+		final JPanel connectPanel = new LeftConnectView(connectViewPic);
 		leftPanel.setPannel(connectPanel);
 		
 

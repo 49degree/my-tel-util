@@ -20,7 +20,7 @@ public class LeftNoConnectView extends JPanel{
 		setLayout(null); 
 		setPreferredSize(new   Dimension(420,100)); 
 		setBounds(10, 10, img.getIconWidth(), img.getIconHeight());
-		setBorder(BorderFactory.createLineBorder(Color.black));
+		//setBorder(BorderFactory.createLineBorder(Color.black));
 
 	}
 

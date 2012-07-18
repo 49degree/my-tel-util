@@ -59,6 +59,8 @@ public class Constant {
 	public static String[] docTypes = null;
 
 	public static String mediaDirName = null;
+	public final static String userName="userName";
+	public final static String userPsd="userPsd";
 	
 	public enum FileDirType{
 		data,sd,extSd
@@ -102,6 +104,7 @@ public class Constant {
 		}
 
 		mediaDirName = properties.getProperty("mediaDirName");
+
 	}
 	public static String getSdPath(){
 		return sdPath;

@@ -336,7 +336,7 @@ public class Main extends JFrame{
 	public class HelpBottomPannel extends JPanel {
 		public HelpBottomPannel() {
 			super();
-	    	//setOpaque(false);//背景色设为透明的了       
+	    	setOpaque(false);//背景色设为透明的了       
 	    	setLayout(null); 
 	    	setBounds(385, 45, 100, 120);
 	    	setPreferredSize(new   Dimension(420,100));

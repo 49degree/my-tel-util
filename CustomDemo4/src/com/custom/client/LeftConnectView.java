@@ -2,10 +2,15 @@ package com.custom.client;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import com.custom.utils.Constant;
 
 public class LeftConnectView extends JPanel{
 	
@@ -27,8 +32,18 @@ public class LeftConnectView extends JPanel{
 		label.setBounds(0, 10, 110, 50);
 		label.setBorder(BorderFactory.createLineBorder(Color.black)); 
 		
+		
+		
+    	final Properties properties = new Properties();
+		try{
+			properties.load(new FileInputStream(System.getProperty("user.dir")
+					+ File.separator +"bin"+File.separator+ Constant.SERVER_CONFIG));
+		}catch(Exception e){
+			
+		}
+		
 		final JLabel  label2 = new JLabel ();
-		label2.setText("昵称：");
+		label2.setText("昵称："+properties.getProperty(Constant.userName,""));
 		label2.setOpaque(false);//背景色设为透明的了       
 		label2.setLayout(null); 
 		label2.setPreferredSize(new   Dimension(420,100)); 

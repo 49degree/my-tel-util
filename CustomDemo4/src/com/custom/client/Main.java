@@ -44,6 +44,7 @@ public class Main extends JFrame{
 	private JPanel panel = null;
 	public Main() {
 		super("资源管理");
+		Constant.intit();
 		this.setResizable(false);
 		mainInstance = this;
 		imgPath = System.getProperty("user.dir")+"\\img\\";

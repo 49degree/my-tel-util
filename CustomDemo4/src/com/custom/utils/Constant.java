@@ -80,7 +80,7 @@ public class Constant {
 	public enum DirType{
 		assets,file,sd,extSd
 	}
-	static{
+	public static void intit(){
 		Properties properties = new Properties();
 		try{
 			properties.load(new FileInputStream(System.getProperty("user.dir")
@@ -93,8 +93,7 @@ public class Constant {
 		QUERY_URL = properties.getProperty("QUERY_URL");
 		INSTALLED_URL = properties.getProperty("INSTALLED_URL");
 
-		check_mac_url = properties.getProperty(check_mac_url);
-		wifi_manager = properties.getProperty(wifi_manager);
+
 		
 		fileEncode = properties.getProperty("fileEncode");
 		

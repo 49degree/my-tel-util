@@ -65,6 +65,7 @@ public class MyPadView {
 		noConnectscroll.setBounds(10, 10, 230, 215);
         
         byte[] buffer = LoadResources.loadFile(Main.textPath+"noConnectView.txt");
+
         try{
     		BufferedReader fin = null;
     		if(Constant.fileEncode!=null)

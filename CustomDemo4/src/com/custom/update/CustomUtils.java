@@ -81,16 +81,16 @@ public class CustomUtils {
 		Constant.FileDirType fileDirType = null;
 		//查询是否已经存在文件
 		if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){
-			sdfile = new File( Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName);
+			sdfile = new File( Constant.getSdPath()+Constant.path+File.separator+fileName);
 			if(fileExsit = sdfile.exists()){
-				filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
+				filePath = Constant.getSdPath()+Constant.path+File.separator+fileName;
 				fileDirType = Constant.FileDirType.sd;
 			}
 		}
 		if(!fileExsit){
-			sdfile = new File( Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName);
+			sdfile = new File( Constant.getExtSdPath()+Constant.path+File.separator+fileName);
 			if(fileExsit = sdfile.exists()){
-				filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
+				filePath = Constant.getExtSdPath()+Constant.path+File.separator+fileName;
 				fileDirType = Constant.FileDirType.extSd;
 			}
 		}
@@ -130,7 +130,7 @@ public class CustomUtils {
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
 						    return ;
 						}
-						filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
+						filePath = Constant.getSdPath()+Constant.path+File.separator+fileName;
 						fileDirType = Constant.FileDirType.sd;
 					}else if(fileDirType==Constant.FileDirType.sd&&sdRealease[2]<length){
 						change = true;
@@ -138,7 +138,7 @@ public class CustomUtils {
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
 						    return ;
 						}
-						filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
+						filePath = Constant.getExtSdPath()+Constant.path+File.separator+fileName;
 						fileDirType = Constant.FileDirType.extSd;
 					}
 					if(change){
@@ -164,10 +164,10 @@ public class CustomUtils {
 					try{
 						
 						if(sdRealease[2]>length){
-							filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
+							filePath = Constant.getSdPath()+Constant.path+File.separator+fileName;
 							fileDirType = Constant.FileDirType.sd;
 						}else if(fileRealease[2]>length){
-							filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
+							filePath = Constant.getExtSdPath()+Constant.path+File.separator+fileName;
 							fileDirType = Constant.FileDirType.extSd;
 						}else{
 							logger.error("handler.sendMessage(handler.obtainMessage(1))");

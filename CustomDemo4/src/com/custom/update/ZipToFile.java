@@ -192,14 +192,21 @@ public class ZipToFile {
 			File tempFile = null;
 			RandomAccessFile os = null;
 			try{
-				if(sDCardRealease[1]>=ze.getSize()){
+				if(sDCardRealease[2]>=ze.getSize()){
 					tempFile = getRealFileName(sdPath, ze.getName(),specifiedDir);
+					
+					new File(tempFile.getAbsolutePath().substring(0, 
+							tempFile.getAbsolutePath().indexOf(tempFile.getName())+1)).mkdirs();
+					
+					
 					os = new RandomAccessFile(tempFile.getAbsoluteFile(),"rw");
-					sDCardRealease[1] = sDCardRealease[1]-ze.getSize();
-				}else if(extSDCardRealease[1]>=ze.getSize()){
+					sDCardRealease[2] = sDCardRealease[2]-ze.getSize();
+				}else if(extSDCardRealease[2]>=ze.getSize()){
 					tempFile = getRealFileName(extSdPath, ze.getName(),specifiedDir);
+					new File(tempFile.getAbsolutePath().substring(0, 
+							tempFile.getAbsolutePath().indexOf(tempFile.getName())+1)).mkdirs();
 					os = new RandomAccessFile(tempFile.getAbsoluteFile(),"rw");
-					extSDCardRealease[1] = extSDCardRealease[1]-ze.getSize();
+					extSDCardRealease[2] = extSDCardRealease[2]-ze.getSize();
 				}else{
 					throw new IOException("空间不足");
 				}
@@ -218,7 +225,9 @@ public class ZipToFile {
 				}
 				is.close();
 				os.close();
+				
 			}catch(IOException e){
+				e.printStackTrace();
 				throw new IOException("解压失败");
 			}
 
@@ -236,7 +245,8 @@ public class ZipToFile {
 	 * @return java.io.File 实际的文件
 	 */
 	public static File getRealFileName(String baseDir, String absFileName,String specifiedDir) {
-		String[] dirs = absFileName.split(File.separator);
+		logger.debug(absFileName);
+		String[] dirs = absFileName.split("\\\\");
 		int begin = 0;
 		if(specifiedDir!=null&&dirs.length > 0){
 			if("..".equals(specifiedDir)){

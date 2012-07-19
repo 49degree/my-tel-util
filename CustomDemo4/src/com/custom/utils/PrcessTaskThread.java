@@ -2,6 +2,7 @@ package com.custom.utils;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JDialog;
@@ -122,23 +123,31 @@ public class PrcessTaskThread extends JDialog {
 	
 	
 	public static void main(String[] args){
-		new Main();
-		PrcessTaskThread prcessTaskThread = new PrcessTaskThread(
-				"复制文件","正在复制"
-				,0,100,new CloseLintener(){
-					public void close(){
-					}
-				});
-		for(int i=0;i<100;i++){
-			prcessTaskThread.setValue("正在复制("+i+"/"+100+"M)"
-					,i,100);
-			try{
-				Thread.sleep(500);
-			}catch(Exception e){
-				
-			}
-			
+		
+		try{
+			File file = new File("g:\\\\custom\\update1.zip");
+			if(file.exists())
+				file.delete();
+		}catch(Exception e){
+			e.printStackTrace();
 		}
+//		new Main();
+//		PrcessTaskThread prcessTaskThread = new PrcessTaskThread(
+//				"复制文件","正在复制"
+//				,0,100,new CloseLintener(){
+//					public void close(){
+//					}
+//				});
+//		for(int i=0;i<100;i++){
+//			prcessTaskThread.setValue("正在复制("+i+"/"+100+"M)"
+//					,i,100);
+//			try{
+//				Thread.sleep(500);
+//			}catch(Exception e){
+//				
+//			}
+//			
+//		}
 
 	}
 

@@ -184,6 +184,10 @@ public class Update{
 
 						}
 					}
+					
+	    			if(prcessTaskThread!=null){
+	    				prcessTaskThread.stopBar();
+	    			}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -236,6 +240,7 @@ public class Update{
         						toGetFile.delteDownFile(filePath);
 	        					msgObject.put(Constant.fileUnziped, "true");
 	        					LoadResources.updateInstalledInfo(msgObject,true);
+	        					createInstalledfolds();
 	        					if(downThread!=null&&downThread.isAlive()){
 	        						synchronized (downThread) {
 	        							downThread.notify();
@@ -337,49 +342,5 @@ public class Update{
 			
 		}
     }
-
-    
-
-    
-	/**
-	 * 获取文件名称
-	 * @param files
-	 * @return
-	 */
-	private String[] getFileNames(File[] files){
-		String[] lists = null;
-		if(files!=null&&files.length>0){
-			
-			lists = new String[files.length];
-			for(int i=0;i<lists.length;i++){
-				lists[i] = files[i].getName();
-			}
-			
-		}
-		return lists;
-	}
-	
-	public void modifyInitedFile(HashMap<String,String> btnInfo,String filePath){
-		try{
-			//清空文件
-			RandomAccessFile   raf   =   new   RandomAccessFile(filePath,   "rw"); 
-			raf.setLength(0); 
-			raf.close(); 
-			FileOutputStream fos = new FileOutputStream(new File(filePath));
-			Iterator it = btnInfo.keySet().iterator();
-
-			while(it.hasNext()){
-				String key = (String)it.next();
-				key = key+"\n"; 
-				fos.write(key.getBytes());
-			}
-			fos.getChannel().force(true);
-			fos.flush();
-			fos.close();
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}		
-	}
 
 }

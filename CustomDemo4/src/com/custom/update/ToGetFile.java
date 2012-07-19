@@ -20,8 +20,10 @@ public class ToGetFile {
 	public void delteDownFile(String filePath){
 		try{
 			File file = new File(filePath);
-			if(file.exists())
+			if(file.exists()){
 				file.delete();
+				logger.error(filePath);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}

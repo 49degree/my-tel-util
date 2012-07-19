@@ -1,6 +1,10 @@
 package com.custom.update;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.RandomAccessFile;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,11 +26,9 @@ public class InitDataFoldReceiver extends BroadcastReceiver {
         try{
     		Context friendContext = MainApplication.getInstance().createPackageContext(
     				Constant.update_package,Context.CONTEXT_IGNORE_SECURITY);
-    		out = friendContext.openFileOutput("DataFoldCount.txt", Context.MODE_APPEND);
+    		out = friendContext.openFileOutput(Constant.installedFold, Context.MODE_APPEND);
     		logger.error("InitDataFoldReceiver 查询结果:"+count);
-    		out.write(("="+Constant.foldName_ex+"="+count+"\n").getBytes("GBK"));
-    		
-    		out.flush();
+    		modifyInstalledFile(count);
         }catch(Exception e){
         	
         }finally{
@@ -39,4 +41,19 @@ public class InitDataFoldReceiver extends BroadcastReceiver {
         	
         }
     }
+    
+    
+	public void modifyInstalledFile(int count){
+		try{
+			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.installedFold;
+			FileOutputStream fos = new FileOutputStream(new File(filePath),true);
+			fos.write(("="+Constant.foldName_ex+"="+count+"\n").getBytes("GBK"));
+			fos.flush();
+			fos.flush();
+			fos.close();
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}		
+	}
 }

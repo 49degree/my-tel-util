@@ -47,7 +47,7 @@ public class Constant {
 	
 	public static String inited_file_fold = "custom/inited";
 	public static String inited_file_info_file = "inited_file_info.txt";
-	
+	public final static String installedFold = "DataFoldCount.txt";
 	public static String copy_file_fold = "custom/copy_file";
 	public static String copy_file_info_file = "copy_file_info.txt";
 	public static String check_mac_info_file = "check_info.txt";

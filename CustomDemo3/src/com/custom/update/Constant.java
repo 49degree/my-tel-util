@@ -16,7 +16,7 @@ public class Constant {
 	private static String sdPath = null;
 	private static String extSdPath = null;
 	private static String dataPath = null;
-	public final static String path="custom";
+
 	public final static String timeFormate = "yyyy-MM-dd HH:mm-ss";
 	
 	//升级文件信息

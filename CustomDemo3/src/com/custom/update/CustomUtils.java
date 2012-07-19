@@ -35,7 +35,6 @@ public class CustomUtils {
     public JSONObject queryInfo(){
     	logger.error("queryInfo");
 		try {
-			LoadResources.loadUpdateInstalledInfo();// 获取已经下载的文件列表
 			HashMap<String, String> params = new HashMap<String, String>();
 			HttpRequest httpRequest = new HttpRequest(Constant.QUERY_URL,
 					params, context);
@@ -62,6 +61,9 @@ public class CustomUtils {
 					e.printStackTrace();
 				}
 			}
+			
+			LoadResources.loadUpdateInstalledInfo();// 获取已经下载的文件列表
+			
 		} catch (Exception e) {  
             e.printStackTrace();  
         } 
@@ -85,16 +87,16 @@ public class CustomUtils {
 		Constant.FileDirType fileDirType = null;
 		//查询是否已经存在文件
 		if(Constant.getSdPath()!=null&&!"".equals(Constant.getSdPath())){
-			sdfile = new File( Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName);
+			sdfile = new File( Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+fileName);
 			if(fileExsit = sdfile.exists()){
-				filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
+				filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+fileName;
 				fileDirType = Constant.FileDirType.sd;
 			}
 		}
 		if(!fileExsit){
-			sdfile = new File( Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName);
+			sdfile = new File( Constant.getExtSdPath()+File.separator+Constant.root_fold+File.separator+fileName);
 			if(fileExsit = sdfile.exists()){
-				filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
+				filePath = Constant.getExtSdPath()+File.separator+Constant.root_fold+File.separator+fileName;
 				fileDirType = Constant.FileDirType.extSd;
 			}
 		}
@@ -132,7 +134,7 @@ public class CustomUtils {
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
 						    return ;
 						}
-						filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
+						filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+fileName;
 						fileDirType = Constant.FileDirType.sd;
 					}else if(fileDirType==Constant.FileDirType.sd&&sdRealease[1]<length){
 						change = true;
@@ -140,7 +142,7 @@ public class CustomUtils {
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了
 						    return ;
 						}
-						filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
+						filePath = Constant.getExtSdPath()+File.separator+Constant.root_fold+File.separator+fileName;
 						fileDirType = Constant.FileDirType.extSd;
 					}
 					if(change){
@@ -165,10 +167,10 @@ public class CustomUtils {
 				}else{
 					try{
 						if(sdRealease[1]>length){
-							filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+fileName;
+							filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+fileName;
 							fileDirType = Constant.FileDirType.sd;
 						}else if(fileRealease[1]>length){
-							filePath = Constant.getExtSdPath()+File.separator+Constant.path+File.separator+fileName;
+							filePath = Constant.getExtSdPath()+File.separator+Constant.root_fold+File.separator+fileName;
 							fileDirType = Constant.FileDirType.extSd;
 						}else{
 							handler.sendMessage(handler.obtainMessage(1));//没有存储空间了

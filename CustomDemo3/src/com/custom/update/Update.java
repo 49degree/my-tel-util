@@ -19,8 +19,8 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -30,9 +30,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -104,9 +104,11 @@ public class Update extends Activity implements OnClickListener{
     	progress.show();
     	progress.setCanceledOnTouchOutside(false);
     	
+		initFile();//以下为加压SD卡内容
+		copyFile();//
     	
     	logger.error("开始查询");
-    	LoadResources.clearInstalledFoldInfo(this);
+    	LoadResources.clearInstalledFoldInfo();
         Intent query = new Intent();//发送查询已经安装广播
         query.setAction("com.custom.update.InitDataFoldReceiver");
         sendBroadcast(query);
@@ -115,7 +117,6 @@ public class Update extends Activity implements OnClickListener{
         		try{
         			sleep(3000);
         			LoadResources.loadUpdateInstalledInfo();
-                    LoadResources.queryInstalledFoldFileInfo(Update.this);
                     MainApplication.getInstance().startNetWorkListen(handler);//监听网络状况
         		}catch(Exception e){}
         	}
@@ -159,12 +160,12 @@ public class Update extends Activity implements OnClickListener{
     	File sd = new File(Constant.getSdPath());
     	
     	if(sd.exists()){
-    		File cust = new File(Constant.getSdPath()+File.separator+Constant.path);
+    		File cust = new File(Constant.getSdPath()+File.separator+Constant.root_fold);
     		if(!cust.exists())
     			cust.mkdir();
     		
     		File flasFile = new File(Constant.getSdPath()
-    				+File.separator+Constant.path
+    				+File.separator+Constant.root_fold
     				+File.separator+Constant.sdFlagFile);
     		try{
         		if(!flasFile.exists())
@@ -177,12 +178,12 @@ public class Update extends Activity implements OnClickListener{
     	
     	File extSd = new File(Constant.getExtSdPath());
     	if(extSd.exists()){
-    		File cust = new File(Constant.getExtSdPath()+File.separator+Constant.path);
+    		File cust = new File(Constant.getExtSdPath()+File.separator+Constant.root_fold);
     		if(!cust.exists())
     			cust.mkdir();
     		
     		File flasFile = new File(Constant.getExtSdPath()
-    				+File.separator+Constant.path
+    				+File.separator+Constant.root_fold
     				+File.separator+Constant.extSdFlagFile);
     		try{
         		if(!flasFile.exists())
@@ -331,7 +332,6 @@ public class Update extends Activity implements OnClickListener{
             		}catch(Exception e){
             			e.printStackTrace();
             		}
-            		handler.sendMessage(handler.obtainMessage(HandlerWhat.NETWORK_CONNECT_RESULE, new Boolean(true)));
             		logger.error("下载线程结束");
             	}
             };
@@ -400,6 +400,8 @@ public class Update extends Activity implements OnClickListener{
         						toGetFile.delteDownFile(filePath);
 	        					msgObject.put(Constant.fileUnziped, "true");
 	        					LoadResources.updateInstalledInfo(msgObject,true);
+	        					createInstalledfolds();
+	        					createNoInstalledfolds();
 	        					if(downThread!=null&&downThread.isAlive()){
 	        						synchronized (downThread) {
 	        							downThread.notify();
@@ -462,6 +464,14 @@ public class Update extends Activity implements OnClickListener{
     		case 10://更新未安装情况
     			if(progress.isShowing())
     				progress.dismiss();
+    			break;   
+    		case 11://隐藏打开升级按钮
+    			if((Integer)msg.obj<1){
+    				linearLayout5.setVisibility(View.GONE);
+    			}else{
+    				linearLayout5.setVisibility(View.VISIBLE);
+    			}
+
     			break;     			
 
     		default:
@@ -473,10 +483,7 @@ public class Update extends Activity implements OnClickListener{
     public void updateUi(boolean networkState){
     	logger.error("updateUi");
 		progress.setMessage( "正在查询资源....");
-		
-		initFile();//以下为加压SD卡内容
-		copyFile();//
-		
+
 		if(!progress.isShowing())
 			progress.show();
 		if(networkState){
@@ -571,6 +578,7 @@ public class Update extends Activity implements OnClickListener{
     	handler.sendMessage(handler.obtainMessage(8, temp.toString()));
     	String msg1 = "发现了"+allNum+"个新内容，保持及时更新，享受最佳服务！";
     	handler.sendMessage(handler.obtainMessage(9, msg1));
+    	handler.sendMessage(handler.obtainMessage(11, new Integer(allNum)));
     	return allNum;
     }
     

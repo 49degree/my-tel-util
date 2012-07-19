@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,8 +21,8 @@ import android.os.Environment;
 import android.os.StatFs;
 
 import com.custom.update.Constant;
-import com.custom.update.ZipToFile;
 import com.custom.update.Constant.DirType;
+import com.custom.update.ZipToFile;
 
 public class LoadResources {
 	private static final Logger logger = Logger.getLogger(LoadResources.class);
@@ -52,8 +53,36 @@ public class LoadResources {
 	public static void updateInstalledInfo(JSONObject installed,boolean unZip){
 		updateInstalledInfo(installed);
 		if(unZip){
-			addInstalledInfo(installed);//更新已经获取目录
+			try{
+				JSONArray contents = installed.getJSONArray(Constant.fileContent);
+				logger.error("installedfolds:"+contents.length()+":"+contents.toString());
+				for(int j=0;j<contents.length();j++){
+					JSONObject content = contents.getJSONObject(j);
+					String name = content.getString("name");
+					int value = content.getInt("value");
+					if(installedfolds.containsKey(name))
+						installedfolds.put(name, installedfolds.get(name)+value);
+					else
+						installedfolds.put(name, value);	
+				}
+				//更新到文件
+				try{
+					String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.installedFold;
+					FileOutputStream fos = new FileOutputStream(new File(filePath),false);
+					for(Entry<String,Integer> ent:installedfolds.entrySet()){
+						fos.write(("="+ent.getKey()+"="+ent.getValue()+"\n").getBytes("GBK"));
+					}
+					fos.flush();
+					fos.close();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}catch(Exception e1){
+				e1.printStackTrace();
+			}
 		}
+		initNoInstalledInfo();//更新未获取目录
+
 	}
 	/**
 	 * 更新数据
@@ -61,7 +90,7 @@ public class LoadResources {
 	 */
 	public static void updateInstalledInfo(JSONObject installed){
 		logger.error("updateInstalledInfo");
-		String filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+Constant.installedInfo;
+		String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.installedInfo;
 		try{
 			if(json==null){
 				json = new JSONObject();
@@ -84,7 +113,7 @@ public class LoadResources {
 			}
 			
 			updateInstalledInfo.put(installed.getString(Constant.updateId), installed);
-			initNoInstalledInfo();//更新未获取目录
+
 			
 			json.put(Constant.modifyTime, new SimpleDateFormat(Constant.timeFormate).format(new Date()));
 			logger.error("update json:"+json.toString());
@@ -98,7 +127,7 @@ public class LoadResources {
 	public static void loadUpdateInstalledInfo(){
 		logger.error("loadUpdateInstalledInfo");
 		try{
-			String filePath = Constant.getSdPath()+File.separator+Constant.path+File.separator+Constant.installedInfo;
+			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.installedInfo;
 			byte[] buf = LoadResources.loadFile(filePath);
 			updateInstalledInfo.clear();
 			if(buf==null){
@@ -125,6 +154,8 @@ public class LoadResources {
 					e.printStackTrace();
 				}
 			}
+			initNoInstalledInfo();//更新未获取目录
+			queryInstalledFoldFileInfo();//更新已经获取目录
 			lastModifyTime = json.getString(Constant.modifyTime);
 			noModifyTime = String.valueOf((new SimpleDateFormat(Constant.timeFormate).parse(lastModifyTime).getTime()-new Date().getTime())/(24*60*60*1000));
 
@@ -133,38 +164,9 @@ public class LoadResources {
 		}
 	}
 	
-	/**
-	 * 查询升级信息
-	 */
-	public static void addInstalledInfo(JSONObject installed){
-		logger.error("addInstalledInfo");
-		String unZipflag = null;
-		try{
-			unZipflag = installed.getString(Constant.fileUnziped);
-		}catch(Exception e){}
-		if ( unZipflag!=null){
-			try{
-				JSONArray contents = installed.getJSONArray(Constant.fileContent);
-				for(int j=0;j<contents.length();j++){
-					logger.error("Installed:"+contents.length()+":"+contents.toString());
-					try{
-						JSONObject content = contents.getJSONObject(j);
-						String name = content.getString("name");
-						int value = content.getInt("value");
-						if(installedfolds.containsKey(name)&&installedfolds.get(name)>0)
-							installedfolds.put(name, installedfolds.get(name)+value);
-						else
-							installedfolds.put(name, value);
-						logger.error("installedfolds:"+name+":"+installedfolds.get(name));
-					}catch(Exception e){
-						e.printStackTrace();
-					}		
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}	
-		}
-	}
+
+	
+
 	
 	/**
 	 * 查询升级信息
@@ -226,28 +228,27 @@ public class LoadResources {
 	 * 清空已经下载了多少业务记录
 	 *
 	 */
-	public static void clearInstalledFoldInfo(Context context){
+	public static void clearInstalledFoldInfo(){
 		logger.error("clearInstalledFoldInfo");
-		FileOutputStream out = null;
-        try{
-    		out = context.openFileOutput(Constant.installedFold,Context.MODE_WORLD_READABLE);
-    		out.write(("").getBytes());
-    		out.flush();
-        }catch(Exception e){
-        	e.printStackTrace();
-        }finally{
-        	try{
-        		if(out!=null)
-        			out.close();
-            }catch(Exception e){}
-        }
+
+		try{
+			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.installedFold;
+			FileOutputStream fos = new FileOutputStream(new File(filePath));
+			fos.write(("").getBytes());
+			fos.flush();
+			fos.close();
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * 查询已经下载了多少业务
 	 */
-	public static HashMap<String,Integer> queryInstalledFoldFileInfo(Context context){
+	public static HashMap<String,Integer> queryInstalledFoldFileInfo(){
 		logger.error("queryInstalledFoldInfo");
-		//清空未安装情况
+
+		//清空
 		try{
 	    	Iterator it = installedfolds.keySet().iterator();
 	    	while(it.hasNext()){
@@ -260,7 +261,8 @@ public class LoadResources {
 		//读取数据
 		FileInputStream in = null;
 		try{
-			in = context.openFileInput(Constant.installedFold);
+			String filePath = Constant.getSdPath()+File.separator+Constant.root_fold+File.separator+Constant.installedFold;
+			in = new FileInputStream(filePath);
 			BufferedReader fin = new BufferedReader(new InputStreamReader(in,"GBK"));
 			String line = fin.readLine();
 			int count = 0;

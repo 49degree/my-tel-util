@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 public class Win2 {
 	static int idNo = 0;
 	public static void main(String args[]) {
-		for (int i = 1; i < 3; i++) {
+		for (int i = 1; i < 2; i++) {
 			idNo = i;
 			run();
 			// new Thread(){
@@ -51,15 +51,9 @@ public class Win2 {
 				connection.setRequestProperty("Cookie", sessionid);
 			}
 
-//			// // DataOutputStream流
-//			out = connection.getOutputStream();
-//			 // 要上传的参数
-//			String content = "jsessionid=" + sessionid;
-//			 // 将要上传的内容写入流中
-//			out.write(content.getBytes());
-//			 // 刷新、关闭
-//			out.flush();
-//			out.close();
+			// // DataOutputStream流
+			out = connection.getOutputStream();
+
 
 			connection.connect();
 			
@@ -85,13 +79,15 @@ public class Win2 {
 			// 从服务端读取数据并打印
 			System.out.println("时间1：" + System.currentTimeMillis());
 			n = in.read(b);
-			while (times++ < 10) {
+			while (times++ < 100) {
 				if (n == -1) {
 					Thread.sleep(100);
 				} else {
 					System.out.println("时间2：" + System.currentTimeMillis());
 					String s = new String(b, 0, n, "GBK");
 					System.out.println(s);
+					out.write("client".getBytes());
+					out.flush();
 					// times = 0;
 				}
 				if ((n = in.available()) != 0) {

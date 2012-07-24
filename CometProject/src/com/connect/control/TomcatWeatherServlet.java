@@ -1,9 +1,11 @@
 package com.connect.control;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +38,11 @@ public class TomcatWeatherServlet extends HttpServlet implements CometProcessor 
     @Override
     public void init() throws ServletException {
     	 logger.debug("init ++++++++++++++++++++++++++++++");
-        messageSender = new MessageSender();
-        Thread messageSenderThread =
-                new Thread(messageSender, "MessageSender[" + getServletContext().getContextPath() + "]");
-        messageSenderThread.setDaemon(true);
-        messageSenderThread.start();
+//        messageSender = new MessageSender();
+//        Thread messageSenderThread =
+//                new Thread(messageSender, "MessageSender[" + getServletContext().getContextPath() + "]");
+//        messageSenderThread.setDaemon(true);
+//        messageSenderThread.start();
         logger.debug("init ++++++++++++++++++++++++++++++");
 
     }
@@ -56,28 +58,112 @@ public class TomcatWeatherServlet extends HttpServlet implements CometProcessor 
 			HttpServletResponse response) throws ServletException, IOException {
 		
 	}
-
+	SendMessage sendMessage = null;
+	ReadMessage readMessage = null;
     public void event(final CometEvent event) throws IOException, ServletException {
-    	logger.debug("Begin for session: ");
         HttpServletRequest request = event.getHttpServletRequest();
         HttpServletResponse response = event.getHttpServletResponse();
+        
         if (event.getEventType() == CometEvent.EventType.BEGIN) {
+        	logger.debug("BEGIN for session: " + request.getSession(true).getId());
             request.setAttribute("org.apache.tomcat.comet.timeout", TIMEOUT);
+//            messageSender.setConnection(response);
+//            Weatherman weatherman = new Weatherman(95118, 32408);
+//            weatherman.start();
+            sendMessage = new SendMessage(response);
+            sendMessage.setDaemon(true);
+            sendMessage.start();
             
-            messageSender.setConnection(response);
-            Weatherman weatherman = new Weatherman(95118, 32408);
-            weatherman.start();
+            
+            readMessage = new ReadMessage(request);
+            readMessage.setDaemon(true);
+            readMessage.start();
         } else if (event.getEventType() == CometEvent.EventType.ERROR) {
-            logger.debug("Error for session: " + request.getSession(true).getId());
+            logger.debug("Error for session");
+            sendMessage.stopFlag = true;
+            sendMessage.interrupt();
+            
+            readMessage.stopFlag = true;
+            readMessage.interrupt();
             event.close();
         } else if (event.getEventType() == CometEvent.EventType.END) {
             logger.debug("End for session: " + request.getSession(true).getId());
+            sendMessage.stopFlag = true;
+            sendMessage.interrupt();
+            
+            readMessage.stopFlag = true;
+            readMessage.interrupt();
             event.close();
         } else if (event.getEventType() == CometEvent.EventType.READ) {
+            sendMessage.stopFlag = true;
+            sendMessage.interrupt();
+            
+            readMessage.stopFlag = true;
+            readMessage.interrupt();
             throw new UnsupportedOperationException("This servlet does not accept data");
         }
 
     }
+    
+    
+    private class ReadMessage extends Thread{
+    	HttpServletRequest request=null;
+    	BufferedReader reader = null;
+    	boolean stopFlag = false;
+    	char[] cBuffer = new char[1024];
+    	public ReadMessage(HttpServletRequest request){
+    		this.request = request;
+    		try{
+    			reader = request.getReader();
+    		}catch(Exception e){
+    			
+    		}
+    	}
+    	public void run(){
+    		int len = 0;
+    		while(!stopFlag){
+        		try{
+        			logger.debug("begin:"+System.currentTimeMillis());
+        			len = reader.read(cBuffer);
+        			logger.debug("end:"+System.currentTimeMillis());
+        			
+        			sleep(1000);
+        		}catch(Exception e){
+        			
+        		}
+        		if(len>0)
+        			logger.debug(new String(cBuffer,0,len));
+        		
+    		}
+    	}
+    }
+    
+    private class SendMessage  extends Thread{
+    	HttpServletResponse response=null;
+    	PrintWriter writer = null;
+    	boolean stopFlag = false;
+    	public SendMessage (HttpServletResponse response){
+    		this.response = response;
+    		try{
+    			writer = response.getWriter();
+    		}catch(Exception e){
+    			
+    		}
+    	}
+    	public void run(){
+    		while(!stopFlag){
+    			writer.write("test");
+    			writer.flush();
+        		try{
+        			sleep(1000);
+        		}catch(Exception e){
+        			
+        		}
+    		}
+    	}
+    }    
+    
+    
 
 private class Weatherman {
 
@@ -126,6 +212,8 @@ private class Weatherman {
         return html.toString();
     }
 }
+
+
 
    private class MessageSender implements Runnable {
 
@@ -186,7 +274,7 @@ private class Weatherman {
                         logger.debug("Writing:" + forecast);
                     }
                     writer.flush();
-                    writer.close();
+                    //writer.close();
                     connection = null;
                     logger.debug("Closing connection");
                 } catch (IOException e) {

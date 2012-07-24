@@ -22,56 +22,50 @@ public class LongConnectionTest extends HttpServlet implements Servlet {
 		super();
 	}
 
+	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
 	}
 
+	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html");
 		
+		//logger.debug("Session:" + request.getSession().getId());
 		
 		String idNo = request.getParameter("idNo");
 		InputStream reader = request.getInputStream();
 		OutputStream pr = response.getOutputStream();
-		LongConnectManager longConnectManager = new LongConnectManager(reader,pr);
+		// LongConnectManager longConnectManager = new
+		// LongConnectManager(reader,pr);
 		int n = -1;
 		byte[] cbuf = new byte[1024];
 		int times = 0;
 		try {
 			String msg = "发送心跳";
-			longConnectManager.start();
 			while (true) {
-				logger.debug(System.currentTimeMillis()+":out put:" + idNo+":发送消息："+msg);
+				logger.debug(System.currentTimeMillis() + ":out put:" + idNo
+						+ ":发送消息：" + msg);
 				pr.write(msg.getBytes("GBK"));
 				pr.flush();
-				while ((n = reader.read(cbuf)) == -1&&times++<100) {
-					//logger.debug("未收到消息");//连接已经断开
-					Thread.sleep(100);
-				}
-				if(n==-1){
-					logger.debug("未收到消息");//连接已经断开
-					longConnectManager.setStop(true);
-					longConnectManager.interrupt();
-					break;
-				}else{
-					String s = new String(cbuf, 0, n,"GBK");
-					logger.debug("收到消息："+s);
-				}
 				Thread.sleep(1000);
 			}
-			pr.write("断开连接".getBytes("GBK"));
-			pr.flush();
+
 		} catch (Exception e) {
 			e.printStackTrace();
+			pr.write("断开连接".getBytes("GBK"));
+			pr.flush();
 		}finally{
-			if(reader!=null)
+			if(reader!=null) {
 				reader.close();
-			if(pr!=null)
+			}
+			if(pr!=null) {
 				reader.close();
+			}
 		}
 
 	}
@@ -86,6 +80,7 @@ public class LongConnectionTest extends HttpServlet implements Servlet {
 			this.pr = pr;
 		}
 		
+		@Override
 		public void run(){
 			try {
 				Date now = new Date();
@@ -109,7 +104,7 @@ public class LongConnectionTest extends HttpServlet implements Servlet {
 							logger.debug("未收到消息");
 						}else{
 							String s = new String(cbuf, 0, n,"GBK");
-							logger.debug("收到消息："+s);
+							logger.debug("收到消息：" + s);
 						}
 						Thread.sleep(5000);
 					} catch (SocketException se) {

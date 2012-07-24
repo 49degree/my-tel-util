@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class Win {
+public class Win2 {
 	static int idNo = 0;
 	public static void main(String args[]) {
 		for (int i = 1; i < 3; i++) {
@@ -32,7 +32,7 @@ public class Win {
 		HttpURLConnection connection = null;
 		try {
 			// 确定服务地址
-			URL url = new URL("http://localhost:8080/CometProject/keeper?idNo="+ idNo);
+			URL url = new URL("http://localhost:8080/CometProject/Weather");
 			
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setDoInput(true);
@@ -41,8 +41,8 @@ public class Win {
 			connection.setUseCaches(false);
 			// 设定传送的内容类型是可序列化的java对象
 			// (如果不设此项,在传送序列化对象时,当WEB服务默认的不是这种类型时可能抛java.io.EOFException)
-			// connection.setRequestProperty("Content-type",
-			// "application/x-java-serialized-object");
+//			 connection.setRequestProperty("Content-type",
+//			 "application/x-java-serialized-object");
 			// 设定请求的方法为"POST"，默认是GET
 			connection.setRequestMethod("POST");
 
@@ -51,18 +51,17 @@ public class Win {
 				connection.setRequestProperty("Cookie", sessionid);
 			}
 
-			// // DataOutputStream流
+//			// // DataOutputStream流
 //			out = connection.getOutputStream();
-			// // 要上传的参数
+//			 // 要上传的参数
 //			String content = "jsessionid=" + sessionid;
-			// // 将要上传的内容写入流中
+//			 // 将要上传的内容写入流中
 //			out.write(content.getBytes());
-			// // 刷新、关闭
+//			 // 刷新、关闭
 //			out.flush();
 //			out.close();
 
 			connection.connect();
-			in = connection.getInputStream();
 			
 			Map<String, List<String>> fields = connection.getHeaderFields();
 			for (Entry<String, List<String>> entity : fields.entrySet()) {
@@ -70,8 +69,11 @@ public class Win {
 					System.out.println("entity:" + entity.getKey() + ":"
 							+ entity.getValue().get(0));
 				}
-
 			}
+			
+			System.out.println("============:"+connection.getResponseMessage());
+			in = connection.getInputStream();
+
 			if(fields.containsKey("Set-Cookie")){
 				sessionid = fields.get("Set-Cookie").get(0).split(";")[0];
 			}

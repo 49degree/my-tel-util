@@ -15,4 +15,18 @@
 		<servlet-name>keeper</servlet-name>
 		<url-pattern>/keeper</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+        <servlet-name>WeatherServlet</servlet-name>
+        <servlet-class>com.connect.control.TomcatWeatherServlet</servlet-class> 
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WeatherServlet</servlet-name>
+        <url-pattern>/Weather</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
 </web-app>

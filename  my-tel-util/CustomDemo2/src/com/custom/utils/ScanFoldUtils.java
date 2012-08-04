@@ -165,13 +165,14 @@ public class ScanFoldUtils {
 			if(buf==null){
 				return ;
 			}
-			BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf),"GBK"));
+			
+			BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf),new InputStreamReader(new ByteArrayInputStream(buf)).getEncoding()));
 			String line = fin.readLine();
 			while(line!=null){
 				line = line.substring(line.indexOf('=')+1);
 				if(line.indexOf("=")>0){
 					btnInfo.put(line.substring(0,line.indexOf("=")), line.substring(line.indexOf("=")+1).trim());
-					logger.error(line.substring(0,line.indexOf("="))+":" +""+line.substring(line.indexOf("=")+1).trim());
+					//logger.error(line.substring(0,line.indexOf("="))+":" +""+line.substring(line.indexOf("=")+1).trim());
 				}
 				line = fin.readLine();
 			}

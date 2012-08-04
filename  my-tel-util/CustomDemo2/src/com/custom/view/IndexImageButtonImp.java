@@ -114,6 +114,8 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		jpgView.setImageBitmap(bm);
 		bmWidth = (int)(bm.getWidth()*zoom);
 		bmHeight = (int)(bm.getHeight()*zoom);
+		
+		
 		LinearLayout.LayoutParams alayout = new LinearLayout.LayoutParams(bmWidth, bmHeight);
 		jpgView.setLayoutParams(alayout);
 		this.addView(jpgView);
@@ -125,7 +127,7 @@ public abstract class IndexImageButtonImp extends LinearLayout implements OnClic
 		
 		//this.setBackgroundColor(Color.RED);
 		AbsoluteLayout.LayoutParams layout = null;
-		if(frame1==null){
+		if(!hasFrame){
 			layout = new AbsoluteLayout.LayoutParams(
 					bmWidth+(int)(20*zoom), bmHeight+(int)(40*zoom), resourceBean.getX(), resourceBean.getY());
 		}else{

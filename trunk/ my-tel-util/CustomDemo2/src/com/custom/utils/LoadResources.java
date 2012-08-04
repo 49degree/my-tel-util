@@ -406,7 +406,7 @@ public class LoadResources {
 			if(buf==null){
 				return 0;
 			}
-			BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf)));
+			BufferedReader fin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf),"GBK"));
 			String line = fin.readLine();
 			int count = 0;
 			while(line!=null){

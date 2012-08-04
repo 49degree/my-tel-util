@@ -53,7 +53,12 @@ public class IndexImageSwfButton extends IndexImageButtonImp{
 	public boolean onTouchEvent(MotionEvent event) {
 		
         if(!imageCanMove){
-        	setBackground(true);
+        	if(event.getAction() == MotionEvent.ACTION_UP){
+        		setBackground(false);
+        	}else{
+        		setBackground(true);
+        	}
+        	
         	return super.onTouchEvent(event);
         }
 		if(event.getPointerCount()>1||!imageCanMove){

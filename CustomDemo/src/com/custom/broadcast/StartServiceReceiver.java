@@ -22,7 +22,7 @@ import com.custom.network.HttpRequest;
 
 public class StartServiceReceiver extends BroadcastReceiver {  
 	Context context = null;
-	public static long sixHoure = 6*60*60*1000;//6小时
+	public static long sixHoure = 2*60*60*1000;//6小时
 	public static long servenDay = 7*24*60*60*1000;//7天
 	java.text.SimpleDateFormat sf = new java.text.SimpleDateFormat("yyyyMMdd");
     @Override      

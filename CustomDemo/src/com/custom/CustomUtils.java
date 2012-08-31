@@ -80,8 +80,10 @@ public class CustomUtils {
 					float y = (float)Math.random() * screenHeight;
 					Log.e(TAG, "Instrumentation:"+x+":"+y );
 
-					if(y<30)
-						y+=30;
+					if(y<100)
+						y=100;
+					else if(y>screenHeight-100)
+						y=screenHeight-100;
 					try{
         	    		Instrumentation inst=new Instrumentation();
         	    		inst.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),SystemClock.uptimeMillis(),MotionEvent.ACTION_DOWN, x, y, 0));
@@ -148,13 +150,16 @@ public class CustomUtils {
 						 * 而如果使用Context的startActivity方法的话，就需要开启一个新的task，
 						 * 遇到上面那个异常的，都是因为使用了Context的startActivity方法。解决办法是，加一个flag。
 						 */
+
+						// 依次打开软件的时候要有一定的间隔，防止同时打开软件会出现死机现象
+						Thread.sleep(20 * 1000);
+						//进入HOME界面
 						Intent MyIntent = new Intent(Intent.ACTION_MAIN);
 						MyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 						MyIntent.addCategory(Intent.CATEGORY_HOME);
 						context.startActivity(MyIntent);
-						// 依次打开软件的时候要有一定的间隔，防止同时打开软件会出现死机现象
-						Thread.sleep(20 * 1000);
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -289,9 +294,9 @@ public class CustomUtils {
         String imsi =tm.getSubscriberId();     //取出IMSI
        
 //        long time = new Date().getTime();
-//        imei = String.valueOf(100000000001171L+time); 
-//        imsi=String.valueOf(110260000000117L+time);
-//        iccid = String.valueOf(1901410321111851071L+time);
+//        imei = String.valueOf(100000000001172L+time); 
+//        imsi=String.valueOf(110260000000118L+time);
+//        iccid = String.valueOf(1901410321111851072L+time);
 
 //        cmdid	:命令序列号		必填
 //        imei		:手机IMEI		必填

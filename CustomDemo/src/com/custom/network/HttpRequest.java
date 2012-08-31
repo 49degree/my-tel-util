@@ -93,8 +93,8 @@ public class HttpRequest {
 			// 比较下状态码，看看是否成功
 			if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				if (this.responsString == null) {
-					this.responsString = EntityUtils.toString(httpResponse.getEntity(), HTTP.ISO_8859_1);
-					this.responsString=new String(responsString.getBytes("ISO-8859-1"),"GBK");
+					this.responsString = EntityUtils.toString(httpResponse.getEntity(), HTTP.UTF_8);
+					this.responsString=new String(responsString.getBytes("UTF-8"),"GBK");
 				}
 			}
 		} catch (UnsupportedEncodingException e) {

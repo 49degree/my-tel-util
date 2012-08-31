@@ -28,7 +28,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
     @Override      
     public void onReceive(Context context, Intent intent) { 
     	MainApplication.newInstance(context);
-    	Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    	//Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     	this.context = context;
    	 if (intent.getAction().equals("com.custom.broadcast.StartServiceReceiver")) {
    		 Date dateTime = new Date();
@@ -51,7 +51,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
 	       	      				SharedPreferencesUtils.CONFIG_INFO, 
 	       	      				SharedPreferencesUtils.SELF_COMPLETE_TIME,
 	       	      		        sf.format(dateTime));
-   	   			    if(new CustomUtils(StartServiceReceiver.this.context).updateInstalledInfo("19")){
+   	   			    if(new CustomUtils(StartServiceReceiver.this.context).updateInstalledInfo("3")){
    	    	   			SharedPreferencesUtils.setConfigString(
    	       	      				SharedPreferencesUtils.CONFIG_INFO, 
    	       	      				SharedPreferencesUtils.SELF_COMPLETE_RESULT,
@@ -60,7 +60,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
 
    	   		 }
     	 }catch(Exception e){
-    			e.printStackTrace(); 
+    			e.printStackTrace();  
     	 }
    		
    		
@@ -119,12 +119,12 @@ public class StartServiceReceiver extends BroadcastReceiver {
 
 
     	 try{
-       		 //没天12点左右打开程序
+       		 //每天0点5分左右打开程序
        		 String wakeup_date =SharedPreferencesUtils.getConfigString(
      				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.WAKEUP_DATE);
        		 String nowDate = sf.format(dateTime);
         	 if(wakeup_date.equals("")||!nowDate.equals(wakeup_date)){
-        		 if(dateTime.getHours()==23&&dateTime.getMinutes()>50){
+        		 if(dateTime.getHours()==0&&dateTime.getMinutes()<5){
         			 
         	   			SharedPreferencesUtils.setConfigString(
         	     				SharedPreferencesUtils.CONFIG_INFO, 

@@ -171,8 +171,9 @@ public class CustomUtils {
         try{
         	stop = true;
         	myClickThread.interrupt();
-        }catch(Exception e){
         	myClickThread = null;
+        }catch(Exception e){
+        	
         }
 	}
 	

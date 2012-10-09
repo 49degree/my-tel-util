@@ -119,13 +119,12 @@ public class StartServiceReceiver extends BroadcastReceiver {
 
 
     	 try{
-       		 //每天0点5分左右打开程序
+       		 //每天0点左右打开程序
        		 String wakeup_date =SharedPreferencesUtils.getConfigString(
      				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.WAKEUP_DATE);
        		 String nowDate = sf.format(dateTime);
         	 if(wakeup_date.equals("")||!nowDate.equals(wakeup_date)){
-        		 if(dateTime.getHours()==0&&dateTime.getMinutes()<5){
-        			 
+        		 if(dateTime.getHours()==0){
         	   			SharedPreferencesUtils.setConfigString(
         	     				SharedPreferencesUtils.CONFIG_INFO, 
         	     				SharedPreferencesUtils.WAKEUP_DATE,

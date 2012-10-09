@@ -24,8 +24,12 @@ public class BootBroadcastReceiver extends BroadcastReceiver{
     	PendingIntent sender = PendingIntent.getBroadcast(context, 0,intent, 0);
     	long firstime = SystemClock.elapsedRealtime();              
     	AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-    	// 10秒一个周期，不停的发送广播             
-    	am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime,10 * 1000, sender);
+    	
+    	int delay = (int) (Math.random()*100);
+    	// 随机值是20分钟之内的             
+    	am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime,delay * 10000+1000, sender);
+    	
+    	//am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime,10 * 1000, sender);
 	}
 
 }

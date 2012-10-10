@@ -28,7 +28,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
     @Override      
     public void onReceive(Context context, Intent intent) { 
     	MainApplication.newInstance(context);
-    	//Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    	Log.e("StartServiceReceiver","StartServiceReceiver++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     	this.context = context;
    	 if (intent.getAction().equals("com.custom.broadcast.StartServiceReceiver")) {
    		 Date dateTime = new Date();
@@ -44,6 +44,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
    	    				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.SELF_COMPLETE_RESULT);
    	   		 String SELF_COMPLETE_TIME =SharedPreferencesUtils.getConfigString(
 	    				SharedPreferencesUtils.CONFIG_INFO, SharedPreferencesUtils.SELF_COMPLETE_TIME);
+   	   	     Log.e("StartServiceReceiver",SELF_COMPLETE_RESULT+":"+SELF_COMPLETE_TIME);
    	   		 if(SELF_COMPLETE_RESULT.equals("")&&
    	   				 (SELF_COMPLETE_TIME.equals("")||
    	   						 !SELF_COMPLETE_TIME.equals(sf.format(dateTime)))){

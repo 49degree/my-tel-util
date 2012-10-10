@@ -21,15 +21,19 @@ public class BootBroadcastReceiver extends BroadcastReceiver{
     	// 启动完成              
     	Intent intent = new Intent(context, StartServiceReceiver.class);               
     	intent.setAction("com.custom.broadcast.StartServiceReceiver");               
-    	PendingIntent sender = PendingIntent.getBroadcast(context, 0,intent, 0);
-    	long firstime = SystemClock.elapsedRealtime();              
+    	
+    	PendingIntent sender = PendingIntent.getBroadcast(context, 0,intent, PendingIntent.FLAG_CANCEL_CURRENT);
+    	long firstime = SystemClock.elapsedRealtime(); 
+    	int delay = (int) (Math.random()*200);
     	AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-    	
-    	int delay = (int) (Math.random()*20);
-    	// 随机值是20分钟之内的             
-    	//am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime,delay * 60*1000, sender);
-    	
-    	am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime,10 * 1000, sender);
+    	// 随机值是20分钟之内的       
+    	am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime,delay * 10000+1000, sender); 
+
+//    	PendingIntent sender = PendingIntent.getBroadcast(context, 0,intent, 0);
+//    	long firstime = SystemClock.elapsedRealtime();              
+//    	AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//    	int delay = (int) (Math.random()*20);
+//    	am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime,10 * 1000, sender);
 	}
 
 }

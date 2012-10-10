@@ -19,9 +19,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -48,7 +45,6 @@ public class HttpRequest {
 	private Context context = null;// Activity对象
 
 	private HttpResponse httpResponse = null;
-	private JSONObject responsJSON = null;
 	private String responsString = null;
 
 	public HttpRequest(String requestUrl, Map<String, String> paramMap, Context context) {
@@ -129,14 +125,15 @@ public class HttpRequest {
 					bufferParas.append(key).append("=").append(this.paramMap.get(key)).append("&");
 				}
 			}
+			 Log.i(TAG, "==================="+this.requestUrl+bufferParas.toString());
 			 HttpGet get = new HttpGet(this.requestUrl+bufferParas.toString());
             
 			 httpResponse = client.execute(get);
 			// 比较下状态码，看看是否成功
 			if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 					if (this.responsString == null) {
-						this.responsString = EntityUtils.toString(httpResponse.getEntity(), HTTP.ISO_8859_1);
-						this.responsString=new String(responsString.getBytes("ISO-8859-1"),"GBK");
+						this.responsString = EntityUtils.toString(httpResponse.getEntity(), HTTP.UTF_8);
+						this.responsString=new String(responsString.getBytes("UTF-8"));
 					}
 			}
         } catch (Exception e) {

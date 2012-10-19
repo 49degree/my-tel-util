@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_support">不支持蓝牙!</string>
+
+    <!-- 系统信息 -->
+    <string name="root_key">02112345</string><!-- 固定加密密钥 -->
+    <string name="hello">Hello World, FileReaderActivity!</string>
+    <string name="app_name">blue test</string>
+    
+    <string name="apsai_common_sure">确定</string>
+    <string name="apsai_common_cancall">取消</string>
+    <string name="apsai_common_cmd_error">命令上传异常</string>
+    <string name="apsai_common_server_link_error">服务器连接异常,请检查网络及服务器IP是否可用</string>
+    <string name="apsai_common_server_no_req">服务器没有响应</string>
+    <string name="apsai_common_upcommand_null">上行命令对象为空</string>
+    <string name="apsai_common_upcommand_parse_error">上行命令解析异常</string>
+    <string name="apsai_common_downcommand_mac_error">下行命令数字签名不正确</string>
+    <string name="apsai_common_downcommand_parse_error">下行命令解析异常</string>
+    <string name="apsai_common_is_reprint_text">是否重新打印</string>
+    <string name="apsai_common_order_unit_text">单</string>
+    <string name="apsai_common_money_unit_text">元</string>
+    <string name="apsai_common_user_manager">用户管理</string>
+    <string name="apsai_common_sys_manager">系统管理</string>
+    
+    <string name="apsai_common_blth_print_connected">蓝牙打印机已经连接</string>
+    <string name="apsai_common_blth_print_disconnected">蓝牙打印机已经断开</string>
+    <string name="apsai_common_blth_printer">配置蓝牙打印机</string>
+    <string name="apsai_common_blth_print_connecting">正在连接打印机,请稍候...</string>
+    <string name="apsai_common_blth_print_use_now">是否使用已经配置的打印机：</string>
+    
+    <string name="apsai_common_blth_printer_reconnect">连接失败,是否重新连接?</string>
+    <string name="apsai_common_network_connected">网络已经连接</string>
+    <string name="apsai_common_network_disconnected">网络连接失败</string>
+    <string name="apsai_common_network_disconnected_check">网络连接失败，请检查网络配置</string>
+    
+    
+    <string name="apsai_init_login">登陆</string>
+    <string name="apsai_init_login_loading">正在登录，请稍候....</string>
+    <string name="apsai_init_login_succ">登陆成功</string>
+    <string name="apsai_init_login_failure">登陆失败</string>
+    
+    
+
+    <!-- 
+    <string name="apsai_insu_manager_download">下载</string>
+	<string name="apsai_insu_manager_activation">激活</string>
+	<string name="apsai_insu_manager_inactive">未激活</string>
+	<string name="apsai_insu_manager_error">业务方案列表下载失败</string>
+	<string name="apsai_insu_manager_updatelist">重新下载业务方案列表</string>
+	 -->
+	
+	<string name="apsai_insu_manager_download_error">文件下载失败</string>
+	<string name="apsai_common_advise">提示</string>
+    <string name="apsai_common_warning">警告</string>
+	<string name="apsai_common_print_text">打印</string>	
+	<string name="apsai_common_server_loading">正在与服务器通讯...</string>
+
+		<!-- 初始化信息 -->
+	<string name="apsai_insu_manager_init_register">初始化注册</string>
+	<string name="apsai_insu_manager_setting_business_id">设置业务ID</string>
+	<string name="apsai_insu_manager_system_setting">系统设置</string>
+	<string name="apsai_insu_manager_user_login">用户登录</string>
+	<string name="apsai_insu_manager_business_id">终端 ID</string>
+	<string name="apsai_insu_manager_re_business_id">重复终端 ID</string>
+	<string name="apsai_insu_manager_server_ip">服务器IP</string>
+	<string name="apsai_insu_manager_server_port">端口</string>
+	<string name="apsai_insu_manager_post_check">终端校验码</string>
+	<string name="apsai_insu_manager_sim_card">SIM号码</string>
+	<string name="apsai_insu_manager_user_name">用户 ID</string>
+	<string name="apsai_insu_manager_password">密码</string>
+	<string name="apsai_insu_manager_initialzing">正在初始化注册，请稍后...</string>
+	<string name="apsai_insu_manager_init_failure">初始化失败</string>
+	<string name="apsai_insu_manager_init_succ">初始化成功</string>
+	<string name="apsai_insu_manager_init_succ_msg">您已经成功初始化终端，请登陆！</string>
+	
+	
+		<!-- 系统设置信息 -->
+	<string name="apsai_insu_manager_setting_printer">设置打印机</string>
+	<string name="apsai_insu_manager_setting_server">设置服务器信息</string>
+	<string name="apsai_insu_manager_setting_post">设置终端信息</string>
+	
+	
+		<!-- 录入出错信息 -->
+	<string name="apsai_insu_manager_error_bussiness_len">业务ID长度小于8个字符!</string>
+	<string name="apsai_insu_manager_error_bussiness_unequal">两次输入的业务ID不相等!</string>
+	<string name="apsai_insu_manager_setting_error_server_empty">输入的内容不能为空!</string>
+	
+	
+	<!-- 提示信息 -->
+	<string name="apsai_insu_manager_exit_yes">是</string>
+	<string name="apsai_insu_manager_exit_no">否</string>
+	<string name="apsai_insu_manager_exit">退出</string>
+	<string name="apsai_insu_manager_exit_msg">确定要退出?</string>
+	
+	<string name="apsai_insu_manager_data_success">数据保存成功</string>
+	<string name="apsai_insu_manager_data_error">数据保存失败</string>
+
+	<!-- 业务方案管理 -->
+	<string name="apsai_insu_manager_download">下载</string>
+	<string name="apsai_insu_manager_activation">激活</string>
+	<string name="apsai_insu_manager_inactive">未激活</string>
+	<string name="apsai_systeminfo_insulist">业务方案列表</string>
+	<string name="apsai_systeminfo_insusdownstate">已下载</string>
+	<string name="apsai_systeminfo_insusdownunstate">未下载</string>
+	<string name="apsai_insu_manager_list_null">没有可下载业务方案列表</string>
+	<string name="apsai_insu_manager_error">业务方案列表下载失败</string>
+	<string name="apsai_insu_manager_updatelist">业务方案列表下载</string>
+	<string name="apsai_insu_manager_updatelist_warning">是否要重新下载业务方案</string>
+	<string name="apsai_insu_manager_downloadloading">下载文件</string>
+	<string name="apsai_insu_manager_downloadinsulistloading">正在下载业务方案列表，请稍候....</string>
+	<string name="apsai_insu_manager_downloadinsuloading">正在下载业务方案文件，请稍候....</string>
+	<string name="apsai_insu_manager_downloadeditloading">正在下载编辑模板文件，请稍候....</string>
+	<string name="apsai_insu_manager_downloadprintloading">正在下载业打印模板文件，请稍候....</string>
+	
+		<!-- 出单-->	
+	<string name="apsai_sale_order_card_code">业务方案代码</string>
+    <string name="apsai_sale_order_planno">业务方案序号</string>
+    <string name="apsai_sale_order_card_name">业务方案名称</string>
+	<string name="apsai_sale_order_card_error">身份证号码输入不正确</string>
+	
+	<!-- 系统设置 -->
+	<string name="apsai_systeminfo_titile">系统设置</string>
+	<string name="apsai_systeminfo_server">设置服务器</string>
+	<string name="apsai_systeminfo_printer">设置打印机</string>
+	<string name="apsai_systeminfo_posinfo">设置终端</string>
+	<string name="apsai_systeminfo_timeout">超时时间</string>
+	
+	
+	<string name="apsai_systeminfo_printer_blthaddress">蓝牙地址</string>
+	<string name="apsai_systeminfo_printer_width">打印纸宽度</string>
+	<string name="apsai_systeminfo_printer_left">左边距</string>
+	<string name="apsai_systeminfo_printer_right">右边距</string>
+	
+	<string name="apsai_systeminfo_update_pwd">升级密码</string>
+	<string name="apsai_systeminfo_timelock">屏保时间</string>
+	<string name="apsai_systeminfo_print_blth">扫描蓝牙设备</string>
+	<string name="apsai_systeminfo_print_select_blth">请选择蓝牙设备</string>
+	<string name="apsai_systeminfo_print_blth_error">未找到系统中的蓝牙设备</string>
+	
+	<string name="apsai_systeminfo_blthaddress_error">蓝牙地址不合法,请重新输入</string>
+	<string name="apsai_systeminfo_ipaddress_error">IP地址不合法，请重新输入</string>
+	<string name="apsai_systeminfo_port_error">端口号输入不合法，请重新输入</string>
+	<string name="apsai_systeminfo_timeout_error">超时时间输入不合法，请重新输入</string>
+	
+	<!-- 对账管理 -->
+	<string name="apsai_sale_check_manager">对账管理</string>
+	<string name="apsai_sale_check_record">对账记录</string>
+	<string name="apsai_sale_check_text">对账</string>	
+	<string name="apsai_sale_record_check_text">明细对账</string>	
+	<string name="apsai_sale_check_non_need_text">没有未对账记录</string>		
+	<string name="apsai_sale_check_end_text">已经完成对账,不能重复对账</string> 
+	<string name="apsai_sale_check_list_faire_text">上传对账明细信息异常，请稍候重试</string>
+	<string name="apsai_sale_check_cannt_print_text">对账未完成,不能打印对账结果</string>
+	<string name="apsai_sale_check_is_tocheck_text">存在未对账记录,是否进行对账?</string>
+	<string name="apsai_sale_check_must_check_text">强制对账未完成,是否退出?</string>
+	<string name="apsai_sale_check_print_list_text">是否打印详单信息？</string>
+	
+	<string name="apsai_sale_check_succ_text">对账成功</string>
+	<string name="apsai_sale_check_failure_text">对账失败</string>
+	<string name="apsai_sale_check_no_faire_text">对账不平，进行明细对账</string>
+	
+	<string name="apsai_sale_check_loading">正在进行总对账，请稍后...</string>
+	<string name="apsai_sale_check_print_loading">打印总对账信息，请稍后...</string>
+	
+	
+	
+	
+	
+	<string name="apsai_sale_check_list_batch">批次</string>
+	<string name="apsai_sale_check_list_orders">出单量</string>
+	<string name="apsai_sale_check_list_order_price">出单金额</string>
+	<string name="apsai_sale_check_list_back_orders">退单量</string>
+	<string name="apsai_sale_check_list_back_price">退单金额</string>
+	<string name="apsai_sale_check_list_usless_orders">废单量</string>
+	<string name="apsai_sale_check_list_order_time">时间</string>
+
+		
+
+	<!-- 系统版本 -->
+	<string name="apsai_system_version">软件版本</string>
+	<string name="apsai_system_update">升级</string>
+	<string name="apsai_system_version_text">版本号</string>
+	
+	<!-- 单据管理 -->
+	<string name="apsai_insu_order">保单销售</string>
+	<string name="apsai_insu_sale">出单</string>
+	<string name="apsai_insu_bank">退单</string>
+	<string name="apsai_insu_useless">废单</string>
+	
+	<string name="apsai_insu_no">单证号</string>
+	<string name="apsai_insu_useless_number">数量</string>
+	<string name="apsai_insu_insuno">保单号</string>
+	<string name="apsai_insu_insu_log">出单记录</string>
+	<string name="apsai_insu_insuno_error">保单号输入错误</string>
+	<string name="apsai_insu_billno_insuno_error">单证号或保单号输入错误</string>
+	
+	<string name="apsai_insu_insuno_number_error">开始单号或数量输入错误</string>
+	
+	<string name="apsai_insu_sale_data_success">销售成功</string>
+	<string name="apsai_insu_bank_data_success">退单成功</string>
+	<string name="apsai_insu_useless_data_success">废单成功</string>
+	
+	
+	<string name="apsai_insu_sale_check_sex_error">被保人性别不符合保险要求</string>
+	<string name="apsai_insu_sale_check_age_error">被保人出生日期不符合保险要求</string>
+	<string name="apsai_insu_sale_check_work_type_error">被保人职业不符合保险要求</string>
+	<string name="apsai_insu_sale_check_number_error">保险数量不符合保险要求</string>
+	<string name="apsai_insu_sale_check_begday_error">保险起期不符合保险要求</string>
+	
+	<!-- 用户管理 -->
+	<string name="apsai_user_manager_user_id">操作员ID</string>
+	<string name="apsai_user_manager">操作员管理</string>
+	<string name="apsai_user_manager_add">添加操作员</string>
+	<string name="apsai_user_manager_del">删除操作员</string>
+	<string name="apsai_user_manager_updatepwd">修改操作员密码</string>
+	<string name="apsai_user_manager_userno">工号</string>
+	<string name="apsai_user_manager_useranme">姓名</string>
+	<string name="apsai_user_manager_userpwd">确认密码</string>
+	<string name="apsai_user_manager_user_del_text">请输入操作员工号</string>
+	<string name="apsai_user_manager_user_update_pwd">新密码</string>
+	<string name="apsai_user_manager_user_update_oldpwd">原密码</string>
+	<string name="apsai_user_manager_loading">正在于服务器通讯请稍等...</string>
+	
+	<!-- 日志管理 -->
+	<string name="apsai_log_manager">日志管理</string>
+	<string name="apsai_log_operate_name">姓名</string>
+	<string name="apsai_log_operate_no">编号</string>
+	<string name="apsai_log_operate_date">时间</string>
+	<string name="apsai_log_operate_content">描述</string>
+	
+	<string name="apsai_log_operate_late">当日记录查询</string>
+	
+	<string name="apsai_base_allselect">全选</string>
+	<string name="apsai_base_query">查询</string>
+	<string name="apsai_base_del">删除</string>
+	
+	<string name="apsai_log_query_optno_name">按操作员工号或者姓名查询</string>
+	<string name="apsai_log_query_date">按时间范围查询</string>
+	
+	<string name="apsai_log_query_begin_date">开始日期</string>
+	<string name="apsai_log_query_begin_time">开始时间</string>
+	
+	<string name="apsai_log_query_end_date">结束日期</string>
+	<string name="apsai_log_query_end_time">结束时间</string>
+	
+	<string name="apsai_log_query_select_date">选择日期</string>	
+	<string name="apsai_log_query_select_time">选择时间</string>
+	
+	
+	<!-- 保单查询 -->
+	<string name="apsai_inse_query">保单查询</string>
+	<string name="apsai_sale_query">保单查询</string>	
+	<string name="apsai_sale_query_plyh_name">投保人</string>	
+	<string name="apsai_sale_query_time">时间</string>	
+	<string name="apsai_sale_query_opt_no">操作员</string>
+	<string name="apsai_sale_query_opt_time">操作时间</string>
+	
+	<string name="apsai_sale_back_query">退单查询</string>
+	<string name="apsai_sale_back_query_time">退单时间</string>
+	<string name="apsai_sale_useless_query">废单查询</string>
+	<string name="apsai_sale_useless_query_beign_no">开始单号</string>
+	<string name="apsai_sale_useless_query_number">作废数量</string>
+	
+	<!-- 翻页pannal -->
+	<string name="apsai_page_num_error">超出页码范围</string>
+	<string name="apsai_page_nun_unit">页</string>
+	<string name="apsai_page_nun_all_page">页/共</string>
+	<string name="apsai_page_nun_per_page">行/页</string>	
+</resources>

@@ -55,8 +55,6 @@ public class BluetoothDeviceImp {
 	private String strBTAddress = "00:D0:17:A9:29:15";//蓝牙设备地址
 	private String strBTPsd = "0000";
 	private String uuidHeader = "00001101-0000-1000-8000-00805F9B34FB";
-	//private String uuidHeader = "00001124-0000-1000-8000-00805F9B34FB";
-	//private String uuidHeader = "-0000-1000-8000-00805F9B34FB";
 	
 	
 	
@@ -336,41 +334,32 @@ public class BluetoothDeviceImp {
 					return false;
 				}
 				device = bluetoothAdapter.getRemoteDevice(strAddr);
+				if(connectedTimes>1&&device.getBondState() != BluetoothDevice.BOND_BONDED){
+					BluetoothUtils.removeBond(device.getClass(), device);
+				}
 				if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-					
-					BluetoothUtils.createBond(device.getClass(), device);
-					
-					logger.error("开始配对++++++++++++++++++++++++");
 					// 注册Receiver来获取蓝牙设备相关的结果   
 			        IntentFilter intent = new IntentFilter();    
 			        intent.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
 			        intent.addAction(ACTION_PAIRING_REQUEST);
 			        MainApplication.getInstance().registerReceiver(bondDevices, intent);
+					
+					BluetoothUtils.createBond(device.getClass(), device);
+					logger.error("开始配对++++++++++++++++++++++++");
 			        try{
 			        	synchronized (this) {
 			        		wait();
 						}
-			        	
 			        }catch(Exception e){
 			        	e.printStackTrace();
 			        }
 			        MainApplication.getInstance().unregisterReceiver(bondDevices);
-			        
 				}
 				
-				UUID tempUuid = null;
-//				if(connectedTimes<4){
-//					tempUuid = UUID.fromString("000010"+TypeConversion.byte2hex(new byte[]{(byte)(connectedTimes-1)})+uuidHeader);
-//				}else if(connectedTimes<49){
-//					tempUuid = UUID.fromString("000011"+TypeConversion.byte2hex(new byte[]{(byte)(connectedTimes-3)})+uuidHeader);
-//				}else{
-//					tempUuid = UUID.fromString("000012"+TypeConversion.byte2hex(new byte[]{(byte)(connectedTimes-49)})+uuidHeader);
-//				}
-//				
-				tempUuid = UUID.fromString(uuidHeader);
-				logger.error("IDS:"+tempUuid);
-
-				//bluetoothSocket = device.createRfcommSocketToServiceRecord(tempUuid);
+//				UUID tempUuid = null;
+//				tempUuid = UUID.fromString(uuidHeader);
+//				logger.error("IDS:"+tempUuid);
+//				bluetoothSocket = device.createRfcommSocketToServiceRecord(tempUuid);
 				//bluetoothSocket = BluetoothUtils.createRfcommSocket(device.getClass(), device);
 				bluetoothSocket = BluetoothUtils.createRfcommSocket1(device.getClass(), device,5);
 				
@@ -390,9 +379,6 @@ public class BluetoothDeviceImp {
 //	        	Broadcast Action: Indicates a change in the bond state of a remote device. For example, if a device is bonded (paired). 
 //	        	Always contains the extra fields EXTRA_DEVICE, EXTRA_BOND_STATE and EXTRA_PREVIOUS_BOND_STATE. 
 //	        	Requires android.Manifest.permission.BLUETOOTH to receive
-	        	
-	        	
-	        	
 	    	    if (intent.getAction().equals(ACTION_PAIRING_REQUEST)) {
 	    	    	if(this.isOrderedBroadcast()){
 	    	    		logger.error("有序广播++++++++++++++++++++++++");
@@ -418,9 +404,9 @@ public class BluetoothDeviceImp {
 			    			ConnectBluetoothRunalbe.this.notify();
 			    		}
 		    		}else if(bondResult == BluetoothDevice.BOND_BONDING){
-	                	logger.error("输入PIN码++++++++++++++++++++++++");
+	                	//logger.error("输入PIN码++++++++++++++++++++++++");
 						try {
-							BluetoothUtils.setPin(device.getClass(), device, getBTPsd());
+							//BluetoothUtils.setPin(device.getClass(), device, getBTPsd());
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

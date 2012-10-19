@@ -16,27 +16,28 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.View.OnKeyListener;
-import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.bluetooth.TypeConversion;
 import com.log.Logger;
@@ -118,7 +119,7 @@ public class BluetoothTesterActivity extends Activity {
         	logger.error("onKeyDown+++++++++++++");
         	onDespear();
         }  
-		return false;
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	public void onDestroy(){
@@ -134,6 +135,7 @@ public class BluetoothTesterActivity extends Activity {
 		if(mBluetooth!=null){
 			logger.error("mBluetooth disConnected+++++++++++++");
 			mBluetooth.disConnected();
+			mBluetooth=null;
 		}
 	}
 	
@@ -200,6 +202,13 @@ public class BluetoothTesterActivity extends Activity {
 				    logger.error("++++++++++数据："+TypeConversion.byte2hex(buffer,0,readLength));
 				}
 				break;
+			case BluetoothDeviceImp.BLUE_THOOTH_BLUETOOTH_SET_RESULE:
+				Intent in = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+//                ComponentName comp = new ComponentName("com.android.settings", "android.settings.BLUETOOTH_SETTINGS");  
+//                in.setComponent(comp);
+                BluetoothTesterActivity.this.startActivity(in);
+				break;	
+				
 			default:
 				break;
 			}

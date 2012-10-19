@@ -5,23 +5,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
-import android.widget.TextView;
+import android.provider.Settings;
 
 import com.MainApplication;
 import com.bluetooth.TypeConversion;
@@ -36,6 +32,7 @@ public class BluetoothDeviceImp {
 	private static Logger logger = Logger.getLogger(BluetoothDeviceImp.class);
 	public final static int BLUE_THOOTH_CONNECT_RESULE = 10000;
 	public final static int BLUE_THOOTH_READ_RESULE = 10001;
+	public final static int BLUE_THOOTH_BLUETOOTH_SET_RESULE = 10002;
 	public boolean isConnected = false;// 是否连接上蓝牙
 	public ArrayList<Byte> recvBuffer = new ArrayList<Byte>(); // 接收到的数据缓冲区
 	ConnectBluetoothRunalbe connectBluetoothRunalbe = null;
@@ -244,6 +241,7 @@ public class BluetoothDeviceImp {
 	public class ConnectBluetoothRunalbe implements Runnable{
 		
 		BluetoothDevice device = null;
+		private boolean hasToBond = false;
 		public ConnectBluetoothRunalbe(){
 			connectedTimes = 0; 
 		}
@@ -300,11 +298,11 @@ public class BluetoothDeviceImp {
 				try {
 					logger.error("Bluetooth Connect begin!");
 					bluetoothSocket.connect();
-					logger.error("Bluetooth Connect end!"+bluetoothSocket.isConnected());
+					logger.error("Bluetooth Connect end!");
 					connected = true;
 				} catch (Exception e) {
 					e.printStackTrace();
-					logger.error("++++++++++++++++++++++++++++Bluetooth Connect failed!" + e.getMessage());
+					logger.error("Bluetooth Connect failed!" + e.getMessage());
 				}
 			}else{
 				logger.debug("pair failed");
@@ -356,6 +354,12 @@ public class BluetoothDeviceImp {
 			        MainApplication.getInstance().registerReceiver(bondDevices, intent);
 					
 					BluetoothUtils.createBond(device.getClass(), device);
+					
+					
+					
+                	synchronized (this) {
+                		hasToBond = true;
+					}
 					logger.error("开始配对++++++++++++++++++++++++");
 		        	synchronized (this) {
 		        		wait();
@@ -369,6 +373,8 @@ public class BluetoothDeviceImp {
 //				bluetoothSocket = device.createRfcommSocketToServiceRecord(tempUuid);
 				//bluetoothSocket = BluetoothUtils.createRfcommSocket(device.getClass(), device);
 				bluetoothSocket = BluetoothUtils.createRfcommSocket1(device.getClass(), device,5);
+				
+				//bluetoothSocket.close();
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -390,18 +396,27 @@ public class BluetoothDeviceImp {
 //	        	Requires android.Manifest.permission.BLUETOOTH to receive
 	    	    if (intent.getAction().equals(ACTION_PAIRING_REQUEST)) {
 	                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+	                logger.error("ACTION_PAIRING_REQUEST++++++++++++++++++++++++");
 	                try {
-	                	logger.error("输入PIN码1++++++++++++++++++++++++");
-						BluetoothUtils.setPin(device.getClass(), device, getBTPsd());
+	                	
+	                	synchronized (this) {
+	                		if(hasToBond==true){
+	                			mainEventHandler.sendMessage(mainEventHandler.obtainMessage(BLUE_THOOTH_BLUETOOTH_SET_RESULE));
+	                			logger.error("输入PIN码1++++++++++++++++++++++++");
+	                			//BluetoothUtils.setPin(device.getClass(), device, getBTPsd());
+	                			hasToBond = false;
+	                		}
+						}
+						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} //
 	    	    }else if(intent.getAction().equals(ACTION_PAIRING_CANCEL)){
 	    	    	logger.error("撤销绑定成功++++++++++++++++");
-		        	synchronized (ConnectBluetoothRunalbe.this) {
-		    			ConnectBluetoothRunalbe.this.notify();
-		    		}
+//		        	synchronized (ConnectBluetoothRunalbe.this) {
+//		    			ConnectBluetoothRunalbe.this.notify();
+//		    		}
 	            }else if(intent.getAction().equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
 	            	BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 	            	int bondResult = intent.getExtras().getInt(BluetoothDevice.EXTRA_BOND_STATE);
@@ -425,11 +440,16 @@ public class BluetoothDeviceImp {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-
 		    		}else if(bondResult == BluetoothDevice.BOND_BONDING){
-	                	logger.error("输入PIN码2++++++++++++++++++++++++");
 						try {
-							BluetoothUtils.setPin(device.getClass(), device, getBTPsd());
+		                	synchronized (this) {
+		                		if(hasToBond==true){
+		                			logger.error("输入PIN码2++++++++++++++++++++++++");
+		                			mainEventHandler.sendMessage(mainEventHandler.obtainMessage(BLUE_THOOTH_BLUETOOTH_SET_RESULE));
+		                			//BluetoothUtils.setPin(device.getClass(), device, getBTPsd());
+		                			hasToBond = false;
+		                		}
+							}
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -437,6 +457,9 @@ public class BluetoothDeviceImp {
 		    		}else{
 		    			try {
 							BluetoothUtils.createBond(device.getClass(), device);
+		                	synchronized (this) {
+		                		hasToBond = true;
+							}
 							
 						} catch (Exception e) {
 							// TODO Auto-generated catch block

@@ -103,9 +103,7 @@ public class BluetoothUtils {
 		try {			
 			Method removeBondMethod = btClass.getDeclaredMethod("setPin",
 					new Class[] { byte[].class });
-
-			BluetoothUtils.removeBond(btClass, btDevice);
-			Boolean returnValue = (Boolean) removeBondMethod.invoke(btDevice,str.getBytes("UTF8"));
+			Boolean returnValue = (Boolean) removeBondMethod.invoke(btDevice,str.getBytes("UTF-8"));
 		} catch (SecurityException e) {
 			// throw new RuntimeException(e.getMessage());
 			e.printStackTrace();
@@ -129,13 +127,11 @@ public class BluetoothUtils {
 	 * @throws Exception
 	 */
 	public static  boolean setPasskey(Class btClass, BluetoothDevice btDevice,
-			String str) throws Exception {
+			int str) throws Exception {
 		try {			
-			Method removeBondMethod = btClass.getDeclaredMethod("setPin",
-					new Class[] { byte[].class });
-
-			BluetoothUtils.removeBond(btClass, btDevice);
-			Boolean returnValue = (Boolean) removeBondMethod.invoke(btDevice,str.getBytes("UTF8"));
+			Method removeBondMethod = btClass.getDeclaredMethod("setPasskey",
+					new Class[] { boolean.class });
+			Boolean returnValue = (Boolean) removeBondMethod.invoke(btDevice,str);
 		} catch (SecurityException e) {
 			// throw new RuntimeException(e.getMessage());
 			e.printStackTrace();
@@ -149,6 +145,49 @@ public class BluetoothUtils {
 		return true;
 
 	}	
+	
+	
+	public static  boolean getTrustState(Class btClass, BluetoothDevice btDevice) throws Exception {
+		try {			
+			Method removeBondMethod = btClass.getDeclaredMethod("getTrustState",
+					new Class[] {});
+			Boolean returnValue = (Boolean) removeBondMethod.invoke(btDevice);
+			return returnValue;
+		} catch (SecurityException e) {
+			// throw new RuntimeException(e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// throw new RuntimeException(e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+
+	}
+	
+	
+	public static  boolean setTrust(Class btClass, BluetoothDevice btDevice,boolean trust) throws Exception {
+		try {			
+			Method removeBondMethod = btClass.getDeclaredMethod("setTrust",
+					new Class[] {boolean.class});
+			Boolean returnValue = (Boolean) removeBondMethod.invoke(btDevice,trust);
+			return returnValue;
+		} catch (SecurityException e) {
+			// throw new RuntimeException(e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// throw new RuntimeException(e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+
+	}
+	
 	/**
 	 * 获取指定的设备所有UUID
 	 * @param btClass

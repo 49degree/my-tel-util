@@ -29,6 +29,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnKeyListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -105,17 +106,36 @@ public class BluetoothTesterActivity extends Activity {
 				}
 			}
 		});
+	
+		
+		
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		
+        if (keyCode == KeyEvent.KEYCODE_BACK ) { 
+        	logger.error("onKeyDown+++++++++++++");
+        	onDespear();
+        }  
+		return false;
+	}
+	
 	public void onDestroy(){
-		if(bluetoothServer!=null)
-			bluetoothServer.shutdownServer();
-		if(mBluetooth!=null){
-			mBluetooth.disConnected();
-		}
+		logger.error("onDestroy+++++++++++++");
+		onDespear();
 		super.onDestroy();
 	}
 
 
+	private void onDespear(){
+		if(bluetoothServer!=null)
+			bluetoothServer.shutdownServer();
+		if(mBluetooth!=null){
+			logger.error("mBluetooth disConnected+++++++++++++");
+			mBluetooth.disConnected();
+		}
+	}
 	
 	/**
 	 * 获取蓝牙扫描对象

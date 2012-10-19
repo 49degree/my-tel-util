@@ -45,7 +45,7 @@ public class BluetoothDeviceImp {
 	public OutputStream bthOutputStream = null;//输入流
 	public PrintStream printWriter = null;
 	
-	private int connectMaxTimes = 30;//连接最大次数
+	private int connectMaxTimes = 3;//连接最大次数
 	private int connectedTimes = 0;//已经连接多少次
 	
 	private Handler mainEventHandler = null;
@@ -157,6 +157,9 @@ public class BluetoothDeviceImp {
 					if(!isConnected()){
 						// 判断蓝牙是否打开,强行关闭
 						bluetoothAdapter.disable();
+						if(connectBthTask!=null&&connectBthTask.isAlive()){
+							connectBthTask.interrupted();
+						}
 						connectedTimes = connectMaxTimes+2;
 					} 
 				} catch (Exception e) {
@@ -334,25 +337,29 @@ public class BluetoothDeviceImp {
 					return false;
 				}
 				device = bluetoothAdapter.getRemoteDevice(strAddr);
-				if(connectedTimes>1&&device.getBondState() != BluetoothDevice.BOND_BONDED){
+				if(connectedTimes==2){
+					logger.error("撤销绑定++++++++++++++++");
 					BluetoothUtils.removeBond(device.getClass(), device);
+					try{
+						Thread.sleep(5000);
+					}catch(Exception e){
+						
+					}
 				}
 				if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
 					// 注册Receiver来获取蓝牙设备相关的结果   
 			        IntentFilter intent = new IntentFilter();    
 			        intent.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
 			        intent.addAction(ACTION_PAIRING_REQUEST);
+			        intent.addAction(ACTION_PAIRING_CANCEL);
+			        
 			        MainApplication.getInstance().registerReceiver(bondDevices, intent);
 					
 					BluetoothUtils.createBond(device.getClass(), device);
 					logger.error("开始配对++++++++++++++++++++++++");
-			        try{
-			        	synchronized (this) {
-			        		wait();
-						}
-			        }catch(Exception e){
-			        	e.printStackTrace();
-			        }
+		        	synchronized (this) {
+		        		wait();
+					}
 			        MainApplication.getInstance().unregisterReceiver(bondDevices);
 				}
 				
@@ -373,6 +380,8 @@ public class BluetoothDeviceImp {
 		
 	    public static final String ACTION_PAIRING_REQUEST =
 	            "android.bluetooth.device.action.PAIRING_REQUEST";
+	    public static final String ACTION_PAIRING_CANCEL =
+	            "android.bluetooth.device.action.PAIRING_CANCEL";
 		//蓝牙设备查询结果广播接收器
 		private BroadcastReceiver bondDevices = new BroadcastReceiver() {   
 	        public void onReceive(Context context, Intent intent) {   
@@ -380,33 +389,47 @@ public class BluetoothDeviceImp {
 //	        	Always contains the extra fields EXTRA_DEVICE, EXTRA_BOND_STATE and EXTRA_PREVIOUS_BOND_STATE. 
 //	        	Requires android.Manifest.permission.BLUETOOTH to receive
 	    	    if (intent.getAction().equals(ACTION_PAIRING_REQUEST)) {
-	    	    	if(this.isOrderedBroadcast()){
-	    	    		logger.error("有序广播++++++++++++++++++++++++");
-	    	    		this.abortBroadcast();
-	    	    	}
 	                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 	                try {
-	                	logger.error("输入PIN码++++++++++++++++++++++++");
+	                	logger.error("输入PIN码1++++++++++++++++++++++++");
 						BluetoothUtils.setPin(device.getClass(), device, getBTPsd());
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} //
+	    	    }else if(intent.getAction().equals(ACTION_PAIRING_CANCEL)){
+	    	    	logger.error("撤销绑定成功++++++++++++++++");
+		        	synchronized (ConnectBluetoothRunalbe.this) {
+		    			ConnectBluetoothRunalbe.this.notify();
+		    		}
 	            }else if(intent.getAction().equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
 	            	BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 	            	int bondResult = intent.getExtras().getInt(BluetoothDevice.EXTRA_BOND_STATE);
 		        	logger.error("配对结果通知++++++++++++++++++++++++");
 		        	logger.error(device.getAddress());
-		        	logger.error("EXTRA_BOND_STATE:"+bondResult);
+		        	try {
+						logger.error("EXTRA_BOND_STATE:"+bondResult+":"+BluetoothUtils.getTrustState(device.getClass(), device));
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 		    		
 		        	if(bondResult==BluetoothDevice.BOND_BONDED||connectedTimes == connectMaxTimes){
-			        	synchronized (ConnectBluetoothRunalbe.this) {
-			    			ConnectBluetoothRunalbe.this.notify();
-			    		}
+		        		try {
+							BluetoothUtils.setTrust(device.getClass(), device,true);
+							logger.error("getTrustState:"+BluetoothUtils.getTrustState(device.getClass(), device));
+				        	synchronized (ConnectBluetoothRunalbe.this) {
+				    			ConnectBluetoothRunalbe.this.notify();
+				    		}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
 		    		}else if(bondResult == BluetoothDevice.BOND_BONDING){
-	                	//logger.error("输入PIN码++++++++++++++++++++++++");
+	                	logger.error("输入PIN码2++++++++++++++++++++++++");
 						try {
-							//BluetoothUtils.setPin(device.getClass(), device, getBTPsd());
+							BluetoothUtils.setPin(device.getClass(), device, getBTPsd());
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -414,6 +437,7 @@ public class BluetoothDeviceImp {
 		    		}else{
 		    			try {
 							BluetoothUtils.createBond(device.getClass(), device);
+							
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

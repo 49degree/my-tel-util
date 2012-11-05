@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class name="com.a3650.posserver.core.bean.CheckBatchInfo" table="CheckBatchInfo">
+	<id name="checkId" column="checkId" type="long">
+		<generator class="native"></generator>
+	</id>
+	<property name="batchNumber" column="batchNumber" type="string"></property>
+	<property name="payNum" column="payNum" type="int"></property>
+	<property name="payAmount" column="payAmount" type="long"></property>
+	<property name="backNum" column="backNum" type="int"></property>
+	<property name="backAmount" column="backAmount" type="long"></property>
+	<property name="checkResult" column="checkResult" type="char"></property>
+	<property name="checkTime" column="checkTime" type="string"></property>
+</class>
+</hibernate-mapping>

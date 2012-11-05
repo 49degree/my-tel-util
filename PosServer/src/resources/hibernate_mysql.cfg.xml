@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<!--数据库服务器信息 -->
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://localhost:3306/posserver?characterEncoding=gbk</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">000000</property>
+		<!--  
+		create : 会根据你的model类来生成表,但是每次运行都会删除上一次的表,重新生成表,哪怕2次没有任何改变 
+		create-drop : 根据model类生成表,但是sessionFactory一关闭,表就自动删除 
+		update : 最常用的属性，也根据model类生成表,即使表结构改变了,表中的行仍然存在,不会删除以前的行 
+		validate : 只会和数据库中的表进行比较,不会创建新表,但是会插入新值
+		<property name="hbm2ddl.auto">update</property> 
+		-->
+		<property name="show_sql">false</property>
+		<property name="format_sql">true</property>
+		<!--Fetch Size 是设定JDBC的Statement读取数据的时候每次从数据库中取出的记录条数-->
+		<property name="hibernate.jdbc.fetch_size">50</property> 
+		<!--Batch Size是设定对数据库进行批量删除，批量更新和批量插入的时候的批次大小，有点相当于设置Buffer缓冲区大小的意思-->
+		<property name="hibernate.jdbc.batch_size">25</property> 
+		<!--Session管理对象-->
+		<property name="hibernate.current_session_context_class">thread</property>
+		
+		<!-- proxool连接池在MYSQL中使用连接池不能使用hbm2ddl.auto参数
+	    <property name="hibernate.connection.provider_class">org.hibernate.connection.ProxoolConnectionProvider</property>    
+	    <property name="hibernate.proxool.pool_alias">DBPool</property>    
+	    <property name="hibernate.proxool.xml">hibernate_mysql_proxool.xml</property>  
+	    -->
+		<!-- c2p0连接池 在MYSQL中使用连接池不能使用hbm2ddl.auto参数-->
+		<property name="hibernate.c3p0.max_size">100</property>    
+		<property name="hibernate.c3p0.min_size">50</property>    
+		<property name="hibernate.c3p0.timeout">12000</property>    
+		<property name="hibernate.c3p0.max_statements">1000</property>    
+		<property name="hibernate.c3p0.idle_test_period">12000</property>    
+		<property name="hibernate.c3p0.acquire_increment">20</property>
+		<property name="hibernate.c3p0.validate">true</property>
+		
+	    <!--
+	    Hibernate调用Weblogic的数据源 要把前面配置数据库信息的部分注释掉，并且要导入weblogic.jar和xbean.jar包
+	           在使用JNDI数据源时需要设置JVM -Dsun.lang.ClassLoader.allowArraySyntax=true参数
+	    <property name="hibernate.connection.datasource">JNDI_POS_SERVER_DATASOURCE</property>
+	    <property name="hibernate.connection.provider_class">org.hibernate.connection.DatasourceConnectionProvider</property>
+	    <property name="hibernate.jndi.class">weblogic.jndi.WLInitialContextFactory</property>
+	    -->
+	    
+		<!-- 缓存配置 使用二级缓存-->
+		<property name="cache.use_second_level_cache">true</property>
+		<!-- cache.provider_class这是制定缓存的实现者，由谁来提供缓存。
+		配置了org.hibernate.cache.OSCacheProvider，那么就要把oscache.properties文件放在classpath下，
+		里面有个属性cache.capacity=10000,这是配置内存容量的 -->
+		<property name="cache.provider_class">org.hibernate.cache.OSCacheProvider</property>
+		<!-- 
+		对二级缓存有个更明确的观察，有个参数cache.use_query_cache产生统计信息，
+		 -->
+		<property name="generate_statistics">true</property> 
+		<!-- 
+		Qquery,Criteria(查询缓存)由于命中率较低，所以hibernate缺省是关闭
+		修改cache.use_query_cache为true打开对查询的缓存，并且调用query.setCacheable(true)或criteria.setCacheable(true).
+		 -->
+		<property name="cache.use_query_cache">true</property> 
+		<!--<property name="hibernate.connection.isolation">2</property>为1，2，4，8每次更新前进行查询-->
+		 
+		<mapping resource="hbm/ReceiveMsg.hbm.xml"/> 
+		<mapping resource="hbm/Company.hbm.xml"/>
+		<mapping resource="hbm/PosTerminal.hbm.xml"/>
+		<mapping resource="hbm/PosTerminalCheckIn.hbm.xml"/> 
+		<mapping resource="hbm/ApsaiOrder.hbm.xml"/> 
+		<mapping resource="hbm/ApsaiOrderPayInfo.hbm.xml"/> 
+		<mapping resource="hbm/PayInfo.hbm.xml"/> 
+		<mapping resource="hbm/CheckBatchInfo.hbm.xml"/>	
+		<!-- 
+		* read-only：效率最高，但是有限制，确实不能修改。如果你的类永远不修改的话，就可以用read-only（比如省和市这些信息，这些数据一般不会变，一般不需要修改，不需要更新缓存）
+		* read-write：这个策略能保证并发修改的正确性，就比如有两个线程要同时修改这个数据，这个保存正确性，但是这个保存正确性是要有成本的，他对数据会进行同步操作，所以对效率会有一些影响，
+		* nonstrict-read-write：如果对一些数据，你觉得无所谓，可以忍受的话，那么就可以用这个策略（非严格的读写），并发修改一个数据的可能性很小；或者认为即使出现并发修改出现错误数据，
+		* 但也无所谓的话；那么就可以用这个非严格的读写策略了，这样就不会对数据加锁，这样数据就会高一些。 （就比如在一个论坛里面，一个帖子的浏览量，这个数据更新就会比较频繁，不过这个数据更新错，
+		* 少更新几个，应该是没有人会在意的，这个要求就不会是特别严格的了；但是如果在银行系统里，那就肯定不行了）
+		* transactional：事务型的缓存，这种缓存的实现是很少的，可以回滚缓存里的数据，是很复杂的，一般不使用
+		-->
+		<!-- 
+		告诉hibernate那些类需要缓存指定缓存的类 ,也可以在映射文件的class元素，id属性前面，
+		加入了子元素 <cache usage="read-write"/> 
+		-->
+		<class-cache class="com.a3650.posserver.core.bean.Company" usage="read-only"/>
+		<class-cache class="com.a3650.posserver.core.bean.PosTerminal" usage="read-only"/>		
+		<class-cache class="com.a3650.posserver.core.bean.PosTerminalCheckIn" usage="read-write"/>		
+	</session-factory>
+</hibernate-configuration>

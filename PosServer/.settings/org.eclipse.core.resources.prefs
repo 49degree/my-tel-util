@@ -1,0 +1,8 @@
+#Thu May 24 17:01:14 CST 2012
+eclipse.preferences.version=1
+encoding//src/resources/init_datas.txt=GBK
+encoding//src/resources/log4j.properties=GBK
+encoding//src/resources/server.properties=GBK
+encoding/<project>=UTF-8
+encoding/initDatabase.bat=GBK
+encoding/startPosServer.bat=GBK

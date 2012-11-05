@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class name="com.a3650.posserver.core.bean.PayInfo" table="PayInfo">
+	<id name="payId" column="payId" type="long">
+		<generator class="native"></generator>
+	</id>
+	<property name="posId" column="posId" type="string"></property>
+	<property name="posOrderId" column="posOrderId" type="string"></property>
+	<property name="referenceNum" column="referenceNum" type="string"></property>
+	<property name="addTime" column="addTime" type="string"></property>
+	<property name="payState" column="payState" type="char"></property>
+	<property name="insureTime" column="insureTime" type="string"></property>
+	<property name="batchNumber" column="batchNumber" type="string"></property>
+	<property name="payAmount" column="payAmount" type="long"></property>
+	
+</class>
+</hibernate-mapping>

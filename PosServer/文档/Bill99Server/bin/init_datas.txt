@@ -1,0 +1,11 @@
+#初始化pos终端所属机构
+insert into Company(companyId,companyName) values('104110045110012','太平洋保险公司集团公司_快钱');
+insert into Company(companyId,companyName) values('309610156910001','太平洋保险公司集团公司_通联');
+#初始化pos终端，机构companyId必须是上面添加过的
+insert into PosTerminal(posId,companyId,posName,rootKey,rootKeyLength) values('20100601','104110045110012','太平洋保险公司保单销售_快钱1','DBED28F6415162BD',8);
+insert into PosTerminal(posId,companyId,posName,rootKey,rootKeyLength) values('20100602','104110045110012','太平洋保险公司保单销售_快钱2','DBED28F6415162BD',8);
+insert into PosTerminal(posId,companyId,posName,rootKey,rootKeyLength) values('00010000','309610156910001','太平洋保险公司保单销售_通联1','D364FB15B07032B592FE0B8608B6C76EBF6885EFCB0426230DA2733846AB68492C76AEE6DAB3735404BF801AE5E583C78A0D922A769B4301B00D01C25E20DF134F4A0B3710B5DAE9DF2F32A7AB8334ECDFC19BE9BC34BA43D69B57AB1FEA25C2A19DFBDCE675F1DA38806ECEE6DC7F7A621FE5D08A9289312AC71040B0A2A4C8237073CDE60EDFAD6BBC6DEA376832E08607CB01BCDF3EC16491E901B9C81A19',16);
+#初始化保单信息
+insert into ApsaiOrder(apsaiId,customName,customAddr,customLink,apsaiAmount) values('1','测试保单','测试保单地址','测试保单联系方式123',100023);
+insert into ApsaiOrder(apsaiId,customName,customAddr,customLink,apsaiAmount) values('2','测试保单1','测试保单地址1','测试保单联系方式1',1000);
+

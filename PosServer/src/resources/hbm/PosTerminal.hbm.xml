@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class name="com.a3650.posserver.core.bean.PosTerminal" table="PosTerminal">
+	<id name="posId" column="posId" type="string">
+		<generator class="assigned"></generator>
+	</id>
+	<property name="companyId" column="companyId" type="string"></property>
+	<property name="posName" column="posName" type="string"></property>
+	<property name="rootKey" column="rootKey" type="string" length="1024"></property>
+	<property name="rootKeyLength" column="rootKeyLength" type="int"></property>
+	
+</class>
+</hibernate-mapping>

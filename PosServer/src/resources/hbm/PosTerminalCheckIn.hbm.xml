@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class name="com.a3650.posserver.core.bean.PosTerminalCheckIn" 
+	   table="PosTerminalCheckIn">
+	<id name="posId" column="posId" type="string">
+		<generator class="assigned"></generator>
+	</id>
+	<property name="checkInTime" column="checkInTime" type="string"></property>
+	<property name="rootKeyId" column="rootKeyId" type="int"></property>
+	<property name="pik" column="pik" type="string"></property>
+	<property name="mak" column="mak" type="string"></property>
+	<property name="trk" column="trk" type="string"></property>
+	<property name="sendEncodeKey" column="sendEncodeKey" type="string" length="1024"></property>
+	<property name="referenceNumber" column="referenceNumber" type="string"></property>
+	<property name="batchNumber" column="batchNumber" type="string"></property>
+	<property name="sysAuditNumber" column="sysAuditNumber" type="string"></property>
+	<property name="state" column="state" type="char"></property>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class name="com.a3650.posserver.core.bean.ReceiveMsg" table="ReceiveMsg">
+	<id name="id" column="id" type="long">
+		<generator class="native"></generator>
+	</id>
+	<property name="receiveMsg" column="receiveMsg" type="string"  length="5120"></property>
+	<property name="sendMsg" column="sendMsg" type="string" length="5120"></property>
+	<property name="receiveTime" column="receiveTime" type="string"></property>
+	
+</class>
+</hibernate-mapping>

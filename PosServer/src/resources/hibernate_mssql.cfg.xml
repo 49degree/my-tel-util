@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+		<property name="show_sql">false</property>
+		<property name="format_sql">true</property>
+		<property name="dialect">org.hibernate.dialect.SQLServerDialect</property>
+		<property name="connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+		<property name="connection.url">jdbc:sqlserver://192.168.0.200:1433;DatabaseName=POSServer</property>
+		<property name="connection.username">sa</property>
+		<property name="connection.password">szhn123</property>
+		<property name="hbm2ddl.auto">update</property>
+		<property name="hibernate.current_session_context_class">thread</property>
+		 <!-- c2p0连接池 在MYSQL中使用连接池不能使用hbm2ddl.auto参数-->
+		<property name="hibernate.c3p0.max_size">100</property>    
+		<property name="hibernate.c3p0.min_size">50</property>    
+		<property name="hibernate.c3p0.timeout">12000</property>    
+		<property name="hibernate.c3p0.max_statements">1000</property>    
+		<property name="hibernate.c3p0.idle_test_period">12000</property>    
+		<property name="hibernate.c3p0.acquire_increment">20</property>
+		<property name="hibernate.c3p0.validate">true</property>
+		
+		
+		<!-- 缓存配置 使用二级缓存-->
+		<property name="cache.use_second_level_cache">true</property>
+		<property name="cache.provider_class">org.hibernate.cache.OSCacheProvider</property>
+		<property name="cache.use_query_cache">true</property> 
+
+		<mapping resource="hbm/ReceiveMsg.hbm.xml"/> 
+		<mapping resource="hbm/Company.hbm.xml"/>
+		<mapping resource="hbm/PosTerminal.hbm.xml"/>
+		<mapping resource="hbm/PosTerminalCheckIn.hbm.xml"/> 
+		<mapping resource="hbm/ApsaiOrder.hbm.xml"/> 
+		<mapping resource="hbm/ApsaiOrderPayInfo.hbm.xml"/> 
+		<mapping resource="hbm/PayInfo.hbm.xml"/> 
+		<mapping resource="hbm/CheckBatchInfo.hbm.xml"/>	
+
+		<class-cache class="com.a3650.posserver.core.bean.Company" usage="read-only"/>
+		<class-cache class="com.a3650.posserver.core.bean.PosTerminal" usage="read-only"/>		
+		<class-cache class="com.a3650.posserver.core.bean.PosTerminalCheckIn" usage="read-write"/>		
+	</session-factory>
+</hibernate-configuration>

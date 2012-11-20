@@ -1,0 +1,20 @@
+09-07 14:09:09.150: W/System.err(6936): java.net.SocketTimeoutException: Connection timed out
+09-07 14:09:09.150: W/System.err(6936): 	at org.apache.harmony.luni.platform.OSNetworkSystem.isConnected(Native Method)
+09-07 14:09:09.150: W/System.err(6936): 	at dalvik.system.BlockGuard$WrappedNetworkSystem.isConnected(BlockGuard.java:313)
+09-07 14:09:09.150: W/System.err(6936): 	at java.nio.SocketChannelImpl.finishConnect(SocketChannelImpl.java:257)
+09-07 14:09:09.150: W/System.err(6936): 	at org.apache.thrift.transport.TNonblockingSocket.finishConnect(TNonblockingSocket.java:207)
+09-07 14:09:09.150: W/System.err(6936): 	at org.apache.thrift.async.TAsyncMethodCall.doConnecting(TAsyncMethodCall.java:265)
+09-07 14:09:09.150: W/System.err(6936): 	at org.apache.thrift.async.TAsyncMethodCall.transition(TAsyncMethodCall.java:181)
+09-07 14:09:09.150: W/System.err(6936): 	at org.apache.thrift.async.TAsyncClientManager$SelectThread.transitionMethods(TAsyncClientManager.java:136)
+09-07 14:09:09.150: W/System.err(6936): 	at org.apache.thrift.async.TAsyncClientManager$SelectThread.run(TAsyncClientManager.java:112)
+
+
+
+java.net.ConnectException: Connection refused: no further information
+	at sun.nio.ch.SocketChannelImpl.checkConnect(Native Method)
+	at sun.nio.ch.SocketChannelImpl.finishConnect(Unknown Source)
+	at org.apache.thrift.transport.TNonblockingSocket.finishConnect(TNonblockingSocket.java:207)
+	at org.apache.thrift.async.TAsyncMethodCall.doConnecting(TAsyncMethodCall.java:265)
+	at org.apache.thrift.async.TAsyncMethodCall.transition(TAsyncMethodCall.java:181)
+	at org.apache.thrift.async.TAsyncClientManager$SelectThread.transitionMethods(TAsyncClientManager.java:136)
+	at org.apache.thrift.async.TAsyncClientManager$SelectThread.run(TAsyncClientManager.java:112)

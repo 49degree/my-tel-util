@@ -1,0 +1,25 @@
+entOS5.3剛架好ftp連線發現取不到資料夾目錄，會出現500錯誤
+:study 500 OOPS: cannot change directory:/home/account
+
+
+這是因為SELinux關閉了ftp的功能
+
+
+所以可以直接關閉SELinux，在終端機輸入
+
+
+vim /etc/selinux/config
+
+
+找到
+
+
+SELINUX=enforcing
+
+
+改成
+
+SELINUX=disabled
+
+在终端输入
+setsebool -P ftp_home_dir=1

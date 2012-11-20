@@ -1,0 +1,8 @@
+运行应用：
+(1) 查看当前目录，检查dfs_operator.jar 是否存在：ls
+(2) 查看Hadoop 根目录下是否存在dfs_operator.txt 文件：./hadoop fs -ls /
+(3) 运行dfs_operator.jar，以生成dfs_operator.txt 文件：
+./hadoop jar ./dfs_operator.jar DFSOperator
+(4) 再查看Hadoop 根目录下是否存在dfs_operator.txt 文件：./hadoop fs -ls /
+(5) 检查dfs_operator.txt 文件的内容：./hadoop fs -cat /dfs_operator.txt
+

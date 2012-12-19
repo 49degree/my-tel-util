@@ -1,0 +1,134 @@
+所下载的软件包(*.deb格式，除了partial和lock外)一般放在/var/cache/apt/archives/ 目录下
+
+
+安装ssh服务
+----------------------------------------------------------------------------
+sudo apt-get install openssh-server
+启动ssh
+sudo /etc/init.d/ssh resar
+
+
+安装ftp服务便于与win系统交互文件
+----------------------------------------------------------------------------
+安装vsftpd，用来实现ftp服务。
+	sudo apt-get update
+	sudo apt-get dist-upgrade
+	上面用来更新。下面进行安装。
+
+	sudo apt-get install vsftpd
+	安装完毕后，编辑链接文件vsftpd.conf，方法如下：
+	sudo vi /etc/vsftpd.conf
+	打开后，如果提示只读，不可更改，则需要用如下命令更改权限。
+	chmod 777 /etc/vsftpd.conf
+	改好后，按照下面进行设置。
+
+我将anonymous_enable=NO，即不允许匿名登录ftp；write_enable=YES可写
+	更改完配置文件后，重启ftp服务
+	sudo /etc/init.d/vsftpd restart
+	直接用ftp工具连接过去，输入ubuntu用户名和密码即可直接到/home/user目录。
+	可以自己创建系统用户，并用相应的用户名进去
+
+比如 我用命令创建用户，并设置目录为/home/ftpLogin，将它加入到root组：
+useradd -m -d /home/ftpLogin  -G root ftpLogin
+passwd ftpLogin
+输入密码
+再重启ftp服务
+sudo /etc/init.d/vsftpd restart
+再用ftp工具连过去，输入用户ftpLogin及密码即可。
+
+
+
+安装JDK1.6
+----------------------------------------------------------------------------
+安装到 /usr/local/java
+因此JDK可能比较合适的位置是 /usr/local/lib 下。我一般安装到 /usr/local/java 下，这样避免搞乱 /usr/local/lib 目录。下面演示如何安装 JDK6。我使用的是 jdk-6u38-linux-x64.bin。进入它所在的目录，执行下列命令：
+
+$ sudo chmod 755 jdk-6u38-linux-x64.bin  
+$ sudo ./jdk-6u38-linux-x64.bin  
+$ sudo mkdir /usr/local/java  
+$ sudo mv ./jdk1.6.0_38 /usr/local/java  
+
+如果你的计算机仅仅作为开发使用时推荐使用这种方法. 所有用户的shell都有权使用这些环境变量。修改 /etc/profile 文件，执行下面的语句：
+$ sudo -s  
+# echo 'export JAVA_HOME=/usr/local/java/jdk1.6.0_38' >> /etc/profile  
+# echo 'export PATH=$JAVA_HOME/bin:$JAVA_HOME/jre/bin:$PATH' >> /etc/profile  
+# echo 'export CLASSPATH=.:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar' >> /etc/profile  
+ 
+切换到任何一个用户，执行下面这个命令，环境变量的更改立即生效：
+# source /etc/profile
+检查JAVA环境变量更改是否生效：
+
+
+安装的依赖：
+----------------------------------------------------------------------------
+$ sudo apt-get update
+$ sudo apt-get -y install git-core 
+$ sudo apt-get -y install gnupg 
+$ sudo apt-get -y install bison 
+$ sudo apt-get -y install gperf 
+$ sudo apt-get -y install libsdl-dev 
+$ sudo apt-get -y install libesd0-dev 
+$ sudo apt-get -y install libwxgtk2.6-dev 
+$ sudo apt-get -y install build-essential 
+$ sudo apt-get -y install zip 
+$ sudo apt-get -y install curl 
+$ sudo apt-get -y install libncurses5-dev 
+$ sudo apt-get -y install zlib1g-dev 
+$ sudo apt-get -y install valgrind
+
+sudo apt-get install libc6-dev:i386
+sudo apt-get install libx11-dev:i386
+
+
+sudo apt-get install flex
+sudo apt-get install libc6-dev
+sudo apt-get install lib32ncurses5-dev 
+sudo apt-get install ia32-libs
+sudo apt-get install x11proto-core-dev 
+sudo apt-get install libx11-dev 
+sudo apt-get install lib32readline5-dev 
+sudo apt-get install lib32z-dev
+sudo apt-get install libgl1-mesa-dev
+sudo apt-get install g++-multilib 
+sudo apt-get install mingw32 
+sudo apt-get install tofrodos
+sudo apt-get install python-markdown 
+sudo apt-get install libxml2-utils 
+sudo apt-get install xsltproc
+
+
+交换区swap不足：
+-----------------------------------------------------------------------
+free -m  
+#创建一个 Swap 文件。 
+mkdir swap   
+cd swap   
+sudo dd if=/dev/zero of=swapfile bs=1024 count=100000  
+
+#把生成的文件转换成 Swap 文件 
+#Setting up swapspace version 1, size = 102395 kB   
+#no label, UUID=09fde987-5567-498a-a60b-477e302a988b 
+sudo mkswap swapfile   
+
+#活 Swap 文件
+sudo swapon swapfile 
+ 
+#卸载这个 swap 文件，可以进入建立的 swap 文件目录。执行下列命令。 
+sudo swapoff swapfile
+
+#一直保持这个 swap ，可以把它写入 /etc/fstab 文件。 
+swapfilepath swap swap defaults 0 0  
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,5 @@
+1、padding是站在父view的角度描述问题，它规定它里面的内容必须与这个父view边界的距离。
+margin则是站在自己的角度描述问题，规定自己和其他（上下左右）的view之间的距离，
+如果同一级只有一个view，那么它的效果基本上就和padding一样了
+2、view.setLayoutParams(LayoutParams params);该params对象应该为view的父视图对应的布局类型的LayoutParams
+3、在已经生成的TextView/EditText中调用setWidth无效果，要用setLayoutParams解决

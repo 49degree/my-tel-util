@@ -1,0 +1,12 @@
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\SplashActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\MainActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\SplashActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\MainActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\SplashActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\SplashActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\MainActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\SplashActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\MainActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\SplashActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\MainActivity.png is same
+C:\soft\dev\android-sdk-windows\tools\monkeyrunner\record\login\\SplashActivity.png is same

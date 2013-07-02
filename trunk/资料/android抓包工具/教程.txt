@@ -1,0 +1,42 @@
+Android系统手机端抓包方法
+
+抓包准备
+
+1. Android手机需要先获得root权限。一种是否获得root权限的检验方法：安装并打开终端模拟器（可通过安卓市场等渠道获得）。在终端模拟器界面输入su并回车，若报错则说明未root，若命令提示符从$变#则为rooted；
+
+2. 如果Android手机尚未root，可通过superoneclick或其它方法进行root处理（需要先安装Microsoft .NET Framework）。Superoneclick刷root权限教程：（http://soft.shouji.com.cn/news/501.shtml）
+
+3. 需要先获得 Android SDK
+
+4. 需要获得tcpdump软件，获取地址(http://www.strazzere.com/android/tcpdump)
+
+抓包步骤
+1. 将Android手机与电脑USB相连，打开windows命令提示符窗口
+
+2. 将tcpdump程序copy至android手机（该命令前面那个目录文件为本地地址，后面那个目录为目的手机端地址）
+
+C:\android-sdk-windows\platform-tools>adb push c:/tcpdump /data/local/tcpdump
+
+3. 修改tcpdump的权限
+
+C:\android-sdk-windows\platform-tools>adb shell
+#chmod 777 /data/local/tcpdump
+
+4. 进入root权限
+
+C:\android-sdk-windows\platform-tools>adb shell
+$ su
+
+在运行su指令后，手机终端桌面会出现相应提示信息以确认您对root操作的认可。
+
+5. 运行tcpdump，输入以下命令启动抓包。
+
+/data/local/tcpdump -p -vv -s 0 -w /sdcard/capture.pcap
+
+6. 在手机端执行相应需要进行抓包分析的操作，执行完成后在命令提示符窗口执行Ctrl+C中断抓包进程
+
+7. 将抓包结果复制至本地（前面那个目录为手机端地址，后面那个目录为本地地址）
+
+C:\android-sdk-windows\platform-tools>adb pull /sdcard/capture.pcap c:/
+
+8. 使用Wireshark等工具查看抓包文件capture.pcap

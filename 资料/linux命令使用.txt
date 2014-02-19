@@ -1,3 +1,34 @@
+批量转换UNIX编码
+find -type f | xargs dos2unix -o
+
+ /home/yangxueping/share-yangxueping/nr510/android4.0.3/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-addr2line -f -e libbarcode.so 00001302  00012c14 00012768 00000000 5f73eaa8
+ /home/yangxueping/share-yangxueping/nr510/android4.0.3/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-objdump -S -D libbarcode.so > barcode.txt
+
+
+
+批量用chmod更改文件或目录属性
+chmod 777 linphone-android -R
+
+bzip2 -d  gcc-4.1.0.tar.bz2 
+---上面解压完之后执行下面的命令。
+tar -xvf gcc-4.1.0.tar 或 tar -xvf *.tar
+解完之后会出现多一个文件夹 gcc-4.1.0
+
+
+直接rm就可以了，不过要加两个参数-rf 即：rm -rf 目录名字
+
+手动启动命令：cd jobss_home/bin ./run.sh
+查看端口占用：lsof -i:80 //查看80端口是否被占用
+
+查看进程列表
+ ps aux|grep java
+
+在profile中设置PATH
+# vi /etc/profile
+找到export行，在下面新增加一行，内容为：export PATH=$PATH:/usr/local/apache/bin。
+注：＝ 等号两边不能有任何空格。这种方法最好,除非手动强制修改PATH的值,否则将不会被改变。
+编辑/etc/profile后PATH的修改不会立马生效，如果需要立即生效的话，可以执行#/etc/profile命令。
+
 VI的使用
 --------------------------------------------------------------------------------
 

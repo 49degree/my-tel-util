@@ -108,12 +108,9 @@ public class ChannelSocketClient implements Client {
 				buffer.position(0);
 				buffer.limit(mBuffer.length);
 				channel.write(buffer);
-				//channel.finishConnect();
 			}
 		} catch (IOException e) {
 			closeChannel();
-		}finally{
-			ChannelSocketServer.instance.removeKey(key);
 		}
 		return false;
 	}
@@ -124,7 +121,7 @@ public class ChannelSocketClient implements Client {
 	 *  readTimeOut;//数据发送超时时间
 	 */
 	public  boolean close(){
-		return true;
+		return closeChannel();
 	}	
 	
 	/**
@@ -132,8 +129,7 @@ public class ChannelSocketClient implements Client {
 	 *  connectTimeOut;//连接超时时间
 	 *  readTimeOut;//数据发送超时时间
 	 */
-	public  boolean closeChannel(){
-		close();
+	private  boolean closeChannel(){
 		try {
 			channel.close();
 			channel = null;
@@ -144,7 +140,6 @@ public class ChannelSocketClient implements Client {
 			key.cancel();
 		} catch (Exception ex) {
 		}
-		ChannelSocketServer.instance.removeKey(key);
 		if(closeListener!=null){
 			closeListener.close();
 		}

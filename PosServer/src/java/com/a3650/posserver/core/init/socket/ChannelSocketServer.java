@@ -163,6 +163,7 @@ public class ChannelSocketServer extends PosServer implements Runnable  {
 			socketClient.setCloseListener(new CloseListener(){
 				public void close(){
 					synchronized (clientCount) {
+						removeKey(key);
 						clientCount.count = clientCount.count-1;
 						logger.info("客户端关闭,当前客户总数："+clientCount.count);
 					}

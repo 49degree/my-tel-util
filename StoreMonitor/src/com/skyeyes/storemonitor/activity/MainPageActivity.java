@@ -222,6 +222,7 @@ public class MainPageActivity extends BaseActivity{
 			// TODO Auto-generated method stub
 			if(receiveCmdBean.getCommandHeader().resultCode != 0){
 				store_login_id_tv.setText(receiveCmdBean.getCommandHeader().errorInfo);
+
 			}else{
 				store_login_id_tv.setText("登陆成功11111...............");
 				VideoDataReceive video = new VideoDataReceive();

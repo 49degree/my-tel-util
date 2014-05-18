@@ -33,6 +33,8 @@ import com.skyeyes.storemonitor.service.DevicesService;
 @SuppressWarnings("deprecation")
 public class HomeActivity extends SlidingActivity implements MenuListener,OnOpenedListener {
 	private LocalActivityManager mManager;
+	
+	private static HomeActivity instance = null;
 	// ui
 	private SlidingMenu mSlidingMenu;
 	private FrameLayout mActivities;
@@ -46,13 +48,16 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 	public static final String TAB_NECESSARY = "necessary";
 	public static final String TAB_MANAGE = "manage";
 
-	private HomeActivity instance;
 	private Menu mMenu;
 	private Stack<Class<?>> mIndex = new Stack<Class<?>>();
 	private long mExitTime;
 	private int mPage = 0;
 	private int mCurPage = -1;
 
+	public static HomeActivity getInstance(){
+		return instance;
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

@@ -35,13 +35,13 @@ public class H264MediaPlayer extends View {
     Bitmap  mBitQQ  = null;   
     Paint   mPaint = null;   
     Bitmap  mSCBitmap = null;   
-    int width = VideoClarity.instance().getWith();  //此处设定不同的分辨率
-    int height = VideoClarity.instance().getHeight();
+//    int playWidth = VideoClarity.instance().getWith();  //此处设定不同的分辨率
+//    int playHeight  = VideoClarity.instance().getHeight();
     
-    int playWidth=800;
-    int playHeight=480;
+    int playWidth = VideoClarity.instance().getWith();  //此处设定不同的分辨率
+    int playHeight = VideoClarity.instance().getHeight();
 
-    byte [] mPixel = new byte[width*height*2];
+    byte [] mPixel ;
     
     ByteBuffer buffer;
 	Bitmap VideoBit;           
@@ -129,15 +129,16 @@ public class H264MediaPlayer extends View {
     
     public void setDisplaySize(int width,int height)
     {
-    	this.playWidth=width;
-    	this.playHeight=height;
+    	playWidth=width;
+    	playHeight=height;
     }
     
     private void setDisplay()
     {
-    	mPixel = new byte[this.width*this.height*2];    	
+    	mPixel = new byte[playWidth*playHeight*2];    	
     	buffer=ByteBuffer.wrap( mPixel );
-    	VideoBit=Bitmap.createBitmap(this.width, this.height, Config.RGB_565);
+    	Log.e(tag, "this.width, this.height:"+this.playWidth+":"+this.playHeight);
+    	VideoBit=Bitmap.createBitmap(this.playWidth, this.playHeight, Config.RGB_565);
     	int i = mPixel.length;    	
         for(i=0; i<mPixel.length; i++)
         {
@@ -147,20 +148,20 @@ public class H264MediaPlayer extends View {
         
         if(mDisplay != null){
         	
-        	if(width>=mDisplay.getWidth()){
+        	if(playWidth>=mDisplay.getWidth()){
         		videoViewStartX = 0;
-        		videoViewEndX = width;
+        		videoViewEndX = playWidth;
         	}else{
-        		videoViewStartX = (mDisplay.getWidth()-width)/2;
-        		videoViewEndX = videoViewStartX+width;
+        		videoViewStartX = (mDisplay.getWidth()-playWidth)/2;
+        		videoViewEndX = videoViewStartX+playWidth;
         	}
         	
-        	if(height>=mDisplay.getWidth()){
+        	if(playHeight>=mDisplay.getWidth()){
         		videoViewStartY = 0;
-        		videoViewEndY = height;
+        		videoViewEndY = playHeight;
         	}else{
-        		videoViewStartY = (mDisplay.getHeight()-height)/2;
-        		videoViewEndY = videoViewStartY+height;
+        		videoViewStartY = (mDisplay.getHeight()-playHeight)/2;
+        		videoViewEndY = videoViewStartY+playHeight;
         	}
         }
         
@@ -302,7 +303,7 @@ public class H264MediaPlayer extends View {
     	//视频缓冲区
     	 NalBuf = new byte[409800];
     	 setDisplay();
-     	 InitDecoder(width, height);
+     	 InitDecoder(playWidth, playHeight);
     }
     
     

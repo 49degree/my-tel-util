@@ -34,6 +34,7 @@ import com.skyeyes.storemonitor.service.DevicesService;
 
 public class MainPageActivity extends BaseActivity{
 	String TAG = "MainPageActivity";
+	ImageView app_left_menu_iv = null;
 	TextView store_login_id_tv = null;
 	LinearLayout layout_root;
     @Override
@@ -41,7 +42,18 @@ public class MainPageActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.app_video_page);
 		layout_root = (LinearLayout)findViewById(R.id.layout_root);
+		app_left_menu_iv = (ImageView)findViewById(R.id.app_left_menu_iv);
 		store_login_id_tv = (TextView)findViewById(R.id.store_login_id_tv);
+		
+		app_left_menu_iv.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				HomeActivity.getInstance().toggleMenu();
+			}
+			
+		});
 		
 
 	}

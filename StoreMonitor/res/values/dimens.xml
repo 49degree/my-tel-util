@@ -1,0 +1,49 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="shadow_width">5dp</dimen>
+
+    <!-- Dimension for loading drawable -->
+    <dimen name="space_small">6dp</dimen>
+    <dimen name="space_small_h">8dp</dimen>
+    <dimen name="space_medium">10dp</dimen>
+    <dimen name="space_medium_h">14dp</dimen>
+    <dimen name="space_large">20dp</dimen>
+    <dimen name="space_large_h">28dp</dimen>
+	<dimen name="width_small">54dp</dimen>
+    <dimen name="height_small">12dp</dimen>
+    <dimen name="width_medium">90dp</dimen>
+    <dimen name="height_medium">20dp</dimen>
+    <dimen name="width_large">180dp</dimen>
+    <dimen name="height_large">40dp</dimen>
+    
+    <!-- 炫娱乐 -->
+    <dimen name="amuse_masonry_width">320dip</dimen>
+    <dimen name="amuse_masonry_columnWidth">80dip</dimen>
+    <dimen name="amuse_masonry_large_width">235dip</dimen>
+    <dimen name="amuse_masonry_large_height">120dip</dimen>
+    <dimen name="amuse_masonry_middle_width">157dip</dimen>
+    <dimen name="amuse_masonry_middle_height">78dip</dimen>
+    <dimen name="amuse_masonry_small_width">77dip</dimen>
+    <dimen name="amuse_masonry_small_height">59dip</dimen>
+    <dimen name="amuse_masonry_long_width">317dip</dimen>
+    <dimen name="amuse_masonry_long_height">120dip</dimen>
+    <!-- 必备 -->
+    <dimen name="necessary_masonry_middle_width">156dip</dimen>
+    <dimen name="necessary_masonry_middle_height">97dip</dimen>
+    <dimen name="necessary_masonry_columnWidth">160dip</dimen>
+    <dimen name="necessary_masonry_width">320dip</dimen>
+    <!-- 搜索 -->
+    <dimen name="search_masonry_width">20dp</dimen>
+    <dimen name="search_masonry_textsize">18dp</dimen>
+    <!-- 广告条 -->
+    <dimen name="banner_height">113dip</dimen>
+	<!-- 专题条高度 -->
+    <dimen name="topic_height">88dip</dimen>
+    <!-- 必玩条高度 -->
+    <dimen name="play_height">81dip</dimen>
+    <!-- 加载框高度 -->
+    <dimen name="loading_height">100dip</dimen>
+</resources>

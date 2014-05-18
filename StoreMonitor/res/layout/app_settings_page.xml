@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    tools:context=".activity.LoginActivity" >
+
+    <EditText
+        android:id="@+id/store_login_name_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="52dp"
+        android:ems="10"
+        android:text="369test">
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/store_login_psd_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="52dp"
+        android:ems="10"
+        android:text="369test"/>
+    
+    <EditText
+        android:id="@+id/store_server_id_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="52dp"
+        android:ems="10"
+        android:text="113.106.89.91"/>
+    
+    <EditText
+        android:id="@+id/store_server_port_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="52dp"
+        android:ems="10"
+        android:text="4015"/>
+    <Button
+        android:id="@+id/store_login_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="52dp"
+        android:text="submit" />
+
+</LinearLayout>

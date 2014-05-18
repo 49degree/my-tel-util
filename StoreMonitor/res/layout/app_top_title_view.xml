@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" 
+    android:layout_height="65dp"
+    android:background="#005094">
+    <ImageView android:id="@+id/tab_widget_icon"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:paddingRight="2dip"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"/>
+</RelativeLayout>

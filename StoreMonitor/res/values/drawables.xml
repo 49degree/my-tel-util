@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <item type="drawable" name="white_bg">#ffffffff</item>
+    <item type="drawable" name="dark_bg">#ff000000</item>
+    <item type="drawable" name="gray_bg">#eeeeeeee</item>
+    <item type="drawable" name="littlegray_bg">#eeeeeeee</item>
+    <item type="drawable" name="transparent_bg">#00000000</item>
+    <item type="drawable" name="trans_bg">#00ffffff</item>
+    <item type="drawable" name="menu_bg">#ffb0b0b0</item>
+    <item type="drawable" name="line_bg">#ff414141</item>
+    <item type="drawable" name="press_drawable_bg">#ffe2e9ea</item>
+    <item type="drawable" name="ctivity_bg">#aa000000</item>
+</resources>

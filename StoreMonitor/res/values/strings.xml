@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">StoreMonitor</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_alerm">报警</string>
+        <string name="menu_exit">退出</string>
+    
+    <string name="menu_setting">设置</string>
+    <string name="menu_about">关于</string>
+    <string name="menu_help">帮助</string>
+    <!-- 首页TAB -->
+    <string name="home_tab_screen">视屏查看</string>
+    <string name="home_tab_amuse">炫娱乐</string>
+    <string name="home_tab_boutique">人流统计</string>
+    <string name="home_tab_necessary">设备状态</string>
+    <string name="home_tab_manage">管理</string>
+    <string name="home_tab_play">报警记录</string>
+    <string name="home_title_amuse">炫娱乐</string>
+    
+</resources>

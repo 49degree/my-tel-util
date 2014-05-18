@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    tools:context=".activity.LoginActivity" >
+	<RelativeLayout 
+	    android:layout_width="fill_parent" 
+	    android:layout_height="65dp"
+	    android:background="#005094">
+	    <ImageView android:id="@+id/tab_widget_icon"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="10dp"
+	        android:layout_alignParentLeft="true"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/app_top_title_menu"/>
+	</RelativeLayout>
+    <TextView
+        android:id="@+id/store_login_id_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10">
+    </TextView>
+
+
+</LinearLayout>

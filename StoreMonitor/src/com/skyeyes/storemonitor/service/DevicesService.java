@@ -52,20 +52,12 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		Log.d("DeviceListConnectService", "start................"+deviceCodes.length+":"+deviceCodes[0]);
 		for(String deviceCode:deviceCodes){
 			if(!mDeviceDeviceProcesss.containsKey(deviceCode)){
-				//初始化设备管理器
-				DeviceProcess deviceProcess = new DeviceProcess(deviceCode,this);
-				mTempDeviceDeviceProcesss.put(deviceCode, deviceProcess);
-				
 				//初始化回调对象容器
 				if(!mStaticDeviceReceiveCmdProcess.containsKey(deviceCode)){
 					mStaticDeviceReceiveCmdProcess.put(deviceCode, new HashMap<String,DeviceReceiveCmdProcess>());
-					deviceProcess.setCmdProcessMaps(mStaticDeviceReceiveCmdProcess.get(deviceCode));
 				}
-				
-				//登陆
-	    		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
-	    		String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
-				deviceProcess.loginDevice(userName, userPsd, (byte)1);
+				//初始化设备管理器,并登陆设备
+				initDeviceProcess(deviceCode);
 			}
 
 		}
@@ -81,6 +73,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 		mDeviceDeviceProcesss.clear();
 	}
+	
 	public void onStart(Intent intent, int startId){
 		super.onStart(intent, startId);
 
@@ -91,27 +84,23 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	 * @param deviceCode
 	 */
 	public void selectDevice(String deviceCode){
-		if(mDeviceDeviceProcesss.containsKey(deviceCode)){
-			PreferenceUtil.setSingleConfigInfo(PreferenceUtil.DEVICE_INFO, 
-					PreferenceUtil.device_current_code, deviceCode);
-			mCurrentDeviceCode = deviceCode;
-		}
+		PreferenceUtil.setSingleConfigInfo(PreferenceUtil.DEVICE_INFO, 
+				PreferenceUtil.device_current_code, deviceCode);
+		mCurrentDeviceCode = deviceCode;
 	}
 	
 	@Override
 	public void onDeviceLogin(String deviceCode, ReceivLogin receivLogin) {
 		// TODO Auto-generated method stub
-		if(receivLogin.getCommandHeader().resultCode ==0 && 
-				mTempDeviceDeviceProcesss.containsKey(receivLogin.deviceCode)){
-			
-			mDeviceDeviceProcesss.put(receivLogin.deviceCode, mTempDeviceDeviceProcesss.remove(receivLogin.deviceCode));
-			Log.i("DevicesService","mDeviceSocketClients:"+receivLogin.deviceCode);
-		}else{
-//			DeviceProcess deviceProcess = new DeviceProcess(deviceCode,this);
-//			mTempDeviceDeviceProcesss.put(deviceCode, deviceProcess);
-//			deviceProcess.loginDevice("adminhri", "adminhri", (byte)1);
-			Toast.makeText(this, "登陆失败:"+receivLogin.getCommandHeader().errorInfo, Toast.LENGTH_SHORT).show();
-			mTempDeviceDeviceProcesss.get(deviceCode).stop();
+		if(mTempDeviceDeviceProcesss.containsKey(receivLogin.deviceCode)){
+			if(receivLogin.getCommandHeader().resultCode ==0){
+				mDeviceDeviceProcesss.put(receivLogin.deviceCode, 
+						mTempDeviceDeviceProcesss.remove(receivLogin.deviceCode));
+				Log.i("DevicesService","mDeviceSocketClients:"+receivLogin.deviceCode);
+			}else{
+				Toast.makeText(this, "登陆失败:"+receivLogin.getCommandHeader().errorInfo, Toast.LENGTH_SHORT).show();
+				mTempDeviceDeviceProcesss.remove(deviceCode).stop();
+			}
 		}
 	}
 	
@@ -121,13 +110,31 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		
 	}
 	
-	public void onSkyeyeNetworkException(String deviceCode,NetworkException ex){
+	public void onSkyeyeNetworkException(final String deviceCode,NetworkException ex){
 		if(mDeviceDeviceProcesss.containsKey(deviceCode)){
 			mDeviceDeviceProcesss.remove(deviceCode).stop();
 		}
+		new Thread(){
+			public void run(){
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				initDeviceProcess(deviceCode);
+			}
+		}.start();
+	} 
+	
+	private void initDeviceProcess(String deviceCode){
 		DeviceProcess deviceProcess = new DeviceProcess(deviceCode,this);
 		mTempDeviceDeviceProcesss.put(deviceCode, deviceProcess);
-		deviceProcess.loginDevice("adminhri", "adminhri", (byte)1);
+		deviceProcess.setCmdProcessMaps(mStaticDeviceReceiveCmdProcess.get(deviceCode));
+		//登陆
+		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
+		String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
+		deviceProcess.loginDevice(userName, userPsd, (byte)1);
 	}
 	
 	
@@ -136,10 +143,15 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	}
 	
 	public static void sendCmd(SendCmdBean sendCmdBean,DeviceReceiveCmdProcess receiveCmdProcess) {
+		if(instance == null)
+			return;
 		sendCmd(instance.getCurrentDeviceCode(),sendCmdBean,receiveCmdProcess);
 	}
 	
 	public static void sendCmd(String deviceCode,SendCmdBean sendCmdBean,DeviceReceiveCmdProcess receiveCmdProcess) {
+		if(instance == null || 
+				instance.mDeviceDeviceProcesss.get(deviceCode) == null)
+			return;
 		instance.mDeviceDeviceProcesss.get(deviceCode).sendCmd(sendCmdBean,receiveCmdProcess);
 	}
 	

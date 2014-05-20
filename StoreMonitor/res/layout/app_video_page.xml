@@ -8,54 +8,55 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="65dp"
+        android:layout_height="100px"
         android:background="#005094" >
-
         <ImageView
             android:id="@+id/app_left_menu_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingLeft="10dp"
-            android:src="@drawable/app_top_title_menu" />
-
-        <LinearLayout
-            android:layout_width="100dp"
-            android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="70dp"
-            android:background="@drawable/textview_layout_style"
-            android:orientation="vertical"
-            android:padding="2dp" >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            android:layout_marginLeft="18px"
+            android:src="@drawable/app_top_title_menu_normal" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
+            <LinearLayout
+                android:layout_width="150px"
+                android:layout_height="70px"
                 android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:background="@drawable/textview_style"
-                android:gravity="center"
-                android:text="123456" />
-        </LinearLayout>
+                android:background="@drawable/textview_layout_style"
+                android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="100dp"
-            android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="180dp"
-            android:background="@drawable/textview_layout_style"
-            android:orientation="vertical"
-            android:padding="2dp" >
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:background="@drawable/textview_style"
+                    android:gravity="center"
+                    android:text="123456"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <LinearLayout
+                android:layout_width="150px"
+                android:layout_height="70px"
                 android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="123456" />
-        </LinearLayout>
+                android:layout_marginLeft="170px"
+                android:background="@drawable/textview_layout_style"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="123456"
+                    android:textColor="#333333" />
+            </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
     <TextView

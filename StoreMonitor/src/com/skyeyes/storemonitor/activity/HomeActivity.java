@@ -164,9 +164,9 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		View view = LayoutInflater.from(context).inflate(R.layout.app_bottom_tab_view, null);
 		((ImageView) view.findViewById(R.id.tab_widget_icon)).setImageResource(imageResource);
 		((TextView) view.findViewById(R.id.tab_widget_content)).setText(text);
-		if (text.equals(getString(R.string.home_tab_manage))) {
-			mTip = (TextView) view.findViewById(R.id.tab_widget_tip);
-		}
+//		if (text.equals(getString(R.string.home_tab_manage))) {
+//			mTip = (TextView) view.findViewById(R.id.tab_widget_tip);
+//		}
 		return view;
 	}
 	

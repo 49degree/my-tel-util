@@ -26,7 +26,8 @@
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="fill_parent"
-                android:layout_height="50dp"/>
+                android:background="#141D25"
+                android:layout_height="130px"/>
         </LinearLayout>
     </TabHost>
 

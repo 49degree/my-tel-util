@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.h264.decoder.HD264Decoder;
+import com.h264.decoder.HD264Decoder.DecodeSuccCallback;
 import com.skyeyes.base.BaseSocketHandler;
 import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
@@ -292,6 +294,17 @@ public class MainPageActivity extends BaseActivity{
 		
 	}
 	
+	private Bitmap pic;
+	private HD264Decoder mHD264Decoder = new HD264Decoder(512,213,new DecoderCallback());
+    public class DecoderCallback implements DecodeSuccCallback{
+		@Override
+		public void onDecodeSucc(Bitmap bitmap) {
+			// TODO Auto-generated method stub
+			pic = bitmap;
+		}
+    	
+    }
+	
 	private class ChannelPicReceive extends DeviceReceiveCmdProcess<ReceiveChannelPic>{
 
 		@Override
@@ -300,9 +313,12 @@ public class MainPageActivity extends BaseActivity{
 			Log.i("MainPageActivity", "ChannelPicReceive================");
 			store_login_id_tv.setText("");
 			//获得通道图片
-			Bitmap pic = BitmapFactory.decodeByteArray(receiveCmdBean.pic, 0, receiveCmdBean.pic.length);
+			mHD264Decoder.decodeNal(receiveCmdBean.pic, receiveCmdBean.pic.length);
 			ImageView iv = new ImageView(MainPageActivity.this);
-			iv.setImageBitmap(pic);
+			if(pic!=null){
+				iv.setImageBitmap(pic);
+			}
+			
 			
 			LinearLayout.LayoutParams ly = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
 			

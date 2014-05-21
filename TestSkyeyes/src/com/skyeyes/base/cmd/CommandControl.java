@@ -12,6 +12,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelName;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceEnv;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceInfo;
+import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveGetEquitIO;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHeart;
@@ -57,26 +58,6 @@ public class CommandControl {
 	        case cmdLogin:
 	        	receiveCmdBean = new ReceivLogin();
 	        	break;
-	        case cmdEquitLogin:
-	        	break;
-	        case cmdSendActive:
-	        	break;
-//	        case cmdPlayRVS:
-//	        	break;
-	        case cmdFlag:
-	        	break;
-	        case cmdPlayReplay:
-	        	break;
-	        case cmdHistoryAlarmList:
-	        	break;
-	        case cmdHistoryAlarmInfo:
-	        	break;
-	        case cmdGps:
-	        	break;
-	        case cmdConfirmPolice:
-	        	break;
-	        case cmdEquitId:
-	        	break;
 	        case cmdEquitInfo:
 	        	receiveCmdBean = new ReceiveDeviceInfo();
 	        	break;
@@ -84,23 +65,8 @@ public class CommandControl {
 	        case cmdUserEquitListNOLogin:
 	        	receiveCmdBean = new ReceiveReadDeviceList();
 	        	break;
-	        case cmdSetDuty:
-	        	break;
-	        case cmdUploadEvidence:
-	        	break;
-	        case cmdSendAlarm:
-	        	break;
-	        case cmdPlatformAlarmList:
-	        	break;
-	        case cmdPlatformAlarmInfo:
-	        	break;
 	        case cmdHeart:
 	        	receiveCmdBean = new ReceiveHeart();
-	        	
-	        	break;
-	        case cmdKeepWatchList:
-	        	break;
-	        case cmdComfirmAlarm:
 	        	break;
 	        case cmdGetEquitIO:
 	        	receiveCmdBean = new ReceiveGetEquitIO();
@@ -108,12 +74,9 @@ public class CommandControl {
 	        case cmdSetEquitIO:
 	        	receiveCmdBean = new ReceiveSetEquitIO();
 	        	break;
-	        case cmdGetPlatDutyList:
-	        	break;
 	        case cmdReadDeviceIp:
 	        	receiveCmdBean = new ReceivReadDeviceNetInfo();
 	        	break;
-	        	
 	        case cmdGetActive:
 	        	receiveCmdBean = new ReceiveDeviceStatus();
 	        	break;
@@ -125,7 +88,6 @@ public class CommandControl {
 	        	break;
 	        case cmdPushActive:
 	        	receiveCmdBean = new ReceiveStatusChange();
-
 	        	break;
 	        case cmdReqVideoChannelListStatus:
 	        	receiveCmdBean = new ReceiveDeviceChannelListStatus();
@@ -144,6 +106,17 @@ public class CommandControl {
 	        	break;
 	        case cmdRevVideoFinish:
 	        	receiveCmdBean = new ReceiveVideoFinish();
+	        	break;
+	        case cmdEquitRegInfo:
+	        	System.out.println("cmdEquitRegInfo");
+	        	receiveCmdBean = new ReceiveDeviceRegisterInfo();
+	        	break;
+	        case cmdReqAllManuByDay://按日统计总人流
+	        case cmdReqAllManuByMouse://按月统计总人流
+	        case cmdReqAvgHourManuByDay://按日统计每小时人流
+	        case cmdReqAvgDayManuByMouse://按月统计每天人流
+	        case cmdReqAvgManuStayTimeByDay://按日统计平均驻留时间
+	        case cmdReqAvgManuStayTimeByMouse://按月统计平均驻留时间	  
 	        	break;
 	        default:
 	        	return null;
@@ -187,7 +160,6 @@ public class CommandControl {
 		cmdError((byte)-1,0),
 		cmdLogin((byte)1,3),//登录 cmdLogin((byte)int state,String username,String userpwd)
 		cmdEquitLogin((byte)1,4),//登录 cmdLogin((byte)int state,String username,String userpwd,String Data)
-		cmdGetEquipmentInfo((byte)25,0),//获取设备信息 cmdGetEquipmentInfo((byte))
 		cmdGetActive((byte)0x1c,0),//获取布防状态 cmdGetActive((byte))
 		cmdSendActive((byte)0x1b,1),//设置布防状态 cmdSendActive((byte)int value)
 		cmdPushActive((byte)0x17,0),//设置布防状态 cmdSendActive((byte)int value)
@@ -215,13 +187,23 @@ public class CommandControl {
 		cmdKeepWatchList((byte)0x4a,4),//获取巡更列表 cmdKeepWatchList((byte)String userid,String stime,String etime,int type)0＝所有 1＝已过期所有2＝未过期 3＝已过期未执行 4＝已过期已执行
 		cmdRevLoginOut((byte)0x31,0),//设备退出 cmdRevLoginOut((byte))
 		cmdComfirmAlarm((byte)0x16,3),//服务中心或保安现场确认报警 cmdComfirmAlarm((byte)string alarmid,int mark,String bz) 0＝确认报警\1＝误报\2=业主
-		cmdEquitRegInfo((byte)0x19,0),//获取设备注册信息 cmdEquitRegInfo((byte)) 
+		
 		cmdGetEquitIO((byte)0x10,1),//获取当前设备IO口状态 cmdGetEquitIO((byte)int io) 动作0=断开，1＝闭合
 		cmdSetEquitIO((byte)0x15,2),//设置当前设备IO口状态 cmdSetEquitIO((byte)int io,int flag) 动作0=断开，1＝闭合
 		cmdGetPlatDutyList((byte)0x47,3),//读取平台中的上下班信息 cmdGetPlatDutyList((byte)String userID,String sTime,String eTime) 动作0=断开，1＝闭合
 		cmdContralUserIDList((byte)0x2a,1),//读取中心用户列表 cmdContralUserIDList((byte)String equitID) 
 		cmdVideoChannelName((byte)0x41,0),//读取通道名称
 		//add-------------------
+		cmdReqAllManuByDay((byte)0x54,1),//按日统计总人流
+		cmdReqAllManuByMouse((byte)0x54,1),//按月统计总人流
+		cmdReqAvgHourManuByDay((byte)0x54,1),//按日统计每小时人流
+		cmdReqAvgDayManuByMouse((byte)0x54,1),//按月统计每天人流
+		
+		cmdReqAvgManuStayTimeByDay((byte)0x54,1),//按日统计平均驻留时间
+		cmdReqAvgManuStayTimeByMouse((byte)0x54,1),//按月统计平均驻留时间
+
+		
+		cmdEquitRegInfo((byte)0x19,0),//获取设备注册信息(查询通道数量)
 		cmdReadDeviceIp((byte)0x08,0),
 		cmdReadDeviceEnv((byte)0x22,0),
 		cmdReqRealVideo((byte)0x02,1),//获取通道视频

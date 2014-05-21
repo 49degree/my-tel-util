@@ -51,6 +51,7 @@ public class MainTest {
 				}
 				
 				try {
+
 					FileOutputStream in = new FileOutputStream(f);
 					try {
 						in.write(((ReceiveChannelPic)receiveCmdBean).pic);
@@ -323,12 +324,12 @@ public class MainTest {
 	}
 
 	// 设备通道列表及状态
-	public static void getChannelListStatus(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void getcmdEquitRegInfo(SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] {};
 		try {
-			sendObjectParams.setParams(REQUST.cmdReqVideoChannelListStatus, params);
-			System.out.println("getChannelListStatus入参数：" + sendObjectParams.toString());
+			sendObjectParams.setParams(REQUST.cmdEquitRegInfo, params);
+			System.out.println("cmdEquitRegInfo入参数：" + sendObjectParams.toString());
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -402,7 +403,7 @@ public class MainTest {
 				e.printStackTrace();
 			}
 		
-//		getChannelListStatus(skyeyeSocketClient);
+		getcmdEquitRegInfo(skyeyeSocketClient);
 //		// 等待设备返回
 //		while (mChannelListStatus==null)
 //			try {
@@ -416,18 +417,14 @@ public class MainTest {
 //			System.out.println("id:"+id);
 //			getChannelPic(skyeyeSocketClient,(byte)id);
 //		}
-		
-		
-
-		requstRealTimeVideo(skyeyeSocketClient,(byte)0);
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+//		requstRealTimeVideo(skyeyeSocketClient,(byte)0);
+//		
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		//new H264Player(new String[]{"testfile/video.data"});
 
 //		requstStopVideo(skyeyeSocketClient);

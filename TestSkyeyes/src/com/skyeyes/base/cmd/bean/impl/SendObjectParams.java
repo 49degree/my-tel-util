@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 
 import com.skyeyes.base.cmd.CommandControl;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
+import com.skyeyes.base.cmd.Constants;
 import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.util.ByteIntLong;
@@ -211,18 +212,16 @@ public class SendObjectParams extends SendCmdBean{
 		    	};
 	        	break;
 	        case cmdReqAllManuByDay://按日统计总人流
-	        	int queryType = 0;
 	        case cmdReqAllManuByMouse://按月统计总人流
-	        	queryType = 0;
 	        case cmdReqAvgHourManuByDay://按日统计每小时人流
-	        	queryType = 0;
 	        case cmdReqAvgDayManuByMouse://按月统计每天人流
-	        	queryType = 0;
-	        	
 	        case cmdReqAvgManuStayTimeByDay://按日统计平均驻留时间
-	        case cmdReqAvgManuStayTimeByMouse://按月统计平均驻留时间	
+	        case cmdReqAvgManuStayTimeByMouse://按月统计平均驻留时间
 	        	byte channelId = (byte)0xFF;
+	        	
 	        	long beginTime = DateUtil.date2FileTime(fmt.parse(params[0]+""));
+	        	sendsParams = Constants.getQueryManuParams(req, channelId, beginTime);
+	        	System.out.println(params[0]+":"+fmt.parse(params[0]+"").getTime()+":"+beginTime);
 	        	break;
 	        default:
 	        	sendsParams=new Object[]{};

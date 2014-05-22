@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 
 import com.skyeyes.base.cmd.CommandControl;
@@ -13,6 +14,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus.ChannelStatus;
+import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
@@ -21,10 +23,12 @@ import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient.SocketHandler;
+import com.skyeyes.base.util.DateUtil;
 
 public class MainTest {
 	static HashMap<Integer,ChannelStatus> mChannelListStatus = null;
 	static int fileId = 0;
+	static int channelCount = -1;
 	private static class SocketHandlerImpl implements SocketHandler {
 		
 		@Override
@@ -102,6 +106,8 @@ public class MainTest {
 					e.printStackTrace();
 				}
 				
+			}else if(receiveCmdBean instanceof ReceiveDeviceRegisterInfo){
+				channelCount = ((ReceiveDeviceRegisterInfo)receiveCmdBean).videoChannelCount;
 			}
 		}
 
@@ -362,6 +368,28 @@ public class MainTest {
 		}
 	}
 	
+	
+	// 设备通道列表及状态
+	public static void getManucount(SkyeyeSocketClient skyeyeSocketClient) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		
+		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
+		Object[] params = new Object[] {"2014-05-01"+" 00:00:00"};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqAllManuByMouse, params);
+			System.out.println("getManucount入参数：" + sendObjectParams.toString());
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			skyeyeSocketClient.sendCmd(sendObjectParams);
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args) {
 		SkyeyeSocketClient skyeyeSocketClient = null;
 		try {
@@ -404,20 +432,16 @@ public class MainTest {
 			}
 		
 		getcmdEquitRegInfo(skyeyeSocketClient);
-//		// 等待设备返回
-//		while (mChannelListStatus==null)
-//			try {
-//				Thread.sleep(50);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//		for(int id:mChannelListStatus.keySet()){
-//			System.out.println("id:"+id);
-//			getChannelPic(skyeyeSocketClient,(byte)id);
-//		}
-//		requstRealTimeVideo(skyeyeSocketClient,(byte)0);
+		// 等待设备返回
+		while (channelCount==-1)
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		getManucount(skyeyeSocketClient);
 //		
 //		try {
 //			Thread.sleep(1000);

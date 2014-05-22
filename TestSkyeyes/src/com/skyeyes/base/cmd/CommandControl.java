@@ -8,6 +8,7 @@ import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceivReadDeviceNetInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
+import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelName;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceEnv;
@@ -117,6 +118,7 @@ public class CommandControl {
 	        case cmdReqAvgDayManuByMouse://按月统计每天人流
 	        case cmdReqAvgManuStayTimeByDay://按日统计平均驻留时间
 	        case cmdReqAvgManuStayTimeByMouse://按月统计平均驻留时间	  
+	        	receiveCmdBean = new ReceiveCountManu();
 	        	break;
 	        default:
 	        	return null;

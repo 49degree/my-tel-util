@@ -1,26 +1,30 @@
 package com.skyeyes.storemonitor.activity;
 
+import h264.com.H264PicView;
+import h264.com.H264PicView.DecodeSuccCallback;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.h264.decoder.HD264Decoder;
-import com.h264.decoder.HD264Decoder.DecodeSuccCallback;
 import com.skyeyes.base.BaseSocketHandler;
 import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
-import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
+import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
@@ -31,6 +35,8 @@ import com.skyeyes.base.network.impl.SkyeyeSocketClient;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.activity.adapter.ChennalPicViewAdapter;
+import com.skyeyes.storemonitor.activity.bean.ChennalPicBean;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
@@ -39,6 +45,8 @@ public class MainPageActivity extends BaseActivity{
 	ImageView app_left_menu_iv = null;
 	TextView store_login_id_tv = null;
 	LinearLayout layout_root;
+	Gallery gallery = null;
+	 List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +64,18 @@ public class MainPageActivity extends BaseActivity{
 			}
 			
 		});
+		gallery = (Gallery) findViewById(R.id.chennal_pic_gallery);
+        for (int i = 1; i < 11; i++) {
+        	ChennalPicBean img=new ChennalPicBean();
+            img.des = i+".这种房子非常有创意，欢迎访问: http://www.mythroad.net 更多-精彩移动开发知识文章-分享！";
+            img.img = new ImageView(this);
+            img.img.setBackgroundResource(R.drawable.photo);
+            
+            //图片就不加载了
+            chennalPicBeanlist.add(img);
+        }
+        ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(this, chennalPicBeanlist);
+        gallery.setAdapter(pageAdapter);
 		
 
 	}
@@ -146,7 +166,8 @@ public class MainPageActivity extends BaseActivity{
 					store_login_id_tv.setText(receiveReadDeviceList.deviceListString);	
 					
 					MainPageActivity.this.startService(new Intent(MainPageActivity.this,DevicesService.class));
-					
+					final LoginReceive loginReceive = new LoginReceive();
+					final DeviceRegisterInfoReceive deviceRegisterInfoReceive = new DeviceRegisterInfoReceive();
 
 					new Thread(){
 						public void run(){
@@ -154,9 +175,9 @@ public class MainPageActivity extends BaseActivity{
 								if(DevicesService.getInstance() != null){
 									if(DevicesService.getInstance().getCurrentDeviceCode() == null){
 										DevicesService.getInstance().selectDevice(receiveReadDeviceList.deviceCodeList.get(0));
-										DevicesService.getInstance().registerCmdProcess(ReceivLogin.class.getSimpleName(), new LoginReceive());
-										DevicesService.getInstance().registerCmdProcess(ReceiveDeviceChannelListStatus.class.getSimpleName(),
-												new DeviceChannelListStatusReceive());
+										DevicesService.getInstance().registerCmdProcess(ReceivLogin.class.getSimpleName(), loginReceive);
+										DevicesService.getInstance().registerCmdProcess(ReceiveDeviceRegisterInfo.class.getSimpleName(),
+												deviceRegisterInfoReceive);
 									}
 									
 									if(DevicesService.getInstance().getDeviceDeviceProcesss().containsKey(
@@ -239,21 +260,21 @@ public class MainPageActivity extends BaseActivity{
 
 			}else{
 				store_login_id_tv.setText("登陆成功11111...............");
-				VideoDataReceive video = new VideoDataReceive();
-				DevicesService.getInstance().registerCmdProcess(ReceiveVideoData.class.getSimpleName(), video);
-				
-				
-				SendObjectParams sendObjectParams = new SendObjectParams();
-				Object[] params = new Object[] { 0x00 };
-				try {
-					sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
-					System.out.println("cmdReqRealVideo入参数：" + sendObjectParams.toString());
-					
-					DevicesService.sendCmd(sendObjectParams, new RealVideoReceive());
-				} catch (CommandParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				VideoDataReceive video = new VideoDataReceive();
+//				DevicesService.getInstance().registerCmdProcess(ReceiveVideoData.class.getSimpleName(), video);
+//				
+//				
+//				SendObjectParams sendObjectParams = new SendObjectParams();
+//				Object[] params = new Object[] { 0x00 };
+//				try {
+//					sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
+//					System.out.println("cmdReqRealVideo入参数：" + sendObjectParams.toString());
+//					
+//					DevicesService.sendCmd(sendObjectParams, new RealVideoReceive());
+//				} catch (CommandParseException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 				
 		}
@@ -266,24 +287,31 @@ public class MainPageActivity extends BaseActivity{
 		
 	}
 	
-	private class DeviceChannelListStatusReceive extends DeviceReceiveCmdProcess<ReceiveDeviceChannelListStatus>{
+	int chennalCount = 0;
+	int getPicCount = 0;
+	private class DeviceRegisterInfoReceive extends DeviceReceiveCmdProcess<ReceiveDeviceRegisterInfo>{
 
 		@Override
-		public void onProcess(ReceiveDeviceChannelListStatus receiveCmdBean) {
+		public void onProcess(ReceiveDeviceRegisterInfo receiveCmdBean) {
 			// TODO Auto-generated method stub
+			Log.i(TAG, receiveCmdBean.toString());
 			store_login_id_tv.setText("通道状态："+receiveCmdBean.toString());
-			//查询通道图片
-			SendObjectParams sendObjectParams = new SendObjectParams();
-			Object[] params = new Object[] {(byte)0x00};
-			try {
-				sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
-				System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
-				
-				DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
-			} catch (CommandParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			chennalCount = receiveCmdBean.videoChannelCount;
+			if(chennalCount>0){
+				//查询通道图片
+//				SendObjectParams sendObjectParams = new SendObjectParams();
+//				Object[] params = new Object[] {(byte)0x00};
+//				try {
+//					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
+//					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
+//					
+//					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
+//				} catch (CommandParseException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
+
 		}
 
 		@Override
@@ -293,14 +321,19 @@ public class MainPageActivity extends BaseActivity{
 		}
 		
 	}
+	
+
 	
 	private Bitmap pic;
-	private HD264Decoder mHD264Decoder = new HD264Decoder(512,213,new DecoderCallback());
+//	private HD264Decoder mHD264Decoder = new H264PicView(512,213,new DecoderCallback());
     public class DecoderCallback implements DecodeSuccCallback{
 		@Override
 		public void onDecodeSucc(Bitmap bitmap) {
 			// TODO Auto-generated method stub
+			Log.i("DecoderCallback", "onDecodeSucc================");
 			pic = bitmap;
+
+	        
 		}
     	
     }
@@ -311,43 +344,71 @@ public class MainPageActivity extends BaseActivity{
 		public void onProcess(ReceiveChannelPic receiveCmdBean) {
 			// TODO Auto-generated method stub
 			Log.i("MainPageActivity", "ChannelPicReceive================");
-			store_login_id_tv.setText("");
-			//获得通道图片
-			mHD264Decoder.decodeNal(receiveCmdBean.pic, receiveCmdBean.pic.length);
+			store_login_id_tv.setText("解码图片开始");
+		    H264PicView h264PicView = new H264PicView(new DecoderCallback());
+		    h264PicView.sendStream(receiveCmdBean.pic);
 			ImageView iv = new ImageView(MainPageActivity.this);
 			if(pic!=null){
 				iv.setImageBitmap(pic);
+				iv.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View arg0) {
+						// TODO Auto-generated method stub
+						Log.i("MainPageActivity", "iv.setOnClickListener(new OnClickListener()================");
+						VideoDataReceive video = new VideoDataReceive();
+						DevicesService.getInstance().registerCmdProcess(ReceiveVideoData.class.getSimpleName(), video);
+						
+						
+						SendObjectParams sendObjectParams = new SendObjectParams();
+						Object[] params = new Object[] { (byte)getPicCount-1 };
+						try {
+							sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
+							System.out.println("cmdReqRealVideo入参数：" + sendObjectParams.toString());
+							
+							DevicesService.sendCmd(sendObjectParams, new RealVideoReceive());
+						} catch (CommandParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+				});
+				
+//				layout_root.addView(iv,new LinearLayout.LayoutParams(
+//						LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+				
+	        	ChennalPicBean picBean=new ChennalPicBean();
+	        	picBean.des = "";
+	        	picBean.img = iv;
+	            //图片就不加载了
+	            chennalPicBeanlist.add(picBean);
+			}
+			Log.i("MainPageActivity", "getPicCount================"+getPicCount);
+			
+			getPicCount++;
+			if(getPicCount<chennalCount){
+				//查询通道图片
+				SendObjectParams sendObjectParams = new SendObjectParams();
+				Object[] params = new Object[] {(byte)getPicCount};
+				try {
+					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
+					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
+					
+					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
+				} catch (CommandParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
+//			if(getPicCount==chennalCount &&
+//					chennalPicBeanlist.size()>0){
+//				Log.i("MainPageActivity", "chennalPicBeanlist================"+chennalPicBeanlist.size());
+//				ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(MainPageActivity.this, chennalPicBeanlist);
+//				gallery.setAdapter(pageAdapter);
+//			}
 			
-			LinearLayout.LayoutParams ly = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-			
-			layout_root.addView(iv,ly);
-			
-			iv.setOnClickListener(new OnClickListener(){
-
-				@Override
-				public void onClick(View arg0) {
-					// TODO Auto-generated method stub
-					Log.i("MainPageActivity", "iv.setOnClickListener(new OnClickListener()================");
-					VideoDataReceive video = new VideoDataReceive();
-					DevicesService.getInstance().registerCmdProcess(ReceiveVideoData.class.getSimpleName(), video);
-					
-					
-					SendObjectParams sendObjectParams = new SendObjectParams();
-					Object[] params = new Object[] { 0x00 };
-					try {
-						sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
-						System.out.println("cmdReqRealVideo入参数：" + sendObjectParams.toString());
-						
-						DevicesService.sendCmd(sendObjectParams, new RealVideoReceive());
-					} catch (CommandParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
-			});
 		}
 
 		@Override

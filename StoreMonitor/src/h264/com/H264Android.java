@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 public abstract class H264Android extends Activity implements MediaPlayCallback {
 	protected LinearLayout main;
 	protected Display display;
-	protected static H264MediaPlayer vv;
+	protected static H264VideoPlayer vv;
 	private final static String tag="H264Android";
 	
     @Override
@@ -30,13 +30,13 @@ public abstract class H264Android extends Activity implements MediaPlayCallback 
         
         WindowManager windowManager = getWindowManager();
         display = windowManager.getDefaultDisplay();
-        H264MediaPlayer.setDisplay(display);
+        H264VideoPlayer.setDisplay(display);
         
     	main=new LinearLayout(this);
         main.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT));
         main.setOrientation(LinearLayout.VERTICAL);
        
-        vv = H264MediaPlayer.getInstance(this,display.getWidth(),display.getHeight());
+        vv = H264VideoPlayer.getInstance(this);
         vv.setCallback(this);
         vv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT));
         main.addView(vv);

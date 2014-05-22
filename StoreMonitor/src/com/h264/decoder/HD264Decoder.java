@@ -3,14 +3,12 @@ package com.h264.decoder;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Bitmap.Config;
-import android.view.View;
+import android.util.Log;
 
 public class HD264Decoder{
-	
+	static String TAG = "HD264Decoder";
     private byte [] mPixel;    
     private ByteBuffer mBuffer;
 	private Bitmap mVideoBit;  
@@ -36,7 +34,9 @@ public class HD264Decoder{
     
     // decode the NALU and display the picture
     public int decodeNal(byte[] nalBuf, int nalLen) {
+    	Log.i(TAG, "decodeNal================nalLen:"+nalLen);
     	int iTmp = DecodeNal(nalBuf, nalLen, mPixel);
+    	Log.i(TAG, "decodeNal================iTmp:"+iTmp);
     	if( iTmp > 0 ) {
     		mVideoBit.copyPixelsFromBuffer(mBuffer);
     		if(mDecodeSuccCallback!=null)

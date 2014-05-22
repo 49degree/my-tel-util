@@ -76,7 +76,7 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 	
 	// 设备通道列表及状态
 	@Override
-	public void queryChannelList() {
+	public void queryDeviceRegInfo() {
 		// TODO Auto-generated method stub
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		if(mReceivLogin!=null){
@@ -84,8 +84,8 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 		}
 		Object[] params = new Object[] {};
 		try {
-			sendObjectParams.setParams(REQUST.cmdReqVideoChannelListStatus, params);
-			System.out.println("getChannelListStatus入参数：" + sendObjectParams.toString());
+			sendObjectParams.setParams(REQUST.cmdEquitRegInfo, params);
+			System.out.println("queryDeviceRegInfo入参数：" + sendObjectParams.toString());
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -156,7 +156,7 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 			if(receiveCmdBean == null)
 				return;
 			
-			Log.e(TAG, "receiveCmdBean.getClass().getSimpleName():"+receiveCmdBean.getClass().getSimpleName()+":"
+			Log.e(TAG, mStaticCmdProcess.size()+":receiveCmdBean.getClass().getSimpleName():"+receiveCmdBean.getClass().getSimpleName()+":"
 					+mStaticCmdProcess.containsKey(receiveCmdBean.getClass().getSimpleName()));
 			
 			if (receiveCmdBean instanceof ReceivLogin) {
@@ -168,7 +168,7 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 				if(receivLogin.getCommandHeader().resultCode ==0){
 					mReceivLogin = receivLogin;
 					//查询通道信息
-					queryChannelList();
+					queryDeviceRegInfo();
 				}
 
 			}else if(receiveCmdBean instanceof ReceiveDeviceChannelListStatus){

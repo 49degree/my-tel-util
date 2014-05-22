@@ -19,7 +19,7 @@ import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceStatusChang
 import com.skyeyes.storemonitor.process.impl.DeviceProcess;
 
 public class DevicesService extends Service implements DeviceStatusChangeListener{
-	String TAG = "DevicesService";
+	static String TAG = "DevicesService";
 	private static DevicesService instance = null;
 	private HashMap<String,DeviceProcessInterface> mDeviceDeviceProcesss = new HashMap<String,DeviceProcessInterface>();
 	private HashMap<String,DeviceProcessInterface> mTempDeviceDeviceProcesss = new HashMap<String,DeviceProcessInterface>();
@@ -161,6 +161,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		String deviceListString = PreferenceUtil.getConfigString(PreferenceUtil.DEVICE_INFO,PreferenceUtil.device_code_list);
 		String[] deviceCodes = deviceListString.split(";");
 		for(String deviceCode:deviceCodes){
+			Log.e(TAG, "registerCmdProcess:"+deviceCode+":"+className);
 			instance.mStaticDeviceReceiveCmdProcess.get(deviceCode).put(className,receiveCmdProcess);
 		}
 	}

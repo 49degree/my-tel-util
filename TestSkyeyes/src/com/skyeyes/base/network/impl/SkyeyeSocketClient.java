@@ -129,21 +129,25 @@ public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
 				return ;
 			}
 		}
-		
+		Set<SelectionKey> keys = null;
+		Iterator<SelectionKey> it = null;
 		while(!isClosed()){
 			try {
 				if(selector==null || 
 						selector.select(50)<1){//更新监听信息，一定要调用
 					continue;
 				}
-			} catch (IOException e1) {
+				keys = selector.selectedKeys();
+				it = keys.iterator();
+			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				mSocketHandler.onSocketException(new NetworkException(e1.getMessage()));
+				if(!isClosed()){
+					mSocketHandler.onSocketException(new NetworkException(e1.getMessage()));
+				}
 				break;
 			}
-			Set<SelectionKey> keys = selector.selectedKeys();
-			Iterator<SelectionKey> it = keys.iterator();
+
 			while(it.hasNext()){
 				SelectionKey key = it.next();
 				it.remove();
@@ -235,7 +239,9 @@ public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					mSocketHandler.onSocketException(new NetworkException(e.getMessage()));
+					if(!isClosed()){
+						mSocketHandler.onSocketException(new NetworkException(e.getMessage()));
+					}
 					break;
 				}
 			}

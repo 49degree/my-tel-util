@@ -108,7 +108,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		setBehindContentView(mMenu.getView());
 		mSlidingMenu = getSlidingMenu();
 		mSlidingMenu.setSlidingEnabled(true);
-		mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
 		mSlidingMenu.setBehindOffsetInterger(width);
 		mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
 		mSlidingMenu.setShadowDrawable(R.drawable.shadow);

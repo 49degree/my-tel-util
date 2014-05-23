@@ -121,7 +121,8 @@ public class TopTitleView extends LinearLayout {
 				leftBtn.setTextColor(getResources().getColor(R.color.white));
 				rightBtn.setBackgroundResource(R.drawable.textview_style_b);
 				rightBtn.setTextColor(getResources().getColor(R.color.black));
-				leftButtonClickListener.onClick();
+				if(leftButtonClickListener!=null)
+					leftButtonClickListener.onClick();
 			}
 		});
 		rightBtn.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +131,8 @@ public class TopTitleView extends LinearLayout {
 				rightBtn.setTextColor(getResources().getColor(R.color.white));
 				leftBtn.setBackgroundResource(R.drawable.textview_style_b);
 				leftBtn.setTextColor(getResources().getColor(R.color.black));
-				rightButtonClickListener.onClick();
+				if(rightButtonClickListener!=null)
+					rightButtonClickListener.onClick();
 			}
 		});
 	}

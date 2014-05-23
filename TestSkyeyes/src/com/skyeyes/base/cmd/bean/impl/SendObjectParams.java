@@ -217,7 +217,7 @@ public class SendObjectParams extends SendCmdBean{
 	        case cmdReqAvgDayManuByMouse://按月统计每天人流
 	        case cmdReqAvgManuStayTimeByDay://按日统计平均驻留时间
 	        case cmdReqAvgManuStayTimeByMouse://按月统计平均驻留时间
-	        	byte channelId = (byte)0xFF;
+	        	byte channelId = (byte)0;
 	        	
 	        	long beginTime = DateUtil.date2FileTime(fmt.parse(params[0]+""));
 	        	sendsParams = Constants.getQueryManuParams(req, channelId, beginTime);
@@ -269,7 +269,7 @@ public class SendObjectParams extends SendCmdBean{
 			
 			
 			System.arraycopy(temp, 0, buffer, len,temp.length>tempLen?tempLen:temp.length);
-			//System.out.println("parseData:"+TypeConversion.byte2hex(buffer));
+			System.out.println("parseData:"+TypeConversion.byte2hex(buffer));
 			len+=tempLen;
 		}
 		

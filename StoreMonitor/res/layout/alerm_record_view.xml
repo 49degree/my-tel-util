@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:top="http://schemas.android.com/apk/res/com.skyeyes.storemonitor"
     android:id="@+id/layout_root"
@@ -6,19 +7,11 @@
     android:orientation="vertical" >
 
     <com.skyeyes.base.view.TopTitleView
-        android:id="@+id/vp_topView"
+        android:id="@+id/ar_topView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        top:leftButtonText="实时查看"
-        top:rightButtonText="历史记录"
-        top:showMenuBtn="true"
-        top:showCenterButtons="true" />
+        top:titleValue="@string/alermRecord"
+        top:showCenterTitle="true" />
 
-    <TextView
-        android:id="@+id/store_login_id_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10" >
-    </TextView>
 
 </LinearLayout>

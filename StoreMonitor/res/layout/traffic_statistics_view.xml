@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:top="http://schemas.android.com/apk/res/com.skyeyes.storemonitor"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/app_bg" >
+
+    <com.skyeyes.base.view.TopTitleView
+        android:id="@+id/ts_topView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        top:leftButtonText="@string/day"
+        top:rightButtonText="@string/month"
+        top:showCenterButtons="true" />
+    
+    
+    <LinearLayout
+        android:id="@+id/my_chart"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ts_topView"
+        android:orientation="horizontal" />
+
+</RelativeLayout>

@@ -20,5 +20,9 @@
         android:layout_height="wrap_content"
         android:ems="10" >
     </TextView>
-
+     <Gallery
+         android:id="@+id/chennal_pic_gallery"
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent"
+         android:spacing="0dip" />    
 </LinearLayout>

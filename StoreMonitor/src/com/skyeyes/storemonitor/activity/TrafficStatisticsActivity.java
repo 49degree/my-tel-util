@@ -1,5 +1,6 @@
 package com.skyeyes.storemonitor.activity;
 
+import java.util.Date;
 import java.util.Random;
 
 import org.achartengine.GraphicalView;
@@ -19,9 +20,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
+import com.skyeyes.base.cmd.CommandControl.REQUST;
+import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu;
+import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
+import com.skyeyes.base.exception.CommandParseException;
+import com.skyeyes.base.exception.NetworkException;
+import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
+import com.skyeyes.storemonitor.service.DevicesService;
 /** 人流统计*/
 public class TrafficStatisticsActivity extends Activity {
 	private int SERIES_NR = 1;
@@ -116,4 +125,78 @@ public class TrafficStatisticsActivity extends Activity {
 		return renderer;
 	}
 
+	/**
+	 * 按日统计人流
+	 * @param dayTime 如：2014-05-01 00:00:00
+	 */
+	private void getManucountByDay(String dayTime) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		
+		Object[] params = new Object[] {dayTime};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqAvgHourManuByDay, params);
+			System.out.println("getManucount入参数：" + sendObjectParams.toString());
+			CountManuOfHourByDay mCountManuCmdProcess = new CountManuOfHourByDay(REQUST.cmdReqAvgHourManuByDay,(String)params[0]);
+			
+			DevicesService.sendCmd(sendObjectParams,mCountManuCmdProcess);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	/**
+	 * 按月统计人流
+	 * @param dayTime 如：2014-05-01 00:00:00
+	 */
+	private void getManucountByMonth(String dayTime) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		
+		Object[] params = new Object[] {dayTime};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqAvgDayManuByMouse, params);
+			System.out.println("getManucount入参数：" + sendObjectParams.toString());
+			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(REQUST.cmdReqAvgDayManuByMouse,(String)params[0]);
+			
+			DevicesService.sendCmd(sendObjectParams,mCountManuCmdProcess);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	/**
+	 * 按日统计人流
+	 * @author Administrator
+	 *
+	 */
+	public class CountManuOfHourByDay extends CountManuCmdProcess{
+
+		public CountManuOfHourByDay(REQUST requst, String beginTime) {
+			super(requst, beginTime);
+			// TODO Auto-generated constructor stub
+		}
+		public void onProcess(ReceiveCountManu receiveCmdBean) {
+			super.onProcess(receiveCmdBean);
+			//receiveCmdBean.countManuResultBeans 这里是数据列表
+		}
+	}
+	
+	/**
+	 * 按月统计人流
+	 * @author Administrator
+	 *
+	 */
+	public class CountManuOfDayByMonth extends CountManuCmdProcess{
+
+		public CountManuOfDayByMonth(REQUST requst, String beginTime) {
+			super(requst, beginTime);
+			// TODO Auto-generated constructor stub
+		}
+		public void onProcess(ReceiveCountManu receiveCmdBean) {
+			super.onProcess(receiveCmdBean);
+			//receiveCmdBean.countManuResultBeans 这里是数据列表
+		}
+	}
 }

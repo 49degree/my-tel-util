@@ -69,5 +69,14 @@
         <attr name="Inside_Interval" format="dimension" />
         <attr name="Backgroud_Color" format="color" />
     </declare-styleable> -->
-
+  <!-- common spinner背景 -->
+    <declare-styleable name="TopView">
+        <attr name="showMenuBtn"  format="boolean"/>
+        <attr name="showCenterButtons"  format="boolean"/>
+        <attr name="showCenterTitle"  format="boolean"/>
+        <attr name="leftButtonText"  format="reference|string"/>
+        <attr name="rightButtonText"  format="reference|string"/>
+        <attr name="titleValue"  format="reference|string"/>
+        
+    </declare-styleable>
 </resources>

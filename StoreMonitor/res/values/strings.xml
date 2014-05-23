@@ -18,5 +18,8 @@
     <string name="home_tab_manage">管理</string>
     <string name="home_tab_play">报警记录</string>
     <string name="home_title_amuse">炫娱乐</string>
+    <string name="day">日</string>
+    <string name="month">月</string>
+     <string name="alermRecord">报警记录</string>
     
 </resources>

@@ -37,6 +37,8 @@ import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
+import com.skyeyes.base.view.TopTitleView;
+import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.activity.adapter.ChennalPicViewAdapter;
 import com.skyeyes.storemonitor.activity.bean.ChennalPicBean;
@@ -45,28 +47,54 @@ import com.skyeyes.storemonitor.service.DevicesService;
 
 public class MainPageActivity extends BaseActivity{
 	String TAG = "MainPageActivity";
-	ImageView app_left_menu_iv = null;
 	//TextView store_login_id_tv = null;
-	LinearLayout layout_root;
 	Gallery gallery = null;
-	 List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
+	private TopTitleView topTitleView;
+	private LinearLayout vp_real_time_ll;
+	private LinearLayout vp_history_ll;
+	List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.app_video_page);
-		layout_root = (LinearLayout)findViewById(R.id.layout_root);
-		app_left_menu_iv = (ImageView)findViewById(R.id.app_left_menu_iv);
 		//store_login_id_tv = (TextView)findViewById(R.id.store_login_id_tv);
+		vp_real_time_ll = (LinearLayout)findViewById(R.id.vp_real_time_ll);
+		vp_history_ll = (LinearLayout)findViewById(R.id.vp_history_ll);
 		
-		app_left_menu_iv.setOnClickListener(new OnClickListener(){
+		topTitleView = (TopTitleView)findViewById(R.id.vp_topView);
+		
+		vp_history_ll.setVisibility(View.GONE);
+		vp_real_time_ll.setVisibility(View.VISIBLE);
 
+		topTitleView.setOnRightButtonClickListener(new OnClickListenerCallback() {
+			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick() {
+				// TODO Auto-generated method stub
+				vp_real_time_ll.setVisibility(View.GONE);
+				vp_history_ll.setVisibility(View.VISIBLE);
+			}
+		});
+		topTitleView.setOnLeftButtonClickListener(new OnClickListenerCallback() {
+			
+			@Override
+			public void onClick() {
+				// TODO Auto-generated method stub
+				vp_history_ll.setVisibility(View.GONE);
+				vp_real_time_ll.setVisibility(View.VISIBLE);
+			}
+		});
+		
+		topTitleView.setOnMenuButtonClickListener(new OnClickListenerCallback() {
+			
+			@Override
+			public void onClick() {
 				// TODO Auto-generated method stub
 				HomeActivity.getInstance().toggleMenu();
+
 			}
-			
 		});
+		
 		gallery = (Gallery) findViewById(R.id.chennal_pic_gallery);
 
 		

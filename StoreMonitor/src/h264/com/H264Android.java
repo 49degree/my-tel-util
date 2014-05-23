@@ -2,6 +2,8 @@ package h264.com;
 
 
 
+import com.skyeyes.base.util.VideoClarity;
+
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -36,7 +38,7 @@ public abstract class H264Android extends Activity implements MediaPlayCallback 
         main.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT));
         main.setOrientation(LinearLayout.VERTICAL);
        
-        vv = H264VideoPlayer.getInstance(this);
+        vv = H264VideoPlayer.getInstance(this,VideoClarity.instance().getWith(),VideoClarity.instance().getHeight());
         vv.setCallback(this);
         vv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT));
         main.addView(vv);

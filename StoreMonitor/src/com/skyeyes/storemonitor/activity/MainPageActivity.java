@@ -8,10 +8,13 @@ import java.util.List;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,17 +68,7 @@ public class MainPageActivity extends BaseActivity{
 			
 		});
 		gallery = (Gallery) findViewById(R.id.chennal_pic_gallery);
-        for (int i = 1; i < 11; i++) {
-        	ChennalPicBean img=new ChennalPicBean();
-            img.des = i+".这种房子非常有创意，欢迎访问: http://www.mythroad.net 更多-精彩移动开发知识文章-分享！";
-            img.img = new ImageView(this);
-            img.img.setBackgroundResource(R.drawable.photo);
-            
-            //图片就不加载了
-            chennalPicBeanlist.add(img);
-        }
-        ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(this, chennalPicBeanlist);
-        gallery.setAdapter(pageAdapter);
+
 		
 
 	}
@@ -299,17 +292,17 @@ public class MainPageActivity extends BaseActivity{
 			chennalCount = receiveCmdBean.videoChannelCount;
 			if(chennalCount>0){
 				//查询通道图片
-//				SendObjectParams sendObjectParams = new SendObjectParams();
-//				Object[] params = new Object[] {(byte)0x00};
-//				try {
-//					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
-//					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
-//					
-//					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
-//				} catch (CommandParseException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				SendObjectParams sendObjectParams = new SendObjectParams();
+				Object[] params = new Object[] {(byte)0x00};
+				try {
+					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
+					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
+					
+					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
+				} catch (CommandParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 		}
@@ -345,13 +338,16 @@ public class MainPageActivity extends BaseActivity{
 			// TODO Auto-generated method stub
 			Log.i("MainPageActivity", "ChannelPicReceive================");
 			store_login_id_tv.setText("解码图片开始");
+	        WindowManager windowManager = getWindowManager();
+	        Display display = windowManager.getDefaultDisplay();
 		    H264PicView h264PicView = new H264PicView(new DecoderCallback());
 		    h264PicView.sendStream(receiveCmdBean.pic);
-			ImageView iv = new ImageView(MainPageActivity.this);
+			
 			if(pic!=null){
-				iv.setImageBitmap(pic);
+				ImageView iv = new ImageView(MainPageActivity.this);
+				iv.setBackgroundDrawable(new BitmapDrawable(pic));
 				iv.setOnClickListener(new OnClickListener(){
-
+					byte chennalId = (byte)(getPicCount);
 					@Override
 					public void onClick(View arg0) {
 						// TODO Auto-generated method stub
@@ -361,7 +357,7 @@ public class MainPageActivity extends BaseActivity{
 						
 						
 						SendObjectParams sendObjectParams = new SendObjectParams();
-						Object[] params = new Object[] { (byte)getPicCount-1 };
+						Object[] params = new Object[] { chennalId };
 						try {
 							sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
 							System.out.println("cmdReqRealVideo入参数：" + sendObjectParams.toString());
@@ -375,13 +371,15 @@ public class MainPageActivity extends BaseActivity{
 					
 				});
 				
-//				layout_root.addView(iv,new LinearLayout.LayoutParams(
-//						LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+				float zoom = 1.0f*display.getWidth()/pic.getWidth();
+				int imgHeight = (int)(pic.getHeight()*zoom);
 				
+				LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(
+						display.getWidth(),imgHeight);
+				iv.setLayoutParams(ivLp);
 	        	ChennalPicBean picBean=new ChennalPicBean();
 	        	picBean.des = "";
 	        	picBean.img = iv;
-	            //图片就不加载了
 	            chennalPicBeanlist.add(picBean);
 			}
 			Log.i("MainPageActivity", "getPicCount================"+getPicCount);
@@ -402,12 +400,12 @@ public class MainPageActivity extends BaseActivity{
 				}
 			}
 			
-//			if(getPicCount==chennalCount &&
-//					chennalPicBeanlist.size()>0){
-//				Log.i("MainPageActivity", "chennalPicBeanlist================"+chennalPicBeanlist.size());
-//				ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(MainPageActivity.this, chennalPicBeanlist);
-//				gallery.setAdapter(pageAdapter);
-//			}
+			if(getPicCount==chennalCount &&
+					chennalPicBeanlist.size()>0){
+				Log.i("MainPageActivity", "chennalPicBeanlist================"+chennalPicBeanlist.size());
+				ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(MainPageActivity.this,chennalPicBeanlist);
+				gallery.setAdapter(pageAdapter);
+			}
 			
 		}
 
@@ -440,18 +438,44 @@ public class MainPageActivity extends BaseActivity{
 	}
 	
 	private class VideoDataReceive extends DeviceReceiveCmdProcess<ReceiveVideoData>{
-
+		long lastDataTime = 0;
 		@Override
 		public void onProcess(ReceiveVideoData receiveCmdBean) {
 			Log.e("MainPageActivity", "VideoDataReceive================");
 			// TODO Auto-generated method stub
 			if(VideoPlayActivity.getInstance()!=null)
 				VideoPlayActivity.getInstance().sendStream(receiveCmdBean.data);
+			
+			responseVideoData(receiveCmdBean);
+			
 		}
 
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
+			
+		}
+		
+		// 回复视频数据
+		public void responseVideoData(ReceiveCmdBean receiveCmdBean) {
+			if(lastDataTime == 0)
+				lastDataTime = System.currentTimeMillis();
+			if(System.currentTimeMillis()-lastDataTime>700){
+				SendObjectParams sendObjectParams = new SendObjectParams();
+				sendObjectParams.setCommandHeader(receiveCmdBean.getCommandHeader());
+				Object[] params = new Object[] {};
+				try {
+					sendObjectParams.setParams(REQUST.cmdRevFrame, params);
+					sendObjectParams.getCommandHeader().cmdCode = 0 ;
+					System.out.println("testResponseVideoData入参数："+ sendObjectParams.toString());
+					
+					DevicesService.sendCmd(sendObjectParams,null);
+				} catch (CommandParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				lastDataTime = System.currentTimeMillis();
+			}
 			
 		}
 		

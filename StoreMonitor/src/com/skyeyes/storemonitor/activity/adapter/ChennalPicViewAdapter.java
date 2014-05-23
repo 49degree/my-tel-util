@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.skyeyes.storemonitor.R;
@@ -23,17 +24,17 @@ public class ChennalPicViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return Integer.MAX_VALUE;
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return list.get(position%list.size());
+        return list.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position%list.size();
+        return position;
     }
 
     @Override
@@ -43,13 +44,16 @@ public class ChennalPicViewAdapter extends BaseAdapter {
             convertView=inflater.inflate(R.layout.chennal_pic_item_page, null);
             cacheView=new CacheView();
             cacheView.tv_des=(TextView) convertView.findViewById(R.id.chennal_pic_tv);
-            cacheView.imgv_img=(ImageView) convertView.findViewById(R.id.chennal_pic_iv);//list.get(position%list.size()).img;
             convertView.setTag(cacheView);
         }else{
             cacheView=(CacheView) convertView.getTag();
         }
-        cacheView.tv_des.setText(list.get(position%list.size()).des);
-        cacheView.imgv_img.setImageDrawable(list.get(position%list.size()).img.getBackground());
+        cacheView.tv_des.setText(list.get(position).des);
+        cacheView.imgv_img = list.get(position).img;
+        LinearLayout temp = (LinearLayout)cacheView.imgv_img.getParent();
+        if(temp!=null)
+        	temp.removeView(cacheView.imgv_img);
+        ((LinearLayout)convertView).addView(cacheView.imgv_img);
 
         return convertView;
     }

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="52dp"
         android:ems="10"
-        android:text="369test">
+        android:text="389test">
 
         <requestFocus />
     </EditText>
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="52dp"
         android:ems="10"
-        android:text="369test"/>
+        android:text="389test"/>
     
     <EditText
         android:id="@+id/store_server_id_et"

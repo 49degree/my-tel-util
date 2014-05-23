@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="fill_parent"
+     android:layout_width="560px"
      android:layout_height="fill_parent"
+     android:background="#FFFFFF"
      android:orientation="vertical"
      android:padding="5dip">
 
-     <ImageView
+     <!-- ImageView
          android:id="@+id/chennal_pic_iv"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-        />
+         android:layout_width="560px"
+         android:layout_height="fill_parent"
+        / -->
 
      <TextView
          android:id="@+id/chennal_pic_tv"
-         android:layout_width="wrap_content"
+         android:layout_width="fill_parent"
          android:layout_height="wrap_content"
          android:text="TextView"
           />

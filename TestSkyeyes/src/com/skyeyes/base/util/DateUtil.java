@@ -49,6 +49,40 @@ public class DateUtil {
     }
 
 	
+    public static Date pareStringDate(String dateStr,String format){
+    	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+    	try {
+			return simpleDateFormat.parse(dateStr);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
+    /**
+     * 计算某日期所在月份的天数
+     * @param date
+     * @return
+     */
+	public static int getDaysOfMonthByDate(Date date) {
+		Calendar rightNow = Calendar.getInstance();
+		rightNow.setTime(date); 
+		int days = rightNow.getActualMaximum(Calendar.DAY_OF_MONTH);
+		return days;
+	}
+    
+    /**
+     * 计算某日期是星期几
+     * @param date
+     * @return
+     */
+	public static int getDayOfWeekByDate(Date date) {
+		Calendar rightNow = Calendar.getInstance();
+		rightNow.setTime(date); 
+		return rightNow.get(Calendar.DAY_OF_WEEK);
+	}
+	
 	/**
 	 * 格式化日期
 	 * 

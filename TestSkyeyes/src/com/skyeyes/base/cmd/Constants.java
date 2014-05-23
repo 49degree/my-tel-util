@@ -1,5 +1,7 @@
 package com.skyeyes.base.cmd;
 
+import java.util.Date;
+
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.util.DateUtil;
 
@@ -54,24 +56,24 @@ public class Constants {
         	queryType = Constants.ManuCountType.manuNum;;
         	countNum = 24;
         	countDuration = 1;//时长1小时
-        	countTimeUnit = Constants.ManuCountTimeUnit.hour;//单位月
+        	countTimeUnit = Constants.ManuCountTimeUnit.hour;//单位小时
         	break;
         case cmdReqAvgDayManuByMouse://按月统计每天人流
         	queryType = Constants.ManuCountType.manuNum;;
-        	countNum = 30;
-        	countDuration = 1;//时长1小时
-        	countTimeUnit = Constants.ManuCountTimeUnit.day;//单位月
+        	countNum = DateUtil.getDaysOfMonthByDate(new Date(beginTime));
+        	countDuration = 1;//时长1天
+        	countTimeUnit = Constants.ManuCountTimeUnit.day;
         	break;
         case cmdReqAvgManuStayTimeByDay://按日统计平均驻留时间
         	queryType = Constants.ManuCountType.avgTime;
         	countNum = 1;
-        	countDuration = 1;//时长1小时
-        	countTimeUnit = Constants.ManuCountTimeUnit.day;//单位月
+        	countDuration = 1;
+        	countTimeUnit = Constants.ManuCountTimeUnit.day;
         	break;
         case cmdReqAvgManuStayTimeByMouse://按月统计平均驻留时间
         	queryType = Constants.ManuCountType.avgTime;
         	countNum = 1;
-        	countDuration = 1;//时长1小时
+        	countDuration = 1;
         	countTimeUnit = Constants.ManuCountTimeUnit.monse;//单位月
         	break;
 		}

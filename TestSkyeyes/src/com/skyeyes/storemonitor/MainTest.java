@@ -32,7 +32,7 @@ public class MainTest {
 	private static class SocketHandlerImpl implements SocketHandler {
 		
 		@Override
-		public void onReceiveCmd(ReceiveCmdBean receiveCmdBean) {
+		public void onReceiveCmd(final ReceiveCmdBean receiveCmdBean) {
 			// TODO Auto-generated method stub
 			System.out.println("解析报文成功:" + (receiveCmdBean!=null?receiveCmdBean.toString():"receiveCmdBean is null"));
 			if (receiveCmdBean instanceof ReceivLogin) {
@@ -71,8 +71,10 @@ public class MainTest {
 					e.printStackTrace();
 				}
 				
-			}else if(receiveCmdBean instanceof ReceiveRealVideo||
-					receiveCmdBean instanceof ReceiveVideoData){
+			}else if(receiveCmdBean instanceof ReceiveRealVideo){
+				
+				
+			}else if(receiveCmdBean instanceof ReceiveVideoData){
 				File f = new File("testfile");
 				if(!f.exists())
 					f.mkdir();
@@ -106,6 +108,15 @@ public class MainTest {
 					e.printStackTrace();
 				}
 				
+				
+				new Thread(){
+					public void run(){
+						testResponseVideoData(skyeyeSocketClient,receiveCmdBean);
+					}
+				}.start();
+				
+				
+				
 			}else if(receiveCmdBean instanceof ReceiveDeviceRegisterInfo){
 				channelCount = ((ReceiveDeviceRegisterInfo)receiveCmdBean).videoChannelCount;
 			}
@@ -136,6 +147,33 @@ public class MainTest {
 		}
 
 	};
+	
+	// 回复视频数据
+	public static void testResponseVideoData(SkyeyeSocketClient skyeyeSocketClient,ReceiveCmdBean receiveCmdBean) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		sendObjectParams.setCommandHeader(receiveCmdBean.getCommandHeader());
+		
+		
+		
+		Object[] params = new Object[] {};
+		try {
+			sendObjectParams.setParams(REQUST.cmdRevFrame, params);
+			sendObjectParams.getCommandHeader().cmdCode = 0 ;
+
+			System.out.println("testResponseVideoData入参数："
+					+ sendObjectParams.toString());
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			skyeyeSocketClient.sendCmd(sendObjectParams);
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	// 登陆
 	public static void testEquitLogin(SkyeyeSocketClient skyeyeSocketClient) {
@@ -374,7 +412,7 @@ public class MainTest {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
-		Object[] params = new Object[] {"2014-05-01"+" 00:00:00"};
+		Object[] params = new Object[] {"2014-04-01"+" 00:00:00"};
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAllManuByMouse, params);
 			System.out.println("getManucount入参数：" + sendObjectParams.toString());
@@ -389,9 +427,9 @@ public class MainTest {
 			e.printStackTrace();
 		}
 	}
-	
+	static SkyeyeSocketClient skyeyeSocketClient = null;
 	public static void main(String[] args) {
-		SkyeyeSocketClient skyeyeSocketClient = null;
+		
 		try {
 			skyeyeSocketClient = new SkyeyeSocketClient(
 					new SocketHandlerImpl(), false);
@@ -442,13 +480,16 @@ public class MainTest {
 			}
 
 		getManucount(skyeyeSocketClient);
-//		
-//		try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//requstRealTimeVideo(skyeyeSocketClient,(byte)0x00);
+		
 		//new H264Player(new String[]{"testfile/video.data"});
 
 //		requstStopVideo(skyeyeSocketClient);

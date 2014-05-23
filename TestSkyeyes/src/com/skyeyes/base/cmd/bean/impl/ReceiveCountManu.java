@@ -2,12 +2,17 @@ package com.skyeyes.base.cmd.bean.impl;
 
 import java.util.ArrayList;
 
+import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.exception.CommandParseException;
+import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.util.TypeConversion;
 
 public class ReceiveCountManu  extends ReceiveCmdBean {
-	ArrayList<CountManuResultBean> countManuResultBeans = new ArrayList<CountManuResultBean>();
+	public ArrayList<CountManuResultBean> countManuResultBeans = new ArrayList<CountManuResultBean>();
+	
+
+	
 	@Override
 	public void parseBody(byte[] body) throws CommandParseException {
 		// TODO Auto-generated method stub
@@ -15,7 +20,7 @@ public class ReceiveCountManu  extends ReceiveCmdBean {
 			for(int i=0;i<body.length/17;i++){
 				CountManuResultBean countManuResultBean = new CountManuResultBean();
 				countManuResultBean.channelId = body[i*17+0];
-				countManuResultBean.time = TypeConversion.bytesToLong(body,i*17+1);
+				countManuResultBean.time = DateUtil.fileTime2Date(TypeConversion.bytesToLong(body,i*17+1)).getTime();
 				countManuResultBean.inManu = TypeConversion.bytesToInt(body,i*17+9);//查询人流时
 				countManuResultBean.avgTime = TypeConversion.bytesToInt(body,i*17+9);//查询驻留时间时
 				countManuResultBean.outManu = TypeConversion.bytesToInt(body,i*17+13);
@@ -26,11 +31,12 @@ public class ReceiveCountManu  extends ReceiveCmdBean {
 	}
 	
 	public static class CountManuResultBean{
-		byte channelId;
-		long time;
-		int inManu;
-		int avgTime;
-		int outManu;
+		public byte channelId;
+		public long time;
+		public int inManu;
+		public int avgTime;
+		public int outManu;
+		public int dayofWeet;
 		public String toString(){
 			return "channelId="+channelId+";time="+time+";inManu="+inManu+";avgTime="+avgTime+";outManu="+outManu;
 		}

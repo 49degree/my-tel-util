@@ -914,13 +914,7 @@ public class CustomViewAbove extends ViewGroup {
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		// Let the focused view and/or our descendants get the key first
-		try{
-			return super.dispatchKeyEvent(event) || executeKeyEvent(event);
-		}catch(Exception e){
-			
-		}
-		return false;
-		
+		return super.dispatchKeyEvent(event) || executeKeyEvent(event);
 	}
 
 	/** You can call this function yourself to have the scroll view perform

@@ -1,5 +1,7 @@
 package com.skyeyes.storemonitor.activity;
 
+import com.skyeyes.storemonitor.R;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.ViewGroup.LayoutParams;
@@ -10,11 +12,6 @@ public class DevicesStatusActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		TextView view  = new TextView(this);
-		view.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.WRAP_CONTENT));
-		view.setTextSize(15);
-		view.setText("DevicesStatusActivity");
-		setContentView(view);
+		setContentView(R.layout.devices_status_view);
 	}
 }

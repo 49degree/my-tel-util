@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         top:leftButtonText="@string/day"
         top:rightButtonText="@string/month"
+        top:showMenuBtn="true"
         top:showCenterButtons="true" />
     
     

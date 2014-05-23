@@ -15,6 +15,8 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
 import com.skyeyes.base.view.TopTitleView;
@@ -50,6 +52,16 @@ public class TrafficStatisticsActivity extends Activity {
 			@Override
 			public void onClick() {
 				// TODO Auto-generated method stub
+			}
+		});
+		
+		topTitleView.setOnMenuButtonClickListener(new OnClickListenerCallback() {
+			
+			@Override
+			public void onClick() {
+				// TODO Auto-generated method stub
+				HomeActivity.getInstance().toggleMenu();
+
 			}
 		});
 	}

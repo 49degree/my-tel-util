@@ -1,0 +1,103 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:top="http://schemas.android.com/apk/res/com.skyeyes.storemonitor"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="370px"
+        android:background="#005094" >
+
+        <Button
+            android:id="@+id/protect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/device_set_protect" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="108px"
+        android:background="#F8F8F8" >
+
+        <TextView
+            android:id="@+id/ds_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/device_status" />
+
+        <TextView
+            android:id="@+id/ds_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/ds_title"/>
+
+        <TextView
+            android:id="@+id/p_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/ds_value"
+            android:text="@string/protect_status" />
+
+        <TextView
+            android:id="@+id/p_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/p_title" />
+
+        <TextView
+            android:id="@+id/net_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ds_title"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/network_status" />
+
+        <TextView
+            android:id="@+id/net_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ds_value"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/net_title" />
+
+        <TextView
+            android:id="@+id/routing_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/p_title"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/net_value"
+            android:text="@string/routing_status" />
+
+        <TextView
+            android:id="@+id/routing_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/p_value"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/routing_title"/>
+    </RelativeLayout>
+	<ListView 
+	    android:id="@+id/device_status_list"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:divider="@color/line"
+	    android:dividerHeight="1px"
+	    />
+</LinearLayout>

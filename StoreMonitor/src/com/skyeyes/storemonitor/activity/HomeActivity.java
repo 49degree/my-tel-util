@@ -16,8 +16,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.skyeyes.base.util.Log;
 import com.skyeyes.base.util.ViewUtils;
@@ -151,7 +153,20 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 								R.drawable.home_tab_status_selector))
 				.setContent(new Intent(this, DevicesStatusActivity.class));
 		mTabHost.addTab(tab4);
+		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
+			
+			@Override
+			public void onTabChanged(String tabId) {
+				// TODO Auto-generated method stub
+				if(TAB_BOUTIQUE.equals(tabId)){
+					Toast.makeText(HomeActivity.this, tabId, Toast.LENGTH_SHORT).show();
+					setSlidingEnabled(false);
+				} else {
+					setSlidingEnabled(true);
 
+				}
+			}
+		});
 		setCurrentTab(mPage);
 	}
 

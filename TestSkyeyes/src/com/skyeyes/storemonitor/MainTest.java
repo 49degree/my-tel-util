@@ -178,7 +178,7 @@ public class MainTest {
 	// 登陆
 	public static void testEquitLogin(SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		Object[] params = new Object[] { 1, "369test", "369test",CommandControl.getDeviceId()};
+		Object[] params = new Object[] { 1, "389test", "389test",CommandControl.getDeviceId()};
 		try {
 			sendObjectParams.setParams(REQUST.cmdEquitLogin, params);
 
@@ -201,7 +201,7 @@ public class MainTest {
 	public static void testEquitListNoLogin(
 			SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		Object[] params = new Object[] { "369test", "369test" };
+		Object[] params = new Object[] { "389test", "389test" };
 		//params = new Object[]{};
 		try {
 
@@ -412,7 +412,7 @@ public class MainTest {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
-		Object[] params = new Object[] {"2014-04-01"+" 00:00:00"};
+		Object[] params = new Object[] {"2012-01-01"+" 00:00:00"};
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAllManuByMouse, params);
 			System.out.println("getManucount入参数：" + sendObjectParams.toString());
@@ -459,6 +459,7 @@ public class MainTest {
 				e.printStackTrace();
 			}
 		
+		/*
 		getChannelPic(skyeyeSocketClient,(byte)0);
 		
 		while (fileId==0)
@@ -478,6 +479,7 @@ public class MainTest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 
 		getManucount(skyeyeSocketClient);
 		

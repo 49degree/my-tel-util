@@ -15,8 +15,8 @@ public class ReceiveCountManu  extends ReceiveCmdBean {
 	
 	@Override
 	public void parseBody(byte[] body) throws CommandParseException {
-		// TODO Auto-generated method stub
-		if(body.length>17){
+
+		if(body.length>=17){
 			for(int i=0;i<body.length/17;i++){
 				CountManuResultBean countManuResultBean = new CountManuResultBean();
 				countManuResultBean.channelId = body[i*17+0];

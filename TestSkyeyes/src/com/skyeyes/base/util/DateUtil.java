@@ -80,7 +80,11 @@ public class DateUtil {
 	public static int getDayOfWeekByDate(Date date) {
 		Calendar rightNow = Calendar.getInstance();
 		rightNow.setTime(date); 
-		return rightNow.get(Calendar.DAY_OF_WEEK);
+		int day = rightNow.get(Calendar.DAY_OF_WEEK);
+		if(day>1){
+			return day-1;
+		}else
+			return 7;
 	}
 	
 	/**
@@ -91,6 +95,18 @@ public class DateUtil {
 	 * @return String
 	 */
 	public static String getTimeStringFormat(Date date, String dateFormat) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+		return simpleDateFormat.format(date);
+	}
+	
+	/**
+	 * 格式化日期
+	 * 
+	 * @param date
+	 * @param dateFormat
+	 * @return String
+	 */
+	public static String getTimeStringFormat(long date, String dateFormat) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
 		return simpleDateFormat.format(date);
 	}

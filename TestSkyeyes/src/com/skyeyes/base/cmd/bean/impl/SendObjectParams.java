@@ -269,7 +269,7 @@ public class SendObjectParams extends SendCmdBean{
 			
 			
 			System.arraycopy(temp, 0, buffer, len,temp.length>tempLen?tempLen:temp.length);
-			System.out.println("parseData:"+TypeConversion.byte2hex(buffer));
+			//System.out.println("parseData:"+TypeConversion.byte2hex(buffer));
 			len+=tempLen;
 		}
 		

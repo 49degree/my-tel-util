@@ -12,6 +12,7 @@ import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
+import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus.ChannelStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
@@ -119,6 +120,9 @@ public class MainTest {
 				
 			}else if(receiveCmdBean instanceof ReceiveDeviceRegisterInfo){
 				channelCount = ((ReceiveDeviceRegisterInfo)receiveCmdBean).videoChannelCount;
+			}else if(receiveCmdBean instanceof ReceiveCountManu){
+				if(mCountManuCmdProcess!=null)
+					mCountManuCmdProcess.onProcess((ReceiveCountManu)receiveCmdBean);
 			}
 		}
 
@@ -406,7 +410,7 @@ public class MainTest {
 		}
 	}
 	
-	
+	static CountManuCmdProcess mCountManuCmdProcess = null;
 	// 设备通道列表及状态
 	public static void getManucount(SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
@@ -414,8 +418,9 @@ public class MainTest {
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
 		Object[] params = new Object[] {"2014-05-01"+" 00:00:00"};
 		try {
-			sendObjectParams.setParams(REQUST.cmdReqAllManuByMouse, params);
+			sendObjectParams.setParams(REQUST.cmdReqAvgDayManuByMouse, params);
 			System.out.println("getManucount入参数：" + sendObjectParams.toString());
+			mCountManuCmdProcess = new CountManuCmdProcess(REQUST.cmdReqAvgDayManuByMouse,(String)params[0]);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -502,4 +507,6 @@ public class MainTest {
 
 		//testDeviceIp(skyeyeSocketClient);
 	}
+
+
 }

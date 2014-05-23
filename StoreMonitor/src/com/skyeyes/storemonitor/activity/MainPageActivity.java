@@ -46,7 +46,7 @@ import com.skyeyes.storemonitor.service.DevicesService;
 public class MainPageActivity extends BaseActivity{
 	String TAG = "MainPageActivity";
 	ImageView app_left_menu_iv = null;
-	TextView store_login_id_tv = null;
+	//TextView store_login_id_tv = null;
 	LinearLayout layout_root;
 	Gallery gallery = null;
 	 List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
@@ -56,7 +56,7 @@ public class MainPageActivity extends BaseActivity{
 		this.setContentView(R.layout.app_video_page);
 		layout_root = (LinearLayout)findViewById(R.id.layout_root);
 		app_left_menu_iv = (ImageView)findViewById(R.id.app_left_menu_iv);
-		store_login_id_tv = (TextView)findViewById(R.id.store_login_id_tv);
+		//store_login_id_tv = (TextView)findViewById(R.id.store_login_id_tv);
 		
 		app_left_menu_iv.setOnClickListener(new OnClickListener(){
 
@@ -87,7 +87,7 @@ public class MainPageActivity extends BaseActivity{
     		String port = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
     		
     		if(StringUtil.isNull(userName)||StringUtil.isNull(userPsd)||StringUtil.isNull(ip)||StringUtil.isNull(port)){
-    			store_login_id_tv.setText("用户数据不完整，请前往设置用户数据...............");
+    			showToast("用户数据不完整，请前往设置用户数据...............");
     		}else{
         		SkyeyeSocketClient skyeyeSocketClient = null;
         		try {
@@ -98,7 +98,7 @@ public class MainPageActivity extends BaseActivity{
         		}
         		queryEquitListNoLogin(skyeyeSocketClient);//查询设备
         		
-        		store_login_id_tv.setText("正在登陆...............");
+        		showToast("正在登陆...............");
     		}
     	}
     }
@@ -156,7 +156,7 @@ public class MainPageActivity extends BaseActivity{
 							PreferenceUtil.device_count, receiveReadDeviceList.deviceCodeList.size());
 					PreferenceUtil.setSingleConfigInfo(PreferenceUtil.DEVICE_INFO,
 							PreferenceUtil.device_code_list,  receiveReadDeviceList.deviceListString);
-					store_login_id_tv.setText(receiveReadDeviceList.deviceListString);	
+					showToast(receiveReadDeviceList.deviceListString);	
 					
 					MainPageActivity.this.startService(new Intent(MainPageActivity.this,DevicesService.class));
 					final LoginReceive loginReceive = new LoginReceive();
@@ -177,7 +177,7 @@ public class MainPageActivity extends BaseActivity{
 											receiveReadDeviceList.deviceCodeList.get(0))){
 										runOnUiThread(new Runnable(){
 											public void run(){
-												store_login_id_tv.setText("登陆成功...............");
+												showToast("登陆成功...............");
 											}
 										});
 										break;
@@ -249,10 +249,10 @@ public class MainPageActivity extends BaseActivity{
 		public void onProcess(ReceivLogin receiveCmdBean) {
 			// TODO Auto-generated method stub
 			if(receiveCmdBean.getCommandHeader().resultCode != 0){
-				store_login_id_tv.setText(receiveCmdBean.getCommandHeader().errorInfo);
+				showToast(receiveCmdBean.getCommandHeader().errorInfo);
 
 			}else{
-				store_login_id_tv.setText("登陆成功11111...............");
+				showToast("登陆成功11111...............");
 //				VideoDataReceive video = new VideoDataReceive();
 //				DevicesService.getInstance().registerCmdProcess(ReceiveVideoData.class.getSimpleName(), video);
 //				
@@ -288,7 +288,7 @@ public class MainPageActivity extends BaseActivity{
 		public void onProcess(ReceiveDeviceRegisterInfo receiveCmdBean) {
 			// TODO Auto-generated method stub
 			Log.i(TAG, receiveCmdBean.toString());
-			store_login_id_tv.setText("通道状态："+receiveCmdBean.toString());
+			showToast("通道状态："+receiveCmdBean.toString());
 			chennalCount = receiveCmdBean.videoChannelCount;
 			if(chennalCount>0){
 				//查询通道图片
@@ -337,7 +337,7 @@ public class MainPageActivity extends BaseActivity{
 		public void onProcess(ReceiveChannelPic receiveCmdBean) {
 			// TODO Auto-generated method stub
 			Log.i("MainPageActivity", "ChannelPicReceive================");
-			store_login_id_tv.setText("解码图片开始");
+			showToast("解码图片开始");
 	        WindowManager windowManager = getWindowManager();
 	        Display display = windowManager.getDefaultDisplay();
 		    H264PicView h264PicView = new H264PicView(new DecoderCallback());
@@ -478,7 +478,10 @@ public class MainPageActivity extends BaseActivity{
 			}
 			
 		}
-		
+	}
+	
+	private void showToast(String msg){
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 	}
 
 }

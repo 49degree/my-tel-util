@@ -11,18 +11,48 @@
         android:layout_height="wrap_content"
         top:leftButtonText="实时查看"
         top:rightButtonText="历史记录"
-        top:showMenuBtn="true"
-        top:showCenterButtons="true" />
+        top:showCenterButtons="true"
+        top:showMenuBtn="true" />
 
-    <TextView
-        android:id="@+id/store_login_id_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10" >
-    </TextView>
-     <Gallery
-         android:id="@+id/chennal_pic_gallery"
-         android:layout_width="fill_parent"
-         android:layout_height="fill_parent"
-         android:spacing="0dip" />    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150px"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal|bottom"
+        android:padding="15px">"
+        <TextView
+            android:id="@+id/count_all_manu_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="6789"
+            android:textSize="110px">
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="人">
+        </TextView>
+        <TextView
+            android:id="@+id/count_avg_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10px"
+            android:text="12"
+            android:textSize="60px">
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Min">
+        </TextView>        
+    </LinearLayout>
+
+    <Gallery
+        android:id="@+id/chennal_pic_gallery"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:spacing="0dip"
+        android:background="#000000"
+        android:layout_marginBottom="10px" />
+
 </LinearLayout>

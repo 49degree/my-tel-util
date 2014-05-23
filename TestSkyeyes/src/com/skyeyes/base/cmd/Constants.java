@@ -27,11 +27,11 @@ public class Constants {
 	
 	public static class ManuCountTimeUnit{
 		public final static int second = 0;
-		public final static int min = 0;
-		public final static int hour = 0;
-		public final static int day = 0;
-		public final static int monse = 0;
-		public final static int year = 0;
+		public final static int min = 1;
+		public final static int hour = 2;
+		public final static int day = 3;
+		public final static int monse = 4;
+		public final static int year = 5;
 	}
 
 	public static Object[] getQueryManuParams(REQUST requst,byte channelId,long beginTime){

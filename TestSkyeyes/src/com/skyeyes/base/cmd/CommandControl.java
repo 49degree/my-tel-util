@@ -62,8 +62,11 @@ public class CommandControl {
 			}else{
 				reqCmd = REQUST.valueOfByCmd(cmdHeaderBean.cmdCode);
 			}
+			System.out.println("reqCmd："+reqCmd);
 			switch(reqCmd){
 	        case cmdLogin:
+	        	break;
+	        case cmdEquitLogin:
 	        	receiveCmdBean = new ReceivLogin();
 	        	break;
 	        case cmdEquitInfo:
@@ -205,7 +208,6 @@ public class CommandControl {
 		cmdReqAllManuByMouse((byte)0x54,(byte)0x20,1),//按月统计总人流
 		cmdReqAvgHourManuByDay((byte)0x54,(byte)0x21,1),//按日统计每小时人流
 		cmdReqAvgDayManuByMouse((byte)0x54,(byte)0x22,1),//按月统计每天人流
-		
 		cmdReqAvgManuStayTimeByDay((byte)0x54,(byte)0x23,1),//按日统计平均驻留时间
 		cmdReqAvgManuStayTimeByMouse((byte)0x54,(byte)0x24,1),//按月统计平均驻留时间
 
@@ -219,6 +221,8 @@ public class CommandControl {
 		cmdRevVideoFinish((byte)0x07,(byte)0x2B,0),//视频数据播放完成
 		cmdReqVideoChannelListStatus((byte)0x42,(byte)0x2C,0),//查询通道状态
 		cmdReqVideoChannelPic((byte)0x13,(byte)0x2D,1);//获取通道图片
+		
+		//cmdReqVideoChannelPic((byte)0x23,(byte)0x2E,1);//获取通道图片
 		
 		private byte cmd ;
 		private byte cmdId;//返回ID

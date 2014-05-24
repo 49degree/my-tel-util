@@ -388,48 +388,22 @@ public class MainPageActivity extends BaseActivity{
 			// TODO Auto-generated method stub
 			Log.i("MainPageActivity", "ChannelPicReceive================");
 			showToast("解码图片开始");
-	        WindowManager windowManager = getWindowManager();
-	        Display display = windowManager.getDefaultDisplay();
+
 		    H264PicView h264PicView = new H264PicView(new DecoderCallback());
 		    h264PicView.sendStream(receiveCmdBean.pic);
 			
 			if(pic!=null){
-				ImageView iv = new ImageView(MainPageActivity.this);
-				iv.setBackgroundDrawable(new BitmapDrawable(pic));
-				iv.setOnClickListener(new OnClickListener(){
-					byte chennalId = (byte)(getPicCount);
-					@Override
-					public void onClick(View arg0) {
-						// TODO Auto-generated method stub
-						Log.i("MainPageActivity", "iv.setOnClickListener(new OnClickListener()================");
-						VideoDataReceive video = new VideoDataReceive();
-						DevicesService.getInstance().registerCmdProcess(ReceiveVideoData.class.getSimpleName(), video);
-						
-						
-						SendObjectParams sendObjectParams = new SendObjectParams();
-						Object[] params = new Object[] { chennalId };
-						try {
-							sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
-							System.out.println("cmdReqRealVideo入参数：" + sendObjectParams.toString());
-							
-							DevicesService.sendCmd(sendObjectParams, new RealVideoReceive());
-						} catch (CommandParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					
-				});
-				
+		        WindowManager windowManager = getWindowManager();
+		        Display display = windowManager.getDefaultDisplay();
 				float zoom = 1.0f*display.getWidth()/pic.getWidth();
 				int imgHeight = (int)(pic.getHeight()*zoom);
-				
 				LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(
 						display.getWidth(),imgHeight);
-				iv.setLayoutParams(ivLp);
 	        	ChennalPicBean picBean=new ChennalPicBean();
 	        	picBean.des = "";
-	        	picBean.img = iv;
+	        	picBean.img = new BitmapDrawable(pic);
+	        	picBean.ivLp = ivLp;
+	        	picBean.chennalId = (byte)(getPicCount);
 	            chennalPicBeanlist.add(picBean);
 			}
 			Log.i("MainPageActivity", "getPicCount================"+getPicCount);
@@ -467,70 +441,9 @@ public class MainPageActivity extends BaseActivity{
 		
 	}
 	
+
 	
-	private class RealVideoReceive extends DeviceReceiveCmdProcess<ReceiveRealVideo>{
-
-		@Override
-		public void onProcess(ReceiveRealVideo receiveCmdBean) {
-			// TODO Auto-generated method stub
-			//打开视频播放界面
-			Intent it = new Intent(MainPageActivity.this,VideoPlayActivity.class);
-			MainPageActivity.this.startActivity(it);
-			Log.i("MainPageActivity", "MainPageActivity.this.startActivity(it)================");
-		}
-
-		@Override
-		public void onFailure(String errinfo) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
 	
-	private class VideoDataReceive extends DeviceReceiveCmdProcess<ReceiveVideoData>{
-		long lastDataTime = 0;
-		@Override
-		public void onProcess(ReceiveVideoData receiveCmdBean) {
-			Log.e("MainPageActivity", "VideoDataReceive================");
-			// TODO Auto-generated method stub
-			if(VideoPlayActivity.getInstance()!=null)
-				VideoPlayActivity.getInstance().sendStream(receiveCmdBean.data);
-			
-			responseVideoData(receiveCmdBean);
-			
-		}
-
-		@Override
-		public void onFailure(String errinfo) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		// 回复视频数据
-		public void responseVideoData(ReceiveCmdBean receiveCmdBean) {
-			if(lastDataTime == 0)
-				lastDataTime = System.currentTimeMillis();
-			if(System.currentTimeMillis()-lastDataTime>700){
-				byte cmdId = receiveCmdBean.getCommandHeader().cmdId;
-				SendObjectParams sendObjectParams = new SendObjectParams();
-				sendObjectParams.setCommandHeader(receiveCmdBean.getCommandHeader());
-				Object[] params = new Object[] {};
-				try {
-					sendObjectParams.setParams(REQUST.cmdRevFrame, params);
-					sendObjectParams.getCommandHeader().cmdCode = 0 ;
-					sendObjectParams.getCommandHeader().cmdId  = cmdId;
-					System.out.println("testResponseVideoData入参数："+ sendObjectParams.toString());
-					
-					DevicesService.sendCmd(sendObjectParams,null);
-				} catch (CommandParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				lastDataTime = System.currentTimeMillis();
-			}
-			
-		}
-	}
 	
 	private void showToast(String msg){
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();

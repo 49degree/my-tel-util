@@ -1,6 +1,7 @@
 package com.skyeyes.storemonitor.activity.bean;
 
-import android.widget.ImageView;
+import android.graphics.drawable.BitmapDrawable;
+import android.widget.LinearLayout;
 
 /**
  * 图片实体类
@@ -9,7 +10,9 @@ import android.widget.ImageView;
  */
 public class ChennalPicBean {
     public String des;//描述
-    public ImageView img;//图片
+    public BitmapDrawable img;//图片
+    public LinearLayout.LayoutParams ivLp;
+    public int chennalId;
 
 
 }

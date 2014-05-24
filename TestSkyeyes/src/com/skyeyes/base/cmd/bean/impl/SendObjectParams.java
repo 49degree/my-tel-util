@@ -40,7 +40,7 @@ public class SendObjectParams extends SendCmdBean{
 	public void setParams(REQUST req,Object[] params) throws CommandParseException{
 		this.req = req;
 		this.commandHeader.cmdCode = req.cmd();
-		commandHeader.cmdId = req.cmd();
+		commandHeader.cmdId = req.cmdId();
 		this.srcParams = params;
 		if(params==null)
 			params=new Object[]{};

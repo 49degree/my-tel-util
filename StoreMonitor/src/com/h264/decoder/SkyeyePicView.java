@@ -1,11 +1,10 @@
 package com.h264.decoder;
 
+import h264.com.H264PicView.DecodeSuccCallback;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.widget.ImageView;
-
-import com.h264.decoder.HD264Decoder.DecodeSuccCallback;
 
 class SkyeyePicView extends ImageView {
 

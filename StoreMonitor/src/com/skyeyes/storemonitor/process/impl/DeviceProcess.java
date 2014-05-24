@@ -103,6 +103,7 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 	
 	public void sendCmd(SendCmdBean sendCmdBean,DeviceReceiveCmdProcess receiveCmdProcess) {
 		// TODO Auto-generated method stub
+		Log.e(TAG, "sendCmd:"+receiveCmdProcess.getClass().getSimpleName()+":"+receiveCmdProcess.getGenericTypeName());
 		if(receiveCmdProcess!=null){
 			receiveCmdProcess.setmResponseCmdProcess(mResponseCmdProcess);
 			//注册返回信息监听

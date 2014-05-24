@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
+import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
@@ -35,6 +38,7 @@ import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
+import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
 import com.skyeyes.base.view.TopTitleView;
@@ -43,15 +47,22 @@ import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.activity.adapter.ChennalPicViewAdapter;
 import com.skyeyes.storemonitor.activity.bean.ChennalPicBean;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
+import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
 public class MainPageActivity extends BaseActivity{
 	String TAG = "MainPageActivity";
+	public final static int SEND_QUERY_MANU_ID = 1;
+	private boolean stopQueryManu = true;
+	
 	//TextView store_login_id_tv = null;
 	Gallery gallery = null;
 	private TopTitleView topTitleView;
 	private LinearLayout vp_real_time_ll;
 	private LinearLayout vp_history_ll;
+	private TextView count_all_manu_tv;
+	private TextView count_avg_time_tv;
+	
 	List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +71,10 @@ public class MainPageActivity extends BaseActivity{
 		//store_login_id_tv = (TextView)findViewById(R.id.store_login_id_tv);
 		vp_real_time_ll = (LinearLayout)findViewById(R.id.vp_real_time_ll);
 		vp_history_ll = (LinearLayout)findViewById(R.id.vp_history_ll);
-		
 		topTitleView = (TopTitleView)findViewById(R.id.vp_topView);
+		
+		count_all_manu_tv = (TextView)findViewById(R.id.count_all_manu_tv);
+		count_avg_time_tv = (TextView)findViewById(R.id.count_avg_time_tv);
 		
 		vp_history_ll.setVisibility(View.GONE);
 		vp_real_time_ll.setVisibility(View.VISIBLE);
@@ -82,6 +95,7 @@ public class MainPageActivity extends BaseActivity{
 				// TODO Auto-generated method stub
 				vp_history_ll.setVisibility(View.GONE);
 				vp_real_time_ll.setVisibility(View.VISIBLE);
+
 			}
 		});
 		
@@ -90,20 +104,18 @@ public class MainPageActivity extends BaseActivity{
 			@Override
 			public void onClick() {
 				// TODO Auto-generated method stub
-				HomeActivity.getInstance().toggleMenu();
+				try{
+					HomeActivity.getInstance().toggleMenu();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
 
 			}
 		});
 		
 		gallery = (Gallery) findViewById(R.id.chennal_pic_gallery);
-
 		
-
-	}
-    
-    
-    public void onResume(){
-    	super.onResume();
     	if(DevicesService.getInstance() == null){
     		Log.i(TAG,"onResume()");
     		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
@@ -129,10 +141,18 @@ public class MainPageActivity extends BaseActivity{
         		showToast("正在登陆...............");
     		}
     	}
+
+
+	}
+    
+    
+    public void onResume(){
+    	super.onResume();
     }
     
     public void onDestroy(){
     	super.onDestroy();
+    	stopQueryManu = true;
     }
     
 	// 查询设备列表
@@ -200,16 +220,7 @@ public class MainPageActivity extends BaseActivity{
 										DevicesService.getInstance().registerCmdProcess(ReceiveDeviceRegisterInfo.class.getSimpleName(),
 												deviceRegisterInfoReceive);
 									}
-									
-									if(DevicesService.getInstance().getDeviceDeviceProcesss().containsKey(
-											receiveReadDeviceList.deviceCodeList.get(0))){
-										runOnUiThread(new Runnable(){
-											public void run(){
-												showToast("登陆成功...............");
-											}
-										});
-										break;
-									}
+									break;
 								}
 								try {
 									sleep(10);
@@ -280,22 +291,10 @@ public class MainPageActivity extends BaseActivity{
 				showToast(receiveCmdBean.getCommandHeader().errorInfo);
 
 			}else{
-				showToast("登陆成功11111...............");
-//				VideoDataReceive video = new VideoDataReceive();
-//				DevicesService.getInstance().registerCmdProcess(ReceiveVideoData.class.getSimpleName(), video);
-//				
-//				
-//				SendObjectParams sendObjectParams = new SendObjectParams();
-//				Object[] params = new Object[] { 0x00 };
-//				try {
-//					sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
-//					System.out.println("cmdReqRealVideo入参数：" + sendObjectParams.toString());
-//					
-//					DevicesService.sendCmd(sendObjectParams, new RealVideoReceive());
-//				} catch (CommandParseException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				showToast("登陆成功...............");
+				
+				stopQueryManu = false;
+				queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
 			}
 				
 		}
@@ -318,20 +317,20 @@ public class MainPageActivity extends BaseActivity{
 			Log.i(TAG, receiveCmdBean.toString());
 			showToast("通道状态："+receiveCmdBean.toString());
 			chennalCount = receiveCmdBean.videoChannelCount;
-			if(chennalCount>0){
-				//查询通道图片
-				SendObjectParams sendObjectParams = new SendObjectParams();
-				Object[] params = new Object[] {(byte)0x00};
-				try {
-					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
-					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
-					
-					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
-				} catch (CommandParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+//			if(chennalCount>0){
+//				//查询通道图片
+//				SendObjectParams sendObjectParams = new SendObjectParams();
+//				Object[] params = new Object[] {(byte)0x00};
+//				try {
+//					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
+//					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
+//					
+//					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
+//				} catch (CommandParseException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
 
 		}
 
@@ -510,6 +509,110 @@ public class MainPageActivity extends BaseActivity{
 	
 	private void showToast(String msg){
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	}
+	
+	
+
+	Handler queryManuCountHandler = new Handler(){
+		public void handleMessage(Message msg){
+			switch(msg.what){
+				case SEND_QUERY_MANU_ID:
+					if(!stopQueryManu)
+						getManucountByMonth();
+					break;
+			}
+		}
+	};
+	
+	/**
+	 * 按月统计人流
+	 * @param dayTime 如：2014-05-01 00:00:00
+	 */
+	private void getManucountByMonth() {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		
+		Object[] params = new Object[] {DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YM)+"-01 00:00:00"};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqAllManuByMouse, params);
+			System.out.println("getManucountByMonth入参数：" + sendObjectParams.toString());
+			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(REQUST.cmdReqAllManuByMouse,(String)params[0]);
+			mCountManuCmdProcess.setTimeout(30*1000);
+			
+			DevicesService.sendCmd(sendObjectParams,mCountManuCmdProcess);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	/**
+	 * 按月统计平均驻留时间
+	 * @param dayTime 如：2014-05-01 00:00:00
+	 */
+	private void getManuAvgTimeByMonth() {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		Object[] params = new Object[] {DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YM)+"-01 00:00:00"};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqAvgManuStayTimeByMouse, params);
+			System.out.println("getManuAvgTimeByMonth入参数：" + sendObjectParams.toString());
+			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(REQUST.cmdReqAvgManuStayTimeByMouse,(String)params[0]);
+			mCountManuCmdProcess.setTimeout(30*1000);
+			
+			DevicesService.sendCmd(sendObjectParams,mCountManuCmdProcess);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 按月统计人流
+	 * @author Administrator
+	 *
+	 */
+	public class CountManuOfDayByMonth extends CountManuCmdProcess<ReceiveCountManu>{
+
+		public CountManuOfDayByMonth(REQUST requst, String beginTime) {
+			super(requst, beginTime);
+			// TODO Auto-generated constructor stub
+		}
+		public void onProcess(ReceiveCountManu receiveCmdBean) {
+			super.onProcess(receiveCmdBean);
+			Log.e(TAG, requst+":"+receiveCmdBean.toString());
+			try{
+				if(requst == REQUST.cmdReqAvgManuStayTimeByMouse){
+					if(count_avg_time_tv!=null){
+						count_avg_time_tv.setText(getStringZero(receiveCmdBean.countManuResultBeans.get(0).avgTime,2));
+					}
+					queryManuCountHandler.sendEmptyMessageDelayed(SEND_QUERY_MANU_ID,20*1000);
+				}else{
+					if(count_all_manu_tv!=null){
+						count_all_manu_tv.setText(getStringZero(receiveCmdBean.countManuResultBeans.get(0).inManu,4));
+					}
+					getManuAvgTimeByMonth();
+					
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		public void onResponsTimeout(){
+			queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);
+		}
+		
+		private String getStringZero(int value,int len){
+			int valueLen = String.valueOf(value).length();
+			String temp = String.valueOf(value);
+			if(valueLen<len){
+				for(int i=len - valueLen;i>0;i--){
+					temp = "0"+temp;
+				}
+			}
+			return temp;
+		}
+
 	}
 
 }

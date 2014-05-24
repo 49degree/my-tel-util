@@ -11,6 +11,7 @@ import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.exception.NetworkException;
+import com.skyeyes.base.util.Log;
 
 public interface DeviceProcessInterface {
 	public void loginDevice(String userName,String userPsd,byte config);
@@ -26,7 +27,7 @@ public interface DeviceProcessInterface {
 	 */
 	public static abstract class DeviceReceiveCmdProcess<T extends ReceiveCmdBean> extends Handler{
 		public static final int TIMEOUT_WHAT = 1;
-		
+		static String TAG = "DeviceReceiveCmdProcess";
 		private HashMap<String,DeviceReceiveCmdProcess> mResponseCmdProcess ;
 		
 		public abstract void onProcess(T receiveCmdBean);
@@ -46,6 +47,7 @@ public interface DeviceProcessInterface {
 
 		public void handleMessage(Message msg){
 			String name = getGenericTypeName();
+			Log.e(TAG, "handleMessage"+msg.what);
 			if(msg.what == TIMEOUT_WHAT){
 				if(mResponseCmdProcess!=null &&
 						mResponseCmdProcess.containsKey(name)){
@@ -56,7 +58,7 @@ public interface DeviceProcessInterface {
 		}
 
 		public void setmResponseCmdProcess(HashMap<String, DeviceReceiveCmdProcess> responseCmdProcess) {
-			mResponseCmdProcess = mResponseCmdProcess;
+			mResponseCmdProcess = responseCmdProcess;
 		}
 		
 		public void onResponsTimeout(){

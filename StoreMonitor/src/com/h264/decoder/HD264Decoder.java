@@ -1,5 +1,7 @@
 package com.h264.decoder;
 
+import h264.com.H264PicView.DecodeSuccCallback;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -44,9 +46,6 @@ public class HD264Decoder{
     	}
     	return iTmp;
     }
-    
-    public interface DecodeSuccCallback{
-    	public void onDecodeSucc(Bitmap bitmap);
-    }
+
 
 }

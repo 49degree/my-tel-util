@@ -1,15 +1,10 @@
 package com.h264.decoder;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-
+import h264.com.H264PicView.DecodeSuccCallback;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.view.View;
-
-import com.h264.decoder.HD264Decoder.DecodeSuccCallback;
 
 class WVSSView extends View {
 

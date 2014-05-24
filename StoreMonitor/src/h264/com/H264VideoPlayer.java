@@ -123,22 +123,41 @@ public class H264VideoPlayer extends View {
 
         
         if(mDisplay != null){
+    		videoViewStartY = 0;
+    		videoViewEndY = mDisplay.getHeight();
+    		
+    		float zoom = (videoViewEndY*1.0f)/playHeight;
+    		int tmepWidth =  (int)(zoom*playWidth);
+    		if(mDisplay.getWidth() - tmepWidth>0){
+    			videoViewStartX = (mDisplay.getWidth() - tmepWidth) / 2;
+    			videoViewEndX = videoViewStartX + tmepWidth;
+    		}else{
+    			videoViewStartX = 0;
+    			videoViewEndX = mDisplay.getWidth();
+    			
+        		zoom = (videoViewEndX*1.0f)/playWidth;
+        		int tmepHeight =  (int)zoom*playHeight;
+        		
+        		videoViewStartY = (mDisplay.getHeight()-tmepHeight)/2;
+        		videoViewEndY = videoViewStartY+tmepHeight;
+    		}
+
         	
-        	if(playWidth>=mDisplay.getWidth()){
-        		videoViewStartX = 0;
-        		videoViewEndX = playWidth;
-        	}else{
-        		videoViewStartX = (mDisplay.getWidth()-playWidth)/2;
-        		videoViewEndX = videoViewStartX+playWidth;
-        	}
-        	
-        	if(playHeight>=mDisplay.getWidth()){
-        		videoViewStartY = 0;
-        		videoViewEndY = playHeight;
-        	}else{
-        		videoViewStartY = (mDisplay.getHeight()-playHeight)/2;
-        		videoViewEndY = videoViewStartY+playHeight;
-        	}
+//        	if(playWidth>=mDisplay.getWidth()){
+//        		videoViewStartX = 0;
+//        		videoViewEndX = mDisplay.getWidth();
+//        	}else{
+//        		videoViewStartX = (mDisplay.getWidth()-playWidth)/2;
+//        		videoViewEndX = videoViewStartX+playWidth;
+//        	}
+//        	
+//        	if(playHeight>=mDisplay.getHeight()){
+//        		videoViewStartY = 0;
+//        		videoViewEndY = mDisplay.getHeight();
+//        	}else{
+//        		videoViewStartY = (mDisplay.getHeight()-playHeight)/2;
+//        		videoViewEndY = videoViewStartY+playHeight;
+//        	}
         }
         
     }
@@ -230,6 +249,8 @@ public class H264VideoPlayer extends View {
 					
 					iTemp=mH264MediaPlayer.DecoderNal(NalBuf, NalBufUsed-4, mPixel);   
 					Log.d(tag,"iTemp="+iTemp);
+		            frameCount++;
+		            callbackobj.reviceFrame(frameCount+"");
 		            if(iTemp>0)
 		            {
 		            	currentTime=System.currentTimeMillis();
@@ -252,8 +273,7 @@ public class H264VideoPlayer extends View {
 		            	oldTime=currentTime;
 		            }
 		            	
-		            frameCount++;
-		            	callbackobj.reviceFrame(frameCount+"");
+
 				}
 				
 				escapeLen++;

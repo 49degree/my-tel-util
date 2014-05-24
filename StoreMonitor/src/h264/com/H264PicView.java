@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.Display;
 
-import com.h264.decoder.HD264Decoder;
 import com.skyeyes.base.util.VideoClarity;
 
 public class H264PicView{
@@ -50,7 +49,7 @@ public class H264PicView{
 	int escapeLen=0;
 	byte [] NalBuf;
 	
-	HD264Decoder mH264MediaPlayer;
+	H264MediaPlayer mH264MediaPlayer;
 	
     public static void setDisplay(Display display){
     	mDisplay = display;
@@ -63,7 +62,7 @@ public class H264PicView{
     
     public H264PicView(int width,int height,DecodeSuccCallback decodeSuccCallback){
     	mDecodeSuccCallback = decodeSuccCallback;
-    	mH264MediaPlayer = new HD264Decoder(width,height,decodeSuccCallback);
+    	mH264MediaPlayer = new H264MediaPlayer();
     	this.setDisplaySize(width, height);
     	this.init();
     }
@@ -147,7 +146,7 @@ public class H264PicView{
 		while(bytesRead-SockBufUsed>0)
 		{
 			nalLen = MergeBuffer(NalBuf, NalBufUsed, SockBuf, SockBufUsed, bytesRead-SockBufUsed);
-			//Log.e(tag, "SockBufUsed:"+SockBufUsed);
+			Log.e(tag, "SockBufUsed:"+SockBufUsed);
 			NalBufUsed += nalLen;
 			SockBufUsed += nalLen;
 			while(mTrans == 1)
@@ -177,13 +176,13 @@ public class H264PicView{
 							break;
 						}
 					}
-					
-					iTemp=mH264MediaPlayer.DecodeNal(NalBuf, NalBufUsed-4, mPixel);   
+					Log.e(tag, "NalBuf:"+NalBuf.length+":"+(NalBufUsed-4)+":"+mPixel.length);
+					iTemp=mH264MediaPlayer.DecoderNal(NalBuf, NalBufUsed-4, mPixel);   
 					
 		            if(iTemp>0){
 		                buffer.position(0);
 		                VideoBit.copyPixelsFromBuffer(buffer);//makeBuffer(data565, N));
-		                //Log.e(tag, "VideoBit:"+VideoBit.getWidth()+":"+VideoBit.getHeight());
+		                Log.e(tag, "VideoBit:"+VideoBit.getWidth()+":"+VideoBit.getHeight());
 		                if(mDecodeSuccCallback!=null)
 		                	mDecodeSuccCallback.onDecodeSucc(VideoBit);
 		            }
@@ -216,6 +215,35 @@ public class H264PicView{
   
     public interface DecodeSuccCallback{
     	public void onDecodeSucc(Bitmap bitmap);
+    }
+    
+    
+	
+	/**
+	 * 初始化解码器
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+    public native int InitDecoder(int width, int height);
+    
+    /**
+     * 
+     * @return
+     */
+    public native int UninitDecoder(); 
+    
+    /**
+     * 对Nal进行解码
+     * @param in
+     * @param insize
+     * @param out
+     * @return
+     */
+    public native int DecoderNal(byte[] in, int insize, byte[] out);
+    
+    static {
+        System.loadLibrary("H264Android");
     }
 }
 

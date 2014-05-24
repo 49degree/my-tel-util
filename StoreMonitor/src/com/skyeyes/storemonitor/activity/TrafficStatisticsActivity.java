@@ -207,6 +207,7 @@ public class TrafficStatisticsActivity extends Activity {
 						+ receiveCmdBean.countManuResultBeans.get(i).inManu);
 			}
 		}
+
 	}
 
 	/**

@@ -34,14 +34,15 @@ public interface DeviceProcessInterface {
 
 		public abstract void onFailure(String errinfo);
 		
-		public void onReceiveCmdBean(T receiveCmdBean){
+		public synchronized void  onReceiveCmdBean(T receiveCmdBean){
+			removeMessages(TIMEOUT_WHAT);
 			onProcess(receiveCmdBean);
 		}
 		/**
 		 * 设置响应超时
 		 * @param timeout Millis
 		 */
-		public void setTimeout(long timeout){
+		public synchronized void setTimeout(long timeout){
 			sendEmptyMessageDelayed(TIMEOUT_WHAT, timeout);
 		}
 
@@ -53,7 +54,10 @@ public interface DeviceProcessInterface {
 						mResponseCmdProcess.containsKey(name)){
 					mResponseCmdProcess.remove(name);
 				}
-				onResponsTimeout();
+				synchronized(this){
+					onResponsTimeout();
+				}
+				
 			}
 		}
 

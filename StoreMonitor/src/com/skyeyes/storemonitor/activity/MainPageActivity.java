@@ -44,6 +44,7 @@ import com.skyeyes.base.util.StringUtil;
 import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.activity.adapter.ChennalPicViewAdapter;
 import com.skyeyes.storemonitor.activity.bean.ChennalPicBean;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
@@ -54,6 +55,7 @@ public class MainPageActivity extends BaseActivity{
 	String TAG = "MainPageActivity";
 	public final static int SEND_QUERY_MANU_ID = 1;
 	private boolean stopQueryManu = true;
+	private boolean isInView = false;
 	
 	//TextView store_login_id_tv = null;
 	Gallery gallery = null;
@@ -62,8 +64,9 @@ public class MainPageActivity extends BaseActivity{
 	private LinearLayout vp_history_ll;
 	private TextView count_all_manu_tv;
 	private TextView count_avg_time_tv;
-	
 	List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
+	
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +81,7 @@ public class MainPageActivity extends BaseActivity{
 		
 		vp_history_ll.setVisibility(View.GONE);
 		vp_real_time_ll.setVisibility(View.VISIBLE);
+		stopQueryManu = false;
 
 		topTitleView.setOnRightButtonClickListener(new OnClickListenerCallback() {
 			
@@ -86,6 +90,8 @@ public class MainPageActivity extends BaseActivity{
 				// TODO Auto-generated method stub
 				vp_real_time_ll.setVisibility(View.GONE);
 				vp_history_ll.setVisibility(View.VISIBLE);
+				stopQueryManu = true;
+				queryManuCountHandler.removeMessages(SEND_QUERY_MANU_ID);
 			}
 		});
 		topTitleView.setOnLeftButtonClickListener(new OnClickListenerCallback() {
@@ -95,7 +101,11 @@ public class MainPageActivity extends BaseActivity{
 				// TODO Auto-generated method stub
 				vp_history_ll.setVisibility(View.GONE);
 				vp_real_time_ll.setVisibility(View.VISIBLE);
-
+				stopQueryManu = false;
+		    	if(isInView && 
+		    			StoreMonitorApplication.getInstance().getReceivLogin()!=null){
+		    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
+		    	}
 			}
 		});
 		
@@ -117,7 +127,6 @@ public class MainPageActivity extends BaseActivity{
 		gallery = (Gallery) findViewById(R.id.chennal_pic_gallery);
 		
     	if(DevicesService.getInstance() == null){
-    		Log.i(TAG,"onResume()");
     		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
     		
     		String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
@@ -148,11 +157,21 @@ public class MainPageActivity extends BaseActivity{
     
     public void onResume(){
     	super.onResume();
+    	Log.e(TAG,"onResume queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID)");
+    	isInView = true;
+    	if(!stopQueryManu && StoreMonitorApplication.getInstance().getReceivLogin()!=null){
+    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
+    	}
+			
     }
-    
+    public void onStop(){
+    	super.onStop();
+    	isInView = false;
+    	queryManuCountHandler.removeMessages(SEND_QUERY_MANU_ID);
+    	
+    }
     public void onDestroy(){
     	super.onDestroy();
-    	stopQueryManu = true;
     }
     
 	// 查询设备列表
@@ -289,12 +308,16 @@ public class MainPageActivity extends BaseActivity{
 			// TODO Auto-generated method stub
 			if(receiveCmdBean.getCommandHeader().resultCode != 0){
 				showToast(receiveCmdBean.getCommandHeader().errorInfo);
+				StoreMonitorApplication.getInstance().setReceivLogin(null);
 
 			}else{
 				showToast("登陆成功...............");
+				StoreMonitorApplication.getInstance().setReceivLogin(receiveCmdBean);
 				
-				stopQueryManu = false;
-				queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
+		    	if(isInView && !stopQueryManu && 
+		    			StoreMonitorApplication.getInstance().getReceivLogin()!=null){
+		    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
+		    	}
 			}
 				
 		}
@@ -317,20 +340,20 @@ public class MainPageActivity extends BaseActivity{
 			Log.i(TAG, receiveCmdBean.toString());
 			showToast("通道状态："+receiveCmdBean.toString());
 			chennalCount = receiveCmdBean.videoChannelCount;
-//			if(chennalCount>0){
-//				//查询通道图片
-//				SendObjectParams sendObjectParams = new SendObjectParams();
-//				Object[] params = new Object[] {(byte)0x00};
-//				try {
-//					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
-//					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
-//					
-//					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
-//				} catch (CommandParseException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
+			if(chennalCount>0){
+				//查询通道图片
+				SendObjectParams sendObjectParams = new SendObjectParams();
+				Object[] params = new Object[] {(byte)0x00};
+				try {
+					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
+					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
+					
+					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
+				} catch (CommandParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 		}
 
@@ -488,12 +511,14 @@ public class MainPageActivity extends BaseActivity{
 			if(lastDataTime == 0)
 				lastDataTime = System.currentTimeMillis();
 			if(System.currentTimeMillis()-lastDataTime>700){
+				byte cmdId = receiveCmdBean.getCommandHeader().cmdId;
 				SendObjectParams sendObjectParams = new SendObjectParams();
 				sendObjectParams.setCommandHeader(receiveCmdBean.getCommandHeader());
 				Object[] params = new Object[] {};
 				try {
 					sendObjectParams.setParams(REQUST.cmdRevFrame, params);
 					sendObjectParams.getCommandHeader().cmdCode = 0 ;
+					sendObjectParams.getCommandHeader().cmdId  = cmdId;
 					System.out.println("testResponseVideoData入参数："+ sendObjectParams.toString());
 					
 					DevicesService.sendCmd(sendObjectParams,null);
@@ -517,8 +542,10 @@ public class MainPageActivity extends BaseActivity{
 		public void handleMessage(Message msg){
 			switch(msg.what){
 				case SEND_QUERY_MANU_ID:
-					if(!stopQueryManu)
-						getManucountByMonth();
+					if(!isInView || stopQueryManu)
+						break ;
+					removeMessages(SEND_QUERY_MANU_ID);
+					getManucountByMonth();
 					break;
 			}
 		}
@@ -534,7 +561,6 @@ public class MainPageActivity extends BaseActivity{
 		Object[] params = new Object[] {DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YM)+"-01 00:00:00"};
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAllManuByMouse, params);
-			System.out.println("getManucountByMonth入参数：" + sendObjectParams.toString());
 			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(REQUST.cmdReqAllManuByMouse,(String)params[0]);
 			mCountManuCmdProcess.setTimeout(30*1000);
 			
@@ -555,7 +581,6 @@ public class MainPageActivity extends BaseActivity{
 		Object[] params = new Object[] {DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YM)+"-01 00:00:00"};
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAvgManuStayTimeByMouse, params);
-			System.out.println("getManuAvgTimeByMonth入参数：" + sendObjectParams.toString());
 			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(REQUST.cmdReqAvgManuStayTimeByMouse,(String)params[0]);
 			mCountManuCmdProcess.setTimeout(30*1000);
 			
@@ -579,7 +604,9 @@ public class MainPageActivity extends BaseActivity{
 		}
 		public void onProcess(ReceiveCountManu receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
-			Log.e(TAG, requst+":"+receiveCmdBean.toString());
+//			Log.e(TAG, requst+":"+receiveCmdBean.toString());
+			if(!isInView || stopQueryManu)
+				return ;
 			try{
 				if(receiveCmdBean.getCommandHeader().cmdId == REQUST.cmdReqAvgManuStayTimeByMouse.cmdId()){
 					if(count_avg_time_tv!=null){
@@ -599,7 +626,10 @@ public class MainPageActivity extends BaseActivity{
 		}
 		
 		public void onResponsTimeout(){
-			queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);
+			Log.e(TAG, "onResponsTimeout");
+			if(!isInView || stopQueryManu)
+				return ;
+			queryManuCountHandler.sendEmptyMessageDelayed(SEND_QUERY_MANU_ID,20*1000);
 		}
 		
 		private String getStringZero(int value,int len){

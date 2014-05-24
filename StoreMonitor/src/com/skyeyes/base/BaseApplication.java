@@ -13,6 +13,8 @@ public class BaseApplication extends Application {
 	private boolean outputLog = true; // 是否输出Log
 	
 	private static BaseApplication instance;
+	
+	
 	public static BaseApplication getInstance() {
 		return instance;
 	}

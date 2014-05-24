@@ -105,10 +105,7 @@ public class CountManuCmdProcess<T extends ReceiveCmdBean> extends DeviceReceive
 		}
 
 
-//		for(CountManuResultBean countManuResultBean:receiveCmdBean.countManuResultBeans){
-//			System.out.println(DateUtil.getTimeStringFormat(countManuResultBean.time, DateUtil.TIME_FORMAT_YMDHMS)+":"
-//					+countManuResultBean.dayofWeet+":"+countManuResultBean.inManu+":"+countManuResultBean.outManu+":"+countManuResultBean.avgTime);
-//		}
+
 		
 		
 	

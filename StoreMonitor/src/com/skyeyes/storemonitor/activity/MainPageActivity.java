@@ -15,10 +15,8 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Gallery;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +27,11 @@ import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
-import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
-import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
-import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByMouse;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByMouse;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
@@ -45,6 +42,7 @@ import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
+import com.skyeyes.storemonitor.activity.TrafficStatisticsActivity.CountManuOfDayByMonth;
 import com.skyeyes.storemonitor.activity.adapter.ChennalPicViewAdapter;
 import com.skyeyes.storemonitor.activity.bean.ChennalPicBean;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
@@ -474,7 +472,7 @@ public class MainPageActivity extends BaseActivity{
 		Object[] params = new Object[] {DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YM)+"-01 00:00:00"};
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAllManuByMouse, params);
-			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(REQUST.cmdReqAllManuByMouse,(String)params[0]);
+			CountAllManuByMouse mCountManuCmdProcess = new CountAllManuByMouse(REQUST.cmdReqAllManuByMouse,(String)params[0]);
 			mCountManuCmdProcess.setTimeout(30*1000);
 			
 			DevicesService.sendCmd(sendObjectParams,mCountManuCmdProcess);
@@ -494,7 +492,7 @@ public class MainPageActivity extends BaseActivity{
 		Object[] params = new Object[] {DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YM)+"-01 00:00:00"};
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAvgManuStayTimeByMouse, params);
-			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(REQUST.cmdReqAvgManuStayTimeByMouse,(String)params[0]);
+			CountAvgManuStayTimeByMouse mCountManuCmdProcess = new CountAvgManuStayTimeByMouse(REQUST.cmdReqAvgManuStayTimeByMouse,(String)params[0]);
 			mCountManuCmdProcess.setTimeout(30*1000);
 			
 			DevicesService.sendCmd(sendObjectParams,mCountManuCmdProcess);
@@ -504,20 +502,37 @@ public class MainPageActivity extends BaseActivity{
 		}
 	}
 	
+	private String getStringZero(int value,int len){
+		int valueLen = String.valueOf(value).length();
+		String temp = String.valueOf(value);
+		if(valueLen<len){
+			for(int i=len - valueLen;i>0;i--){
+				temp = "0"+temp;
+			}
+		}
+		return temp;
+	}
+	
+	public void onResponsTimeout(){
+		Log.e(TAG, "onResponsTimeout");
+		if(!isInView || stopQueryManu)
+			return ;
+		queryManuCountHandler.sendEmptyMessageDelayed(SEND_QUERY_MANU_ID,20*1000);
+	}
+	
 	/**
 	 * 按月统计人流
 	 * @author Administrator
 	 *
 	 */
-	public class CountManuOfDayByMonth extends CountManuCmdProcess<ReceiveCountManu>{
+	public class CountAvgManuStayTimeByMouse extends CountManuCmdProcess<ReceiveAvgManuStayTimeByMouse>{
 
-		public CountManuOfDayByMonth(REQUST requst, String beginTime) {
+		public CountAvgManuStayTimeByMouse(REQUST requst, String beginTime) {
 			super(requst, beginTime);
 			// TODO Auto-generated constructor stub
 		}
-		public void onProcess(ReceiveCountManu receiveCmdBean) {
+		public void onProcess(ReceiveAvgManuStayTimeByMouse receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
-//			Log.e(TAG, requst+":"+receiveCmdBean.toString());
 			if(!isInView || stopQueryManu)
 				return ;
 			try{
@@ -525,37 +540,45 @@ public class MainPageActivity extends BaseActivity{
 					if(count_avg_time_tv!=null){
 						count_avg_time_tv.setText(getStringZero(receiveCmdBean.countManuResultBeans.get(0).avgTime,2));
 					}
-					queryManuCountHandler.sendEmptyMessageDelayed(SEND_QUERY_MANU_ID,20*1000);
-				}else{
-					if(count_all_manu_tv!=null){
-						count_all_manu_tv.setText(getStringZero(receiveCmdBean.countManuResultBeans.get(0).inManu,4));
-					}
-					getManuAvgTimeByMonth();
-					
+					queryManuCountHandler.sendEmptyMessageDelayed(SEND_QUERY_MANU_ID,60*1000);
 				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
-		
 		public void onResponsTimeout(){
-			Log.e(TAG, "onResponsTimeout");
-			if(!isInView || stopQueryManu)
-				return ;
-			queryManuCountHandler.sendEmptyMessageDelayed(SEND_QUERY_MANU_ID,20*1000);
+			MainPageActivity.this.onResponsTimeout();
 		}
-		
-		private String getStringZero(int value,int len){
-			int valueLen = String.valueOf(value).length();
-			String temp = String.valueOf(value);
-			if(valueLen<len){
-				for(int i=len - valueLen;i>0;i--){
-					temp = "0"+temp;
-				}
-			}
-			return temp;
-		}
-
 	}
 
+	/**
+	 * 按月统计人流
+	 * @author Administrator
+	 *
+	 */
+	public class CountAllManuByMouse extends CountManuCmdProcess<ReceiveAllManuByMouse>{
+
+		public CountAllManuByMouse(REQUST requst, String beginTime) {
+			super(requst, beginTime);
+			// TODO Auto-generated constructor stub
+		}
+		public void onProcess(ReceiveAllManuByMouse receiveCmdBean) {
+			super.onProcess(receiveCmdBean);
+			if(!isInView || stopQueryManu)
+				return ;
+			try{
+				if(receiveCmdBean.getCommandHeader().cmdId == REQUST.cmdReqAllManuByMouse.cmdId()){
+					if(count_all_manu_tv!=null){
+						count_all_manu_tv.setText(getStringZero(receiveCmdBean.countManuResultBeans.get(0).inManu,4));
+					}
+					getManuAvgTimeByMonth();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		public void onResponsTimeout(){
+			MainPageActivity.this.onResponsTimeout();
+		}
+	}
 }

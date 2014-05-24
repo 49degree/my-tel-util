@@ -1,6 +1,5 @@
 package com.skyeyes.storemonitor.activity;
 
-import java.util.Date;
 import java.util.Random;
 
 import org.achartengine.GraphicalView;
@@ -16,15 +15,14 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
 import com.skyeyes.base.cmd.CommandControl.REQUST;
-import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu;
+import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu.CountManuResultBean;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgDayManuByMouse;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgHourManuByDay;
 import com.skyeyes.base.exception.CommandParseException;
-import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
@@ -106,9 +104,9 @@ public class TrafficStatisticsActivity extends Activity {
 		renderer.setAxisTitleTextSize(16);
 		renderer.setChartTitleTextSize(20);
 		renderer.setLabelsTextSize(30);
-		renderer.setPanEnabled(true, true); // 设置沿X或Y轴是否可以拖动
+		renderer.setPanEnabled(true, false); // 设置沿X或Y轴是否可以拖动
 		renderer.setLegendTextSize(15);
-		renderer.setPanLimits(new double[] { -1, 24, 0, 50 }); // 限制xy轴的长度
+		renderer.setPanLimits(new double[] { 0, 24, 0, 50 }); // 限制xy轴的长度
 		renderer.setZoomEnabled(false, false);
 		renderer.setXLabels(10); // 当设置为10时，x轴单位为1
 		renderer.setPointSize(5f);
@@ -192,19 +190,18 @@ public class TrafficStatisticsActivity extends Activity {
 	 * @author Administrator
 	 * 
 	 */
-	public class CountManuOfHourByDay extends CountManuCmdProcess<ReceiveCountManu> {
+	public class CountManuOfHourByDay extends CountManuCmdProcess<ReceiveAvgHourManuByDay> {
 
 		public CountManuOfHourByDay(REQUST requst, String beginTime) {
 			super(requst, beginTime);
 			// TODO Auto-generated constructor stub
 		}
 
-		public void onProcess(ReceiveCountManu receiveCmdBean) {
+		public void onProcess(ReceiveAvgHourManuByDay receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
-			int count = receiveCmdBean.countManuResultBeans.size();
-			for (int i = 0; i < count; i++) {
-				Log.e("chenlong", "receiveCmdBean.countManuResultBeans :::: "
-						+ receiveCmdBean.countManuResultBeans.get(i).inManu);
+			for (CountManuResultBean countManuResultBean:receiveCmdBean.countManuResultBeans) {
+				Log.e("chenlong", DateUtil.getTimeStringFormat(countManuResultBean.time, DateUtil.TIME_FORMAT_YMDHMS)+":"
+						+countManuResultBean.dayofWeet+":"+countManuResultBean.inManu+":"+countManuResultBean.outManu+":"+countManuResultBean.avgTime);
 			}
 		}
 
@@ -216,14 +213,14 @@ public class TrafficStatisticsActivity extends Activity {
 	 * @author Administrator
 	 * 
 	 */
-	public class CountManuOfDayByMonth extends CountManuCmdProcess<ReceiveCountManu> {
+	public class CountManuOfDayByMonth extends CountManuCmdProcess<ReceiveAvgDayManuByMouse> {
 
 		public CountManuOfDayByMonth(REQUST requst, String beginTime) {
 			super(requst, beginTime);
 			// TODO Auto-generated constructor stub
 		}
 
-		public void onProcess(ReceiveCountManu receiveCmdBean) {
+		public void onProcess(ReceiveAvgDayManuByMouse receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
 			// receiveCmdBean.countManuResultBeans 这里是数据列表
 		}

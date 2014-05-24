@@ -19,6 +19,7 @@
     <color name="grey_line">#cccccc</color>
     <color name="hidelayout_color">#E1E1E1</color>
     <color name="load_color">#aaaaaa</color>
+    <color name="text_blue">#003765</color>
     
 
 </resources>

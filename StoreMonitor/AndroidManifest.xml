@@ -22,6 +22,7 @@
         <activity android:name=".activity.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,18 +31,23 @@
         <activity android:name=".activity.SearchVideoActivity" />
         <activity android:name=".activity.TrafficStatisticsActivity" />
         <activity android:name=".activity.SettingActivity" />
-        <activity android:name=".activity.VideoPlayActivity" android:screenOrientation="landscape">
-            <!-- 
+        <activity android:name=".activity.DoorRecordActivity" />
+        <activity
+            android:name=".activity.VideoPlayActivity"
+            android:screenOrientation="landscape" >
+
+            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-             -->
+            -->
         </activity>
-        
+
         <service android:name=".service.DevicesService" />
     </application>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

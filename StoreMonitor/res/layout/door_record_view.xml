@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:top="http://schemas.android.com/apk/res/com.skyeyes.storemonitor"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.skyeyes.base.view.TopTitleView
+        android:id="@+id/dr_topView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        top:showMenuBtn="true"
+        top:titleValue="@string/home_tab_play"
+        top:showCenterTitle="true" />
+
+
+</LinearLayout>

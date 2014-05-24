@@ -31,10 +31,10 @@ import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
-/** 人流统计*/
+
+/** 人流统计 */
 public class TrafficStatisticsActivity extends Activity {
 	private int SERIES_NR = 1;
-
 	private TopTitleView topTitleView;
 	private GraphicalView mView;
 
@@ -44,38 +44,46 @@ public class TrafficStatisticsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.traffic_statistics_view);
 		XYChart chart = new LineChart(getDemoDataset(), getDemoRenderer());
-	    mView = new GraphicalView(this, chart);
-		topTitleView = (TopTitleView)findViewById(R.id.ts_topView);
-		
-	    LinearLayout layout = (LinearLayout)findViewById(R.id.my_chart);
-	    layout.addView(mView);
-		topTitleView.setOnRightButtonClickListener(new OnClickListenerCallback() {
-			
-			@Override
-			public void onClick() {
-				// TODO Auto-generated method stub
-			}
-		});
-		topTitleView.setOnLeftButtonClickListener(new OnClickListenerCallback() {
-			
-			@Override
-			public void onClick() {
-				// TODO Auto-generated method stub
-			}
-		});
-		
-		topTitleView.setOnMenuButtonClickListener(new OnClickListenerCallback() {
-			
-			@Override
-			public void onClick() {
-				// TODO Auto-generated method stub
-				HomeActivity.getInstance().toggleMenu();
+		mView = new GraphicalView(this, chart);
+		topTitleView = (TopTitleView) findViewById(R.id.ts_topView);
+		LinearLayout layout = (LinearLayout) findViewById(R.id.my_chart);
+		layout.addView(mView);
+		topTitleView
+				.setOnRightButtonClickListener(new OnClickListenerCallback() {
 
-			}
-		});
+					@Override
+					public void onClick() {
+						// TODO Auto-generated method stub
+					}
+				});
+		topTitleView
+				.setOnLeftButtonClickListener(new OnClickListenerCallback() {
+
+					@Override
+					public void onClick() {
+						// TODO Auto-generated method stub
+					}
+				});
+
+		topTitleView
+				.setOnMenuButtonClickListener(new OnClickListenerCallback() {
+
+					@Override
+					public void onClick() {
+						// TODO Auto-generated method stub
+						HomeActivity.getInstance().toggleMenu();
+
+					}
+				});
 	}
-	
-	
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		getManucountByDay("2014-05-01 00:00:00");
+	}
+
 	private XYMultipleSeriesDataset getDemoDataset() {
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
 		final int nr = 10;
@@ -127,76 +135,96 @@ public class TrafficStatisticsActivity extends Activity {
 
 	/**
 	 * 按日统计人流
-	 * @param dayTime 如：2014-05-01 00:00:00
+	 * 
+	 * @param dayTime
+	 *            如：2014-05-01 00:00:00
 	 */
 	private void getManucountByDay(String dayTime) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		
-		Object[] params = new Object[] {dayTime};
+		Log.e("chenlong", "getManucountByDay :::: " + dayTime);
+
+		Object[] params = new Object[] { dayTime };
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAvgHourManuByDay, params);
-			System.out.println("getManucount入参数：" + sendObjectParams.toString());
-			CountManuOfHourByDay mCountManuCmdProcess = new CountManuOfHourByDay(REQUST.cmdReqAvgHourManuByDay,(String)params[0]);
-			
-			DevicesService.sendCmd(sendObjectParams,mCountManuCmdProcess);
+
+			Log.e("chenlong",
+					"getManucount入参数： :::: " + sendObjectParams.toString());
+
+			CountManuOfHourByDay mCountManuCmdProcess = new CountManuOfHourByDay(
+					REQUST.cmdReqAvgHourManuByDay, (String) params[0]);
+
+			DevicesService.sendCmd(sendObjectParams, mCountManuCmdProcess);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	/**
 	 * 按月统计人流
-	 * @param dayTime 如：2014-05-01 00:00:00
+	 * 
+	 * @param dayTime
+	 *            如：2014-05-01 00:00:00
 	 */
 	private void getManucountByMonth(String dayTime) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		
-		Object[] params = new Object[] {dayTime};
+
+		Object[] params = new Object[] { dayTime };
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAvgDayManuByMouse, params);
-			System.out.println("getManucount入参数：" + sendObjectParams.toString());
-			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(REQUST.cmdReqAvgDayManuByMouse,(String)params[0]);
-			
-			DevicesService.sendCmd(sendObjectParams,mCountManuCmdProcess);
+			System.out
+					.println("getManucount入参数：" + sendObjectParams.toString());
+			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(
+					REQUST.cmdReqAvgDayManuByMouse, (String) params[0]);
+
+			DevicesService.sendCmd(sendObjectParams, mCountManuCmdProcess);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
+
 	/**
 	 * 按日统计人流
+	 * 
 	 * @author Administrator
-	 *
+	 * 
 	 */
-	public class CountManuOfHourByDay extends CountManuCmdProcess{
+	public class CountManuOfHourByDay extends CountManuCmdProcess {
 
 		public CountManuOfHourByDay(REQUST requst, String beginTime) {
 			super(requst, beginTime);
 			// TODO Auto-generated constructor stub
 		}
+
 		public void onProcess(ReceiveCountManu receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
-			//receiveCmdBean.countManuResultBeans 这里是数据列表
+			int count = receiveCmdBean.countManuResultBeans.size();
+			for (int i = 0; i < count; i++) {
+				Log.e("chenlong", "receiveCmdBean.countManuResultBeans :::: "
+						+ receiveCmdBean.countManuResultBeans.get(i).inManu);
+			}
 		}
 	}
-	
+
 	/**
 	 * 按月统计人流
+	 * 
 	 * @author Administrator
-	 *
+	 * 
 	 */
-	public class CountManuOfDayByMonth extends CountManuCmdProcess{
+	public class CountManuOfDayByMonth extends CountManuCmdProcess {
 
 		public CountManuOfDayByMonth(REQUST requst, String beginTime) {
 			super(requst, beginTime);
 			// TODO Auto-generated constructor stub
 		}
+
 		public void onProcess(ReceiveCountManu receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
-			//receiveCmdBean.countManuResultBeans 这里是数据列表
+			// receiveCmdBean.countManuResultBeans 这里是数据列表
 		}
 	}
 }

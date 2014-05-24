@@ -112,6 +112,7 @@ public class TopTitleView extends LinearLayout {
 		centerTitleTv.setText(titleValue!=null?titleValue:"");
 		menuImg.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				if(menuButtonClickListener != null)
 				menuButtonClickListener.onClick();
 			}
 		});

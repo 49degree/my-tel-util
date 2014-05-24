@@ -135,13 +135,13 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 				.newTabSpec(TAB_PLAY)
 				.setIndicator(
 						createTabView(getApplicationContext(), getString(R.string.home_tab_play),
-								R.drawable.home_tab_recording_selector)).setContent(new Intent(this, AlermRecorderActivity.class));
+								R.drawable.home_tab_recording_selector)).setContent(new Intent(this, DoorRecordActivity.class));
 		mTabHost.addTab(tab2);
 
 		TabSpec tab3 = mTabHost
 				.newTabSpec(TAB_BOUTIQUE)
 				.setIndicator(
-						createTabView(getApplicationContext(), getString(R.string.home_tab_boutique),
+						createTabView(getApplicationContext(), getString(R.string.home_tab_traffic_statistic),
 								R.drawable.home_tab_abortion_selector))
 				.setContent(new Intent(this, TrafficStatisticsActivity.class));
 		mTabHost.addTab(tab3);
@@ -153,20 +153,6 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 								R.drawable.home_tab_status_selector))
 				.setContent(new Intent(this, DevicesStatusActivity.class));
 		mTabHost.addTab(tab4);
-		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
-			
-			@Override
-			public void onTabChanged(String tabId) {
-				// TODO Auto-generated method stub
-				if(TAB_BOUTIQUE.equals(tabId)){
-					Toast.makeText(HomeActivity.this, tabId, Toast.LENGTH_SHORT).show();
-					setSlidingEnabled(false);
-				} else {
-					setSlidingEnabled(true);
-
-				}
-			}
-		});
 		setCurrentTab(mPage);
 	}
 

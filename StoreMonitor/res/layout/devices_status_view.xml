@@ -4,17 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+   <com.skyeyes.base.view.TopTitleView
+            android:id="@+id/ds_topView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            top:showMenuBtn="true" />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="370px"
+        android:layout_height="270px"
         android:background="#005094" >
+
+     
 
         <Button
             android:id="@+id/protect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_width="230px"
+            android:layout_height="230px"
+            android:layout_centerHorizontal="true"
             android:background="@drawable/device_set_protect" />
     </RelativeLayout>
 
@@ -37,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@id/ds_title"/>
+            android:layout_toRightOf="@id/ds_title" />
 
         <TextView
             android:id="@+id/p_title"
@@ -91,13 +97,14 @@
             android:layout_below="@id/p_value"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@id/routing_title"/>
+            android:layout_toRightOf="@id/routing_title" />
     </RelativeLayout>
-	<ListView 
-	    android:id="@+id/device_status_list"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:divider="@color/line"
-	    android:dividerHeight="1px"
-	    />
+
+    <ListView
+        android:id="@+id/device_status_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/line"
+        android:dividerHeight="1px" />
+
 </LinearLayout>

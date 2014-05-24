@@ -418,9 +418,9 @@ public class MainTest {
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
 		Object[] params = new Object[] {"2014-05-01"+" 00:00:00"};
 		try {
-			sendObjectParams.setParams(REQUST.cmdReqAvgDayManuByMouse, params);
+			sendObjectParams.setParams(REQUST.cmdReqAllManuByMouse, params);
 			System.out.println("getManucount入参数：" + sendObjectParams.toString());
-			mCountManuCmdProcess = new CountManuCmdProcess(REQUST.cmdReqAvgDayManuByMouse,(String)params[0]);
+			mCountManuCmdProcess = new CountManuCmdProcess(REQUST.cmdReqAllManuByMouse,(String)params[0]);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

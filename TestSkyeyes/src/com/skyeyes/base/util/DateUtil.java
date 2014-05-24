@@ -16,6 +16,7 @@ public class DateUtil {
 	public final static String TIME_FORMAT_YMDHMS = "yyyy-MM-dd HH:mm:ss";
 	public final static String TIME_FORMAT_YMDHM = "yyyy-MM-dd HH:mm";
 	public final static String TIME_FORMAT_YMD = "yyyy-MM-dd";
+	public final static String TIME_FORMAT_YM = "yyyy-MM";
 	public final static String TIME_FORMAT_HM = "HH:mm";
 	
 	   /**

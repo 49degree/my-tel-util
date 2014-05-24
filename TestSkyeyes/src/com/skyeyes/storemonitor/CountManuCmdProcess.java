@@ -50,7 +50,7 @@ public class CountManuCmdProcess{
 	        				}
 	        			}
         				CountManuResultBean countManuResultBean = new CountManuResultBean();
-        				countManuResultBean.time = beginTimeDate+i*60*60*1000L;
+        				countManuResultBean.time = beginTimeDate+i*60*60*1000L-1L;
                 		countManuResultBean.inManu = 0;
     	        		countManuResultBean.outManu = 0;
     	        		countManuResultBeans.add(countManuResultBean);
@@ -75,7 +75,7 @@ public class CountManuCmdProcess{
 	        				}
 	        			}
         				CountManuResultBean countManuResultBean = new CountManuResultBean();
-        				countManuResultBean.time = beginTimeDate+i*24*60*60*1000L;
+        				countManuResultBean.time = beginTimeDate+i*24*60*60*1000L-1L;
         				//System.out.println(DateUtil.getTimeStringFormat(countManuResultBean.time, DateUtil.TIME_FORMAT_YMDHMS)+":"+countManuResultBean.time);
                 		countManuResultBean.inManu = 0;
     	        		countManuResultBean.outManu = 0;

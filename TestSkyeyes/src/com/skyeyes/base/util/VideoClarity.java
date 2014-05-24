@@ -37,7 +37,7 @@ public class VideoClarity {
 	 */
 	
 	private static int getVideoClarityId(){
-		return 2;//未实现，先固定
+		return -1;//未实现，先固定
 	}
 	
 	public static VideoClarity instance()

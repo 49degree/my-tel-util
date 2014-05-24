@@ -182,7 +182,7 @@ public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
 						
 						if(mReadBuffer.position()==mReadBuffer.capacity()){
 							System.out.println("接收到全部报文长度："+mReadBuffer.capacity()+
-									(mReadBuffer.capacity()>512?"":":数据："+TypeConversion.byte2hex(mReadBuffer.array(),0,mReadBuffer.capacity())));
+									(mReadBuffer.capacity()>100?"":":数据："+TypeConversion.byte2hex(mReadBuffer.array(),0,mReadBuffer.capacity())));
 							ReceiveCmdBean receiveCmdBean = null;
 							try {
 								receiveCmdBean = CommandControl.parseReceiveCmd(mReadBuffer.array());

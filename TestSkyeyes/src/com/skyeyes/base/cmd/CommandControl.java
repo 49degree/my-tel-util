@@ -50,7 +50,7 @@ public class CommandControl {
 		try{
 			//解析头部
 			cmdHeaderBean = CmdHeaderBean.parseCommandHeader(receiveBuffer);
-			System.out.println("收到头部："+cmdHeaderBean.toString());
+			
 			//解析命令体
 			ReceiveCmdBean receiveCmdBean = null;
 			
@@ -152,6 +152,9 @@ public class CommandControl {
 			}
 			if(receiveCmdBean!=null)
 				System.arraycopy(receiveBuffer, receiveBuffer.length-4, receiveCmdBean.getEnding(), 0, 4);
+			
+			System.out.println("收到对象："+(receiveCmdBean==null?cmdHeaderBean.toString():receiveCmdBean.toString()));
+			
 			return receiveCmdBean;
 		}catch(CommandParseException e){//出现异常，服务器直接返回upErrorBean对象的ErrorReturnBuffer即可
 			return null;

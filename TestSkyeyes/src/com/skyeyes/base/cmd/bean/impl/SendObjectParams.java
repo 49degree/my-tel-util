@@ -221,7 +221,6 @@ public class SendObjectParams extends SendCmdBean{
 	        	
 	        	long beginTime = DateUtil.date2FileTime(fmt.parse(params[0]+""));
 	        	sendsParams = Constants.getQueryManuParams(req, channelId, beginTime);
-	        	System.out.println(params[0]+":"+fmt.parse(params[0]+"").getTime()+":"+beginTime);
 	        	break;
 	        default:
 	        	sendsParams=new Object[]{};

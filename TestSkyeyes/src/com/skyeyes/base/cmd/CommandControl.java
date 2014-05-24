@@ -8,7 +8,6 @@ import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceivReadDeviceNetInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
-import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelName;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceEnv;
@@ -24,6 +23,12 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveStatusChange;
 import com.skyeyes.base.cmd.bean.impl.ReceiveStopVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoFinish;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByDay;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByMouse;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgDayManuByMouse;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgHourManuByDay;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByDay;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByMouse;
 import com.skyeyes.base.exception.CommandParseException;
 
 
@@ -123,12 +128,22 @@ public class CommandControl {
 	        	receiveCmdBean = new ReceiveDeviceRegisterInfo();
 	        	break;
 	        case cmdReqAllManuByDay://按日统计总人流
+	        	receiveCmdBean = new ReceiveAllManuByDay();
+	        	break;
 	        case cmdReqAllManuByMouse://按月统计总人流
+	        	receiveCmdBean = new ReceiveAllManuByMouse();
+	        	break;
 	        case cmdReqAvgHourManuByDay://按日统计每小时人流
+	        	receiveCmdBean = new ReceiveAvgHourManuByDay();
+	        	break;
 	        case cmdReqAvgDayManuByMouse://按月统计每天人流
+	        	receiveCmdBean = new ReceiveAvgDayManuByMouse();
+	        	break;
 	        case cmdReqAvgManuStayTimeByDay://按日统计平均驻留时间
+	        	receiveCmdBean = new ReceiveAvgManuStayTimeByDay();
+	        	break;
 	        case cmdReqAvgManuStayTimeByMouse://按月统计平均驻留时间	  
-	        	receiveCmdBean = new ReceiveCountManu();
+	        	receiveCmdBean = new ReceiveAvgManuStayTimeByMouse();
 	        	break;
 	        default:
 	        	return null;

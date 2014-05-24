@@ -192,7 +192,7 @@ public class TrafficStatisticsActivity extends Activity {
 	 * @author Administrator
 	 * 
 	 */
-	public class CountManuOfHourByDay extends CountManuCmdProcess {
+	public class CountManuOfHourByDay extends CountManuCmdProcess<ReceiveCountManu> {
 
 		public CountManuOfHourByDay(REQUST requst, String beginTime) {
 			super(requst, beginTime);
@@ -215,7 +215,7 @@ public class TrafficStatisticsActivity extends Activity {
 	 * @author Administrator
 	 * 
 	 */
-	public class CountManuOfDayByMonth extends CountManuCmdProcess {
+	public class CountManuOfDayByMonth extends CountManuCmdProcess<ReceiveCountManu> {
 
 		public CountManuOfDayByMonth(REQUST requst, String beginTime) {
 			super(requst, beginTime);

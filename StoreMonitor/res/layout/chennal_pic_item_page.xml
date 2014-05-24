@@ -6,17 +6,22 @@
      android:orientation="vertical"
      android:padding="5dip">
 
-     <!-- ImageView
-         android:id="@+id/chennal_pic_iv"
-         android:layout_width="560px"
-         android:layout_height="fill_parent"
-        / -->
-
+    <LinearLayout
+        android:id="@+id/chennal_pic_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#000000"
+        android:gravity="center">
+	     <ImageView
+	         android:id="@+id/chennal_pic_iv"
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content"
+	         android:src="@drawable/ic_launcher"/>	    
+    </LinearLayout>
      <TextView
          android:id="@+id/chennal_pic_tv"
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
-         android:text="TextView"
-          />
-
+         android:text="TextView"/>
  </LinearLayout>

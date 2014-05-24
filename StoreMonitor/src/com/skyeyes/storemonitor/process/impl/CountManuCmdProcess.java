@@ -30,7 +30,8 @@ public class CountManuCmdProcess<T extends ReceiveCmdBean> extends DeviceReceive
 			ReceiveCountManu cmdBean = (ReceiveCountManu)receiveCmdBean;
 			// TODO Auto-generated method stub
 			ArrayList<CountManuResultBean> countManus = cmdBean.countManuResultBeans;
-			switch(requst){
+			REQUST reqCmd = REQUST.valueOfByCmdId(cmdBean.getCommandHeader().cmdId);
+			switch(reqCmd){
 		        case cmdReqAllManuByDay://按日统计总人流
 		        case cmdReqAllManuByMouse://按月统计总人流
 		        	if(countManus.size()==0){

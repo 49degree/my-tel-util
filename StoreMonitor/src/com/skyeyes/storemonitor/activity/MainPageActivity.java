@@ -581,7 +581,7 @@ public class MainPageActivity extends BaseActivity{
 			super.onProcess(receiveCmdBean);
 			Log.e(TAG, requst+":"+receiveCmdBean.toString());
 			try{
-				if(requst == REQUST.cmdReqAvgManuStayTimeByMouse){
+				if(receiveCmdBean.getCommandHeader().cmdId == REQUST.cmdReqAvgManuStayTimeByMouse.cmdId()){
 					if(count_avg_time_tv!=null){
 						count_avg_time_tv.setText(getStringZero(receiveCmdBean.countManuResultBeans.get(0).avgTime,2));
 					}

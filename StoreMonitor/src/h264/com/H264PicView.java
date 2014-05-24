@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.Display;
 
+import com.h264.decoder.HD264Decoder;
 import com.skyeyes.base.util.VideoClarity;
 
 public class H264PicView{
@@ -49,7 +50,7 @@ public class H264PicView{
 	int escapeLen=0;
 	byte [] NalBuf;
 	
-	H264MediaPlayer mH264MediaPlayer = new H264MediaPlayer();
+	HD264Decoder mH264MediaPlayer;
 	
     public static void setDisplay(Display display){
     	mDisplay = display;
@@ -62,6 +63,7 @@ public class H264PicView{
     
     public H264PicView(int width,int height,DecodeSuccCallback decodeSuccCallback){
     	mDecodeSuccCallback = decodeSuccCallback;
+    	mH264MediaPlayer = new HD264Decoder(width,height,decodeSuccCallback);
     	this.setDisplaySize(width, height);
     	this.init();
     }
@@ -176,7 +178,7 @@ public class H264PicView{
 						}
 					}
 					
-					iTemp=mH264MediaPlayer.DecoderNal(NalBuf, NalBufUsed-4, mPixel);   
+					iTemp=mH264MediaPlayer.DecodeNal(NalBuf, NalBufUsed-4, mPixel);   
 					
 		            if(iTemp>0){
 		                buffer.position(0);

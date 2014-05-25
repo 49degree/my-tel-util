@@ -72,51 +72,83 @@
             android:layout_width="fill_parent"
         	android:layout_height="fill_parent"
         	android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="150px"
-                android:gravity="center_horizontal|bottom"
-                android:orientation="horizontal"
-                android:padding="15px" >
-
+		    <RelativeLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="93px"
+		        android:gravity="center_vertical"
+		        android:padding="10px">	
                 <TextView
-                    android:id="@+id/count_all_manu_tv"
+                    android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="123"
-                    android:textSize="110px" >
+                    android:textSize="20px"
+                    android:text="开始时间">
                 </TextView>
 
                 <TextView
+                    android:layout_toLeftOf="@+id/video_history_query_time_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:textSize="20px"
+                    android:text="2014年5月25日   12:00" >
+                </TextView>
+			    <ImageView
+			         android:id="@+id/video_history_query_time_iv"
+			         android:layout_alignParentRight="true"
+			         android:layout_width="wrap_content"
+			         android:layout_height="wrap_content"
+			         android:src="@drawable/video_history_query"/>                
+            </RelativeLayout>
+
+		    <RelativeLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="93px"
+		        android:gravity="center_vertical"
+		        android:padding="10px">			    
+                <TextView
+                    android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="人" >
+                    android:textSize="20px"
+                    android:text="时长">
                 </TextView>
 
                 <TextView
-                    android:id="@+id/count_avg_time_tv"
-                    android:layout_width="wrap_content"
+                    android:layout_toLeftOf="@+id/video_history_query_long_iv"
+                    android:textSize="20px"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10px"
-                    android:text="12"
-                    android:textSize="60px" >
+                    android:gravity="right"
+                    android:text="8分钟" >
                 </TextView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Min" >
-                </TextView>
-            </LinearLayout>
-
+			    <ImageView android:id="@+id/video_history_query_long_iv"
+			         android:layout_alignParentRight="true"
+			         android:layout_width="wrap_content"
+			         android:layout_height="wrap_content"
+			         android:src="@drawable/video_history_query"/>                
+            </RelativeLayout>
             <Gallery
-                android:id="@+id/chennal_pic_gallery"
+                android:id="@+id/chennal_history_pic_gallery"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="match_parent"
+                
                 android:layout_marginBottom="10px"
-                android:background="#000000"
                 android:spacing="0dip" />
         </LinearLayout>
+		<LinearLayout
+		    android:id="@+id/no_login_notify_ll" 
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:orientation="vertical"
+		    android:gravity="center">
+		    <TextView
+		        android:id="@+id/login_notify_tv"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="正在登陆设备，请稍后...">
+		    </TextView>
+		</LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

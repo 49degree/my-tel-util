@@ -17,7 +17,7 @@
 	         android:id="@+id/chennal_pic_iv"
 	         android:layout_width="wrap_content"
 	         android:layout_height="wrap_content"
-	         android:src="@drawable/ic_launcher"/>	    
+	         android:src="@drawable/video_play"/>	    
     </LinearLayout>
      <TextView
          android:id="@+id/chennal_pic_tv"

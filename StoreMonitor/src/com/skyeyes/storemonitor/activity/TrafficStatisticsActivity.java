@@ -110,7 +110,7 @@ public class TrafficStatisticsActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		 getManucountByDay("2014-05-17 00:00:00");
+		getManucountByMonth("2014-05-01 00:00:00");
 	}
 
 	private XYMultipleSeriesDataset getDemoDataset(ArrayList<CountManuResultBean>  monthResultBeans) {
@@ -230,19 +230,19 @@ public class TrafficStatisticsActivity extends Activity {
 
 		public void onProcess(ReceiveAvgHourManuByDay receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
-//			for (CountManuResultBean countManuResultBean : receiveCmdBean.countManuResultBeans) {
-//				Log.e("chenlong",
-//						DateUtil.getTimeStringFormat(countManuResultBean.time,
-//								DateUtil.TIME_FORMAT_YMDHMS)
-//								+ ":"
-//								+ countManuResultBean.dayofWeet
-//								+ ":"
-//								+ countManuResultBean.inManu
-//								+ ":"
-//								+ countManuResultBean.outManu
-//								+ ":"
-//								+ countManuResultBean.avgTime);
-//			}
+			for (CountManuResultBean countManuResultBean : receiveCmdBean.countManuResultBeans) {
+				Log.e("chenlong",
+						DateUtil.getTimeStringFormat(countManuResultBean.time,
+								DateUtil.TIME_FORMAT_YMDHMS)
+								+ ":"
+								+ countManuResultBean.dayofWeet
+								+ ":"
+								+ countManuResultBean.inManu
+								+ ":"
+								+ countManuResultBean.outManu
+								+ ":"
+								+ countManuResultBean.avgTime);
+			}
 			monthResultBeans =  receiveCmdBean.countManuResultBeans;
 			Message message = new Message();
 			message.what = MONTH_VIEW_REFLESH;
@@ -268,6 +268,23 @@ public class TrafficStatisticsActivity extends Activity {
 		public void onProcess(ReceiveAvgDayManuByMouse receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
 			// receiveCmdBean.countManuResultBeans 这里是数据列表
+			for (CountManuResultBean countManuResultBean : receiveCmdBean.countManuResultBeans) {
+				Log.e("chenlong",
+						DateUtil.getTimeStringFormat(countManuResultBean.time,
+								DateUtil.TIME_FORMAT_YMDHMS)
+								+ ":"
+								+ countManuResultBean.dayofWeet
+								+ ":"
+								+ countManuResultBean.inManu
+								+ ":"
+								+ countManuResultBean.outManu
+								+ ":"
+								+ countManuResultBean.avgTime);
+			}
+			monthResultBeans =  receiveCmdBean.countManuResultBeans;
+			Message message = new Message();
+			message.what = MONTH_VIEW_REFLESH;
+			handler.sendMessage(message);
 		}
 	}
 

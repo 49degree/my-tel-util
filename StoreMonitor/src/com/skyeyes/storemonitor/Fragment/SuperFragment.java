@@ -54,12 +54,14 @@ public abstract class SuperFragment extends Fragment {
 		renderer.setAxisTitleTextSize(16);
 		renderer.setChartTitleTextSize(20);
 		renderer.setLabelsTextSize(30);
-		renderer.setPanEnabled(true, true); // 设置沿X或Y轴是否可以拖动
+		renderer.setPanEnabled(true, false); // 设置沿X或Y轴是否可以拖动
 		renderer.setLegendTextSize(15);
 		renderer.setPanLimits(new double[] { -1, 31, 0, 80 }); // 限制xy轴的长度
 		renderer.setZoomEnabled(false, false);
 		renderer.setXLabels(10); // 当设置为10时，x轴单位为1
 		renderer.setXAxisMax(8.0);
+//		renderer.setYAxisMax(80.0);
+		renderer.setLegendHeight(20);
 		renderer.setPointSize(5f);
 		renderer.setMarginsColor(Color.WHITE);
 		renderer.setYAxisMin(0);

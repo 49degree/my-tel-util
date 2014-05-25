@@ -40,7 +40,6 @@ public class TrafficStatisticsMonthFrg extends SuperFragment{
 	private GraphicalView mView;
 	
 	private XYChart chart;
-	private XYMultipleSeriesRenderer xyMultipleSeriesRenderer;
 	
 	private final int MONTH_VIEW_REFLESH = 1;
 	// 测试数据
@@ -52,7 +51,9 @@ public class TrafficStatisticsMonthFrg extends SuperFragment{
 			switch (msg.what) {
 			case MONTH_VIEW_REFLESH:
 				layout.removeAllViews();
-				chart = new LineChart(getDemoDataset(monthResultBeans), getDemoRenderer());
+				xyMultipleSeriesRenderer.setYAxisMax(80.0);
+
+				chart = new LineChart(getDemoDataset(monthResultBeans), xyMultipleSeriesRenderer);
 				mView = new GraphicalView(getActivity(), chart);
 				averageTime.setText(String.valueOf(monthResultBeans.get(0).avgTime));
 				total.setText(String.valueOf(monthResultBeans.get(0).inManu));

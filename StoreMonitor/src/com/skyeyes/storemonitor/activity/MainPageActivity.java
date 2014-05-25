@@ -42,7 +42,6 @@ import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
-import com.skyeyes.storemonitor.activity.TrafficStatisticsActivity.CountManuOfDayByMonth;
 import com.skyeyes.storemonitor.activity.adapter.ChennalPicViewAdapter;
 import com.skyeyes.storemonitor.activity.bean.ChennalPicBean;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;

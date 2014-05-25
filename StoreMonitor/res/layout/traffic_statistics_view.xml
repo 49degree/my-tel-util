@@ -14,91 +14,11 @@
         top:showCenterButtons="true"
         top:showMenuBtn="true" />
 
-    <RelativeLayout
-        android:id="@+id/resultTotal_rl"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/ts_topView"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp" >
-
-        <TextView
-            android:id="@+id/total_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/visitors_count"
-            android:textColor="@color/text_blue" />
-
-        <TextView
-            android:id="@+id/total_values"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/total_title"
-            android:textColor="@color/text_blue" />
-
-        <TextView
-            android:id="@+id/average_time_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/total_title"
-            android:text="@string/visitors_count"
-            android:textColor="@color/text_blue" />
-
-        <TextView
-            android:id="@+id/average_time_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/total_values"
-            android:layout_toRightOf="@id/average_time_title"
-            android:textColor="@color/text_blue" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/select_date_rl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:persistentDrawingCache="none" >
-
-        <ImageButton
-            android:id="@+id/last_day_ibtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dip"
-            android:background="@drawable/menu_back" />
-
-        <Button
-            android:id="@+id/search_date_bt"
-            android:layout_width="120dp"
-            android:layout_height="38dip"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="6dip"
-            android:layout_marginRight="6dip"
-            android:layout_toRightOf="@id/last_day_ibtn"
-            android:background="@drawable/menu_back"
-            android:textSize="16sp" />
-
-        <ImageButton
-            android:id="@+id/next_day_ibtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dip"
-            android:layout_toRightOf="@id/search_date_bt"
-            android:background="@drawable/menu_back" />
-    </RelativeLayout>
-
     <LinearLayout
-        android:id="@+id/my_chart"
+        android:id="@+id/content_frame"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/select_date_rl"
-        android:layout_below="@id/resultTotal_rl"
+        android:layout_below="@id/ts_topView"
         android:orientation="horizontal" />
 
 </RelativeLayout>

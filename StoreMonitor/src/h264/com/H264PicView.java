@@ -49,7 +49,7 @@ public class H264PicView{
 	int escapeLen=0;
 	byte [] NalBuf;
 	
-	H264MediaPlayer mH264MediaPlayer;
+	VView mH264MediaPlayer;
 	
     public static void setDisplay(Display display){
     	mDisplay = display;
@@ -62,7 +62,7 @@ public class H264PicView{
     
     public H264PicView(int width,int height,DecodeSuccCallback decodeSuccCallback){
     	mDecodeSuccCallback = decodeSuccCallback;
-    	mH264MediaPlayer = new H264MediaPlayer();
+    	mH264MediaPlayer = new VView();
     	this.setDisplaySize(width, height);
     	this.init();
     }
@@ -176,6 +176,13 @@ public class H264PicView{
 							break;
 						}
 					}
+//					05-25 10:57:42.059: E/H264PicView(13367): SockBufUsed:3219
+//					05-25 10:57:42.059: E/H264PicView(13367): NalBuf:409800:848:202752
+					
+//					05-25 11:14:43.726: E/H264PicView(18424): SockBufUsed:24147
+//					05-25 11:14:43.726: E/H264PicView(18424): NalBuf:409800:742:202752
+
+
 					Log.e(tag, "NalBuf:"+NalBuf.length+":"+(NalBufUsed-4)+":"+mPixel.length);
 					iTemp=mH264MediaPlayer.DecoderNal(NalBuf, NalBufUsed-4, mPixel);   
 					
@@ -183,8 +190,12 @@ public class H264PicView{
 		                buffer.position(0);
 		                VideoBit.copyPixelsFromBuffer(buffer);//makeBuffer(data565, N));
 		                Log.e(tag, "VideoBit:"+VideoBit.getWidth()+":"+VideoBit.getHeight());
+		                
 		                if(mDecodeSuccCallback!=null)
 		                	mDecodeSuccCallback.onDecodeSucc(VideoBit);
+		        		System.gc();
+		        		mH264MediaPlayer.UninitDecoder();
+		                return;
 		            }
 				}
 				
@@ -200,7 +211,7 @@ public class H264PicView{
 				System.gc();
 			}		
 		} 
-		
+		System.gc();
 		mH264MediaPlayer.UninitDecoder();
     	
     }
@@ -208,7 +219,7 @@ public class H264PicView{
    
     public void init(){
     	//视频缓冲区
-    	 NalBuf = new byte[409800];
+    	 NalBuf = new byte[4098000];
     	 setDisplay();
     	 mH264MediaPlayer.InitDecoder(playWidth, playHeight);
     }

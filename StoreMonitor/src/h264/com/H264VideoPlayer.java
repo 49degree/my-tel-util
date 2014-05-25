@@ -249,10 +249,11 @@ public class H264VideoPlayer extends View {
 					
 					iTemp=mH264MediaPlayer.DecoderNal(NalBuf, NalBufUsed-4, mPixel);   
 					Log.d(tag,"iTemp="+iTemp);
-		            frameCount++;
-		            callbackobj.reviceFrame(frameCount+"");
+
 		            if(iTemp>0)
 		            {
+			            frameCount++;
+			            callbackobj.reviceFrame(frameCount+"");
 		            	currentTime=System.currentTimeMillis();
 		            	if(oldTime!=0)
 		            	{
@@ -298,7 +299,7 @@ public class H264VideoPlayer extends View {
     public void init()
     {
     	//视频缓冲区
-    	 NalBuf = new byte[409800];
+    	 NalBuf = new byte[4098000];
     	 setDisplay();
     	 mH264MediaPlayer.InitDecoder(playWidth, playHeight);
     }

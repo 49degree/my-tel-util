@@ -154,6 +154,7 @@ public class MainTest {
 	
 	// 回复视频数据
 	public static void testResponseVideoData(SkyeyeSocketClient skyeyeSocketClient,ReceiveCmdBean receiveCmdBean) {
+		byte cmdId = receiveCmdBean.getCommandHeader().cmdId;
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		sendObjectParams.setCommandHeader(receiveCmdBean.getCommandHeader());
 		
@@ -163,6 +164,7 @@ public class MainTest {
 		try {
 			sendObjectParams.setParams(REQUST.cmdRevFrame, params);
 			sendObjectParams.getCommandHeader().cmdCode = 0 ;
+			sendObjectParams.getCommandHeader().cmdId = cmdId;
 
 			System.out.println("testResponseVideoData入参数："
 					+ sendObjectParams.toString());
@@ -411,7 +413,7 @@ public class MainTest {
 	}
 	
 	static CountManuCmdProcess mCountManuCmdProcess = null;
-	// 设备通道列表及状态
+	// 人流统计
 	public static void getManucount(SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		
@@ -421,6 +423,26 @@ public class MainTest {
 			sendObjectParams.setParams(REQUST.cmdReqAllManuByMouse, params);
 			System.out.println("getManucount入参数：" + sendObjectParams.toString());
 			mCountManuCmdProcess = new CountManuCmdProcess(REQUST.cmdReqAllManuByMouse,(String)params[0]);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			skyeyeSocketClient.sendCmd(sendObjectParams);
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void getOpenCloseDoor(SkyeyeSocketClient skyeyeSocketClient) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		
+		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
+		Object[] params = new Object[] {"2014-05-01"+" 00:00:00"};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqOpenCloseDoorList, params);
+			System.out.println("getManucount入参数：" + sendObjectParams.toString());
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -495,7 +517,7 @@ public class MainTest {
 			e.printStackTrace();
 		}
 		
-		//requstRealTimeVideo(skyeyeSocketClient,(byte)0x00);
+		requstRealTimeVideo(skyeyeSocketClient,(byte)0x00);
 		
 		//new H264Player(new String[]{"testfile/video.data"});
 

@@ -16,6 +16,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveGetEquitIO;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHeart;
+import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoor;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveSetEquitIO;
@@ -145,6 +146,12 @@ public class CommandControl {
 	        case cmdReqAvgManuStayTimeByMouse://按月统计平均驻留时间	  
 	        	receiveCmdBean = new ReceiveAvgManuStayTimeByMouse();
 	        	break;
+	        case cmdReqOpenCloseDoorList://获取开关门列表
+	        	receiveCmdBean = new ReceiveOpenCloseDoor();
+	        	break;
+	        case cmdReqAlarmList://报警列表
+	        	//receiveCmdBean = new ReceiveAvgManuStayTimeByMouse();
+	        	break;	        	
 	        default:
 	        	return null;
 	        } 
@@ -238,9 +245,10 @@ public class CommandControl {
 		cmdReqStopVideo((byte)0x04,(byte)0x2A,0),//停止视频直播、录像回放
 		cmdRevVideoFinish((byte)0x07,(byte)0x2B,0),//视频数据播放完成
 		cmdReqVideoChannelListStatus((byte)0x42,(byte)0x2C,0),//查询通道状态
-		cmdReqVideoChannelPic((byte)0x13,(byte)0x2D,1);//获取通道图片
+		cmdReqVideoChannelPic((byte)0x13,(byte)0x2D,1),//获取通道图片
 		
-		//cmdReqVideoChannelPic((byte)0x23,(byte)0x2E,1);//获取通道图片
+		cmdReqOpenCloseDoorList((byte)0x23,(byte)0x2E,2),//获取开关门列表
+		cmdReqAlarmList((byte)0x23,(byte)0x2F,2);//报警列表
 		
 		private byte cmd ;
 		private byte cmdId;//返回ID

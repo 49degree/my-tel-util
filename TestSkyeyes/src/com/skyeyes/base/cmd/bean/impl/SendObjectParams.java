@@ -222,6 +222,30 @@ public class SendObjectParams extends SendCmdBean{
 	        	long beginTime = DateUtil.date2FileTime(fmt.parse(params[0]+""));
 	        	sendsParams = Constants.getQueryManuParams(req, channelId, beginTime);
 	        	break;
+	        case cmdReqOpenCloseDoorList://获取开关门列表
+	        	channelId = (byte)0;
+	        	beginTime = DateUtil.date2FileTime(fmt.parse(params[0]+""));
+	        	long endTime = DateUtil.date2FileTime(fmt.parse(params[1]+""));
+	        	byte type = 0x08;
+	        	sendsParams=new Object[]{
+	    			1,channelId,
+	    			8,beginTime,
+	    			8,endTime,
+	    			1,type,		
+		    	};
+	        	break;
+	        case cmdReqAlarmList://报警列表
+	        	channelId = (byte)0;
+	        	beginTime = DateUtil.date2FileTime(fmt.parse(params[0]+""));
+	        	endTime = DateUtil.date2FileTime(fmt.parse(params[1]+""));
+	        	type = 0x06;
+	        	sendsParams=new Object[]{
+	    			1,channelId,
+	    			8,beginTime,
+	    			8,endTime,
+	    			1,type,		
+		    	};
+	        	break;		        	
 	        default:
 	        	sendsParams=new Object[]{};
 	        	break;

@@ -249,6 +249,24 @@ public class DateUtil {
 		c.set(Calendar.DATE, day - beforeDay);
 		return c;
 	}
+	
+	/**
+	 * 一个月前的日期
+	 * 
+	 * @param specifiedDay
+	 * @return
+	 * @throws Exception
+	 */
+
+	public static String getFrontMonthDateString() {
+		Calendar c = Calendar.getInstance();
+		if(c.get(Calendar.MONTH)==0){
+			c.set(Calendar.YEAR, c.get(Calendar.YEAR)-1);
+			c.set(Calendar.MONTH, 11);
+		}else
+			c.set(Calendar.MONTH, c.get(Calendar.MONTH)-1);
+		return getTimeStringFormat(c.getTime().getTime(),TIME_FORMAT_YMD);
+	}
 
 	/**
 	 * 获得指定日期的后N天
@@ -288,28 +306,13 @@ public class DateUtil {
 		}
 		return false;
 	}
-
-	/** 判断医嘱执行时间是否小于或大于计划时间2h */
-	public static boolean surpassPlaningTime(String execDate, String planDate) {
-		boolean isSurpass = false;
-		final String executeDate = DateUtil
-				.getTimeStringFormat(DateUtil.getCalendarByString(execDate, TIME_FORMAT_YMDHM),
-						TIME_FORMAT_YMDHMS);
-		final String planingDate = DateUtil
-				.getTimeStringFormat(DateUtil.getCalendarByString(planDate, TIME_FORMAT_YMDHM),
-						TIME_FORMAT_YMDHMS);
-		SimpleDateFormat dfs = new SimpleDateFormat(TIME_FORMAT_YMDHMS);
-		try {
-			Date eDate = dfs.parse(executeDate);
-			Date pDate = dfs.parse(planingDate);
-			long between = Math.abs(eDate.getTime() - pDate.getTime()) / 1000;
-			if (between > 7200) {
-				isSurpass = true;
-			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return isSurpass;
+	
+	public static void main(String[] args){
+		Object[] params = new Object[] {DateUtil.getFrontMonthDateString()+" 00:00:00",
+				DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YMDHMS)};
+		System.out.println(params[0]+":"+params[1]);
 	}
+
+
 }
+ 

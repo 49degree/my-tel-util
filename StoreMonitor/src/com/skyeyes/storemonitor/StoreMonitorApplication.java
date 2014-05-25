@@ -24,6 +24,8 @@ public class StoreMonitorApplication extends BaseApplication{
 		super.onCreate();
 		//System.out.println("Aplication 初始化");
 		instance = this;
+		// 配置全局异常处理
+		Thread.setDefaultUncaughtExceptionHandler(new UEHandler(this));
 	}
 
 	public ReceivLogin getReceivLogin() {

@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu.CountManuResultBean;
 import com.skyeyes.base.util.DateUtil;
@@ -17,8 +18,8 @@ import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.Fragment.TrafficStatisticsDayFrg;
 import com.skyeyes.storemonitor.Fragment.TrafficStatisticsMonthFrg;
-@SuppressLint("NewApi")
 
+@SuppressLint("NewApi")
 /** 人流统计 */
 public class TrafficStatisticsActivity extends Activity {
 	private TopTitleView topTitleView;
@@ -30,47 +31,34 @@ public class TrafficStatisticsActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.traffic_statistics_view);
-
 		topTitleView = (TopTitleView) findViewById(R.id.ts_topView);
-
-		topTitleView
-				.setOnRightButtonClickListener(new OnClickListenerCallback() {
-
+		topTitleView.setOnRightButtonClickListener(new OnClickListenerCallback() {
 					@Override
 					public void onClick() {
 						// TODO Auto-generated method stub
-						
 						if (monthFrg == null) {
 							monthFrg = new TrafficStatisticsMonthFrg();
-
 						}
 						setFragment(monthFrg);
-					
+
 					}
 				});
-		topTitleView
-				.setOnLeftButtonClickListener(new OnClickListenerCallback() {
-
+		topTitleView.setOnLeftButtonClickListener(new OnClickListenerCallback() {
 					@Override
 					public void onClick() {
 						// TODO Auto-generated method stub
 						if (dayFrg == null) {
 							dayFrg = new TrafficStatisticsDayFrg();
-
 						}
 						setFragment(dayFrg);
-
 					}
 				});
 
-		topTitleView
-				.setOnMenuButtonClickListener(new OnClickListenerCallback() {
-
+		topTitleView.setOnMenuButtonClickListener(new OnClickListenerCallback() {
 					@Override
 					public void onClick() {
 						// TODO Auto-generated method stub
 						HomeActivity.getInstance().toggleMenu();
-
 					}
 				});
 

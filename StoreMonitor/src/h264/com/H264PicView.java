@@ -219,7 +219,7 @@ public class H264PicView{
    
     public void init(){
     	//视频缓冲区
-    	 NalBuf = new byte[4098000];
+    	 NalBuf = new byte[40980];
     	 setDisplay();
     	 mH264MediaPlayer.InitDecoder(playWidth, playHeight);
     }

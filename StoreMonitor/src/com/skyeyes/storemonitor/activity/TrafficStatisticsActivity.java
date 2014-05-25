@@ -1,5 +1,7 @@
 package com.skyeyes.storemonitor.activity;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 import org.achartengine.GraphicalView;
@@ -14,6 +16,8 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.LinearLayout;
 
@@ -35,17 +39,44 @@ public class TrafficStatisticsActivity extends Activity {
 	private int SERIES_NR = 1;
 	private TopTitleView topTitleView;
 	private GraphicalView mView;
+	
+	private XYChart chart;
+	private LinearLayout layout;
+	
+	private final int MONTH_VIEW_REFLESH = 1;
+	// 测试数据
+	private ArrayList<CountManuResultBean> monthResultBeans;
 
+	
+	Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			switch (msg.what) {
+			case MONTH_VIEW_REFLESH:
+				chart = new LineChart(getDemoDataset(monthResultBeans), getDemoRenderer());
+				mView = new GraphicalView(TrafficStatisticsActivity.this, chart);
+				layout.addView(mView);
+				break;
+
+			default:
+				break;
+			}
+			
+		}
+	};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.traffic_statistics_view);
-		XYChart chart = new LineChart(getDemoDataset(), getDemoRenderer());
-		mView = new GraphicalView(this, chart);
+//		monthResultBeans = getDataByMonth("2014-05-01 00:00:00");
+
+		
 		topTitleView = (TopTitleView) findViewById(R.id.ts_topView);
-		LinearLayout layout = (LinearLayout) findViewById(R.id.my_chart);
-		layout.addView(mView);
+		 layout = (LinearLayout) findViewById(R.id.my_chart);
+		
 		topTitleView
 				.setOnRightButtonClickListener(new OnClickListenerCallback() {
 
@@ -79,24 +110,26 @@ public class TrafficStatisticsActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		getManucountByDay("2014-05-01 00:00:00");
+		 getManucountByDay("2014-05-17 00:00:00");
 	}
 
-	private XYMultipleSeriesDataset getDemoDataset() {
+	private XYMultipleSeriesDataset getDemoDataset(ArrayList<CountManuResultBean>  monthResultBeans) {
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-		final int nr = 10;
-		Random r = new Random();
+		final int nr = monthResultBeans.size();
 		for (int i = 0; i < SERIES_NR; i++) {
-			XYSeries series = new XYSeries("Demo series " + (i + 1));
+
+			XYSeries series = new XYSeries("Demo series ");
+
 			for (int k = 0; k < nr; k++) {
-				series.add(k, 20 + r.nextInt() % 10);
-				Log.i("chenlong",
-						"series :: " + (i + 1) + "  "
-								+ (20 + r.nextInt() % 100));
+				series.add(k, monthResultBeans.get(k).inManu);
+				series.addWeeks(k, monthResultBeans.get(k).dayofWeet);
+				Log.e("chenlong", " monthResultBeans.get(k).dayofWeet :::::::  " +  monthResultBeans.get(k).dayofWeet);
+
 			}
 			dataset.addSeries(series);
 		}
 		return dataset;
+
 	}
 
 	private XYMultipleSeriesRenderer getDemoRenderer() {
@@ -104,15 +137,16 @@ public class TrafficStatisticsActivity extends Activity {
 		renderer.setAxisTitleTextSize(16);
 		renderer.setChartTitleTextSize(20);
 		renderer.setLabelsTextSize(30);
-		renderer.setPanEnabled(true, false); // 设置沿X或Y轴是否可以拖动
+		renderer.setPanEnabled(true, true); // 设置沿X或Y轴是否可以拖动
 		renderer.setLegendTextSize(15);
-		renderer.setPanLimits(new double[] { 0, 24, 0, 50 }); // 限制xy轴的长度
+		renderer.setPanLimits(new double[] { -1, 31, 0, 50 }); // 限制xy轴的长度
 		renderer.setZoomEnabled(false, false);
 		renderer.setXLabels(10); // 当设置为10时，x轴单位为1
+		renderer.setXAxisMax(8.0);
 		renderer.setPointSize(5f);
 		renderer.setMarginsColor(Color.WHITE);
 		renderer.setYAxisMin(0);
-		renderer.setYLabelsPadding(20);
+		renderer.setYLabelsPadding(40);
 		renderer.setMargins(new int[] { 20, 30, 15, 0 });
 		XYSeriesRenderer r = new XYSeriesRenderer();
 		// r.setColor(Color.BLUE);
@@ -139,14 +173,10 @@ public class TrafficStatisticsActivity extends Activity {
 	 */
 	private void getManucountByDay(String dayTime) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		Log.e("chenlong", "getManucountByDay :::: " + dayTime);
 
 		Object[] params = new Object[] { dayTime };
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAvgHourManuByDay, params);
-
-			Log.e("chenlong",
-					"getManucount入参数： :::: " + sendObjectParams.toString());
 
 			CountManuOfHourByDay mCountManuCmdProcess = new CountManuOfHourByDay(
 					REQUST.cmdReqAvgHourManuByDay, (String) params[0]);
@@ -190,7 +220,8 @@ public class TrafficStatisticsActivity extends Activity {
 	 * @author Administrator
 	 * 
 	 */
-	public class CountManuOfHourByDay extends CountManuCmdProcess<ReceiveAvgHourManuByDay> {
+	public class CountManuOfHourByDay extends
+			CountManuCmdProcess<ReceiveAvgHourManuByDay> {
 
 		public CountManuOfHourByDay(REQUST requst, String beginTime) {
 			super(requst, beginTime);
@@ -199,10 +230,23 @@ public class TrafficStatisticsActivity extends Activity {
 
 		public void onProcess(ReceiveAvgHourManuByDay receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
-			for (CountManuResultBean countManuResultBean:receiveCmdBean.countManuResultBeans) {
-				Log.e("chenlong", DateUtil.getTimeStringFormat(countManuResultBean.time, DateUtil.TIME_FORMAT_YMDHMS)+":"
-						+countManuResultBean.dayofWeet+":"+countManuResultBean.inManu+":"+countManuResultBean.outManu+":"+countManuResultBean.avgTime);
-			}
+//			for (CountManuResultBean countManuResultBean : receiveCmdBean.countManuResultBeans) {
+//				Log.e("chenlong",
+//						DateUtil.getTimeStringFormat(countManuResultBean.time,
+//								DateUtil.TIME_FORMAT_YMDHMS)
+//								+ ":"
+//								+ countManuResultBean.dayofWeet
+//								+ ":"
+//								+ countManuResultBean.inManu
+//								+ ":"
+//								+ countManuResultBean.outManu
+//								+ ":"
+//								+ countManuResultBean.avgTime);
+//			}
+			monthResultBeans =  receiveCmdBean.countManuResultBeans;
+			Message message = new Message();
+			message.what = MONTH_VIEW_REFLESH;
+			handler.sendMessage(message);
 		}
 
 	}
@@ -213,7 +257,8 @@ public class TrafficStatisticsActivity extends Activity {
 	 * @author Administrator
 	 * 
 	 */
-	public class CountManuOfDayByMonth extends CountManuCmdProcess<ReceiveAvgDayManuByMouse> {
+	public class CountManuOfDayByMonth extends
+			CountManuCmdProcess<ReceiveAvgDayManuByMouse> {
 
 		public CountManuOfDayByMonth(REQUST requst, String beginTime) {
 			super(requst, beginTime);
@@ -225,4 +270,46 @@ public class TrafficStatisticsActivity extends Activity {
 			// receiveCmdBean.countManuResultBeans 这里是数据列表
 		}
 	}
+
+	private ArrayList<CountManuResultBean> getDataByDay(String dateStr) {
+
+		Random r = new Random();
+		ArrayList<CountManuResultBean> countManuResultBeans = new ArrayList<CountManuResultBean>();
+		long beginTimeDate = DateUtil.pareStringDate(dateStr,
+				DateUtil.TIME_FORMAT_YMDHMS).getTime();
+		for (int i = 1; i <= 24; i++) {
+			CountManuResultBean countManuResultBean = new CountManuResultBean();
+			countManuResultBean.time = beginTimeDate + i * 60 * 60 * 1000L - 1L;
+			countManuResultBean.inManu = 20 + r.nextInt() % 10;
+			// countManuResultBean.outManu = 20 + r.nextInt() % 10;
+			countManuResultBeans.add(countManuResultBean);
+		}
+
+		return countManuResultBeans;
+	}
+
+	private ArrayList<CountManuResultBean> getDataByMonth(String dateStr) {
+
+		Random r = new Random();
+		ArrayList<CountManuResultBean> countManuResultBeans = new ArrayList<CountManuResultBean>();
+		long beginTimeDate = DateUtil.pareStringDate(dateStr,
+				DateUtil.TIME_FORMAT_YMDHMS).getTime();
+		int days = DateUtil.getDaysOfMonthByDate(new Date(beginTimeDate));
+		for (int i = 1; i <= days; i++) {
+
+			CountManuResultBean countManuResultBean = new CountManuResultBean();
+			countManuResultBean.time = beginTimeDate + i * 24 * 60 * 60 * 1000L
+					- 1L;
+			// System.out.println(DateUtil.getTimeStringFormat(countManuResultBean.time,
+			// DateUtil.TIME_FORMAT_YMDHMS)+":"+countManuResultBean.time);
+			countManuResultBean.inManu = 20 + r.nextInt() % 10;
+			countManuResultBean.outManu = 0;
+			countManuResultBean.dayofWeet = DateUtil
+					.getDayOfWeekByDate(new Date(countManuResultBean.time));
+			countManuResultBeans.add(countManuResultBean);
+		}
+
+		return countManuResultBeans;
+	}
+
 }

@@ -49,7 +49,7 @@ public class H264PicView{
 	int escapeLen=0;
 	byte [] NalBuf;
 	
-	VView mH264MediaPlayer;
+	H264MediaPlayer mH264MediaPlayer;
 	
     public static void setDisplay(Display display){
     	mDisplay = display;
@@ -62,7 +62,7 @@ public class H264PicView{
     
     public H264PicView(int width,int height,DecodeSuccCallback decodeSuccCallback){
     	mDecodeSuccCallback = decodeSuccCallback;
-    	mH264MediaPlayer = new VView();
+    	mH264MediaPlayer = new H264MediaPlayer();
     	this.setDisplaySize(width, height);
     	this.init();
     }

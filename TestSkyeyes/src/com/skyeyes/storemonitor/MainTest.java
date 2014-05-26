@@ -486,7 +486,7 @@ public class MainTest {
 				e.printStackTrace();
 			}
 		
-		/*
+		
 		getChannelPic(skyeyeSocketClient,(byte)0);
 		
 		while (fileId==0)
@@ -506,7 +506,7 @@ public class MainTest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			*/
+			
 
 		getManucount(skyeyeSocketClient);
 		

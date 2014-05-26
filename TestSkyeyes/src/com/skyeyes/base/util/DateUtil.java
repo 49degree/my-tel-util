@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class DateUtil {
 	// 时间格式
+	
 	public final static String TIME_FORMAT_YMDHMS = "yyyy-MM-dd HH:mm:ss";
 	public final static String TIME_FORMAT_YMDHM = "yyyy-MM-dd HH:mm";
 	public final static String TIME_FORMAT_YMD = "yyyy-MM-dd";

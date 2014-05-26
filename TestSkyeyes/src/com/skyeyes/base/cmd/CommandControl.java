@@ -16,6 +16,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveGetEquitIO;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHeart;
+import com.skyeyes.base.cmd.bean.impl.ReceiveHistoryVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoor;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
@@ -151,6 +152,10 @@ public class CommandControl {
 	        	break;
 	        case cmdReqAlarmList://报警列表
 	        	//receiveCmdBean = new ReceiveAvgManuStayTimeByMouse();
+	        	break;	     
+	        case cmdReqHistoryVideo://请求录像回放         	
+	        case cmdReqAlarmVideo://请求报警录像
+	        	receiveCmdBean = new ReceiveHistoryVideo();
 	        	break;	        	
 	        default:
 	        	return null;
@@ -203,7 +208,7 @@ public class CommandControl {
 		cmdSendActive((byte)0x1b,(byte)0x04,1),//设置布防状态 cmdSendActive((byte)int value)
 		cmdPushActive((byte)0x17,(byte)0x05,0),//设置布防状态 cmdSendActive((byte)int value)
 		cmdFlag((byte)0,(byte)0x06,2),//视频解码心跳 cmdFlag((byte)int flag,String meg)
-		cmdPlayReplay((byte)3,(byte)0x07,4),//播放录像回放 cmdPlayReplay((byte)int channel,String time,int timelen,String alarmID)
+		
 		cmdHistoryAlarmList((byte)35,(byte)0x08,4),//读取历史报警记录列表命令 cmdHistoryAlarmList((byte)int channel,String startTime,String endTime,int flag)
 		cmdHistoryAlarmInfo((byte)36,(byte)0x09,1),//读取历史报警记录详细 cmdHistoryAlarmInfo((byte)String id)
 		cmdGps((byte)0x3d,(byte)0x0A,2),// cmdGps((byte)double x,double y)
@@ -248,7 +253,10 @@ public class CommandControl {
 		cmdReqVideoChannelPic((byte)0x13,(byte)0x2D,1),//获取通道图片
 		
 		cmdReqOpenCloseDoorList((byte)0x23,(byte)0x2E,2),//获取开关门列表
-		cmdReqAlarmList((byte)0x23,(byte)0x2F,2);//报警列表
+		cmdReqAlarmList((byte)0x23,(byte)0x2F,2),//报警列表
+		
+		cmdReqHistoryVideo((byte)0x03,(byte)0x30,3),//请求录像回放 
+		cmdReqAlarmVideo((byte)0x03,(byte)0x31,2);//请求报警录像
 		
 		private byte cmd ;
 		private byte cmdId;//返回ID

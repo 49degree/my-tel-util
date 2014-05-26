@@ -78,15 +78,6 @@ public class SendObjectParams extends SendCmdBean{
 	        			params[1].toString().length(),params[1]
 	        			};
 	        	break;
-	        case cmdPlayReplay:
-	        	sendsParams=new Object[]{
-	        			1,params[0],
-	    				1,2,
-	    				1,VideoClarity.instance().getId(),
-	    				8,DateUtil.date2FileTime(fmt.parse(params[1]+"")),
-	    				2,params[2],
-	    				36,params[3]};
-	        	break;
 	        case cmdHistoryAlarmList:
 	        	sendsParams=new Object[]{
 	        			1,params[0],
@@ -245,7 +236,25 @@ public class SendObjectParams extends SendCmdBean{
 	    			8,endTime,
 	    			1,type,		
 		    	};
-	        	break;		        	
+	        	break;
+	        case cmdReqHistoryVideo://请求录像回放 
+	        	sendsParams=new Object[]{
+	        			1,params[0],
+	        			1,3,
+	        			1,VideoClarity.instance().getId(),
+	        			8,DateUtil.date2FileTime(fmt.parse(params[1]+"")),
+	        			2,params[2],
+	        			36,""};	        	
+	        	break;
+	        case cmdReqAlarmVideo://请求报警录像	
+	        	sendsParams=new Object[]{
+	        			1,params[0],
+	        			1,3,
+	        			1,VideoClarity.instance().getId(),
+	        			8,"",
+	        			2,"",
+	        			36,params[1]};	
+	        	break;
 	        default:
 	        	sendsParams=new Object[]{};
 	        	break;
@@ -280,6 +289,8 @@ public class SendObjectParams extends SendCmdBean{
 			
 			if(value instanceof String){
 				temp=TypeConversion.stringToAscii(String.valueOf(value));
+			}else if(value instanceof Short){
+				temp= TypeConversion.shortToBytes((Short)value);
 			}else if(value instanceof Integer){
 				temp= TypeConversion.intToBytes((Integer)value);
 			}else if(value instanceof Long){

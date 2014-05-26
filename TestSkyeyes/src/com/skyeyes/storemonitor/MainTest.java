@@ -454,6 +454,26 @@ public class MainTest {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public static void requstHistoryVideo(SkyeyeSocketClient skyeyeSocketClient,byte channelId) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		Object[] params = new Object[] { channelId,"2014-05-25 12:00:00",(short)480};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqHistoryVideo, params);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			skyeyeSocketClient.sendCmd(sendObjectParams);
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	static SkyeyeSocketClient skyeyeSocketClient = null;
 	public static void main(String[] args) {
 		
@@ -517,8 +537,8 @@ public class MainTest {
 			e.printStackTrace();
 		}
 		
-		requstRealTimeVideo(skyeyeSocketClient,(byte)0x00);
-		
+		//requstRealTimeVideo(skyeyeSocketClient,(byte)0x00);
+		requstHistoryVideo(skyeyeSocketClient,(byte)0x00);
 		//new H264Player(new String[]{"testfile/video.data"});
 
 //		requstStopVideo(skyeyeSocketClient);

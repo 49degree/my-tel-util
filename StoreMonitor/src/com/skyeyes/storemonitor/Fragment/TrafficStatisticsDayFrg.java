@@ -53,6 +53,7 @@ public class TrafficStatisticsDayFrg extends SuperFragment {
 			case MONTH_VIEW_REFLESH:
 				layout.removeAllViews();
 				xyMultipleSeriesRenderer.setYAxisMax(20.0);
+				xyMultipleSeriesRenderer.setPanLimits(new double[] { -1, monthResultBeans.size(), 0, 80 }); // 限制xy轴的长度
 
 				chart = new LineChart(getDemoDataset(monthResultBeans), xyMultipleSeriesRenderer);
 				mView = new GraphicalView(getActivity(), chart);

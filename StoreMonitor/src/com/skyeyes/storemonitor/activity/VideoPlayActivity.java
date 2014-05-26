@@ -16,9 +16,12 @@ import android.widget.TextView;
 import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
+import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
+import com.skyeyes.base.cmd.bean.impl.ReceiveHistoryVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveStopVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
+import com.skyeyes.base.cmd.bean.impl.ReceiveVideoFinish;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.h264.JavaH264Decoder;
@@ -29,8 +32,20 @@ import com.skyeyes.storemonitor.service.DevicesService;
 import com.skyeyes.storemonitor.view.H264VideoView;
 
 public class VideoPlayActivity extends BaseActivity {
+	static String TAG = "VideoPlayActivity";
+	
 	boolean start = false;
+	int videoType = -1;//0,实时视频，1，历史视频，2报警视频
+	
 	byte chennalId = -1;
+	
+	String startTime;
+	short videoLong;
+	
+	String alarmId;//报警ID
+	
+	
+	
 
 	protected FrameLayout main;
 	private H264VideoView videoView;
@@ -47,6 +62,16 @@ public class VideoPlayActivity extends BaseActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);    //全屏            
         getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN); 
 		chennalId = getIntent().getExtras().getByte("chennalId");
+		videoType = getIntent().getExtras().getInt("videoType");
+		if(videoType==1){
+			startTime = getIntent().getExtras().getString("startTime");
+			videoLong = getIntent().getExtras().getShort("videoLong");
+		}else if(videoType==2){
+			alarmId = getIntent().getExtras().getString("alarmId");
+		}
+		
+		Log.e(TAG, videoType+":"+chennalId+":"+startTime+":"+videoLong+":"+alarmId);
+		
 		WindowManager windowManager = getWindowManager();
 		display = windowManager.getDefaultDisplay();
 
@@ -85,22 +110,54 @@ public class VideoPlayActivity extends BaseActivity {
 		super.onResume();
 		notify.setVisibility(View.VISIBLE);
 		videoView.setVisibility(View.GONE);
+		
+		DevicesService.registerCmdProcess(
+				"ReceiveVideoData", new VideoDataReceive());
+		DevicesService.registerCmdProcess(
+				"ReceiveVideoFinish", new VideoFinsishReceive());
+		
 		if (chennalId > -1) {
-			VideoDataReceive video = new VideoDataReceive();
-			DevicesService.getInstance().registerCmdProcess(
-					ReceiveVideoData.class.getSimpleName(), video);
-			SendObjectParams sendObjectParams = new SendObjectParams();
-			Object[] params = new Object[] { chennalId };
-			try {
-				sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
-				System.out.println("cmdReqRealVideo入参数："
-						+ sendObjectParams.toString());
-				DevicesService
-						.sendCmd(sendObjectParams, new RealVideoReceive());
-			} catch (CommandParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(videoType==1){//1，历史视频
+				SendObjectParams sendObjectParams = new SendObjectParams();
+				Object[] params = new Object[] { chennalId,startTime,videoLong};
+				try {
+					sendObjectParams.setParams(REQUST.cmdReqHistoryVideo, params);
+					System.out.println("cmdReqHistoryVideo入参数："
+							+ sendObjectParams.toString());
+					DevicesService
+							.sendCmd(sendObjectParams, new HistoryVideoReceive());
+				} catch (CommandParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else if(videoType==2){//，2报警视频
+				SendObjectParams sendObjectParams = new SendObjectParams();
+				Object[] params = new Object[] { chennalId, alarmId};
+				try {
+					sendObjectParams.setParams(REQUST.cmdReqAlarmVideo, params);
+					System.out.println("cmdReqAlarmVideo入参数："
+							+ sendObjectParams.toString());
+					DevicesService
+							.sendCmd(sendObjectParams, new HistoryVideoReceive());
+				} catch (CommandParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{//0,实时视频
+				SendObjectParams sendObjectParams = new SendObjectParams();
+				Object[] params = new Object[] { chennalId };
+				try {
+					sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
+					System.out.println("cmdReqRealVideo入参数："
+							+ sendObjectParams.toString());
+					DevicesService
+							.sendCmd(sendObjectParams, new RealVideoReceive());
+				} catch (CommandParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+
 			start = true;
 		}
 
@@ -109,8 +166,8 @@ public class VideoPlayActivity extends BaseActivity {
 	public void onPause() {
 		super.onPause();
 		if (start) {
-
 			DevicesService.unRegisterCmdProcess("ReceiveVideoData");
+			DevicesService.unRegisterCmdProcess("ReceiveVideoFinish");
 			SendObjectParams sendObjectParams = new SendObjectParams();
 			Object[] params = new Object[] {};
 			try {
@@ -128,7 +185,7 @@ public class VideoPlayActivity extends BaseActivity {
 
 	public void onDestroy() {
 		Log.e("VideoPlayActivity", "onDestroy================");
-
+		videoView.toStopPlay();
 		super.onDestroy();
 	}
 
@@ -140,7 +197,26 @@ public class VideoPlayActivity extends BaseActivity {
 			// 打开视频播放界面
 			Log.i("MainPageActivity",
 					"MainPageActivity.this.startActivity(it)================");
+			videoView.toStartPlay();
+		}
 
+		@Override
+		public void onFailure(String errinfo) {
+			// TODO Auto-generated method stub
+		}
+	}
+
+
+	
+	private class HistoryVideoReceive extends
+			DeviceReceiveCmdProcess<ReceiveHistoryVideo> {
+		@Override
+		public void onProcess(ReceiveHistoryVideo receiveCmdBean) {
+			// TODO Auto-generated method stub
+			// 打开视频播放界面
+			Log.i("MainPageActivity",
+					"MainPageActivity.this.startActivity(it)================");
+			
 			videoView.toStartPlay();
 		}
 
@@ -163,7 +239,21 @@ public class VideoPlayActivity extends BaseActivity {
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
 		}
+	}
+	
+	private class VideoFinsishReceive extends
+			DeviceReceiveCmdProcess<ReceiveVideoFinish> {
+		@Override
+		public void onProcess(ReceiveVideoFinish receiveCmdBean) {
+			Log.i("VideoPlayActivity", "ReceiveStopVideo================");
+			// TODO Auto-generated method stub
+			videoView.toStopPlay();
+		}
 
+		@Override
+		public void onFailure(String errinfo) {
+			// TODO Auto-generated method stub
+		}
 	}
 
 	private class VideoDataReceive extends
@@ -210,4 +300,8 @@ public class VideoPlayActivity extends BaseActivity {
 
 		}
 	}
+	
+
+
+	
 }

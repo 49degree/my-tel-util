@@ -1,5 +1,6 @@
 package com.skyeyes.storemonitor.activity;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,6 +27,7 @@ import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -64,6 +66,7 @@ import com.skyeyes.storemonitor.service.DevicesService;
 
 
 public class MainPageActivity extends BaseActivity{
+	static SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
 	String TAG = "MainPageActivity";
 	public final static int SEND_QUERY_MANU_ID = 1;
 	private boolean stopQueryManu = true;
@@ -102,18 +105,35 @@ public class MainPageActivity extends BaseActivity{
 		login_notify_tv = (TextView)findViewById(R.id.login_notify_tv);
 		
 		
+		RelativeLayout video_history_query_long_rv = (RelativeLayout)findViewById(R.id.video_history_query_long_rv);
+		RelativeLayout video_history_query_time_rv = (RelativeLayout)findViewById(R.id.video_history_query_time_rv);
 		video_history_query_time_iv = (TextView)findViewById(R.id.video_history_query_time_tv);
 		video_history_query_long_iv = (TextView)findViewById(R.id.video_history_query_long_tv);
-		video_history_query_time_iv.setOnClickListener(new DateTimePick());
-		video_history_query_long_iv.setOnClickListener(new NumberPick());
+		
+				
+		
+		video_history_query_time_rv.setOnClickListener(new DateTimePick());
+		video_history_query_long_rv.setOnClickListener(new NumberPick());
 		
 		video_history_play_iv = (ImageView)findViewById(R.id.video_history_play_iv);
 		
 		video_history_play_iv.setOnClickListener(new OnClickListener(){
+        	
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				
+				Log.i("MainPageActivity", "iv.setOnClickListener(new OnClickListener()================");
+				Intent it = new Intent(MainPageActivity.this,VideoPlayActivity.class);
+				it.putExtra("chennalId", (byte)0);
+				it.putExtra("videoType", 1);
+				try {
+					it.putExtra("startTime", DateUtil.getTimeStringFormat(format.parse(StringUtil.getTextViewValue(video_history_query_time_iv)),DateUtil.TIME_FORMAT_YMDHMS));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				it.putExtra("videoLong", (short)(Short.parseShort(StringUtil.getTextViewValue(video_history_query_long_iv))*60));
+				startActivity(it);
 			}
 		});
 		
@@ -180,10 +200,13 @@ public class MainPageActivity extends BaseActivity{
     		
     		String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
     		
-    		String port = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.sysconfig_server_port);
+    		String port = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_port);
     		
-    		if(StringUtil.isNull(userName)||StringUtil.isNull(userPsd)||StringUtil.isNull(ip)||StringUtil.isNull(port)){
-    			showToast("用户数据不完整，请前往设置用户数据...............");
+    		if(StringUtil.isNull(userName)||
+    				StringUtil.isNull(userPsd)||
+    				StringUtil.isNull(ip)||
+    				StringUtil.isNull(port)){
+    			login_notify_tv.setText("用户数据不完整，请前往设置用户数据...");
     		}else{
         		SkyeyeSocketClient skyeyeSocketClient = null;
         		try {
@@ -641,7 +664,7 @@ public class MainPageActivity extends BaseActivity{
 	private class DateTimePick implements OnClickListener {
 		private DatePicker datePicker;
 		private TimePicker timePicker;
-		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
+		
 
 		@Override
 		public void onClick(View v) {

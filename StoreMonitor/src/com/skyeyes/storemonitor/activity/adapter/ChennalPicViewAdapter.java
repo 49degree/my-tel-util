@@ -68,6 +68,8 @@ public class ChennalPicViewAdapter extends BaseAdapter {
 				Log.i("MainPageActivity", "iv.setOnClickListener(new OnClickListener()================");
 				Intent it = new Intent(mContext,VideoPlayActivity.class);
 				it.putExtra("chennalId", chennalId);
+				it.putExtra("videoType", 0);
+				
 				mContext.startActivity(it);
 			}
 		});

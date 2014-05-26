@@ -73,6 +73,7 @@
         	android:layout_height="fill_parent"
         	android:orientation="vertical">
 		    <RelativeLayout
+		        android:id="@+id/video_history_query_time_rv"
 		        android:layout_width="fill_parent"
 		        android:layout_height="93px"
 		        android:gravity="center_vertical"
@@ -81,7 +82,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20px"
+                    android:textSize="30px"
                     android:text="开始时间">
                 </TextView>
 
@@ -91,8 +92,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:textSize="20px"
-                    android:text="2014年5月25日   12:00" >
+                    android:textSize="30px"
+                    android:text="2014年5月25日  12:00" >
                 </TextView>
 			    <ImageView
 			        android:id="@+id/video_history_query_time_iv"
@@ -103,6 +104,7 @@
             </RelativeLayout>
 
 		    <RelativeLayout
+		        android:id="@+id/video_history_query_long_rv"
 		        android:layout_width="fill_parent"
 		        android:layout_height="93px"
 		        android:gravity="center_vertical"
@@ -111,19 +113,28 @@
                     android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20px"
+                    android:textSize="30px"
                     android:text="时长">
                 </TextView>
 
                 <TextView
                     android:id="@+id/video_history_query_long_tv"
-                    android:layout_toLeftOf="@+id/video_history_query_long_iv"
-                    android:textSize="20px"
+                    android:layout_toLeftOf="@+id/video_history_query_long_unit_tv"
+                    android:textSize="30px"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="8分钟" >
+                    android:text="8" >
                 </TextView>
+                <TextView
+                    android:id="@+id/video_history_query_long_unit_tv"
+                    android:layout_toLeftOf="@+id/video_history_query_long_iv"
+                    android:textSize="30px"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="分钟" >
+                </TextView>                
 			    <ImageView
 			        android:id="@+id/video_history_query_long_iv"
 			         android:layout_alignParentRight="true"
@@ -156,7 +167,7 @@
 		        android:id="@+id/login_notify_tv"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:text="正在登陆设备，请稍后...">
+		        android:text="">
 		    </TextView>
 		</LinearLayout>
     </FrameLayout>

@@ -17,6 +17,7 @@ import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.SkyeyeNetworkClient;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
+import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.process.ChannelProcessInterface;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface;
@@ -40,7 +41,10 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 		mDeviceCode = deviceCode;
 		mDeviceStatusChangeListener = deviceStatusChangeListener;
 		try {
+    		String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
+    		String port = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_port);
 			mSkyeyeNetworkClient = new SkyeyeSocketClient(new SocketHandlerImpl(deviceCode),false);
+			mSkyeyeNetworkClient.setServerAddr(ip, Integer.parseInt(port));
 		} catch (NetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

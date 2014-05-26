@@ -66,13 +66,18 @@ public class JavaH264Decoder extends Thread{
 	}
 	
 	public void toStop(){
-		hasMoreNAL = false;
-	    c.avcodec_close();
-	    c = null;
-	    picture = null;
-	    if(videoBitmap!=null)
-	    	videoBitmap.recycle();
-	    videoBitmap = null;
+		try{
+			hasMoreNAL = false;
+		    c.avcodec_close();
+		    c = null;
+		    picture = null;
+		    if(videoBitmap!=null)
+		    	videoBitmap.recycle();
+		    videoBitmap = null;
+		}catch(Exception e){
+			
+		}
+
 	    System.out.println("Stop playing video.");
 	}
 	

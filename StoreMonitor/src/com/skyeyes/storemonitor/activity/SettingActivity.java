@@ -23,14 +23,13 @@ public class SettingActivity extends BaseActivity implements OnClickListener{
 		
 		
 		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
-		
+		String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
+		String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
+		String port = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_port);
 		if(!StringUtil.isNull(userName)){
 			((TextView)findViewById(R.id.store_login_name_et)).setText(userName);
-			String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
 			((TextView)findViewById(R.id.store_login_psd_et)).setText(userPsd);
-			String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
 			((TextView)findViewById(R.id.store_server_id_et)).setText(ip);
-			String port = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.sysconfig_server_port);
 			((TextView)findViewById(R.id.store_server_port_et)).setText(port);
 		}
 	}
@@ -56,7 +55,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener{
 		PreferenceUtil.setSingleConfigInfo(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip,
 				StringUtil.getTextViewValue((TextView)findViewById(R.id.store_server_id_et)));
 		
-		PreferenceUtil.setSingleConfigInfo(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.sysconfig_server_port,
+		PreferenceUtil.setSingleConfigInfo(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_port,
 				StringUtil.getTextViewValue((TextView)findViewById(R.id.store_server_port_et)));
 		
 		Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();

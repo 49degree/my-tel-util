@@ -118,20 +118,20 @@ public class TopTitleView extends LinearLayout {
 		});
 		leftBtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				leftBtn.setBackgroundResource(R.drawable.textview_style);
-				leftBtn.setTextColor(getResources().getColor(R.color.white));
-				rightBtn.setBackgroundResource(R.drawable.textview_style_b);
-				rightBtn.setTextColor(getResources().getColor(R.color.black));
+				rightBtn.setBackgroundResource(R.drawable.textview_style);
+				rightBtn.setTextColor(getResources().getColor(R.color.white));
+				leftBtn.setBackgroundResource(R.drawable.textview_style_b);
+				leftBtn.setTextColor(getResources().getColor(R.color.black));
 				if(leftButtonClickListener!=null)
 					leftButtonClickListener.onClick();
 			}
 		});
 		rightBtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				rightBtn.setBackgroundResource(R.drawable.textview_style);
-				rightBtn.setTextColor(getResources().getColor(R.color.white));
-				leftBtn.setBackgroundResource(R.drawable.textview_style_b);
-				leftBtn.setTextColor(getResources().getColor(R.color.black));
+				leftBtn.setBackgroundResource(R.drawable.textview_style);
+				leftBtn.setTextColor(getResources().getColor(R.color.white));
+				rightBtn.setBackgroundResource(R.drawable.textview_style_b);
+				rightBtn.setTextColor(getResources().getColor(R.color.black));
 				if(rightButtonClickListener!=null)
 					rightButtonClickListener.onClick();
 			}

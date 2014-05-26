@@ -12,10 +12,11 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="18px"
-        android:visibility="gone"
-        android:src="@drawable/app_top_title_menu_normal" />
+        android:src="@drawable/app_top_title_menu_normal"
+        android:visibility="gone" />
 
-    <RelativeLayout android:id="@+id/buttons_rl"
+    <RelativeLayout
+        android:id="@+id/buttons_rl"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_centerInParent="true"
@@ -33,9 +34,9 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_gravity="center"
-                android:background="@drawable/textview_style"
+                android:background="@drawable/textview_style_b"
                 android:gravity="center"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -51,22 +52,21 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_gravity="center"
-                android:background="@drawable/textview_style_b"
-                
+                android:background="@drawable/textview_style"
                 android:gravity="center"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/white" />
         </LinearLayout>
     </RelativeLayout>
 
     <TextView
         android:id="@+id/center_title"
         android:layout_width="150px"
-        android:visibility="gone"
         android:layout_height="70px"
         android:layout_centerInParent="true"
         android:background="@drawable/textview_style"
         android:gravity="center"
         android:text="123456"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:visibility="gone" />
 
 </RelativeLayout>

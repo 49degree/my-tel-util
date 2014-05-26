@@ -157,10 +157,10 @@ public class JavaH264Decoder extends Thread{
 			            avpkt.size -= len;
 			            avpkt.data_offset += len;
 			        }
-		        }catch(java.nio.BufferUnderflowException ex){
+		        
 		        } catch(Exception ie) {
 		        	// Any exception, we should try to proceed reading next packet!
-		        	ie.printStackTrace();
+		        	//ie.printStackTrace();
 		        } 
 			}
 	    } catch(Exception e) {

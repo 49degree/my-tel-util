@@ -63,7 +63,7 @@ public class TestH264 extends Activity {
 			new Thread(){
 				public void run(){
 					try {
-						InputStream in = getResources().getAssets().open("0.jpg");
+						InputStream in = getResources().getAssets().open("pic.jpg");
 						byte[] buffer = new byte[10240];
 						int len;
 						while((len=in.read(buffer))>0){

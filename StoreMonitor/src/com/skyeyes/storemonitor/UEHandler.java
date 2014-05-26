@@ -22,6 +22,7 @@ public class UEHandler implements Thread.UncaughtExceptionHandler {
 
 	@Override
 	public void uncaughtException(Thread thread, Throwable ex) {
+		ex.printStackTrace();
 		Log.e("UEHandler",ex.getMessage());
 
 		try{
@@ -30,6 +31,6 @@ public class UEHandler implements Thread.UncaughtExceptionHandler {
 			
 		}
 
-		System.exit(0);
+		//System.exit(0);
 	}
 }

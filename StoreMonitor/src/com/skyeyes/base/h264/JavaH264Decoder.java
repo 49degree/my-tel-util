@@ -5,14 +5,13 @@ import java.util.Arrays;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
-import android.util.Log;
 
 import com.twilight.h264.decoder.AVFrame;
 import com.twilight.h264.decoder.AVPacket;
 import com.twilight.h264.decoder.H264Decoder;
 import com.twilight.h264.decoder.MpegEncContext;
 
-public class JavaH264Decoder {
+public class JavaH264Decoder extends Thread{
 	public static final int INBUF_SIZE = 65535;
 	private int[] buffer = null;
 	private Bitmap videoBitmap; 
@@ -71,6 +70,9 @@ public class JavaH264Decoder {
 	    c.avcodec_close();
 	    c = null;
 	    picture = null;
+	    if(videoBitmap!=null)
+	    	videoBitmap.recycle();
+	    videoBitmap = null;
 	    System.out.println("Stop playing video.");
 	}
 	
@@ -81,10 +83,11 @@ public class JavaH264Decoder {
 		sendStream(data,0,data.length);
 	}
 	public void sendStream(byte[] data,int start,int len) {
-		Log.e(this.getClass().getSimpleName(), "playFile=======================");
+		
 		ByteBuffer dataBuffer = ByteBuffer.wrap(data);
 		dataBuffer.position(start);
 		dataBuffer.limit((start+len));
+		int switchByte = -1;
 	    try {
 			while(hasMoreNAL) {
 				if(pauseStep == 0){
@@ -109,15 +112,17 @@ public class JavaH264Decoder {
 							cacheRead[1] == 0x00 &&
 							cacheRead[2] == 0x01 
 							) && hasMoreNAL) {
-						 inbuf_int[dataPointer++] = cacheRead[0];
-						 cacheRead[0] = cacheRead[1];
-						 cacheRead[1] = cacheRead[2];
-						 cacheRead[2] = 0xFF&dataBuffer.get();
+							switchByte = 0xFF&dataBuffer.get();
+							inbuf_int[dataPointer++] = cacheRead[0];
+							cacheRead[0] = cacheRead[1];
+							cacheRead[1] = cacheRead[2];
+							cacheRead[2] = switchByte;
 					}
 					pauseStep++;
 				}
 
 				pauseStep=pauseStep%4;
+				
 
 				avpkt.size = dataPointer;
 		        avpkt.data_base = inbuf_int;
@@ -130,7 +135,6 @@ public class JavaH264Decoder {
 			                // Discard current packet and proceed to next packet
 			                break;
 			            } // if
-			            System.out.println("got_picture[0]!=0"+(got_picture[0]!=0));
 			            if (got_picture[0]!=0) {
 			            	picture = c.priv_data.displayPicture;
 		
@@ -147,12 +151,13 @@ public class JavaH264Decoder {
 									videoBitmap=Bitmap.createBitmap(picture.imageWidth, picture.imageWidth, Config.ARGB_8888);
 								videoBitmap.copyPixelsFromBuffer(byteBuffer);//makeBuffer(data565, N));
 								if(mDecodeSuccCallback!=null)
-									mDecodeSuccCallback.onDecodeSucc(videoBitmap);
+									mDecodeSuccCallback.onDecodeSucc(this,videoBitmap);
 							}
 			            }
 			            avpkt.size -= len;
 			            avpkt.data_offset += len;
 			        }
+		        }catch(java.nio.BufferUnderflowException ex){
 		        } catch(Exception ie) {
 		        	// Any exception, we should try to proceed reading next packet!
 		        	ie.printStackTrace();
@@ -204,6 +209,6 @@ public class JavaH264Decoder {
 	}
 	
     public interface DecodeSuccCallback{
-    	public void onDecodeSucc(Bitmap bitmap);
+    	public void onDecodeSucc(JavaH264Decoder decoder,Bitmap bitmap);
     }
 }

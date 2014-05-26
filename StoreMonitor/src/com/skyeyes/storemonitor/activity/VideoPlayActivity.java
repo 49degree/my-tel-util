@@ -1,10 +1,19 @@
 package com.skyeyes.storemonitor.activity;
 
-import h264.com.H264Android;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
@@ -12,92 +21,127 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveStopVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
+import com.skyeyes.base.h264.JavaH264Decoder;
+import com.skyeyes.base.h264.JavaH264Decoder.DecodeSuccCallback;
+import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
+import com.skyeyes.storemonitor.view.H264VideoView;
 
-public class VideoPlayActivity extends H264Android{
+public class VideoPlayActivity extends BaseActivity {
 	boolean start = false;
-	 byte chennalId = -1;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	Log.e("VideoPlayActivity", "onCreate================");
-        super.onCreate(savedInstanceState);     
+	byte chennalId = -1;
 
-        chennalId = getIntent().getExtras().getByte("chennalId");
+	protected FrameLayout main;
+	private H264VideoView videoView;
+	protected LinearLayout notify;
+	protected TextView notifyText;
+	protected Display display;
 
-        
-    }
-    
-    public void onResume(){
-    	super.onResume();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		Log.e("VideoPlayActivity", "onCreate================");
+		super.onCreate(savedInstanceState);
+		super.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//强制为横屏 
+        requestWindowFeature(Window.FEATURE_NO_TITLE);    //全屏            
+        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN); 
+		chennalId = getIntent().getExtras().getByte("chennalId");
+		WindowManager windowManager = getWindowManager();
+		display = windowManager.getDefaultDisplay();
+
+		main = new FrameLayout(this);
+		main.setLayoutParams(new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.FILL_PARENT,
+				ViewGroup.LayoutParams.FILL_PARENT));
+
+		videoView =new H264VideoView(this,display,new DecodeSuccCallback(){
+			@Override
+			public void onDecodeSucc(JavaH264Decoder decoder ,Bitmap bitmap) {
+				// TODO Auto-generated method stub
+				Log.i("DecoderCallback", "onDecodeSucc================");
+				if (videoView.getVisibility() != View.VISIBLE)
+					videoView.setVisibility(View.VISIBLE);
+				if (notify.getVisibility() != View.GONE)
+					notify.setVisibility(View.GONE);
+
+			}
+		});
+		videoView.setLayoutParams(new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.FILL_PARENT,
+				ViewGroup.LayoutParams.FILL_PARENT));
+		main.addView(videoView);
+
+		notify = (LinearLayout) LayoutInflater.from(this).inflate(
+				R.layout.app_video_play_notify, null);
+		notifyText = (TextView) notify.findViewById(R.id.play_video_notify_tv);
+		main.addView(notify);
+
+		setContentView(main);
+
+	}
+
+	public void onResume() {
+		super.onResume();
 		notify.setVisibility(View.VISIBLE);
-		vv.setVisibility(View.GONE);
-		if(chennalId>-1){
+		videoView.setVisibility(View.GONE);
+		if (chennalId > -1) {
 			VideoDataReceive video = new VideoDataReceive();
-			DevicesService.getInstance().registerCmdProcess(ReceiveVideoData.class.getSimpleName(), video);
+			DevicesService.getInstance().registerCmdProcess(
+					ReceiveVideoData.class.getSimpleName(), video);
 			SendObjectParams sendObjectParams = new SendObjectParams();
-			Object[] params = new Object[] { chennalId};
+			Object[] params = new Object[] { chennalId };
 			try {
 				sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
-				System.out.println("cmdReqRealVideo入参数：" + sendObjectParams.toString());
-				DevicesService.sendCmd(sendObjectParams, new RealVideoReceive());
+				System.out.println("cmdReqRealVideo入参数："
+						+ sendObjectParams.toString());
+				DevicesService
+						.sendCmd(sendObjectParams, new RealVideoReceive());
 			} catch (CommandParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}	
+			}
 			start = true;
 		}
-		
-    }
-    
-    public void onPause(){
-    	super.onPause();
-    	if(start){
-        	
-        	DevicesService.unRegisterCmdProcess("ReceiveVideoData");
-    		SendObjectParams sendObjectParams = new SendObjectParams();
-    		Object[] params = new Object[] {  };
-    		try {
-    			sendObjectParams.setParams(REQUST.cmdReqStopVideo, params);
-    			DevicesService.getInstance().sendCmd(sendObjectParams, new StopVideoReceive());
-    		
-    		} catch (CommandParseException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    	}
 
-    }
+	}
 
-    public void onDestroy(){
-    	Log.e("VideoPlayActivity", "onDestroy================");
+	public void onPause() {
+		super.onPause();
+		if (start) {
+
+			DevicesService.unRegisterCmdProcess("ReceiveVideoData");
+			SendObjectParams sendObjectParams = new SendObjectParams();
+			Object[] params = new Object[] {};
+			try {
+				sendObjectParams.setParams(REQUST.cmdReqStopVideo, params);
+				DevicesService.getInstance().sendCmd(sendObjectParams,
+						new StopVideoReceive());
+
+			} catch (CommandParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public void onDestroy() {
+		Log.e("VideoPlayActivity", "onDestroy================");
 
 		super.onDestroy();
-    }
-
-    
-	@Override
-	public void reviceFrame(String num) {
-		// TODO Auto-generated method stub
-		Log.e("VideoPlayActivity", "reviceFrame================"+num);
-		if(vv.getVisibility()!=View.VISIBLE)
-			vv.setVisibility(View.VISIBLE);
-		if(vv.getVisibility()!=View.GONE)
-			notify.setVisibility(View.GONE);
 	}
-	
-	
 
-	
-	private class RealVideoReceive extends DeviceReceiveCmdProcess<ReceiveRealVideo>{
+	private class RealVideoReceive extends
+			DeviceReceiveCmdProcess<ReceiveRealVideo> {
 		@Override
 		public void onProcess(ReceiveRealVideo receiveCmdBean) {
 			// TODO Auto-generated method stub
-			//打开视频播放界面
-			Log.i("MainPageActivity", "MainPageActivity.this.startActivity(it)================");
-			
-			h264Play();
+			// 打开视频播放界面
+			Log.i("MainPageActivity",
+					"MainPageActivity.this.startActivity(it)================");
+
+			videoView.toStartPlay();
 		}
 
 		@Override
@@ -105,29 +149,32 @@ public class VideoPlayActivity extends H264Android{
 			// TODO Auto-generated method stub
 		}
 	}
-    
-	private class StopVideoReceive extends DeviceReceiveCmdProcess<ReceiveStopVideo>{
+
+	private class StopVideoReceive extends
+			DeviceReceiveCmdProcess<ReceiveStopVideo> {
 		@Override
 		public void onProcess(ReceiveStopVideo receiveCmdBean) {
 			Log.i("VideoPlayActivity", "ReceiveStopVideo================");
 			// TODO Auto-generated method stub
-			h264Stop();
+			videoView.toStopPlay();
 		}
 
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
 		}
-		
+
 	}
-	
-    private class VideoDataReceive extends DeviceReceiveCmdProcess<ReceiveVideoData>{
+
+	private class VideoDataReceive extends
+			DeviceReceiveCmdProcess<ReceiveVideoData> {
 		long lastDataTime = 0;
+
 		@Override
 		public void onProcess(ReceiveVideoData receiveCmdBean) {
 			Log.e("MainPageActivity", "VideoDataReceive================");
 			// TODO Auto-generated method stub
-			sendStream(receiveCmdBean.data);
+			videoView.sendStream(receiveCmdBean.data);
 			responseVideoData(receiveCmdBean);
 		}
 
@@ -135,30 +182,32 @@ public class VideoPlayActivity extends H264Android{
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
 		}
-		
+
 		// 回复视频数据
 		public void responseVideoData(ReceiveCmdBean receiveCmdBean) {
-			if(lastDataTime == 0)
+			if (lastDataTime == 0)
 				lastDataTime = System.currentTimeMillis();
-			if(System.currentTimeMillis()-lastDataTime>700){
+			if (System.currentTimeMillis() - lastDataTime > 700) {
 				byte cmdId = receiveCmdBean.getCommandHeader().cmdId;
 				SendObjectParams sendObjectParams = new SendObjectParams();
-				sendObjectParams.setCommandHeader(receiveCmdBean.getCommandHeader());
+				sendObjectParams.setCommandHeader(receiveCmdBean
+						.getCommandHeader());
 				Object[] params = new Object[] {};
 				try {
 					sendObjectParams.setParams(REQUST.cmdRevFrame, params);
-					sendObjectParams.getCommandHeader().cmdCode = 0 ;
-					sendObjectParams.getCommandHeader().cmdId  = cmdId;
-					System.out.println("testResponseVideoData入参数："+ sendObjectParams.toString());
-					
-					DevicesService.sendCmd(sendObjectParams,null);
+					sendObjectParams.getCommandHeader().cmdCode = 0;
+					sendObjectParams.getCommandHeader().cmdId = cmdId;
+					System.out.println("testResponseVideoData入参数："
+							+ sendObjectParams.toString());
+
+					DevicesService.sendCmd(sendObjectParams, null);
 				} catch (CommandParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				lastDataTime = System.currentTimeMillis();
 			}
-			
+
 		}
 	}
 }

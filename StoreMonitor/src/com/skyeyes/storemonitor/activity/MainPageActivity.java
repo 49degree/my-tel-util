@@ -1,13 +1,12 @@
 package com.skyeyes.storemonitor.activity;
 
-import h264.com.H264PicView;
-import h264.com.H264PicView.DecodeSuccCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +33,9 @@ import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByMouse;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByMouse;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
+import com.skyeyes.base.h264.H264DecoderException;
+import com.skyeyes.base.h264.JavaH264Decoder;
+import com.skyeyes.base.h264.JavaH264Decoder.DecodeSuccCallback;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.util.PreferenceUtil;
@@ -143,7 +145,7 @@ public class MainPageActivity extends BaseActivity{
     		
     		String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
     		
-    		String port = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
+    		String port = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.sysconfig_server_port);
     		
     		if(StringUtil.isNull(userName)||StringUtil.isNull(userPsd)||StringUtil.isNull(ip)||StringUtil.isNull(port)){
     			showToast("用户数据不完整，请前往设置用户数据...............");
@@ -151,7 +153,8 @@ public class MainPageActivity extends BaseActivity{
         		SkyeyeSocketClient skyeyeSocketClient = null;
         		try {
         			skyeyeSocketClient = new SkyeyeSocketClient(new SocketHandlerImpl(), true);
-        		} catch (NetworkException e1) {
+        			skyeyeSocketClient.setServerAddr(ip, Integer.parseInt(port));
+        		} catch (Exception e1) {
         			// TODO Auto-generated catch block
         			e1.printStackTrace();
         		}
@@ -169,9 +172,9 @@ public class MainPageActivity extends BaseActivity{
     	super.onResume();
     	Log.e(TAG,"onResume queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID)");
     	
-    	if(!isInView && !stopQueryManu && StoreMonitorApplication.getInstance().getReceivLogin()!=null){
-    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
-    	}
+//    	if(!isInView && !stopQueryManu && StoreMonitorApplication.getInstance().getReceivLogin()!=null){
+//    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
+//    	}
     	isInView = true;	
     }
     public void onStop(){
@@ -227,7 +230,7 @@ public class MainPageActivity extends BaseActivity{
 			// TODO Auto-generated method stub
 			Log.i("MainPageActivity","解析报文成功:" + (receiveCmdBean!=null?receiveCmdBean.toString():"receiveCmdBean is null"));
 			if (receiveCmdBean instanceof ReceiveReadDeviceList) {
-				if(((ReceiveReadDeviceList) receiveCmdBean).getCommandHeader().cmdCode == 0){
+				if(((ReceiveReadDeviceList) receiveCmdBean).getCommandHeader().resultCode == 0){
 					final ReceiveReadDeviceList receiveReadDeviceList = ((ReceiveReadDeviceList) receiveCmdBean);
 					PreferenceUtil.setSingleConfigInfo(PreferenceUtil.DEVICE_INFO,
 							PreferenceUtil.device_count, receiveReadDeviceList.deviceCodeList.size());
@@ -362,29 +365,38 @@ public class MainPageActivity extends BaseActivity{
 
 	
 	private Bitmap pic;
-//	private HD264Decoder mHD264Decoder = new H264PicView(512,213,new DecoderCallback());
-    public class DecoderCallback implements DecodeSuccCallback{
-		@Override
-		public void onDecodeSucc(Bitmap bitmap) {
-			// TODO Auto-generated method stub
-			Log.i("DecoderCallback", "onDecodeSucc================");
-			pic = bitmap;
-
-	        
-		}
-    	
-    }
-	
+	private Bitmap blackPic;
 	private class ChannelPicReceive extends DeviceReceiveCmdProcess<ReceiveChannelPic>{
 
 		@Override
 		public void onProcess(ReceiveChannelPic receiveCmdBean) {
 			// TODO Auto-generated method stub
 			Log.i("MainPageActivity", "ChannelPicReceive================");
-			showToast("解码图片");
+			login_notify_tv.setText("正在解码通道图片，请稍后...");
 
-		    H264PicView h264PicView = new H264PicView(new DecoderCallback());
-		    h264PicView.sendStream(receiveCmdBean.pic);
+		    try {
+				JavaH264Decoder decoder = new JavaH264Decoder(new DecodeSuccCallback(){
+					@Override
+					public void onDecodeSucc(JavaH264Decoder decoder ,Bitmap bitmap) {
+						// TODO Auto-generated method stub
+						Log.i("DecoderCallback", "onDecodeSucc================");
+						pic = Bitmap.createBitmap(bitmap);
+						decoder.toStop();
+					}
+					
+				});
+				decoder.sendStream(receiveCmdBean.pic);
+			} catch (H264DecoderException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		    
+		    if(pic == null){
+		    	if(blackPic==null){
+		    		blackPic = BitmapFactory.decodeResource(MainPageActivity.this.getResources(), R.drawable.photo);
+		    	}
+		    	pic = blackPic;
+		    }
 			
 			if(pic!=null){
 		        WindowManager windowManager = getWindowManager();
@@ -399,6 +411,7 @@ public class MainPageActivity extends BaseActivity{
 	        	picBean.ivLp = ivLp;
 	        	picBean.chennalId = (byte)(getPicCount);
 	            chennalPicBeanlist.add(picBean);
+	            pic = null;
 			}
 			Log.i("MainPageActivity", "getPicCount================"+getPicCount);
 			
@@ -418,14 +431,18 @@ public class MainPageActivity extends BaseActivity{
 				}
 			}
 			
-			if(getPicCount==chennalCount &&
-					chennalPicBeanlist.size()>0){
+			if(chennalPicBeanlist.size()>0){
 				Log.i("MainPageActivity", "chennalPicBeanlist================"+chennalPicBeanlist.size());
-				ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(MainPageActivity.this,chennalPicBeanlist);
-				gallery.setAdapter(pageAdapter);
-				
-				vp_real_time_ll.setVisibility(View.VISIBLE);
-				no_login_notify_ll.setVisibility(View.GONE);
+				if(gallery.getAdapter()==null){
+					ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(MainPageActivity.this,chennalPicBeanlist);
+					gallery.setAdapter(pageAdapter);
+					
+					vp_real_time_ll.setVisibility(View.VISIBLE);
+					no_login_notify_ll.setVisibility(View.GONE);
+				}else{
+					((ChennalPicViewAdapter)gallery.getAdapter()).notifyDataSetChanged();
+				}
+
 			}
 			
 			if(getPicCount==chennalCount && chennalPicBeanlist.size()==0){

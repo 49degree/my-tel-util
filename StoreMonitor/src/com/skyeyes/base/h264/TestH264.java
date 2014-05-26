@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -34,13 +35,14 @@ public class TestH264 extends Activity {
 		try {
 			mJavaH264Decoder = new JavaH264Decoder(new DecodeSuccCallback(){
 				@Override
-				public void onDecodeSucc(Bitmap bitmap) {
+				public void onDecodeSucc(final JavaH264Decoder decoder,Bitmap bitmap) {
 					// TODO Auto-generated method stub
-					videoBitmap = bitmap;
+					videoBitmap = Bitmap.createBitmap(bitmap);
 					if(mH264View!=null){
 						runOnUiThread(new Runnable(){
 							public void run(){
 								mH264View.postInvalidate();
+								decoder.toStop();
 							}
 						});
 					}
@@ -56,16 +58,18 @@ public class TestH264 extends Activity {
 	
 	public void onResume(){
 		super.onResume();
+		Log.e(this.getClass().getSimpleName(), "onResume=======================");
 		if(mJavaH264Decoder!=null){
 			new Thread(){
 				public void run(){
 					try {
-						InputStream in = getResources().getAssets().open("pic.jpg");
-						//mJavaH264Decoder.playFile(in);
-						byte[] buffer = new byte[18802];
+						InputStream in = getResources().getAssets().open("0.jpg");
+						byte[] buffer = new byte[10240];
 						int len;
 						while((len=in.read(buffer))>0){
-							mJavaH264Decoder.sendStream(buffer,0,len);
+							if(mJavaH264Decoder.hasMoreNAL){
+								mJavaH264Decoder.sendStream(buffer,0,len);
+							}
 						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block

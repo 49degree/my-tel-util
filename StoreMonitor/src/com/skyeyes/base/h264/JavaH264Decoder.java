@@ -160,9 +160,11 @@ public class JavaH264Decoder extends Thread{
 		        
 		        } catch(Exception ie) {
 		        	// Any exception, we should try to proceed reading next packet!
-		        	//ie.printStackTrace();
+		        	ie.printStackTrace();
 		        } 
 			}
+	    }catch(java.nio.BufferUnderflowException ex){
+	    	
 	    } catch(Exception e) {
 	    	e.printStackTrace();
 	    } finally {

@@ -86,6 +86,7 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/video_history_query_time_tv"
                     android:layout_toLeftOf="@+id/video_history_query_time_iv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -94,7 +95,7 @@
                     android:text="2014年5月25日   12:00" >
                 </TextView>
 			    <ImageView
-			         android:id="@+id/video_history_query_time_iv"
+			        android:id="@+id/video_history_query_time_iv"
 			         android:layout_alignParentRight="true"
 			         android:layout_width="wrap_content"
 			         android:layout_height="wrap_content"
@@ -115,6 +116,7 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/video_history_query_long_tv"
                     android:layout_toLeftOf="@+id/video_history_query_long_iv"
                     android:textSize="20px"
                     android:layout_width="match_parent"
@@ -122,19 +124,27 @@
                     android:gravity="right"
                     android:text="8分钟" >
                 </TextView>
-			    <ImageView android:id="@+id/video_history_query_long_iv"
+			    <ImageView
+			        android:id="@+id/video_history_query_long_iv"
 			         android:layout_alignParentRight="true"
 			         android:layout_width="wrap_content"
 			         android:layout_height="wrap_content"
 			         android:src="@drawable/video_history_query"/>                
             </RelativeLayout>
-            <Gallery
-                android:id="@+id/chennal_history_pic_gallery"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                
-                android:layout_marginBottom="10px"
-                android:spacing="0dip" />
+		   <LinearLayout
+		        android:id="@+id/chennal_pic_ll"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:orientation="horizontal"
+		        android:background="#000000"
+		        android:gravity="center"
+		        android:layout_marginBottom="10px">
+			     <ImageView
+			         android:id="@+id/video_history_play_iv"
+			         android:layout_width="wrap_content"
+			         android:layout_height="wrap_content"
+			         android:src="@drawable/video_play"/>	    
+		    </LinearLayout>
         </LinearLayout>
 		<LinearLayout
 		    android:id="@+id/no_login_notify_ll" 

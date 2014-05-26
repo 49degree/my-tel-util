@@ -15,7 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.homecare.controllermapper.MainApplication;
+import com.skyeyes.base.BaseApplication;
 
 /**
  * 数据库管理类
@@ -42,8 +42,8 @@ public class DBOperator extends SQLiteOpenHelper {
 	
 
 	public DBOperator() {
-		super(MainApplication.getInstance(), DB_NAME, null, DB_VERSION);
-		context = MainApplication.getInstance();
+		super(BaseApplication.getInstance(), DB_NAME, null, DB_VERSION);
+		context = BaseApplication.getInstance();
 		sqlDb = getReadableDatabase();
 	}
 

@@ -1,9 +1,13 @@
 package com.skyeyes.storemonitor.activity;
 
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import net.simonvt.numberpicker.NumberPicker;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,11 +17,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.DatePicker;
+import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.Gallery;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.skyeyes.base.BaseSocketHandler;
@@ -50,6 +60,9 @@ import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdP
 import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
+
+
+
 public class MainPageActivity extends BaseActivity{
 	String TAG = "MainPageActivity";
 	public final static int SEND_QUERY_MANU_ID = 1;
@@ -65,6 +78,11 @@ public class MainPageActivity extends BaseActivity{
 	private TextView count_all_manu_tv;
 	private TextView count_avg_time_tv;
 	private TextView login_notify_tv;
+	private TextView video_history_query_time_iv;
+	private TextView video_history_query_long_iv;
+	
+	private ImageView video_history_play_iv;
+	
 	List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
 	
 	
@@ -82,6 +100,23 @@ public class MainPageActivity extends BaseActivity{
 		count_all_manu_tv = (TextView)findViewById(R.id.count_all_manu_tv);
 		count_avg_time_tv = (TextView)findViewById(R.id.count_avg_time_tv);
 		login_notify_tv = (TextView)findViewById(R.id.login_notify_tv);
+		
+		
+		video_history_query_time_iv = (TextView)findViewById(R.id.video_history_query_time_tv);
+		video_history_query_long_iv = (TextView)findViewById(R.id.video_history_query_long_tv);
+		video_history_query_time_iv.setOnClickListener(new DateTimePick());
+		video_history_query_long_iv.setOnClickListener(new NumberPick());
+		
+		video_history_play_iv = (ImageView)findViewById(R.id.video_history_play_iv);
+		
+		video_history_play_iv.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		
 		vp_history_ll.setVisibility(View.GONE);
 		vp_real_time_ll.setVisibility(View.GONE);
@@ -359,7 +394,6 @@ public class MainPageActivity extends BaseActivity{
 			// TODO Auto-generated method stub
 			
 		}
-		
 	}
 	
 
@@ -601,4 +635,123 @@ public class MainPageActivity extends BaseActivity{
 			MainPageActivity.this.onResponsTimeout();
 		}
 	}
+	
+	
+	
+	private class DateTimePick implements OnClickListener {
+		private DatePicker datePicker;
+		private TimePicker timePicker;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
+
+		@Override
+		public void onClick(View v) {
+			final Calendar calendar = Calendar.getInstance();
+			LayoutInflater inflaterDl = LayoutInflater
+					.from(MainPageActivity.this);
+			LinearLayout layout = (LinearLayout) inflaterDl.inflate(
+					R.layout.date_time_pick, null);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					MainPageActivity.this);
+			
+			builder.setView(layout);
+			
+//			final Dialog dialog = builder.create();
+//			dialog.show();
+//			dialog.getWindow().setContentView(layout);
+
+			builder.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							video_history_query_time_iv.setText(format
+									.format(calendar.getTime()));
+						}
+					});
+			// 设置一个NegativeButton
+			builder.setNegativeButton("取消",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+
+						}
+					});
+
+			datePicker = (DatePicker) layout.findViewById(R.id.dpPicker);
+			timePicker = (TimePicker) layout.findViewById(R.id.tpPicker);
+
+			datePicker.init(calendar.get(Calendar.YEAR),
+					calendar.get(Calendar.MONTH),
+					calendar.get(Calendar.DAY_OF_MONTH),
+					new OnDateChangedListener() {
+
+						@Override
+						public void onDateChanged(DatePicker view, int year,
+								int monthOfYear, int dayOfMonth) {
+							// 获取一个日历对象，并初始化为当前选中的时间
+							calendar.set(year, monthOfYear, dayOfMonth);
+						}
+					});
+			timePicker.setIs24HourView(true);
+			timePicker
+					.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+						@Override
+						public void onTimeChanged(TimePicker view,
+								int hourOfDay, int minute) {
+							calendar.set(Calendar.HOUR, hourOfDay);
+							calendar.set(Calendar.MINUTE, minute);
+						}
+					});
+			
+			builder.show();
+
+		}
+	};
+    
+	private class NumberPick implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+
+			LayoutInflater inflaterDl = LayoutInflater
+					.from(MainPageActivity.this);
+			LinearLayout layout = (LinearLayout) inflaterDl.inflate(
+					R.layout.number_pick, null);
+			
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					MainPageActivity.this);
+			builder.setView(layout);
+			
+//			final Dialog dialog = builder.create();
+//			dialog.show();
+//			dialog.getWindow().setContentView(layout);
+
+			final NumberPicker np = (NumberPicker) layout.findViewById(R.id.numberPicker);
+			np.setMaxValue(20);
+			np.setMinValue(0);
+			np.setFocusable(true);
+			np.setFocusableInTouchMode(true);
+			
+
+			builder.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							video_history_query_long_iv.setText(String
+									.valueOf(np.getValue()));
+						}
+					});
+			// 设置一个NegativeButton
+			builder.setNegativeButton("取消",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+
+						}
+					});
+			
+			builder.show();
+
+		}
+	};
 }

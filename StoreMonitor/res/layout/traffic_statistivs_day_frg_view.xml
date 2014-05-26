@@ -57,7 +57,7 @@
         android:paddingRight="2dip"
         android:persistentDrawingCache="none" >
 
-        <ImageButton
+        <Button
             android:id="@+id/last_day_ibtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
             android:layout_toRightOf="@id/last_day_ibtn"
             android:textSize="18sp" />
 
-        <ImageButton
+        <Button
             android:id="@+id/next_day_ibtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -134,7 +134,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		//登陆
 		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
 		String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
-		deviceProcess.loginDevice(userName, userPsd, (byte)1);
+		//config 0,是否接收状态变化事件	1是否接收正报事件	3是否接收提示(出入)事件
+		deviceProcess.loginDevice(userName, userPsd, (byte)0x0B);
 	}
 	
 	

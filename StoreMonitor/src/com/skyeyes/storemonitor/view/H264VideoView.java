@@ -51,7 +51,7 @@ public class H264VideoView extends View implements Runnable{
 				@Override
 				public void onDecodeSucc(final JavaH264Decoder decoder ,final Bitmap bitmap) {
 					// TODO Auto-generated method stub
-					Log.i("DecoderCallback", "onDecodeSucc================");
+					//Log.i("DecoderCallback", "onDecodeSucc================");
 					if(videoBitmap == null){
 						setVideoDisplay(bitmap.getWidth(),bitmap.getHeight());
 					}
@@ -101,7 +101,11 @@ public class H264VideoView extends View implements Runnable{
 		if(!play){
 			return;
 		}
-		dataBufferList.offer(videoData);
+		synchronized (this) {
+			dataBufferList.offer(videoData);
+		}
+		Log.e("H264VideoView", "dataBufferList:"+dataBufferList.size());
+		
 	}
 	
 	@Override
@@ -118,7 +122,10 @@ public class H264VideoView extends View implements Runnable{
 				}
 				continue;
 			}
-			tempData = dataBufferList.poll();
+			synchronized (this) {
+				tempData = dataBufferList.poll();
+			}
+			
 			decoder.sendStream(tempData);
 		}
 	}

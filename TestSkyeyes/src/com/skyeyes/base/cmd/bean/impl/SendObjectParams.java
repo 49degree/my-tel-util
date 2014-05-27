@@ -237,6 +237,18 @@ public class SendObjectParams extends SendCmdBean{
 	    			1,type,		
 		    	};
 	        	break;
+	        case cmdReqOpenCloseDoorInfo://请求开关门详细信息
+	        	String temp = params[0]+",1,1";
+	        	sendsParams=new Object[]{
+	        			temp.getBytes().length,temp	
+			    	};
+	        	break;	
+	        case cmdReqAlarmInfo://请求报警详细信息	
+	        	temp = params[0]+",64,64";
+	        	sendsParams=new Object[]{
+	        			temp.getBytes().length,temp	
+			    	};
+	        	break;	        	
 	        case cmdReqHistoryVideo://请求录像回放 
 	        	sendsParams=new Object[]{
 	        			1,params[0],

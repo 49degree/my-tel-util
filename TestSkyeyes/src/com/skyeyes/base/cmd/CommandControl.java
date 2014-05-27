@@ -18,6 +18,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveGetEquitIO;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHeart;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHistoryVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoor;
+import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoorInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveSetEquitIO;
@@ -152,7 +153,12 @@ public class CommandControl {
 	        	break;
 	        case cmdReqAlarmList://报警列表
 	        	//receiveCmdBean = new ReceiveAvgManuStayTimeByMouse();
-	        	break;	     
+	        	break;	
+	        case cmdReqOpenCloseDoorInfo://请求开关门详细信息
+	        	receiveCmdBean = new ReceiveOpenCloseDoorInfo();
+	        	break;	
+	        case cmdReqAlarmInfo://请求报警详细信息
+	        	break;	
 	        case cmdReqHistoryVideo://请求录像回放         	
 	        case cmdReqAlarmVideo://请求报警录像
 	        	receiveCmdBean = new ReceiveHistoryVideo();
@@ -256,7 +262,10 @@ public class CommandControl {
 		cmdReqAlarmList((byte)0x23,(byte)0x2F,2),//报警列表
 		
 		cmdReqHistoryVideo((byte)0x03,(byte)0x30,3),//请求录像回放 
-		cmdReqAlarmVideo((byte)0x03,(byte)0x31,2);//请求报警录像
+		cmdReqAlarmVideo((byte)0x03,(byte)0x31,2),//请求报警录像
+		
+		cmdReqOpenCloseDoorInfo((byte)0x24,(byte)0x32,1),//请求开关门详细信息
+		cmdReqAlarmInfo((byte)0x24,(byte)0x33,1);//请求报警详细信息
 		
 		private byte cmd ;
 		private byte cmdId;//返回ID

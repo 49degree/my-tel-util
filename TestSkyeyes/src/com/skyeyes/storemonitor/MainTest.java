@@ -16,6 +16,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus.ChannelStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
+import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoor;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
@@ -27,9 +28,12 @@ import com.skyeyes.base.network.impl.SkyeyeSocketClient.SocketHandler;
 import com.skyeyes.base.util.DateUtil;
 
 public class MainTest {
+	//static String userName ="389test";
+	static String userName ="369test";
 	static HashMap<Integer,ChannelStatus> mChannelListStatus = null;
 	static int fileId = 0;
 	static int channelCount = -1;
+	static ReceiveOpenCloseDoor receiveOpenCloseDoor;
 	private static class SocketHandlerImpl implements SocketHandler {
 		
 		@Override
@@ -123,6 +127,8 @@ public class MainTest {
 			}else if(receiveCmdBean instanceof ReceiveCountManu){
 				if(mCountManuCmdProcess!=null)
 					mCountManuCmdProcess.onProcess((ReceiveCountManu)receiveCmdBean);
+			}else if(receiveCmdBean instanceof ReceiveOpenCloseDoor){
+				receiveOpenCloseDoor = (ReceiveOpenCloseDoor)receiveCmdBean;
 			}
 		}
 
@@ -184,7 +190,7 @@ public class MainTest {
 	// 登陆
 	public static void testEquitLogin(SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		Object[] params = new Object[] { 1, "389test", "389test",CommandControl.getDeviceId()};
+		Object[] params = new Object[] { 1, userName, userName,CommandControl.getDeviceId()};
 		try {
 			sendObjectParams.setParams(REQUST.cmdEquitLogin, params);
 
@@ -203,11 +209,13 @@ public class MainTest {
 		}
 	}
 
+	
+	
 	// 读取设备IP
 	public static void testEquitListNoLogin(
 			SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		Object[] params = new Object[] { "389test", "389test" };
+		Object[] params = new Object[] {userName , userName };
 		//params = new Object[]{};
 		try {
 
@@ -439,10 +447,10 @@ public class MainTest {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
-		Object[] params = new Object[] {"2014-05-01"+" 00:00:00"};
+		Object[] params = new Object[] {"1978-05-01 00:00:00","2014-06-01 00:00:00"};
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqOpenCloseDoorList, params);
-			System.out.println("getManucount入参数：" + sendObjectParams.toString());
+			System.out.println("cmdReqOpenCloseDoorList入参数：" + sendObjectParams.toString());
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -455,6 +463,25 @@ public class MainTest {
 		}
 	}
 	
+	public static void getOpenCloseDoorInfo(SkyeyeSocketClient skyeyeSocketClient,String eventCode) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		
+		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
+		Object[] params = new Object[] {eventCode};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqOpenCloseDoorInfo, params);
+			System.out.println("cmdReqOpenCloseDoorInfo入参数：" + sendObjectParams.toString());
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			skyeyeSocketClient.sendCmd(sendObjectParams);
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public static void requstHistoryVideo(SkyeyeSocketClient skyeyeSocketClient,byte channelId) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
@@ -537,9 +564,20 @@ public class MainTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		getOpenCloseDoor(skyeyeSocketClient);
 		
+		while (receiveOpenCloseDoor==null)
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		getOpenCloseDoorInfo(skyeyeSocketClient,receiveOpenCloseDoor.openCloseDoorBeans.get(0).des);
+		
+		//getOpenCloseDoorInfo(skyeyeSocketClient,"123456789");
 		//requstRealTimeVideo(skyeyeSocketClient,(byte)0x00);
-		requstHistoryVideo(skyeyeSocketClient,(byte)0x00);
+		//requstHistoryVideo(skyeyeSocketClient,(byte)0x00);
 		//new H264Player(new String[]{"testfile/video.data"});
 
 //		requstStopVideo(skyeyeSocketClient);

@@ -21,14 +21,15 @@ public class ReceiveOpenCloseDoor  extends ReceiveCmdBean {
 			for(String des:temp){
 				OpenCloseDoorBean openCloseDoorBean = new OpenCloseDoorBean();
 				openCloseDoorBean.des = des;
-				openCloseDoorBean.type = Integer.parseInt(openCloseDoorBean.des.substring(28, 29));
-				openCloseDoorBeans.add(openCloseDoorBean);
 				
+				if("1".equals(openCloseDoorBean.des.substring(28, 29))){
+					openCloseDoorBean.type = 1;
+					openCloseDoorBeans.add(openCloseDoorBean);
+				}else if("2".equals(openCloseDoorBean.des.substring(28, 29))){
+					openCloseDoorBean.type = 2;
+					openCloseDoorBeans.add(openCloseDoorBean);
+				}
 			}
-			
-
-			
-			
 		}catch(Exception e){
 			
 		}
@@ -44,7 +45,6 @@ public class ReceiveOpenCloseDoor  extends ReceiveCmdBean {
 	public static class OpenCloseDoorBean{
 		public String des;
 		public int type;//1开门，2关门
-		public long time;
 		
 	}
 	

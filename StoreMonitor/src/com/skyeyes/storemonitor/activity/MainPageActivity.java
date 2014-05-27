@@ -427,6 +427,7 @@ public class MainPageActivity extends BaseActivity{
 	        	ChennalPicBean picBean=new ChennalPicBean();
 	        	picBean.des = "通道"+(i+1);
 	        	picBean.img = new BitmapDrawable(tempPic);
+	        	picBean.imgBitmap = tempPic;
 	        	picBean.ivLp = ivLp;
 	        	picBean.chennalId = (byte)(i);
 	        	historyPicBeanlist.add(picBean);
@@ -491,6 +492,7 @@ public class MainPageActivity extends BaseActivity{
 	        	ChennalPicBean picBean=new ChennalPicBean();
 	        	picBean.des = "通道"+(getPicCount+1);
 	        	picBean.img = new BitmapDrawable(pic);
+	        	picBean.imgBitmap = pic;
 	        	picBean.ivLp = ivLp;
 	        	picBean.chennalId = (byte)(getPicCount);
 	            chennalPicBeanlist.add(picBean);

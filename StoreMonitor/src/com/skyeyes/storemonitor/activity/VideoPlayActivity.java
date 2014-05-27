@@ -84,7 +84,7 @@ public class VideoPlayActivity extends BaseActivity {
 			@Override
 			public void onDecodeSucc(JavaH264Decoder decoder ,Bitmap bitmap) {
 				// TODO Auto-generated method stub
-				Log.i("DecoderCallback", "onDecodeSucc================");
+				Log.i("DecoderCallback", "onDecodeSucc================"+(videoView.getVisibility() != View.VISIBLE));
 				if (videoView.getVisibility() != View.VISIBLE)
 					videoView.setVisibility(View.VISIBLE);
 				if (notify.getVisibility() != View.GONE)

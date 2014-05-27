@@ -69,6 +69,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		super.onDestroy();
 		Log.d("DevicesService", "onDestroy................");
 		instance = null;
+		StoreMonitorApplication.getInstance().setReceivLogin(null);
 		for(DeviceProcessInterface deviceProcess:mDeviceDeviceProcesss.values()){
 			deviceProcess.stop();
 		}

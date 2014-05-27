@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -71,6 +72,8 @@ public class ChennalPicViewAdapter extends BaseAdapter {
         }
         cacheView.tv_des.setText(list.get(position).des);
         cacheView.imgv_img.setBackgroundDrawable(list.get(position).img);
+        //cacheView.imgv_img.setBackground(list.get(position).img);
+        //((ImageView)cacheView.imgv_img.findViewById(R.id.chennal_pic_iv)).setImageBitmap(list.get(position).imgBitmap);
         cacheView.imgv_img.setLayoutParams(list.get(position).ivLp);
         final byte chennalId = (byte)(list.get(position).chennalId);
         cacheView.imgv_img.findViewById(R.id.chennal_pic_iv).setOnClickListener(new OnClickListener(){

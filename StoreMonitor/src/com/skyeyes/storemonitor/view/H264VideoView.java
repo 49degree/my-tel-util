@@ -5,9 +5,11 @@ import java.util.LinkedList;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -125,21 +127,24 @@ public class H264VideoView extends View implements Runnable{
 	
     private void setVideoDisplay(int bitmapWidth,int bitmapHeight){
 		videoViewStartY = 0;
-		videoViewEndY = mDisplay.getHeight();
+		DisplayMetrics dm = new DisplayMetrics();
+		mDisplay.getMetrics(dm);
+		
+		videoViewEndY = dm.heightPixels;
 		
 		float zoom = (videoViewEndY*1.0f)/bitmapHeight;
 		int tmepWidth =  (int)(zoom*bitmapWidth);
-		if(mDisplay.getWidth() - tmepWidth>0){
-			videoViewStartX = (mDisplay.getWidth() - tmepWidth) / 2;
+		if(dm.widthPixels - tmepWidth>0){
+			videoViewStartX = (dm.widthPixels - tmepWidth) / 2;
 			videoViewEndX = videoViewStartX + tmepWidth;
 		}else{
 			videoViewStartX = 0;
-			videoViewEndX = mDisplay.getWidth();
+			videoViewEndX = dm.widthPixels;
 			
     		zoom = (videoViewEndX*1.0f)/bitmapWidth;
     		int tmepHeight =  (int)zoom*bitmapHeight;
     		
-    		videoViewStartY = (mDisplay.getHeight()-tmepHeight)/2;
+    		videoViewStartY = (dm.heightPixels-tmepHeight)/2;
     		videoViewEndY = videoViewStartY+tmepHeight;
 		}
     }

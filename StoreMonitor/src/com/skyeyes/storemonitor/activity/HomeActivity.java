@@ -151,7 +151,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 				.setIndicator(
 						createTabView(getApplicationContext(), getString(R.string.home_tab_necessary),
 								R.drawable.home_tab_status_selector))
-				.setContent(new Intent(this, AlermRecorderActivity.class));
+				.setContent(new Intent(this, DevicesStatusActivity.class));
 		mTabHost.addTab(tab4);
 		setCurrentTab(mPage);
 	}

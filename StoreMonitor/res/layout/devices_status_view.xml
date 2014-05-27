@@ -4,17 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-   <com.skyeyes.base.view.TopTitleView
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <com.skyeyes.base.view.TopTitleView
             android:id="@+id/ds_topView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             top:showMenuBtn="true" />
+
+        <Button
+            android:id="@+id/alermRecord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alermRecord"
+            android:background="@drawable/alerm_record_selector"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="270px"
         android:background="#005094" >
-
-     
 
         <Button
             android:id="@+id/protect"

@@ -491,7 +491,7 @@ public class MainPageActivity extends BaseActivity{
 						display.getWidth(),imgHeight);
 	        	ChennalPicBean picBean=new ChennalPicBean();
 	        	picBean.des = "通道"+(getPicCount+1);
-	        	picBean.img = new BitmapDrawable(pic);
+	        	picBean.img = new BitmapDrawable(MainPageActivity.this.getResources() ,pic);
 	        	picBean.imgBitmap = pic;
 	        	picBean.ivLp = ivLp;
 	        	picBean.chennalId = (byte)(getPicCount);

@@ -2,6 +2,8 @@ package com.skyeyes.base.h264;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -31,6 +33,8 @@ public class JavaH264Decoder extends Thread{
     boolean hasMoreNAL = true;
     int pauseStep = 0;
     DecodeSuccCallback mDecodeSuccCallback;
+    
+    ExecutorService mExecutorService = Executors.newFixedThreadPool(5);
     
 	public JavaH264Decoder(DecodeSuccCallback decodeSuccCallback) throws H264DecoderException{
 		mDecodeSuccCallback = decodeSuccCallback;
@@ -149,15 +153,22 @@ public class JavaH264Decoder extends Thread{
 								byteBuffer = ByteBuffer.allocate(bufferSize*32);
 							}
 							YUV2RGB(picture,byteBuffer);
-							
-							synchronized (this) {
-								if(videoBitmap==null||videoBitmap.getWidth()<picture.imageWidth||
-										videoBitmap.getHeight()<picture.imageHeight)
-									videoBitmap=Bitmap.createBitmap(picture.imageWidth, picture.imageWidth, Config.ARGB_8888);
-								videoBitmap.copyPixelsFromBuffer(byteBuffer);//makeBuffer(data565, N));
-								if(mDecodeSuccCallback!=null)
-									mDecodeSuccCallback.onDecodeSucc(this,videoBitmap);
-							}
+							mExecutorService.execute(new Runnable(){
+								public void run(){
+									try{
+										if(videoBitmap==null||videoBitmap.getWidth()<picture.imageWidth||
+												videoBitmap.getHeight()<picture.imageHeight)
+											videoBitmap=Bitmap.createBitmap(picture.imageWidth, picture.imageWidth, Config.ARGB_8888);
+										videoBitmap.copyPixelsFromBuffer(byteBuffer);//makeBuffer(data565, N));
+										if(mDecodeSuccCallback!=null)
+											mDecodeSuccCallback.onDecodeSucc(JavaH264Decoder.this,videoBitmap);
+
+									}catch(Exception e){
+										
+									}
+								}
+							});
+
 			            }
 			            avpkt.size -= len;
 			            avpkt.data_offset += len;

@@ -12,6 +12,27 @@
         android:layout_height="wrap_content"
         top:titleValue="@string/alermRecord"
         top:showCenterTitle="true" />
-
-
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+       <ListView         
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider = "#A9A9A9"
+        android:id="@+id/alarm_record_list"/>
+		<LinearLayout
+		    android:id="@+id/query_data_notify_ll" 
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:orientation="vertical"
+		    android:gravity="center">
+		    <TextView
+		        android:id="@+id/query_data_notify_tv"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="正在查询数据，请稍后...">
+		    </TextView>
+		</LinearLayout>       
+     </FrameLayout>    
 </LinearLayout>

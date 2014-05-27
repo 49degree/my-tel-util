@@ -66,7 +66,7 @@ public class DoorRecordActivity extends Activity {
 		if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
 			query_data_notify_tv.setText("未登陆设备");
 		}else{
-			query_data_notify_tv.setText("真正查询开关门数据,请稍后...");
+			query_data_notify_tv.setText("正在查询开关门数据,请稍后...");
 			pageAdapter=new DoorRecordViewAdapter(this,openCloseDoorInfoBeans);
 			door_record_list.setAdapter(pageAdapter);
 			//查询通道图片
@@ -172,9 +172,15 @@ public class DoorRecordActivity extends Activity {
 					}
 					
 					if(openCloseDoorInfoBeans.size()==0){
-						query_data_notify_ll.setVisibility(View.VISIBLE);
-						door_record_list.setVisibility(View.GONE);
-						query_data_notify_tv.setText("没有开关门数据");
+						runOnUiThread(new Runnable(){
+							@Override
+							public void run() {
+								query_data_notify_ll.setVisibility(View.VISIBLE);
+								door_record_list.setVisibility(View.GONE);
+								query_data_notify_tv.setText("没有开关门数据");
+							}
+							
+						});
 					}
 				}
 			};

@@ -480,6 +480,7 @@ public class MainTest {
 		try {
 			skyeyeSocketClient = new SkyeyeSocketClient(
 					new SocketHandlerImpl(), false);
+			skyeyeSocketClient.setServerAddr("113.106.89.91",4015);
 		} catch (NetworkException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

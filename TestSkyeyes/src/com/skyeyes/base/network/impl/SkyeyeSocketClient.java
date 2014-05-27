@@ -41,8 +41,7 @@ public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
 	private boolean mIsShort = false;
 	
 	public SkyeyeSocketClient(SocketHandler socketHandler,Boolean isShort) throws NetworkException{
-		mHost = "113.106.89.91";
-		mPort = 4015;
+
 		if(socketHandler == null){
 			throw new NetworkException("SocketReturnData is null");
 		}

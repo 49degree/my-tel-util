@@ -13,6 +13,7 @@ import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.util.PreferenceUtil;
+import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceStatusChangeListener;
@@ -96,9 +97,11 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			if(receivLogin.getCommandHeader().resultCode ==0){
 				mDeviceDeviceProcesss.put(receivLogin.deviceCode, 
 						mTempDeviceDeviceProcesss.remove(receivLogin.deviceCode));
+				StoreMonitorApplication.getInstance().setReceivLogin(receivLogin);
 				Log.i("DevicesService","mDeviceSocketClients:"+receivLogin.deviceCode);
 			}else{
 				Toast.makeText(this, "登陆失败:"+receivLogin.getCommandHeader().errorInfo, Toast.LENGTH_SHORT).show();
+				StoreMonitorApplication.getInstance().setReceivLogin(null);
 				mTempDeviceDeviceProcesss.remove(deviceCode).stop();
 			}
 		}

@@ -69,6 +69,8 @@ public class DBOperator extends SQLiteOpenHelper {
 						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" integer PRIMARY KEY");
 					}else if(f.getType().equals(int.class)){
 						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" integer");
+					}else if(f.getType().equals(long.class)){
+						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" INT8");						
 					}else if(f.getType().equals(float.class)){
 						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" float");
 					}else if(f.getType().equals(boolean.class)){
@@ -268,6 +270,9 @@ public class DBOperator extends SQLiteOpenHelper {
 						}else if(f.getType().equals(int.class)){
 							setMethod = tableBean.getMethod(methodName.toString(),int.class);
 							setMethod.invoke(object, Integer.parseInt(columnValue));
+						}else if(f.getType().equals(long.class)){
+							setMethod = tableBean.getMethod(methodName.toString(),long.class);
+							setMethod.invoke(object, Long.parseLong(columnValue));
 						}else if(f.getType().equals(byte[].class)){
 							setMethod = tableBean.getMethod(methodName.toString(),byte[].class);
 							setMethod.invoke(object, columnValue);
@@ -322,6 +327,8 @@ public class DBOperator extends SQLiteOpenHelper {
 					contentValues.put(f.getName(), ((Boolean)getMethod.invoke(value)).booleanValue());
 				}else if(f.getType().equals(int.class)){
 					contentValues.put(f.getName(), ((Integer)getMethod.invoke(value)).intValue());
+				}else if(f.getType().equals(long.class)){
+					contentValues.put(f.getName(), ((Long)getMethod.invoke(value)).longValue());
 				}else if(f.getType().equals(byte[].class)){
 					contentValues.put(f.getName(), ((byte[])getMethod.invoke(value)));
 				}else{
@@ -375,6 +382,8 @@ public class DBOperator extends SQLiteOpenHelper {
 					contentValues.put(f.getName(), ((Boolean)getMethod.invoke(value)).booleanValue());
 				}else if(f.getType().equals(int.class)){
 					contentValues.put(f.getName(), ((Integer)getMethod.invoke(value)).intValue());
+				}else if(f.getType().equals(long.class)){
+					contentValues.put(f.getName(), ((Long)getMethod.invoke(value)).longValue());
 				}else if(f.getType().equals(byte[].class)){
 					contentValues.put(f.getName(), ((byte[])getMethod.invoke(value)));
 				}else{

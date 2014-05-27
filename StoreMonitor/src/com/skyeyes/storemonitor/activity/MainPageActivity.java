@@ -197,13 +197,22 @@ public class MainPageActivity extends BaseActivity{
 		gallery = (Gallery) findViewById(R.id.chennal_pic_gallery);
 		history_gallery = (Gallery) findViewById(R.id.history_chennal_pic_gallery);
 		
-    	if(DevicesService.getInstance() == null){
+
+
+
+	}
+    
+    
+    public void onResume(){
+    	super.onResume();
+    	
+    	if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
+    		if(DevicesService.getInstance()!=null){
+    			stopService(new Intent(MainPageActivity.this,DevicesService.class));
+    		}
     		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
-    		
     		String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
-    		
     		String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
-    		
     		String port = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_port);
     		
     		if(StringUtil.isNull(userName)||
@@ -225,18 +234,12 @@ public class MainPageActivity extends BaseActivity{
         		login_notify_tv.setText("正在登陆设备，请稍后...");
     		}
     	}
-
-
-	}
-    
-    
-    public void onResume(){
-    	super.onResume();
+    	
     	Log.e(TAG,"onResume queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID)");
     	
-//    	if(!isInView && !stopQueryManu && StoreMonitorApplication.getInstance().getReceivLogin()!=null){
-//    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
-//    	}
+    	if(!isInView && !stopQueryManu && StoreMonitorApplication.getInstance().getReceivLogin()!=null){
+    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
+    	}
     	isInView = true;	
     }
     public void onStop(){
@@ -368,8 +371,6 @@ public class MainPageActivity extends BaseActivity{
 
 			}else{
 				showToast("登陆成功...............");
-				StoreMonitorApplication.getInstance().setReceivLogin(receiveCmdBean);
-				
 		    	if(isInView && !stopQueryManu && 
 		    			StoreMonitorApplication.getInstance().getReceivLogin()!=null){
 		    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
@@ -479,7 +480,7 @@ public class MainPageActivity extends BaseActivity{
 		    	}
 		    	pic = blackPic;
 		    }
-		    getPicCount++;
+		    
 			if(pic!=null){
 		        WindowManager windowManager = getWindowManager();
 		        Display display = windowManager.getDefaultDisplay();
@@ -488,7 +489,7 @@ public class MainPageActivity extends BaseActivity{
 				LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(
 						display.getWidth(),imgHeight);
 	        	ChennalPicBean picBean=new ChennalPicBean();
-	        	picBean.des = "通道"+getPicCount;
+	        	picBean.des = "通道"+(getPicCount+1);
 	        	picBean.img = new BitmapDrawable(pic);
 	        	picBean.ivLp = ivLp;
 	        	picBean.chennalId = (byte)(getPicCount);
@@ -497,7 +498,7 @@ public class MainPageActivity extends BaseActivity{
 			}
 			Log.i("MainPageActivity", "getPicCount================"+getPicCount);
 			
-			
+			getPicCount++;
 			if(getPicCount<chennalCount){
 				//查询通道图片
 				SendObjectParams sendObjectParams = new SendObjectParams();

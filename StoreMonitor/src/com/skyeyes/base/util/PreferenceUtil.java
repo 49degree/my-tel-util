@@ -20,7 +20,7 @@ import com.skyeyes.base.BaseApplication;
 public class PreferenceUtil {
 	public final static String ACCOUNT_IFNO = "account_info_preferences";   //账户Preference
 	public final static String SYSCONFIG = "sysconfig_preferences";              //系统配置Preference
-	public final static String DEVICE_INFO = "device_info_preferences";              //系统配置Preference
+	public final static String DEVICE_INFO = "device_info_preferences";           
 	
 	
 	public final static String account_login_id = "login_id";
@@ -33,6 +33,8 @@ public class PreferenceUtil {
 	public final static String device_count = "device_count";
 	public final static String device_code_list = "device_code_list";
 	public final static String device_current_code = "device_current_code";
+	public final static String device_door_query_last_time = "device_door_query_last_time";
+	public final static String device_alarm_query_last_time = "device_alarm_query_last_time";
 	
 	
 	public static Context context = BaseApplication.getInstance();

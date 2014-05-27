@@ -1,30 +1,24 @@
 package com.skyeyes.storemonitor.activity.adapter;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoor.OpenCloseDoorBean;
+import com.skyeyes.base.bean.OpenCloseDoorInfoBean;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
-import com.skyeyes.storemonitor.activity.VideoPlayActivity;
-import com.skyeyes.storemonitor.activity.bean.ChennalPicBean;
 
 public class DoorRecordViewAdapter extends BaseAdapter {
-	List<OpenCloseDoorBean> list;
+	ArrayList<OpenCloseDoorInfoBean> list;
     LayoutInflater inflater;
     Context mContext;
-    public DoorRecordViewAdapter(Context context,List<OpenCloseDoorBean> list) {
+    public DoorRecordViewAdapter(Context context,ArrayList<OpenCloseDoorInfoBean> list) {
     	mContext = context;
         this.list=list;
         this.inflater=LayoutInflater.from(context);

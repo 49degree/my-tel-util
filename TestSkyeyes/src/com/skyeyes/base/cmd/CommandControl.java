@@ -7,6 +7,8 @@ import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceivReadDeviceNetInfo;
+import com.skyeyes.base.cmd.bean.impl.ReceiveAlarmInfo;
+import com.skyeyes.base.cmd.bean.impl.ReceiveAlarmList;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelName;
@@ -152,12 +154,13 @@ public class CommandControl {
 	        	receiveCmdBean = new ReceiveOpenCloseDoor();
 	        	break;
 	        case cmdReqAlarmList://报警列表
-	        	//receiveCmdBean = new ReceiveAvgManuStayTimeByMouse();
+	        	receiveCmdBean = new ReceiveAlarmList();
 	        	break;	
 	        case cmdReqOpenCloseDoorInfo://请求开关门详细信息
 	        	receiveCmdBean = new ReceiveOpenCloseDoorInfo();
 	        	break;	
 	        case cmdReqAlarmInfo://请求报警详细信息
+	        	receiveCmdBean = new ReceiveAlarmInfo();
 	        	break;	
 	        case cmdReqHistoryVideo://请求录像回放         	
 	        case cmdReqAlarmVideo://请求报警录像
@@ -203,9 +206,9 @@ public class CommandControl {
 	}
 
 	public static enum REQUST{
-		cmdDataNotEnough((byte)-3,(byte)0x2F,0),
-		cmdSysError((byte)-2,(byte)0x30,0),
-		cmdError((byte)-1,(byte)0x31,0),
+		cmdDataNotEnough((byte)-3,(byte)0,0),
+		cmdSysError((byte)-2,(byte)0,0),
+		cmdError((byte)-1,(byte)0,0),
 		
 		cmdLogin((byte)0x01,(byte)0x01,3),//登录 cmdLogin((byte)int state,String username,String userpwd)
 		cmdEquitLogin((byte)0x01,(byte)0x02,4),//登录 cmdLogin((byte)int state,String username,String userpwd,String Data)

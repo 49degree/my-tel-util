@@ -483,6 +483,46 @@ public class MainTest {
 		}
 	}
 	
+	public static void getAlarmList(SkyeyeSocketClient skyeyeSocketClient) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		
+		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
+		Object[] params = new Object[] {"1978-05-01 00:00:00","2014-06-01 00:00:00"};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqAlarmList, params);
+			System.out.println("cmdReqAlarmList入参数：" + sendObjectParams.toString());
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			skyeyeSocketClient.sendCmd(sendObjectParams);
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void getAlarmInfo(SkyeyeSocketClient skyeyeSocketClient,String eventCode) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		
+		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
+		Object[] params = new Object[] {eventCode};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqAlarmInfo, params);
+			System.out.println("cmdReqAlarmInfo入参数：" + sendObjectParams.toString());
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			skyeyeSocketClient.sendCmd(sendObjectParams);
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void requstHistoryVideo(SkyeyeSocketClient skyeyeSocketClient,byte channelId) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] { channelId,"2014-05-25 12:00:00",(short)480};
@@ -573,7 +613,9 @@ public class MainTest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		getOpenCloseDoorInfo(skyeyeSocketClient,receiveOpenCloseDoor.openCloseDoorBeans.get(0).des);
+		getAlarmList(skyeyeSocketClient);
+		
+		//getOpenCloseDoorInfo(skyeyeSocketClient,receiveOpenCloseDoor.openCloseDoorBeans.get(0).des);
 		
 		//getOpenCloseDoorInfo(skyeyeSocketClient,"123456789");
 		//requstRealTimeVideo(skyeyeSocketClient,(byte)0x00);

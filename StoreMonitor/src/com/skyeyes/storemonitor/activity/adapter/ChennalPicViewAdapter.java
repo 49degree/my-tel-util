@@ -10,24 +10,37 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.activity.MainPageActivity;
 import com.skyeyes.storemonitor.activity.VideoPlayActivity;
 import com.skyeyes.storemonitor.activity.bean.ChennalPicBean;
 
 public class ChennalPicViewAdapter extends BaseAdapter {
+	
     private List<ChennalPicBean> list;
     LayoutInflater inflater;
     Context mContext;
-    public ChennalPicViewAdapter(Context context,List<ChennalPicBean> list) {
+    int mType;//0实时，1历史
+    
+    String historyStartTime;
+    String historyLong;
+    
+    public ChennalPicViewAdapter(Context context,List<ChennalPicBean> list,int type) {
     	mContext = context;
         this.list=list;
         this.inflater=LayoutInflater.from(context);
+        mType =type;
     }
-
+    
+    public void setHistoryInfo(String historyStartTime, String historyLong){
+    	this.historyStartTime = historyStartTime;
+    	this.historyLong = historyLong;
+    }
+    
     
     @Override
     public int getCount() {
@@ -67,8 +80,22 @@ public class ChennalPicViewAdapter extends BaseAdapter {
 				// TODO Auto-generated method stub
 				Log.i("MainPageActivity", "iv.setOnClickListener(new OnClickListener()================");
 				Intent it = new Intent(mContext,VideoPlayActivity.class);
-				it.putExtra("chennalId", chennalId);
-				it.putExtra("videoType", 0);
+				if(mType==0){
+					
+					it.putExtra("chennalId", chennalId);
+					it.putExtra("videoType", 0);
+				}else{
+					it.putExtra("chennalId", (byte)0);
+					it.putExtra("videoType", 1);
+					try {
+						it.putExtra("startTime", DateUtil.getTimeStringFormat(MainPageActivity.format.parse(historyStartTime),DateUtil.TIME_FORMAT_YMDHMS));
+						it.putExtra("videoLong", (short)(Short.parseShort(historyLong)*60));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
 				
 				mContext.startActivity(it);
 			}

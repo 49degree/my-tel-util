@@ -66,7 +66,7 @@ import com.skyeyes.storemonitor.service.DevicesService;
 
 
 public class MainPageActivity extends BaseActivity{
-	static SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
+	public static SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
 	String TAG = "MainPageActivity";
 	public final static int SEND_QUERY_MANU_ID = 1;
 	private boolean stopQueryManu = true;
@@ -74,6 +74,7 @@ public class MainPageActivity extends BaseActivity{
 	
 	//TextView store_login_id_tv = null;
 	Gallery gallery = null;
+	Gallery history_gallery = null;
 	private TopTitleView topTitleView;
 	private LinearLayout vp_real_time_ll;
 	private LinearLayout vp_history_ll;
@@ -84,9 +85,10 @@ public class MainPageActivity extends BaseActivity{
 	private TextView video_history_query_time_iv;
 	private TextView video_history_query_long_iv;
 	
-	private ImageView video_history_play_iv;
+	//private ImageView video_history_play_iv;
 	
 	List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
+	ChennalPicViewAdapter historyAdapter;
 	
 	
     @Override
@@ -115,6 +117,7 @@ public class MainPageActivity extends BaseActivity{
 		video_history_query_time_rv.setOnClickListener(new DateTimePick());
 		video_history_query_long_rv.setOnClickListener(new NumberPick());
 		
+		/**
 		video_history_play_iv = (ImageView)findViewById(R.id.video_history_play_iv);
 		
 		video_history_play_iv.setOnClickListener(new OnClickListener(){
@@ -136,7 +139,7 @@ public class MainPageActivity extends BaseActivity{
 				startActivity(it);
 			}
 		});
-		
+		*/
 		
 		vp_history_ll.setVisibility(View.GONE);
 		vp_real_time_ll.setVisibility(View.GONE);
@@ -192,6 +195,7 @@ public class MainPageActivity extends BaseActivity{
 		});
 		
 		gallery = (Gallery) findViewById(R.id.chennal_pic_gallery);
+		history_gallery = (Gallery) findViewById(R.id.history_chennal_pic_gallery);
 		
     	if(DevicesService.getInstance() == null){
     		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
@@ -409,6 +413,27 @@ public class MainPageActivity extends BaseActivity{
 				}
 				login_notify_tv.setText("正在获取设备通道图片，请稍后...");
 			}
+			
+			Bitmap tempPic = BitmapFactory.decodeResource(MainPageActivity.this.getResources(), R.drawable.photo);
+	        WindowManager windowManager = getWindowManager();
+	        Display display = windowManager.getDefaultDisplay();
+			float zoom = 1.0f*display.getWidth()/tempPic.getWidth();
+			int imgHeight = (int)(tempPic.getHeight()*zoom);
+			LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(
+					display.getWidth(),imgHeight);
+			List<ChennalPicBean> historyPicBeanlist=new ArrayList<ChennalPicBean>();
+			for(int i=0;i<chennalCount;i++){
+	        	ChennalPicBean picBean=new ChennalPicBean();
+	        	picBean.des = "通道"+(i+1);
+	        	picBean.img = new BitmapDrawable(tempPic);
+	        	picBean.ivLp = ivLp;
+	        	picBean.chennalId = (byte)(i);
+	        	historyPicBeanlist.add(picBean);
+			}
+			historyAdapter = new ChennalPicViewAdapter(MainPageActivity.this,historyPicBeanlist,1);
+			
+			historyAdapter.setHistoryInfo(StringUtil.getTextViewValue(video_history_query_time_iv), StringUtil.getTextViewValue(video_history_query_long_iv));
+			history_gallery.setAdapter(historyAdapter);
 
 		}
 
@@ -454,7 +479,7 @@ public class MainPageActivity extends BaseActivity{
 		    	}
 		    	pic = blackPic;
 		    }
-			
+		    getPicCount++;
 			if(pic!=null){
 		        WindowManager windowManager = getWindowManager();
 		        Display display = windowManager.getDefaultDisplay();
@@ -463,7 +488,7 @@ public class MainPageActivity extends BaseActivity{
 				LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(
 						display.getWidth(),imgHeight);
 	        	ChennalPicBean picBean=new ChennalPicBean();
-	        	picBean.des = "";
+	        	picBean.des = "通道"+getPicCount;
 	        	picBean.img = new BitmapDrawable(pic);
 	        	picBean.ivLp = ivLp;
 	        	picBean.chennalId = (byte)(getPicCount);
@@ -472,7 +497,7 @@ public class MainPageActivity extends BaseActivity{
 			}
 			Log.i("MainPageActivity", "getPicCount================"+getPicCount);
 			
-			getPicCount++;
+			
 			if(getPicCount<chennalCount){
 				//查询通道图片
 				SendObjectParams sendObjectParams = new SendObjectParams();
@@ -491,7 +516,7 @@ public class MainPageActivity extends BaseActivity{
 			if(chennalPicBeanlist.size()>0){
 				Log.i("MainPageActivity", "chennalPicBeanlist================"+chennalPicBeanlist.size());
 				if(gallery.getAdapter()==null){
-					ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(MainPageActivity.this,chennalPicBeanlist);
+					ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(MainPageActivity.this,chennalPicBeanlist,0);
 					gallery.setAdapter(pageAdapter);
 					
 					vp_real_time_ll.setVisibility(View.VISIBLE);
@@ -499,7 +524,6 @@ public class MainPageActivity extends BaseActivity{
 				}else{
 					((ChennalPicViewAdapter)gallery.getAdapter()).notifyDataSetChanged();
 				}
-
 			}
 			
 			if(getPicCount==chennalCount && chennalPicBeanlist.size()==0){
@@ -687,8 +711,10 @@ public class MainPageActivity extends BaseActivity{
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							video_history_query_time_iv.setText(format
-									.format(calendar.getTime()));
+							if(historyAdapter!=null){
+								historyAdapter.setHistoryInfo(format.format(calendar.getTime()), StringUtil.getTextViewValue(video_history_query_long_iv));
+							}
+							video_history_query_time_iv.setText(format.format(calendar.getTime()));
 						}
 					});
 			// 设置一个NegativeButton
@@ -760,8 +786,10 @@ public class MainPageActivity extends BaseActivity{
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							video_history_query_long_iv.setText(String
-									.valueOf(np.getValue()));
+							video_history_query_long_iv.setText(String.valueOf(np.getValue()));
+							if(historyAdapter!=null){
+								historyAdapter.setHistoryInfo( StringUtil.getTextViewValue(video_history_query_time_iv), String.valueOf(np.getValue()));
+							}
 						}
 					});
 			// 设置一个NegativeButton

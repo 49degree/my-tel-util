@@ -57,7 +57,7 @@ public class CommandControl {
 		try{
 			//解析头部
 			cmdHeaderBean = CmdHeaderBean.parseCommandHeader(receiveBuffer);
-			
+			System.out.println("收到数据头："+cmdHeaderBean.toString());
 			//解析命令体
 			ReceiveCmdBean receiveCmdBean = null;
 			

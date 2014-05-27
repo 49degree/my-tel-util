@@ -20,7 +20,8 @@
        <ListView         
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider = "#A9A9A9"
+        android:divider="#F2F2F2" 
+        android:dividerHeight="3px"
         android:id="@+id/door_record_list"/>
 		<LinearLayout
 		    android:id="@+id/query_data_notify_ll" 

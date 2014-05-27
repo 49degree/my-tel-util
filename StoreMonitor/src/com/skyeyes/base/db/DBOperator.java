@@ -251,14 +251,20 @@ public class DBOperator extends SQLiteOpenHelper {
 						//给实体对象的成员变量赋值
 						methodName = new StringBuffer("set");
 						String columnName = cursor.getColumnName(i);
-						String columnValue = cursor.getString(i);
+						
 						Field f = tableBean.getField(columnName);
-						//methodName.append(columnName);方法名追加列名！
+						Object columnValue= null;
+						if(f.getType().equals(byte[].class)){
+							columnValue = cursor.getBlob(i);
+						}else{
+							columnValue = cursor.getString(i);
+						}
+						
 						methodName.append(columnName.substring(0, 1).toUpperCase()).append(columnName.substring(1));
 						
 						if(f.getType().equals(float.class)){
 							setMethod = tableBean.getMethod(methodName.toString(),float.class);
-							setMethod.invoke(object, Float.parseFloat(columnValue));
+							setMethod.invoke(object, Float.parseFloat(columnValue.toString()));
 						}else if(f.getType().equals(boolean.class)){
 							setMethod = tableBean.getMethod(methodName.toString(),boolean.class);
 							if(columnValue.equals("0")){
@@ -269,10 +275,10 @@ public class DBOperator extends SQLiteOpenHelper {
 							
 						}else if(f.getType().equals(int.class)){
 							setMethod = tableBean.getMethod(methodName.toString(),int.class);
-							setMethod.invoke(object, Integer.parseInt(columnValue));
+							setMethod.invoke(object, Integer.parseInt(columnValue.toString()));
 						}else if(f.getType().equals(long.class)){
 							setMethod = tableBean.getMethod(methodName.toString(),long.class);
-							setMethod.invoke(object, Long.parseLong(columnValue));
+							setMethod.invoke(object, Long.parseLong(columnValue.toString()));
 						}else if(f.getType().equals(byte[].class)){
 							setMethod = tableBean.getMethod(methodName.toString(),byte[].class);
 							setMethod.invoke(object, columnValue);

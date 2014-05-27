@@ -14,11 +14,13 @@
 	    <ImageView
 	         android:layout_width="wrap_content"
 	         android:layout_height="wrap_content"
-	         android:src="@drawable/door_open"/>	         
+	         android:src="@drawable/door_open"
+	         android:layout_marginRight="5px"/>	         
 	    <TextView
          android:id="@+id/door_record_open_time"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
+         android:textColor="#646464"
          android:text=""/>
     </LinearLayout>
     
@@ -32,10 +34,12 @@
          android:id="@+id/door_record_close_time"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
+         android:textColor="#646464"
          android:text=""/>
 	    <ImageView
 	         android:layout_width="wrap_content"
 	         android:layout_height="wrap_content"
-	         android:src="@drawable/door_close"/>	    
+	         android:src="@drawable/door_close"
+	         android:layout_marginLeft="5px"/>	    
     </LinearLayout>
  </FrameLayout>

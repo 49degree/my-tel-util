@@ -1,21 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_vertical|left"
+    android:layout_height="245px"
+    android:gravity="center_vertical"
     android:orientation="horizontal" >
-    <TextView
-        android:id="@+id/alarm_record_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
+
     <ImageView
         android:id="@+id/alarm_record_img"
+        android:layout_width="128px"
+        android:layout_height="128px"
+        android:layout_alignParentLeft="true"/>
+    <ImageView
+        android:id="@+id/alarm_left_flag_iv"
+        android:layout_width="40px"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5px"
+        android:gravity="center"
+        android:src="@drawable/video_history_query"
+        android:layout_toRightOf="@+id/alarm_info_rl" />
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/alarm_record_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />    
-</LinearLayout>
+        android:layout_height="fill_parent"
+        android:padding="5px"
+        android:layout_toRightOf="@+id/alarm_record_img">
+
+        <TextView
+            android:id="@+id/alarm_record_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="未查看"/>
+        <TextView
+            android:layout_toRightOf="@+id/alarm_record_type"
+            android:id="@+id/alarm_record_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_alignParentTop="true"
+            android:text="2014-12-03 00:00" />
+        <TextView
+            android:layout_below="@+id/alarm_record_time"
+            android:id="@+id/alarm_record_memo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#141414"
+            android:singleLine="false"
+            android:layout_marginTop="5px"
+            android:gravity="center_vertical"
+            android:text="111111111111111111111111111111111111111111" />
+    </RelativeLayout>
+</RelativeLayout>

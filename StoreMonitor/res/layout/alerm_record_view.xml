@@ -19,8 +19,9 @@
        <ListView         
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider = "#A9A9A9"
-        android:id="@+id/alarm_record_list"/>
+        android:id="@+id/alarm_record_list"
+        android:divider="#F2F2F2"
+        android:dividerHeight="3px" />
 		<LinearLayout
 		    android:id="@+id/query_data_notify_ll" 
 		    android:layout_width="match_parent"

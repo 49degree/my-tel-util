@@ -62,7 +62,7 @@ public class AlermRecorderActivity extends Activity {
 		if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
 			query_data_notify_tv.setText("未登陆设备");
 		}else{
-			query_data_notify_tv.setText("真正查询报警数据,请稍后...");
+			query_data_notify_tv.setText("正在查询报警数据,请稍后...");
 			pageAdapter=new AlarmRecordViewAdapter(this,alarmInfoBeans);
 			alarm_record_list.setAdapter(pageAdapter);
 			//查询通道图片
@@ -102,7 +102,7 @@ public class AlermRecorderActivity extends Activity {
 			if(receiveCmdBean.getCommandHeader().resultCode==0){
 				PreferenceUtil.setSingleConfigInfo(PreferenceUtil.DEVICE_INFO, PreferenceUtil.device_alarm_query_last_time,endTime);
 			}
-			final AlarmInfoReceive alarmInfoReceive = new AlarmInfoReceive();
+			
 			Log.i("AlarmListReceive", "AlarmListReceive================");
 			if(receiveCmdBean.alarmBeans.size()>0){
 				for(int i=receiveCmdBean.alarmBeans.size()-1;i>=0;i--){
@@ -112,85 +112,17 @@ public class AlermRecorderActivity extends Activity {
 				}
 			}
 			
-			t = new Thread(){
-				public void run(){
-					List<Object> alarmIdBeans = DBOperator.getInstance().queryBeanList(DBBean.TBAlarmIdBean,null);
-					HashMap params = new HashMap<String,String>();
-					
-					SendObjectParams  sendObjectParams = new SendObjectParams();
-					Object[] cmdParams = new Object[1];
-					for(int i=alarmIdBeans.size()-1;i>=0;i--){
-						params.put("eventCode=", ((AlarmIdBean)alarmIdBeans.get(i)).eventCode);
-						final List<Object> temp = DBOperator.getInstance().queryBeanList(DBBean.TBAlarmInfoBean, params);
-						Log.i("alarmIdBeans", "alarmIdBeans================temp:"+temp.size());
-						if(temp.size()==0){
-							//查询详细信息
-							if(alarmIdBean != null){
-								try {
-									synchronized (this) {
-										this.wait();
-									}
-									
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-							alarmIdBean = ((AlarmIdBean)alarmIdBeans.get(i));
-							cmdParams[0] = alarmIdBean.eventCode;
-							try {
-								sendObjectParams.setParams(REQUST.cmdReqAlarmInfo, cmdParams);
-								System.out.println("cmdReqAlarmInfo入参数：" + sendObjectParams.toString());
-								
-								alarmInfoReceive.setTimeout(10*1000);
-								DevicesService.sendCmd(sendObjectParams, alarmInfoReceive);
-							} catch (CommandParseException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}else{
-							runOnUiThread(new Runnable(){
-								@Override
-								public void run() {
-									alarmInfoBeans.add((AlarmInfoBean)temp.get(0));
-									pageAdapter.notifyDataSetChanged();
-									if(query_data_notify_ll.getVisibility() == View.VISIBLE){
-										query_data_notify_ll.setVisibility(View.GONE);
-										alarm_record_list.setVisibility(View.VISIBLE);
-									}
-								}
-								
-							});
-						}
-					}
-					
-
-					if(alarmInfoBeans.size()==0){
-						runOnUiThread(new Runnable(){
-							@Override
-							public void run() {
-								if(alarmInfoBeans.size()==0){
-									query_data_notify_ll.setVisibility(View.VISIBLE);
-									alarm_record_list.setVisibility(View.GONE);
-									query_data_notify_tv.setText("没有开关门数据");
-								}
-							}
-							
-						});
-					}
-				}
-			};
-			t.setDaemon(true);
-			t.start();
+			queryDataFromDB();
 
 
 
 		}
 		
 		public void onResponsTimeout(){
-			query_data_notify_ll.setVisibility(View.VISIBLE);
-			alarm_record_list.setVisibility(View.GONE);
-			query_data_notify_tv.setText("查询数据超时");
+//			query_data_notify_ll.setVisibility(View.VISIBLE);
+//			alarm_record_list.setVisibility(View.GONE);
+//			query_data_notify_tv.setText("查询数据超时");
+			queryDataFromDB();
 		}
 
 		@Override
@@ -296,5 +228,79 @@ public class AlermRecorderActivity extends Activity {
 			// TODO Auto-generated method stub
 			
 		}
+	}
+	
+	private void queryDataFromDB(){
+		final AlarmInfoReceive alarmInfoReceive = new AlarmInfoReceive();
+		t = new Thread(){
+			public void run(){
+				List<Object> alarmIdBeans = DBOperator.getInstance().queryBeanList(DBBean.TBAlarmIdBean,null);
+				HashMap params = new HashMap<String,String>();
+				
+				SendObjectParams  sendObjectParams = new SendObjectParams();
+				Object[] cmdParams = new Object[1];
+				for(int i=alarmIdBeans.size()-1;i>=0;i--){
+					params.put("eventCode=", ((AlarmIdBean)alarmIdBeans.get(i)).eventCode);
+					final List<Object> temp = DBOperator.getInstance().queryBeanList(DBBean.TBAlarmInfoBean, params);
+					Log.i("alarmIdBeans", "alarmIdBeans================temp:"+temp.size());
+					if(temp.size()==0){
+						//查询详细信息
+						if(alarmIdBean != null){
+							try {
+								synchronized (this) {
+									this.wait();
+								}
+								
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						alarmIdBean = ((AlarmIdBean)alarmIdBeans.get(i));
+						cmdParams[0] = alarmIdBean.eventCode;
+						try {
+							sendObjectParams.setParams(REQUST.cmdReqAlarmInfo, cmdParams);
+							System.out.println("cmdReqAlarmInfo入参数：" + sendObjectParams.toString());
+							
+							alarmInfoReceive.setTimeout(10*1000);
+							DevicesService.sendCmd(sendObjectParams, alarmInfoReceive);
+						} catch (CommandParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}else{
+						runOnUiThread(new Runnable(){
+							@Override
+							public void run() {
+								alarmInfoBeans.add((AlarmInfoBean)temp.get(0));
+								pageAdapter.notifyDataSetChanged();
+								if(query_data_notify_ll.getVisibility() == View.VISIBLE){
+									query_data_notify_ll.setVisibility(View.GONE);
+									alarm_record_list.setVisibility(View.VISIBLE);
+								}
+							}
+							
+						});
+					}
+				}
+				
+
+				if(alarmInfoBeans.size()==0){
+					runOnUiThread(new Runnable(){
+						@Override
+						public void run() {
+							if(alarmInfoBeans.size()==0){
+								query_data_notify_ll.setVisibility(View.VISIBLE);
+								alarm_record_list.setVisibility(View.GONE);
+								query_data_notify_tv.setText("没有开关门数据");
+							}
+						}
+						
+					});
+				}
+			}
+		};
+		t.setDaemon(true);
+		t.start();
 	}
 }

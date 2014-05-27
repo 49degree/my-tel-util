@@ -105,7 +105,9 @@
 			         android:layout_marginLeft="10px"
 			         android:src="@drawable/video_history_query"/>                
             </RelativeLayout>
-
+            <View android:layout_width="fill_parent"
+		        android:layout_height="3px"
+		        android:background="#F2F2F2"/>
 		    <RelativeLayout
 		        android:id="@+id/video_history_query_long_rv"
 		        android:layout_width="fill_parent"
@@ -148,6 +150,9 @@
 			         android:layout_marginLeft="10px"
 			         android:src="@drawable/video_history_query"/>                
             </RelativeLayout>
+            <View android:layout_width="fill_parent"
+		        android:layout_height="3px"
+		        android:background="#F2F2F2"/>            
 		   <!-- LinearLayout
 		        android:id="@+id/chennal_pic_ll"
 		        android:layout_width="match_parent"

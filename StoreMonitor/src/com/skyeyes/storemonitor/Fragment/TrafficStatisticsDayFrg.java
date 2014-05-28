@@ -203,7 +203,7 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 	private int mMonth;
 	private int mDay;
 	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-
+		
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
 			mYear = year;

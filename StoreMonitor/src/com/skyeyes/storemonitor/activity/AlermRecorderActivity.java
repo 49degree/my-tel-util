@@ -11,6 +11,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,8 +32,6 @@ import com.skyeyes.base.h264.JavaH264Decoder.DecodeSuccCallback;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.TypeConversion;
-import com.skyeyes.base.view.TopTitleView;
-import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.activity.adapter.AlarmRecordViewAdapter;
@@ -52,6 +52,8 @@ public class AlermRecorderActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		setContentView(R.layout.alerm_record_view);
 
 		query_data_notify_ll = (LinearLayout)findViewById(R.id.query_data_notify_ll);

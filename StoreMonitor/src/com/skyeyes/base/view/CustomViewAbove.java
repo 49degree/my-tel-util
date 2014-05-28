@@ -3,10 +3,6 @@ package com.skyeyes.base.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.skyeyes.base.util.Log;
-import com.skyeyes.base.view.SlidingMenu.OnClosedListener;
-import com.skyeyes.base.view.SlidingMenu.OnOpenedListener;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -18,6 +14,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
 import android.util.FloatMath;
+import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -28,6 +25,9 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
+
+import com.skyeyes.base.view.SlidingMenu.OnClosedListener;
+import com.skyeyes.base.view.SlidingMenu.OnOpenedListener;
 
 public class CustomViewAbove extends ViewGroup {
 
@@ -589,7 +589,7 @@ public class CustomViewAbove extends ViewGroup {
 			allowed = mViewBehind.menuClosedSlideAllowed(dx);
 		}
 		if (DEBUG)
-			Log.v(TAG, "this slide allowed " + allowed + " dx: " + dx);
+			Log.e(TAG, "this slide allowed " + allowed + " dx: " + dx);
 		return allowed;
 	}
 
@@ -612,7 +612,6 @@ public class CustomViewAbove extends ViewGroup {
 
 		if (DEBUG)
 			if (action == MotionEvent.ACTION_DOWN)
-				Log.v(TAG, "Received ACTION_DOWN");
 
 		if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP
 				|| (action != MotionEvent.ACTION_DOWN && mIsUnableToDrag)) {

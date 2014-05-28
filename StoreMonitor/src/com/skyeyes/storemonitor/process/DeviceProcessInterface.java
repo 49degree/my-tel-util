@@ -6,12 +6,12 @@ import java.util.HashMap;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.exception.NetworkException;
-import com.skyeyes.base.util.Log;
 
 public interface DeviceProcessInterface {
 	public void loginDevice(String userName,String userPsd,byte config);

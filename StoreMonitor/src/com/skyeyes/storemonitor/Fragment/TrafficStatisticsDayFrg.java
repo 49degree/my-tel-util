@@ -12,6 +12,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +28,6 @@ import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgHourManuByDay;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.util.DateUtil;
-import com.skyeyes.base.util.Log;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
@@ -59,7 +59,6 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 				xyMultipleSeriesRenderer.setYAxisMax(20.0);
 				xyMultipleSeriesRenderer.setPanLimits(new double[] { -1,
 						monthResultBeans.size(), 0, 80 }); // 限制xy轴的长度
-
 				chart = new LineChart(getDemoDataset(monthResultBeans),
 						xyMultipleSeriesRenderer);
 				mView = new GraphicalView(getActivity(), chart);
@@ -67,6 +66,7 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 						.setText(String.valueOf(monthResultBeans.get(0).avgTime));
 				total.setText(String.valueOf(monthResultBeans.get(0).inManu));
 				layout.addView(mView);
+				dismissMPdDialog();
 				break;
 
 			default:
@@ -92,10 +92,14 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 		timeBtn = (Button) mItemView.findViewById(R.id.search_date_bt);
 		timeBtn.setText(DateUtil
 				.getTimeStringFormat(mCurCalendar, "yyyy-MM-dd"));
-
 		lastDayIbtn.setOnClickListener(this);
 		nextDayIbtn.setOnClickListener(this);
 		timeBtn.setOnClickListener(this);
+		
+		
+		mYear = mCurCalendar.get(Calendar.YEAR);
+        mMonth = mCurCalendar.get(Calendar.MONTH);
+        mDay = mCurCalendar.get(Calendar.DAY_OF_MONTH);
 		return mItemView;
 	}
 
@@ -103,7 +107,8 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		getManucountByDay("2014-05-17 00:00:00");
+		getManucountByDay(DateUtil.getTimeStringFormat(mCurCalendar,
+				"yyyy-MM-dd HH:mm:ss"));
 	}
 
 	/**
@@ -113,12 +118,15 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 	 *            如：2014-05-01 00:00:00
 	 */
 	private void getManucountByDay(String dayTime) {
+		
+		showMPdDialog();
+
 		SendObjectParams sendObjectParams = new SendObjectParams();
 
 		Object[] params = new Object[] { dayTime };
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAvgHourManuByDay, params);
-
+			System.out.println("getManucountByDay params ::: " + dayTime);
 			CountManuOfHourByDay mCountManuCmdProcess = new CountManuOfHourByDay(
 					REQUST.cmdReqAvgHourManuByDay, (String) params[0]);
 
@@ -146,20 +154,6 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 
 		public void onProcess(ReceiveAvgHourManuByDay receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
-			// for (CountManuResultBean countManuResultBean :
-			// receiveCmdBean.countManuResultBeans) {
-			// Log.e("chenlong",
-			// DateUtil.getTimeStringFormat(countManuResultBean.time,
-			// DateUtil.TIME_FORMAT_YMDHMS)
-			// + ":"
-			// + countManuResultBean.dayofWeet
-			// + ":"
-			// + countManuResultBean.inManu
-			// + ":"
-			// + countManuResultBean.outManu
-			// + ":"
-			// + countManuResultBean.avgTime);
-			// }
 			monthResultBeans = receiveCmdBean.countManuResultBeans;
 			Message message = new Message();
 			message.what = MONTH_VIEW_REFLESH;
@@ -178,8 +172,8 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 					"yyyy-MM-dd"));
 			getManucountByDay(DateUtil.getTimeStringFormat(mCurCalendar,
 					"yyyy-MM-dd HH:mm:ss"));
-
 			break;
+
 		case R.id.next_day_ibtn:
 			mCurCalendar = DateUtil.getCalendarByNumDay(mCurCalendar, 1);
 			timeBtn.setText(DateUtil.getTimeStringFormat(mCurCalendar,
@@ -187,11 +181,17 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 			getManucountByDay(DateUtil.getTimeStringFormat(mCurCalendar,
 					"yyyy-MM-dd HH:mm:ss"));
 			break;
+
 		case R.id.search_date_bt:
-//			new DatePickerDialog(getActivity(), listener,
-//					mCurCalendar.get(Calendar.YEAR),
-//					mCurCalendar.get(Calendar.MONTH),
-//					mCurCalendar.get(Calendar.DAY_OF_MONTH)).show();
+			// new DatePickerDialog(getActivity(), listener,
+			// mCurCalendar.get(Calendar.YEAR),
+			// mCurCalendar.get(Calendar.MONTH),
+			// mCurCalendar.get(Calendar.DAY_OF_MONTH)).show();
+			   new DatePickerDialog(getActivity(),
+                      mDateSetListener,
+                      mCurCalendar.get(Calendar.YEAR),
+                      mCurCalendar.get(Calendar.MONTH), 
+                      mCurCalendar.get(Calendar.DAY_OF_MONTH)).show();
 			break;
 		default:
 			break;
@@ -199,15 +199,34 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 
 	}
 
-//	private DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() { //
-//
-//		@Override
-//		public void onDateSet(DatePicker arg0, int y, int m, int d) {
-//			Log.i("chenlong", "time "+y+"-"+m+"-"+d);
-//			timeBtn.setText(y+"-"+m+"-"+d);
-//		}
-//
-//	};
-//	
+	private int mYear;
+	private int mMonth;
+	private int mDay;
+	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			mYear = year;
+			mMonth = monthOfYear;
+			mDay = dayOfMonth;
+			updateDisplay();
+		}
+	};
+
+	private void updateDisplay() {
+		mCurCalendar.set(Calendar.YEAR, mYear); 
+		mCurCalendar.set(Calendar.MONTH,mMonth); 
+		mCurCalendar.set(Calendar.DAY_OF_MONTH, mDay); 
+		
+		String month = String.valueOf(mMonth+1);
+		if(mMonth<9){
+			 month = "0"+(mMonth+1);
+		}
+		timeBtn.setText(new StringBuilder()
+				// Month is 0 based so add 1
+				.append(mYear).append("-").append(month).append("-").append(mDay));
+		getManucountByDay(DateUtil.getTimeStringFormat(mCurCalendar,
+				"yyyy-MM-dd HH:mm:ss"));
+	}
 
 }

@@ -16,12 +16,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.skyeyes.base.util.Log;
 import com.skyeyes.base.util.ViewUtils;
 import com.skyeyes.base.view.Menu;
 import com.skyeyes.base.view.Menu.MenuListener;
@@ -248,7 +245,6 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		Log.e("keyCode :: "+keyCode+"event :::  "+ event.getAction());
 		if (keyCode == KeyEvent.KEYCODE_MENU) {
 			toggleMenu();
 			return true;

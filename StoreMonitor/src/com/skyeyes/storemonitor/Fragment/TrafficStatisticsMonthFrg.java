@@ -3,13 +3,14 @@ package com.skyeyes.storemonitor.Fragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.LineChart;
 import org.achartengine.chart.XYChart;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -52,6 +54,10 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 	private XYChart chart;
 
 	private final int MONTH_VIEW_REFLESH = 1;
+
+	private CustomerDatePickerDialog mDialog;
+	private int mYear;
+	private int mMonth;
 	// 测试数据
 	private ArrayList<CountManuResultBean> monthResultBeans;
 	Handler handler = new Handler() {
@@ -72,6 +78,7 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 						.setText(String.valueOf(monthResultBeans.get(0).avgTime));
 				total.setText(String.valueOf(monthResultBeans.get(0).inManu));
 				layout.addView(mView);
+				dismissMPdDialog();
 				break;
 
 			default:
@@ -95,10 +102,11 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 		lastDayIbtn = (Button) mItemView.findViewById(R.id.last_day_ibtn);
 		nextDayIbtn = (Button) mItemView.findViewById(R.id.next_day_ibtn);
 		timeBtn = (Button) mItemView.findViewById(R.id.search_date_bt);
-		timeBtn.setText(getMonthDate(mCurCalendar,0));
+		timeBtn.setText(getMonthDate(mCurCalendar, 0));
 
 		lastDayIbtn.setOnClickListener(this);
 		nextDayIbtn.setOnClickListener(this);
+		timeBtn.setOnClickListener(this);
 		return mItemView;
 	}
 
@@ -110,6 +118,8 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 	}
 
 	private void getManucountByMonth(String dayTime) {
+		showMPdDialog();
+
 		SendObjectParams sendObjectParams = new SendObjectParams();
 
 		Object[] params = new Object[] { dayTime };
@@ -144,21 +154,6 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 
 		public void onProcess(ReceiveAvgDayManuByMouse receiveCmdBean) {
 			super.onProcess(receiveCmdBean);
-			// receiveCmdBean.countManuResultBeans 这里是数据列表
-			// for (CountManuResultBean countManuResultBean :
-			// receiveCmdBean.countManuResultBeans) {
-			// Log.e("chenlong",
-			// DateUtil.getTimeStringFormat(countManuResultBean.time,
-			// DateUtil.TIME_FORMAT_YMDHMS)
-			// + ":"
-			// + countManuResultBean.dayofWeet
-			// + ":"
-			// + countManuResultBean.inManu
-			// + ":"
-			// + countManuResultBean.outManu
-			// + ":"
-			// + countManuResultBean.avgTime);
-			// }
 			monthResultBeans = receiveCmdBean.countManuResultBeans;
 			Message message = new Message();
 			message.what = MONTH_VIEW_REFLESH;
@@ -171,36 +166,116 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.last_day_ibtn:
-			StringBuffer buffer =new StringBuffer();
-			buffer.append(getMonthDate(mCurCalendar,-1));
-			timeBtn.setText(buffer.toString());
-			
-			buffer.append("-01 00:00:00");
-			Log.e("chenlong", "buffer::: "+buffer.toString());
-			getManucountByMonth(buffer.toString());
-			buffer =null;
+			getViewData(mCurCalendar,-1);
 			break;
+			
 		case R.id.next_day_ibtn:
-			
-			StringBuffer buffer1 =new StringBuffer();
-			buffer1.append(getMonthDate(mCurCalendar,1));
-			timeBtn.setText(buffer1.toString());
-			
-			buffer1.append("-01 00:00:00");
-			Log.e("chenlong", "buffer1::: "+buffer1.toString());
-
-			getManucountByMonth(buffer1.toString());
-			buffer1 = null;
+			getViewData(mCurCalendar,1);
 			break;
+			
+		case R.id.search_date_bt:
+			mDialog = new CustomerDatePickerDialog(getActivity(),
+					new DatePickerDialog.OnDateSetListener() {
 
+						public void onDateSet(DatePicker view, int year,
+								int monthOfYear, int dayOfMonth) {
+							mYear = year;
+							mMonth = monthOfYear;
+							updateDisplay();
+						}
+					}, mCurCalendar.get(Calendar.YEAR),
+					mCurCalendar.get(Calendar.MONTH),
+					mCurCalendar.get(Calendar.DAY_OF_MONTH));
+			mDialog.setTitle(mCurCalendar.get(Calendar.YEAR) + "年"
+					+ (mCurCalendar.get(Calendar.MONTH) + 1) + "月");
+			mDialog.show();
+
+			DatePicker dp = findDatePicker((ViewGroup) mDialog.getWindow()
+					.getDecorView());
+			if (dp != null) {
+				((ViewGroup) ((ViewGroup) dp.getChildAt(0)).getChildAt(0))
+						.getChildAt(2).setVisibility(View.GONE);
+			}
+			break;
 		default:
 			break;
 		}
 	}
 
-	private String getMonthDate(Calendar cc, int month) {
-		cc.add(Calendar.MONTH, month);
-		 return new SimpleDateFormat("yyyy-MM").format(cc.getTime());
+
+
+	private void updateDisplay() {
+		mCurCalendar.set(Calendar.YEAR, mYear);
+		mCurCalendar.set(Calendar.MONTH, mMonth);
+
+		String month = String.valueOf(mMonth + 1);
+		if (mMonth < 9) {
+			month = "0" + (mMonth + 1);
+		}
+		timeBtn.setText(new StringBuilder()
+		// Month is 0 based so add 1
+				.append(mYear).append("-").append(month));
+		
+		getViewData(mCurCalendar,0);
+		
+	}
+
+	/**
+	 * 将时间转换为参数需要的格式
+	 * @param curCalendar
+	 * @param index 1,为上一个月，-1为下一个月，0为当前
+	 */
+	private void getViewData(Calendar curCalendar,int index){
+		StringBuffer buffer1 = new StringBuffer();
+		buffer1.append(getMonthDate(curCalendar, index));
+		timeBtn.setText(buffer1.toString());
+
+		buffer1.append("-01 00:00:00");
+
+		getManucountByMonth(buffer1.toString());
+		buffer1 = null;
 	}
 	
+	
+	/**
+	 * 
+	 * @param cc
+	 * @param month 1,为上一个月，-1为下一个月，0为当前
+	 * @return
+	 */
+	private String getMonthDate(Calendar cc, int month) {
+		cc.add(Calendar.MONTH, month);
+		return new SimpleDateFormat("yyyy-MM").format(cc.getTime());
+	}
+
+	//只显示年月的datepickerdialog
+	class CustomerDatePickerDialog extends DatePickerDialog {
+		public CustomerDatePickerDialog(Context context,
+				OnDateSetListener callBack, int year, int monthOfYear,
+				int dayOfMonth) {
+			super(context, callBack, year, monthOfYear, dayOfMonth);
+		}
+
+		@Override
+		public void onDateChanged(DatePicker view, int year, int month, int day) {
+			super.onDateChanged(view, year, month, day);
+			mDialog.setTitle(year + "年" + (month + 1) + "月");
+		}
+	}
+
+	private DatePicker findDatePicker(ViewGroup group) {
+		if (group != null) {
+			for (int i = 0, j = group.getChildCount(); i < j; i++) {
+				View child = group.getChildAt(i);
+				if (child instanceof DatePicker) {
+					return (DatePicker) child;
+				} else if (child instanceof ViewGroup) {
+					DatePicker result = findDatePicker((ViewGroup) child);
+					if (result != null)
+						return result;
+				}
+			}
+		}
+		return null;
+	}
 }

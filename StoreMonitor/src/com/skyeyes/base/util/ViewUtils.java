@@ -8,12 +8,12 @@
 */ 
 package com.skyeyes.base.util;
 
-import com.skyeyes.storemonitor.R;
-
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
+
+import com.skyeyes.storemonitor.R;
 
 /**
  * 通用视图帮助类

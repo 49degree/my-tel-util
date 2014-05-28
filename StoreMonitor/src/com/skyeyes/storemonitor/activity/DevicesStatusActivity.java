@@ -1,12 +1,9 @@
 package com.skyeyes.storemonitor.activity;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -14,9 +11,9 @@ import android.widget.Toast;
 
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceInfo;
+import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceStatus;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
-import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
@@ -66,10 +63,9 @@ public class DevicesStatusActivity extends Activity implements OnClickListener{
 			startActivity(intent);
 			break;
 		case R.id.protect:
-			Log.e("chenlong", "currentStatus::::: "+currentStatus);
 
 			switch (currentStatus) {
-			case 0:				
+			case 0:		
 				changeDeviceStatus(5);
 				break;
 			case 5:
@@ -92,15 +88,15 @@ public class DevicesStatusActivity extends Activity implements OnClickListener{
 		try {
 			sendObjectParams.setParams(REQUST.cmdSendActive, params);
 			System.out
-					.println("getManucount入参数：" + sendObjectParams.toString());
-			SetDeviceStatusReceive deviceStatusReceive;
+					.println("changeDeviceStatus入参数：" + sendObjectParams.toString());
+			SetDeviceStatusReceive setdeviceStatusReceive;
 			if(status==0){
-				 deviceStatusReceive = new SetDeviceStatusReceive(true);
+				 setdeviceStatusReceive = new SetDeviceStatusReceive(true);
 			} else {
-				 deviceStatusReceive = new SetDeviceStatusReceive(false);
+				setdeviceStatusReceive = new SetDeviceStatusReceive(false);
 
 			}
-			DevicesService.sendCmd(sendObjectParams, deviceStatusReceive);
+			DevicesService.sendCmd(sendObjectParams, setdeviceStatusReceive);
 			
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
@@ -150,12 +146,14 @@ public class DevicesStatusActivity extends Activity implements OnClickListener{
 		
 	}
 	
-	@SuppressLint("HandlerLeak")
-	private class DeviceStatusReceive extends DeviceReceiveCmdProcess<ReceiveDeviceInfo>{
-		public void onProcess(ReceiveDeviceInfo receiveCmdBean) {
+	private class DeviceStatusReceive extends DeviceReceiveCmdProcess<ReceiveDeviceStatus>{
+		public void onProcess(ReceiveDeviceStatus receiveCmdBean) {
 			// TODO Auto-generated method stub
+
 				if(receiveCmdBean.getCommandHeader().resultCode == 0){
-					currentStatus = receiveCmdBean.status;
+
+					currentStatus = (int)receiveCmdBean.deviceStatus;
+
 					if(currentStatus==5){
 						protectBtn.setBackground(getResources().getDrawable(R.drawable.device_set_protect));
 					} else {

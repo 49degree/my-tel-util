@@ -7,12 +7,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skyeyes.base.util.Log;
 import com.skyeyes.base.view.SlidingMenu.CanvasTransformer;
 import com.skyeyes.storemonitor.R;
 

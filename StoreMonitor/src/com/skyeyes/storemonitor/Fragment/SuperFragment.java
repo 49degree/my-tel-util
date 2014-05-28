@@ -10,13 +10,17 @@ import org.achartengine.renderer.XYSeriesRenderer;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu.CountManuResultBean;
+import com.skyeyes.base.view.CustomProgressDialog;
 @SuppressLint("NewApi")
 
 public abstract class SuperFragment extends Fragment {
@@ -76,6 +80,40 @@ public abstract class SuperFragment extends Fragment {
 		renderer.setLabelsColor(Color.GRAY);
 		return renderer;
 	}
+	
+	protected CustomProgressDialog mPdDialog;
+	private boolean cancell = false;
 
+	protected void showMPdDialog() {
+		if (mPdDialog == null) {
+			mPdDialog = CustomProgressDialog.createDialog(getActivity());
+			mPdDialog.setOnKeyListener(new OnKeyListener() {
+				@Override
+				public boolean onKey(DialogInterface dialog, int keyCode,
+						KeyEvent event) {
+					if (KeyEvent.KEYCODE_BACK == keyCode) {
+						synchronized (getActivity()) {
+							cancell = true;
+						}
 
+					}
+					return false;
+				}
+			});
+		}
+		if (!mPdDialog.isShowing()) {
+			mPdDialog.show();
+		}
+
+	}
+	
+	
+	/**
+	 * 隐藏提示框
+	 */
+	protected void dismissMPdDialog() {
+		if (mPdDialog != null && mPdDialog.isShowing()) {
+			mPdDialog.dismiss();
+		}
+	}
 }

@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
-import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHistoryVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveStopVideo;

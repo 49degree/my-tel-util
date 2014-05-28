@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.skyeyes.base.util.Log;
 import com.skyeyes.base.view.CustomViewAbove.OnPageChangeListener;
 import com.skyeyes.storemonitor.R;
 

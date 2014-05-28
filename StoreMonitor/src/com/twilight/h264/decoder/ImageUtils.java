@@ -1,6 +1,6 @@
 package com.twilight.h264.decoder;
 
-import com.twilight.h264.util.*;
+import com.twilight.h264.util.Arrays;
 
 public class ImageUtils {
 	

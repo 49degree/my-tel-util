@@ -12,6 +12,7 @@ import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.service.DevicesService;
 
 public class SettingActivity extends BaseActivity implements OnClickListener{
 	@Override
@@ -59,6 +60,11 @@ public class SettingActivity extends BaseActivity implements OnClickListener{
 				StringUtil.getTextViewValue((TextView)findViewById(R.id.store_server_port_et)));
 		
 		Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+		
+		if(DevicesService.getInstance()!=null){
+			DevicesService.getInstance().reLoginDevice();
+		}
+			
 		
 
 	}

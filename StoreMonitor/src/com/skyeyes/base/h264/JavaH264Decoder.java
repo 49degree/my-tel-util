@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.util.Log;
 
 import com.twilight.h264.decoder.AVFrame;
 import com.twilight.h264.decoder.AVPacket;
@@ -152,14 +153,25 @@ public class JavaH264Decoder extends Thread{
 							if(byteBuffer==null || byteBuffer.capacity()!=bufferSize*4){
 								byteBuffer = ByteBuffer.allocate(bufferSize*32);
 							}
-							YUV2RGB(picture,byteBuffer);
+							
+							synchronized (this) {
+								byteBuffer.position(0);
+								YUV2RGB(picture,byteBuffer);
+								//Log.e("JavaH264Decoder",byteBuffer.capacity()+":"+byteBuffer.position()+":"+byteBuffer.capacity()/byteBuffer.position());
+								byteBuffer.position(0);
+							}
+
+							
 							mExecutorService.execute(new Runnable(){
 								public void run(){
+
 									try{
 										if(videoBitmap==null||videoBitmap.getWidth()<picture.imageWidth||
 												videoBitmap.getHeight()<picture.imageHeight)
 											videoBitmap=Bitmap.createBitmap(picture.imageWidth, picture.imageWidth, Config.ARGB_8888);
-										videoBitmap.copyPixelsFromBuffer(byteBuffer);//makeBuffer(data565, N));
+										synchronized (this) {
+											videoBitmap.copyPixelsFromBuffer(byteBuffer);//makeBuffer(data565, N));
+										}
 										if(mDecodeSuccCallback!=null)
 											mDecodeSuccCallback.onDecodeSucc(JavaH264Decoder.this,videoBitmap);
 
@@ -169,6 +181,7 @@ public class JavaH264Decoder extends Thread{
 								}
 							});
 
+
 			            }
 			            avpkt.size -= len;
 			            avpkt.data_offset += len;
@@ -176,7 +189,7 @@ public class JavaH264Decoder extends Thread{
 		        
 		        } catch(Exception ie) {
 		        	// Any exception, we should try to proceed reading next packet!
-		        	ie.printStackTrace();
+		        	//ie.printStackTrace();
 		        } 
 			}
 	    }catch(java.nio.BufferUnderflowException ex){

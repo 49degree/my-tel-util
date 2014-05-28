@@ -4,8 +4,11 @@ public class AlarmInfoBean {
 	public int _id;
 	public String eventCode;
 	public int type;
+	
 	public long time;
 	public byte[] pic;
+	public boolean hasLook;
+	public String des;
 	
 	public int get_id() {
 		return _id;
@@ -36,6 +39,18 @@ public class AlarmInfoBean {
 	}
 	public void setPic(byte[] pic) {
 		this.pic = pic;
+	}
+	public boolean getHasLook() {
+		return hasLook;
+	}
+	public void setHasLook(boolean hasLook) {
+		this.hasLook = hasLook;
+	}
+	public String getDes() {
+		return des;
+	}
+	public void setDes(String des) {
+		this.des = des;
 	}
 
 	

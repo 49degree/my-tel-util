@@ -1,6 +1,9 @@
 package com.skyeyes.storemonitor.activity;
 
-import java.text.ParseException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,7 +28,6 @@ import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.Gallery;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -465,6 +467,34 @@ public class MainPageActivity extends BaseActivity{
 						// TODO Auto-generated method stub
 						Log.i("DecoderCallback", "onDecodeSucc================");
 						pic = Bitmap.createBitmap(bitmap);
+						
+                        File f = new File("/sdcard/store.png");
+                        try {
+                        	if(!f.exists())
+                        		f.createNewFile();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+                        FileOutputStream fOut = null;
+                        try {
+                                fOut = new FileOutputStream(f);
+                        } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                        }
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                        try {
+                                fOut.flush();
+                        } catch (IOException e) {
+                                e.printStackTrace();
+                        }
+                        try {
+                                fOut.close();
+                        } catch (IOException e) {
+                                e.printStackTrace();
+                        }
+						
+						
 						decoder.toStop();
 					}
 					

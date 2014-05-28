@@ -46,6 +46,8 @@ public class AlermRecorderActivity extends Activity {
 	private ArrayList<AlarmInfoBean> alarmInfoBeans = new ArrayList<AlarmInfoBean>();
 	private AlarmRecordViewAdapter pageAdapter;
 	private String endTime;
+	
+	private boolean hasQuery = false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -59,9 +61,18 @@ public class AlermRecorderActivity extends Activity {
 		alarm_record_list.setVisibility(View.GONE);
 
 		
+
+		//testView();
+	}
+
+    public void onResume(){
+    	super.onResume();
+    	if(hasQuery)
+    		return;
 		if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
 			query_data_notify_tv.setText("未登陆设备");
 		}else{
+			hasQuery = true;
 			query_data_notify_tv.setText("正在查询报警数据,请稍后...");
 			pageAdapter=new AlarmRecordViewAdapter(this,alarmInfoBeans);
 			alarm_record_list.setAdapter(pageAdapter);
@@ -71,7 +82,10 @@ public class AlermRecorderActivity extends Activity {
 			String startTime = DateUtil.getTimeStringFormat(new Date(0), DateUtil.TIME_FORMAT_YMDHMS);//DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YMDHMS);
 			if(!"".equals(lastTime)){
 				startTime = lastTime;
+			}else{
+				startTime = "2014-05-26 00:00:00";
 			}
+			
 			SendObjectParams sendObjectParams = new SendObjectParams();
 			Object[] params = new Object[] {
 					//DateUtil.getFrontMonthDateString()+" 00:00:00",
@@ -89,9 +103,8 @@ public class AlermRecorderActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-		//testView();
-	}
-
+    }
+	
 	private AlarmIdBean alarmIdBean; 
 	Thread t;
 	private class AlarmListReceive extends DeviceReceiveCmdProcess<ReceiveAlarmList>{
@@ -145,12 +158,12 @@ public class AlermRecorderActivity extends Activity {
 				final AlarmInfoBean alarmInfoBean = new AlarmInfoBean();
 				alarmInfoBean.eventCode = receiveCmdBean.eventCode;
 				alarmInfoBean.time = receiveCmdBean.time;
-				alarmInfoBean.type = 0;
+				alarmInfoBean.type = receiveCmdBean.alarmType;
+				alarmInfoBean.hasLook = false;
+				alarmInfoBean.des="没有描述信息";
 				if(receiveCmdBean.pic==null||receiveCmdBean.pic.length<4){
-					alarmInfoBean.type = 3;
 				}else{
 					if(TypeConversion.bytesToIntEx(receiveCmdBean.pic, 0)==1){//头4个字节为0x00000001的为hd264
-						alarmInfoBean.type = 1;
 					    try {
 							JavaH264Decoder decoder = new JavaH264Decoder(new DecodeSuccCallback(){
 								@Override
@@ -189,7 +202,6 @@ public class AlermRecorderActivity extends Activity {
 						}
 						if(tempValue!=0){
 							alarmInfoBean.pic = receiveCmdBean.pic;
-							alarmInfoBean.type = 2;
 						}
 
 					}
@@ -214,7 +226,7 @@ public class AlermRecorderActivity extends Activity {
 
 				}
 				
-				DBOperator.getInstance().insert(DBBean.TBAlarmInfoBean, alarmInfoBean);
+				alarmInfoBean.set_id((int)DBOperator.getInstance().insert(DBBean.TBAlarmInfoBean, alarmInfoBean));
 			}
 			alarmIdBean = null;
 			synchronized(t){

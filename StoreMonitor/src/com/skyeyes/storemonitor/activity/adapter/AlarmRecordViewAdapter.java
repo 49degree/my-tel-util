@@ -3,12 +3,14 @@ package com.skyeyes.storemonitor.activity.adapter;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +18,8 @@ import android.widget.TextView;
 import com.skyeyes.base.bean.AlarmInfoBean;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.activity.MainPageActivity;
+import com.skyeyes.storemonitor.activity.VideoPlayActivity;
 
 public class AlarmRecordViewAdapter extends BaseAdapter {
 	ArrayList<AlarmInfoBean> list;
@@ -52,19 +56,28 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
             cacheView.time=(TextView) convertView.findViewById(R.id.alarm_record_time);
             cacheView.img=(ImageView) convertView.findViewById(R.id.alarm_record_img);      
             cacheView.type=(TextView) convertView.findViewById(R.id.alarm_record_type);
+            cacheView.des = (TextView) convertView.findViewById(R.id.alarm_record_memo);
             convertView.setTag(cacheView);
         }else{
             cacheView=(CacheView) convertView.getTag();
         }
-        Log.e("position", position+":"+list.size()+":"+cacheView.time);
+        //Log.e("position", position+":"+list.size()+":"+cacheView.time);
         
         cacheView.time.setText(DateUtil.getTimeStringFormat(list.get(position).time, DateUtil.TIME_FORMAT_YMDHMS));
-        cacheView.type.setText(String.valueOf(list.get(position).type));
+        if(list.get(position).hasLook){
+        	cacheView.type.setText("已查看");
+        }else{
+        	cacheView.type.setText("未查看");
+        }
+        
+        cacheView.des.setText(list.get(position).des);
+        
         if(list.get(position).pic!=null){
         	if(cacheView.imgBitmap!=null)
         		cacheView.imgBitmap.recycle();
         	cacheView.imgBitmap = BitmapFactory.decodeByteArray(list.get(position).pic,0,list.get(position).pic.length);
         	cacheView.img.setImageBitmap(cacheView.imgBitmap);
+
         }
         
         return convertView;
@@ -75,5 +88,6 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
         ImageView img;
         Bitmap imgBitmap;
         TextView type;
+        TextView des;
     }
 }

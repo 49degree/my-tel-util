@@ -160,6 +160,7 @@ public class H264VideoView extends View implements Runnable{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas); 
         if(videoBitmap!=null){
+        	Log.i("H264VideoView", "onDraw++++++++++++++");
             RectF rectF = new RectF(videoViewStartX, videoViewStartY, videoViewEndX, videoViewEndY); 
             //w和h分别是屏幕的宽和高，也就是你想让图片显示的宽和高  
           canvas.drawBitmap(videoBitmap, null, rectF, null);

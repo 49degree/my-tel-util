@@ -91,6 +91,10 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mCurrentDeviceCode = deviceCode;
 	}
 	
+	public void reLoginDevice(){
+		//初始化设备管理器,并登陆设备
+		initDeviceProcess(mCurrentDeviceCode);
+	}
 	@Override
 	public void onDeviceLogin(String deviceCode, ReceivLogin receivLogin) {
 		// TODO Auto-generated method stub

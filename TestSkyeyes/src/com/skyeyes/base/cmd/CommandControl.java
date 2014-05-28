@@ -165,7 +165,10 @@ public class CommandControl {
 	        case cmdReqHistoryVideo://请求录像回放         	
 	        case cmdReqAlarmVideo://请求报警录像
 	        	receiveCmdBean = new ReceiveHistoryVideo();
-	        	break;	        	
+	        	break;	   
+	        case cmdSendActive:
+	        	receiveCmdBean = new ReceiveDeviceInfo();
+	        	break;
 	        default:
 	        	return null;
 	        } 

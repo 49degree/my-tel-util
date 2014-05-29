@@ -41,6 +41,8 @@ public class DoorRecordActivity extends Activity {
 	private ArrayList<OpenCloseDoorInfoBean> openCloseDoorInfoBeans = new ArrayList<OpenCloseDoorInfoBean>();
 	private DoorRecordViewAdapter pageAdapter;
 	private String endTime;
+	private OpenCloseDoorIdBean queryOpenCloseDoorIdBean; 
+	Thread t;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -63,9 +65,15 @@ public class DoorRecordActivity extends Activity {
 		door_record_list.setVisibility(View.GONE);
 
 		
+
+		//testView();
+	}
+
+    public void onResume(){
+    	super.onResume();
 		if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
 			query_data_notify_tv.setText("未登陆设备");
-		}else{
+		}else if(pageAdapter==null){
 			query_data_notify_tv.setText("正在查询开关门数据,请稍后...");
 			pageAdapter=new DoorRecordViewAdapter(this,openCloseDoorInfoBeans);
 			door_record_list.setAdapter(pageAdapter);
@@ -93,11 +101,8 @@ public class DoorRecordActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-		//testView();
-	}
+    }
 
-	private OpenCloseDoorIdBean queryOpenCloseDoorIdBean; 
-	Thread t;
 	private class DoorRecordReceive extends DeviceReceiveCmdProcess<ReceiveOpenCloseDoor>{
 
 		@Override

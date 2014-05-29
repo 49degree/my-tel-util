@@ -2,6 +2,7 @@ package com.skyeyes.base;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.exception.CommandParseException;
@@ -21,7 +22,13 @@ public abstract class BaseSocketHandler implements SocketHandler {
 	public BaseSocketHandler(Looper looper){
 		// TODO Auto-generated constructor stub
 		mLooper = looper;
-		mHandler = new Handler(mLooper);
+		mHandler = new Handler(mLooper){
+			public void handleMessage(Message msg){
+				handleMessage(msg);
+			}
+		};
+		
+		
 	}
 	
 	public BaseSocketHandler(){
@@ -36,6 +43,9 @@ public abstract class BaseSocketHandler implements SocketHandler {
 	public abstract void onSocketExceptionEx(NetworkException ex);
 
 	public abstract void onSocketClosedEx();
+	
+	public abstract void handleMessage(Message msg);
+	
 	
 	@Override
 	public void setSkyeyeSocketClient(SkyeyeSocketClient skyeyeSocketClient){
@@ -91,5 +101,7 @@ public abstract class BaseSocketHandler implements SocketHandler {
 			
 		});
 	}
+	
+	
 	
 }

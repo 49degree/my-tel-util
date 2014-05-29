@@ -3,6 +3,7 @@ package com.skyeyes.storemonitor.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -134,8 +135,13 @@ public class DevicesStatusActivity extends Activity implements OnClickListener{
 				if(receiveCmdBean.getCommandHeader().resultCode == 0){
 					Toast.makeText(DevicesStatusActivity.this, isProtect?"布防成功":"撤防成功", Toast.LENGTH_SHORT).show();
 					currentStatus = (isProtect?0:5);
-					protectBtn.setBackground(getResources().getDrawable(isProtect?R.drawable.device_rm_protect:R.drawable.device_set_protect));
-
+					
+			        int sdk = android.os.Build.VERSION.SDK_INT;
+			        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+			        	protectBtn.setBackgroundDrawable(getResources().getDrawable(isProtect?R.drawable.device_rm_protect:R.drawable.device_set_protect));
+			        } else {
+			        	protectBtn.setBackground(getResources().getDrawable(isProtect?R.drawable.device_rm_protect:R.drawable.device_set_protect));
+			        }
 				}
 		}
 
@@ -153,13 +159,20 @@ public class DevicesStatusActivity extends Activity implements OnClickListener{
 				if(receiveCmdBean.getCommandHeader().resultCode == 0){
 
 					currentStatus = (int)receiveCmdBean.deviceStatus;
-
+					Drawable res = null;
 					if(currentStatus==5){
-						protectBtn.setBackground(getResources().getDrawable(R.drawable.device_set_protect));
+						res = getResources().getDrawable(R.drawable.device_set_protect);
 					} else {
-						protectBtn.setBackground(getResources().getDrawable(R.drawable.device_rm_protect));
+						res =getResources().getDrawable(R.drawable.device_rm_protect);
 
 					}
+					
+			        int sdk = android.os.Build.VERSION.SDK_INT;
+			        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+			        	protectBtn.setBackgroundDrawable(res);
+			        } else {
+			        	protectBtn.setBackground(res);
+			        }
 				}
 		}
 

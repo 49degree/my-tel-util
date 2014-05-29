@@ -1,6 +1,7 @@
 package com.skyeyes.storemonitor.activity;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
@@ -85,6 +86,12 @@ public class InitActivity extends BaseActivity{
 			//System.out.println("测试连接失败:onFailure");
 			//Toast.makeText(MainPageActivity.this, "测试连接失败:onFailure", Toast.LENGTH_SHORT).show();
 
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			
 		}
 
 	};

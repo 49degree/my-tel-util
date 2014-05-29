@@ -3,6 +3,7 @@ package com.skyeyes.storemonitor.process.impl;
 import java.util.HashMap;
 
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,7 +27,7 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 	
 	
 	String TAG = "DeviceProcess";
-	public HashMap<String,DeviceReceiveCmdProcess> mStaticCmdProcess = new HashMap<String,DeviceReceiveCmdProcess>();
+	public HashMap<String,DeviceReceiveCmdProcess> mStaticCmdProcess;
 	public HashMap<String,DeviceReceiveCmdProcess> mResponseCmdProcess = new HashMap<String,DeviceReceiveCmdProcess>();
 	public HashMap<Integer,ChannelProcessInterface> mChannelProcess = new HashMap<Integer,ChannelProcessInterface>();
 	protected final HashMap<Integer,ChannelProcessInterface> mChannelProcessMap= new HashMap<Integer,ChannelProcessInterface>();
@@ -208,6 +209,12 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 			// TODO Auto-generated method stub
 			System.out.println("测试连接关闭111111:onFailure");
 			Toast.makeText(StoreMonitorApplication.getInstance(), "连接已关闭", Toast.LENGTH_SHORT).show();
+		}
+		
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 

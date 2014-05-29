@@ -78,16 +78,6 @@ public class SendObjectParams extends SendCmdBean{
 	        			params[1].toString().length(),params[1]
 	        			};
 	        	break;
-	        case cmdHistoryAlarmList:
-	        	sendsParams=new Object[]{
-	        			1,params[0],
-	    				8,DateUtil.date2FileTime(fmt.parse(params[1]+"")),
-	    				8,DateUtil.date2FileTime(fmt.parse(params[2]+"")),
-	    				1,params[3]};
-	        	break;
-	        case cmdHistoryAlarmInfo:
-	        	sendsParams=new Object[]{params[0].toString().length(),params[0]};
-	        	break;
 	        case cmdGps:
 	        	String gps=params[0]+"_"+params[1];
 	        	sendsParams=new Object[]{gps.length(),gps};
@@ -117,17 +107,6 @@ public class SendObjectParams extends SendCmdBean{
 	        			1,params[0],
 	        			36,params[1],
 	        			params[2].toString().length(),params[2]};
-	        	break;
-	        case cmdSendAlarm:
-	        	sendsParams=new Object[]{
-					        			32,getDeviceId(),
-					        			4,getIntRandom(),
-					    				1,params[0],
-					    				1,0,
-					    				8,DateUtil.date2FileTime(fmt.parse(nowTime)),
-					    				8,params[1],
-					    				8,params[2],
-					    				params[3].toString().getBytes().length,params[3].toString()};
 	        	break;
 	        case cmdPlatformAlarmList:
 	        	sendsParams=new Object[]{

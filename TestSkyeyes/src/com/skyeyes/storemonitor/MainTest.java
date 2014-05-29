@@ -29,7 +29,7 @@ import com.skyeyes.base.util.DateUtil;
 
 public class MainTest {
 	//static String userName ="389test";
-	static String userName ="369test";
+	static String userName ="389test";
 	static HashMap<Integer,ChannelStatus> mChannelListStatus = null;
 	static int fileId = 0;
 	static int channelCount = -1;
@@ -190,7 +190,7 @@ public class MainTest {
 	// 登陆
 	public static void testEquitLogin(SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		Object[] params = new Object[] { 1, userName, userName,CommandControl.getDeviceId()};
+		Object[] params = new Object[] { 0x01, userName, userName,CommandControl.getDeviceId()};
 		try {
 			sendObjectParams.setParams(REQUST.cmdEquitLogin, params);
 
@@ -573,7 +573,7 @@ public class MainTest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+		/*
 		
 		getChannelPic(skyeyeSocketClient,(byte)0);
 		
@@ -614,7 +614,7 @@ public class MainTest {
 				e.printStackTrace();
 			}
 		getAlarmList(skyeyeSocketClient);
-		
+		*/
 		//getOpenCloseDoorInfo(skyeyeSocketClient,receiveOpenCloseDoor.openCloseDoorBeans.get(0).des);
 		
 		//getOpenCloseDoorInfo(skyeyeSocketClient,"123456789");

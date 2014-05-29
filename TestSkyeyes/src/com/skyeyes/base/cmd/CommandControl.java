@@ -10,6 +10,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceivReadDeviceNetInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveAlarmInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveAlarmList;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
+import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceAlarm;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelName;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceEnv;
@@ -19,6 +20,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveGetEquitIO;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHeart;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHistoryVideo;
+import com.skyeyes.base.cmd.bean.impl.ReceiveLoginOut;
 import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoor;
 import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoorInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
@@ -169,6 +171,12 @@ public class CommandControl {
 	        case cmdSendActive:
 	        	receiveCmdBean = new ReceiveDeviceInfo();
 	        	break;
+	        case cmdRecDeviceAlarm:
+	        	receiveCmdBean = new ReceiveDeviceAlarm();
+	        	break;	
+	        case cmdRevLoginOut:
+	        	receiveCmdBean = new ReceiveLoginOut();
+	        	break;      	
 	        default:
 	        	return null;
 	        } 
@@ -221,8 +229,7 @@ public class CommandControl {
 		cmdPushActive((byte)0x17,(byte)0x05,0),//设置布防状态 cmdSendActive((byte)int value)
 		cmdFlag((byte)0,(byte)0x06,2),//视频解码心跳 cmdFlag((byte)int flag,String meg)
 		
-		cmdHistoryAlarmList((byte)35,(byte)0x08,4),//读取历史报警记录列表命令 cmdHistoryAlarmList((byte)int channel,String startTime,String endTime,int flag)
-		cmdHistoryAlarmInfo((byte)36,(byte)0x09,1),//读取历史报警记录详细 cmdHistoryAlarmInfo((byte)String id)
+
 		cmdGps((byte)0x3d,(byte)0x0A,2),// cmdGps((byte)double x,double y)
 		cmdConfirmPolice((byte)0x3a,(byte)0x0B,5),//cmdConfirmPolice((byte)String id,int type,double x,double y,String bz)
 		cmdUserInfo((byte)0x2b,(byte)0x0C,0),//cmdUserInfo((byte))
@@ -232,7 +239,7 @@ public class CommandControl {
 		cmdUserEquitListNOLogin((byte)0x39,(byte)0x10,2),//cmdUserEquitList((byte))
 		cmdSetDuty((byte)0x44,(byte)0x11,1),//cmdSetDuty((byte)int state)
 		cmdUploadEvidence((byte)0x3e,(byte)0x12,3),//cmdUploadEvidence((byte)int type,String alarmid,String url)
-		cmdSendAlarm((byte)0x21,(byte)0x13,4),//发送主动报警信息cmdSendAlarm((byte)int type,double longitude double latitude,String equitid)
+		
 		cmdPlatformAlarmList((byte)0x46,(byte)0x14,6),//获取保安平台报警信息cmdPlatformAlarmList((byte)String sTimeStr,String eTimeStr,int ja,int jj,int cj,int bajj)
 		cmdPlatformAlarmInfo((byte)0x47,(byte)0x15,1),//获取平台报警详细信息 cmdPlatformAlarmInfo((byte)String alarmid)
 		cmdHeart((byte)0x09,(byte)0x16,1),//测试主动心跳 cmdHeart((byte)String alarmid)
@@ -271,7 +278,9 @@ public class CommandControl {
 		cmdReqAlarmVideo((byte)0x03,(byte)0x31,2),//请求报警录像
 		
 		cmdReqOpenCloseDoorInfo((byte)0x24,(byte)0x32,1),//请求开关门详细信息
-		cmdReqAlarmInfo((byte)0x24,(byte)0x33,1);//请求报警详细信息
+		cmdReqAlarmInfo((byte)0x24,(byte)0x33,1),//请求报警详细信息
+		
+		cmdRecDeviceAlarm((byte)0x21,(byte)0,0);//设备主动报警信息
 		
 		private byte cmd ;
 		private byte cmdId;//返回ID

@@ -420,10 +420,11 @@ public class MainPageActivity extends BaseActivity{
 			Bitmap tempPic = BitmapFactory.decodeResource(MainPageActivity.this.getResources(), R.drawable.photo);
 	        WindowManager windowManager = getWindowManager();
 	        Display display = windowManager.getDefaultDisplay();
-			float zoom = 1.0f*display.getWidth()/tempPic.getWidth();
-			int imgHeight = (int)(tempPic.getHeight()*zoom);
+			float zoom = 1.0f*display.getWidth()/384;
+			int imgHeight = (int)(322*zoom);
+			
 			LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(
-					display.getWidth(),imgHeight);
+					display.getWidth(),imgHeight-50);
 			List<ChennalPicBean> historyPicBeanlist=new ArrayList<ChennalPicBean>();
 			for(int i=0;i<chennalCount;i++){
 	        	ChennalPicBean picBean=new ChennalPicBean();

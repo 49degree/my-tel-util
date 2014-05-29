@@ -114,50 +114,54 @@ public class VideoPlayActivity extends BaseActivity {
 				"ReceiveVideoData", new VideoDataReceive());
 		DevicesService.registerCmdProcess(
 				"ReceiveVideoFinish", new VideoFinsishReceive());
-		
+		DeviceReceiveCmdProcess deviceReceiveCmdProcess = null;
+		SendObjectParams sendObjectParams = null;
 		if (chennalId > -1) {
 			if(videoType==1){//1，历史视频
-				SendObjectParams sendObjectParams = new SendObjectParams();
+				sendObjectParams = new SendObjectParams();
 				Object[] params = new Object[] { chennalId,startTime,videoLong};
 				try {
 					sendObjectParams.setParams(REQUST.cmdReqHistoryVideo, params);
 					System.out.println("cmdReqHistoryVideo入参数："
 							+ sendObjectParams.toString());
-					DevicesService
-							.sendCmd(sendObjectParams, new HistoryVideoReceive());
+					deviceReceiveCmdProcess = new HistoryVideoReceive();
 				} catch (CommandParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}else if(videoType==2){//，2报警视频
-				SendObjectParams sendObjectParams = new SendObjectParams();
+				sendObjectParams = new SendObjectParams();
 				Object[] params = new Object[] { chennalId, alarmId};
 				try {
 					sendObjectParams.setParams(REQUST.cmdReqAlarmVideo, params);
 					System.out.println("cmdReqAlarmVideo入参数："
 							+ sendObjectParams.toString());
-					DevicesService
-							.sendCmd(sendObjectParams, new HistoryVideoReceive());
+					deviceReceiveCmdProcess = new HistoryVideoReceive();
 				} catch (CommandParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}else{//0,实时视频
-				SendObjectParams sendObjectParams = new SendObjectParams();
+				sendObjectParams = new SendObjectParams();
 				Object[] params = new Object[] { chennalId };
 				try {
 					sendObjectParams.setParams(REQUST.cmdReqRealVideo, params);
 					System.out.println("cmdReqRealVideo入参数："
 							+ sendObjectParams.toString());
-					DevicesService
-							.sendCmd(sendObjectParams, new RealVideoReceive());
+					deviceReceiveCmdProcess = new RealVideoReceive();
+					
 				} catch (CommandParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-
-			start = true;
+			if(deviceReceiveCmdProcess!=null){
+				deviceReceiveCmdProcess.setTimeout(20*1000);
+				DevicesService.sendCmd(sendObjectParams, deviceReceiveCmdProcess);
+				start = true;
+			}
+			
+			
 		}
 
 	}
@@ -202,6 +206,11 @@ public class VideoPlayActivity extends BaseActivity {
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
+			notifyText.setText(errinfo);
+		}
+		
+		public void onResponsTimeout(){
+			notifyText.setText("连接超时....");
 		}
 	}
 
@@ -222,6 +231,11 @@ public class VideoPlayActivity extends BaseActivity {
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
+			notifyText.setText(errinfo);
+		}
+		
+		public void onResponsTimeout(){
+			notifyText.setText("连接超时....");
 		}
 	}
 

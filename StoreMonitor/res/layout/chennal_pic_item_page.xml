@@ -22,6 +22,7 @@
      <TextView
          android:id="@+id/chennal_pic_tv"
          android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
+         android:layout_height="50px"
+         android:gravity="center"
          android:text="TextView"/>
  </LinearLayout>

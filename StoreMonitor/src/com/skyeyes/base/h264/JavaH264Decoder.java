@@ -33,6 +33,7 @@ public class JavaH264Decoder extends Thread{
     int[] cacheRead = new int[3];
     boolean hasMoreNAL = true;
     int pauseStep = 0;
+    boolean skipNalu;
     DecodeSuccCallback mDecodeSuccCallback;
     
     ExecutorService mExecutorService = Executors.newFixedThreadPool(5);
@@ -92,31 +93,82 @@ public class JavaH264Decoder extends Thread{
 	public void sendStream(byte[] data) {
 		sendStream(data,0,data.length);
 	}
+	
+	boolean hasBegin = false;
 	public void sendStream(byte[] data,int start,int len) {
 		
 		ByteBuffer dataBuffer = ByteBuffer.wrap(data);
 		dataBuffer.position(start);
 		dataBuffer.limit((start+len));
 		int switchByte = -1;
+		
+		if(!hasBegin){
+			// Find first NAL
+			try{
+				if(pauseStep<3){
+					if(pauseStep == 0){
+						dataPointer = 0;
+						cacheRead[0] = 0xFF&dataBuffer.get();
+						pauseStep++;
+					}
+					if(pauseStep == 1){
+						cacheRead[1] = 0xFF&dataBuffer.get();
+						pauseStep++;
+					}
+					if(pauseStep == 2){
+						cacheRead[2] = 0xFF&dataBuffer.get();
+						pauseStep++;
+					}				
+				}
+				
+				if(pauseStep > 2){
+					while(!(
+							cacheRead[0] == 0x00 &&
+							cacheRead[1] == 0x00 &&
+							cacheRead[2] == 0x01 
+							) && hasMoreNAL) {
+							cacheRead[0] = cacheRead[1];
+							cacheRead[1] = cacheRead[2];
+							cacheRead[2] = 0xFF&dataBuffer.get();
+					}
+				}
+		    }catch(java.nio.BufferUnderflowException ex){
+		    	return;
+		    } catch(Exception e) {
+		    	e.printStackTrace();
+		    	return;
+		    }
+			if(!hasMoreNAL)
+				return;
+			
+			// 4 first bytes always indicate NAL header
+			inbuf_int[0]=inbuf_int[1]=inbuf_int[2]=0x00;
+			inbuf_int[3]=0x01;
+			
+			pauseStep = 0;
+			hasBegin = true;
+		}
+		
 	    try {
 			while(hasMoreNAL) {
-				if(pauseStep == 0){
-					dataPointer = 4;
-					// Find next NAL
-					cacheRead[0] = 0xFF&dataBuffer.get();
-					pauseStep++;
-				}
-				if(pauseStep == 1){
-					cacheRead[1] = 0xFF&dataBuffer.get();
-					pauseStep++;
+				if(pauseStep<3){
+					if(pauseStep == 0){
+						dataPointer = 4;
+						// Find next NAL
+						cacheRead[0] = 0xFF&dataBuffer.get();
+						pauseStep++;
+					}
+					if(pauseStep == 1){
+						cacheRead[1] = 0xFF&dataBuffer.get();
+						pauseStep++;
+					}
+					if(pauseStep == 2){
+						cacheRead[2] = 0xFF&dataBuffer.get();
+						pauseStep++;
+					}
 				}
 				
-				if(pauseStep == 2){
-					cacheRead[2] = 0xFF&dataBuffer.get();
-					pauseStep++;
-				}
-				
-				if(pauseStep == 3){
+				if(pauseStep > 2 ){
 					while(!(
 							cacheRead[0] == 0x00 &&
 							cacheRead[1] == 0x00 &&
@@ -128,10 +180,10 @@ public class JavaH264Decoder extends Thread{
 							cacheRead[1] = cacheRead[2];
 							cacheRead[2] = switchByte;
 					}
-					pauseStep++;
 				}
-
-				pauseStep=pauseStep%4;
+				pauseStep=0;
+				if(skipNalu)
+					continue;
 				
 
 				avpkt.size = dataPointer;
@@ -149,7 +201,7 @@ public class JavaH264Decoder extends Thread{
 			            	picture = c.priv_data.displayPicture;
 		
 							int bufferSize = picture.imageWidth * picture.imageHeight;
-							
+							Log.e("JavaH264Decoder","picture.imageWidth * picture.imageHeight:"+picture.imageWidth+"*"+picture.imageHeight);
 							if(byteBuffer==null || byteBuffer.capacity()!=bufferSize*4){
 								byteBuffer = ByteBuffer.allocate(bufferSize*32);
 							}
@@ -160,15 +212,14 @@ public class JavaH264Decoder extends Thread{
 								//Log.e("JavaH264Decoder",byteBuffer.capacity()+":"+byteBuffer.position()+":"+byteBuffer.capacity()/byteBuffer.position());
 								byteBuffer.position(0);
 							}
-
-							
 							mExecutorService.execute(new Runnable(){
 								public void run(){
 
 									try{
 										if(videoBitmap==null||videoBitmap.getWidth()<picture.imageWidth||
 												videoBitmap.getHeight()<picture.imageHeight)
-											videoBitmap=Bitmap.createBitmap(picture.imageWidth, picture.imageWidth, Config.ARGB_8888);
+											videoBitmap=Bitmap.createBitmap(picture.imageWidth, picture.imageHeight, Config.ARGB_8888);
+										Log.e("JavaH264Decoder","videoBitmap.imageWidth * videoBitmap.imageHeight:"+videoBitmap.getWidth()+"*"+videoBitmap.getHeight());
 										synchronized (this) {
 											videoBitmap.copyPixelsFromBuffer(byteBuffer);//makeBuffer(data565, N));
 										}
@@ -237,6 +288,10 @@ public class JavaH264Decoder extends Thread{
 				
 			}
 		}
+	}
+	
+	public void setSkipNalu(boolean skipNalu){
+		this.skipNalu = skipNalu;
 	}
 	
     public interface DecodeSuccCallback{

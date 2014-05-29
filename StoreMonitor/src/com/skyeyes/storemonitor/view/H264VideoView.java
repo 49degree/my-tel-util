@@ -4,9 +4,10 @@ import java.util.LinkedList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
@@ -37,13 +38,15 @@ public class H264VideoView extends View implements Runnable{
 	
 	private Handler handler;
 	
-	
+	DisplayMetrics dm = null;
 	
 	public H264VideoView(Context context,Display display,DecodeSuccCallback decodeSuccCallback) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		mContext = context;
 		mDisplay = display;
+		dm = new DisplayMetrics();
+		mDisplay.getMetrics(dm);
 		mDecodeSuccCallback = decodeSuccCallback;
 		handler = new Handler(Looper.getMainLooper());
 	    try {
@@ -73,6 +76,8 @@ public class H264VideoView extends View implements Runnable{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+        temp = Bitmap.createBitmap(dm.widthPixels, dm.heightPixels, Config.RGB_565);
+        rectF = new RectF(0, 0, dm.widthPixels, dm.heightPixels); 
 	}
 	
 	
@@ -124,6 +129,10 @@ public class H264VideoView extends View implements Runnable{
 			}
 			synchronized (this) {
 				tempData = dataBufferList.poll();
+				if(dataBufferList.size()>50){//缓冲数据太多，不进行解码
+					decoder.setSkipNalu(true);
+				}else
+					decoder.setSkipNalu(false);
 			}
 			
 			decoder.sendStream(tempData);
@@ -134,8 +143,8 @@ public class H264VideoView extends View implements Runnable{
 	
     private void setVideoDisplay(int bitmapWidth,int bitmapHeight){
 		videoViewStartY = 0;
-		DisplayMetrics dm = new DisplayMetrics();
-		mDisplay.getMetrics(dm);
+		
+		
 		
 		videoViewEndY = dm.heightPixels;
 		
@@ -155,16 +164,26 @@ public class H264VideoView extends View implements Runnable{
     		videoViewEndY = videoViewStartY+tmepHeight;
 		}
     }
+    
 
+    Bitmap temp = null;
+    RectF rectF = null;
+    
 	@Override 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas); 
+        
+        
         if(videoBitmap!=null){
-        	Log.i("H264VideoView", "onDraw++++++++++++++");
-            RectF rectF = new RectF(videoViewStartX, videoViewStartY, videoViewEndX, videoViewEndY); 
-            //w和h分别是屏幕的宽和高，也就是你想让图片显示的宽和高  
-          canvas.drawBitmap(videoBitmap, null, rectF, null);
+        	RectF tempRect = new RectF(videoViewStartX, videoViewStartY, videoViewEndX, videoViewEndY); 
+        	//w和h分别是屏幕的宽和高，也就是你想让图片显示的宽和高  
+        	canvas.drawBitmap(temp, null, rectF, null);
+        	canvas.drawBitmap(videoBitmap, null, tempRect, null);
         }
+        
+
+        
+
     }
 
 	

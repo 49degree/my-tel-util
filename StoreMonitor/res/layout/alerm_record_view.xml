@@ -10,30 +10,36 @@
         android:id="@+id/ar_topView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        top:titleValue="@string/alermRecord"
-        top:showCenterTitle="true" />
+        top:showCenterTitle="true"
+        top:titleValue="@string/alermRecord" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-       <ListView         
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/alarm_record_list"
-        android:divider="#F2F2F2"
-        android:dividerHeight="3px" />
-		<LinearLayout
-		    android:id="@+id/query_data_notify_ll" 
-		    android:layout_width="match_parent"
-		    android:layout_height="match_parent"
-		    android:orientation="vertical"
-		    android:gravity="center">
-		    <TextView
-		        android:id="@+id/query_data_notify_tv"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="正在查询数据，请稍后...">
-		    </TextView>
-		</LinearLayout>       
-     </FrameLayout>    
+        android:orientation="vertical" >
+
+        <ListView
+            android:id="@+id/alarm_record_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:divider="#F2F2F2"
+            android:dividerHeight="15dp" />
+
+        <LinearLayout
+            android:id="@+id/query_data_notify_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/query_data_notify_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正在查询数据，请稍后..." >
+            </TextView>
+        </LinearLayout>
+    </FrameLayout>
+
 </LinearLayout>

@@ -66,8 +66,11 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
         cacheView.time.setText(DateUtil.getTimeStringFormat(list.get(position).time, DateUtil.TIME_FORMAT_YMDHMS));
         if(list.get(position).hasLook){
         	cacheView.type.setText("已查看");
+        	cacheView.type.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_green));
+
         }else{
         	cacheView.type.setText("未查看");
+        	cacheView.type.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_red));
         }
         
         cacheView.des.setText(list.get(position).des);
@@ -77,7 +80,6 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
         		cacheView.imgBitmap.recycle();
         	cacheView.imgBitmap = BitmapFactory.decodeByteArray(list.get(position).pic,0,list.get(position).pic.length);
         	cacheView.img.setImageBitmap(cacheView.imgBitmap);
-
         }
         
         return convertView;

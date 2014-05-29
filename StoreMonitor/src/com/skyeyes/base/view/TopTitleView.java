@@ -2,6 +2,7 @@ package com.skyeyes.base.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +22,7 @@ public class TopTitleView extends LinearLayout {
 	private boolean centerButtonsIsShow;
 
 	private boolean centerTitleIsShow;
-
+	private Drawable menuBg;
 	private LayoutInflater mLayoutInflater;
 
 	private ViewGroup mViewGroup;
@@ -72,6 +73,7 @@ public class TopTitleView extends LinearLayout {
 		menuBtnIsShow = a.getBoolean(R.styleable.TopView_showMenuBtn, false);
 		centerButtonsIsShow = a.getBoolean(R.styleable.TopView_showCenterButtons,
 				false);
+		menuBg = a.getDrawable(R.styleable.TopView_menuButtonBackgound);
 		centerTitleIsShow = a
 				.getBoolean(R.styleable.TopView_showCenterTitle, false);
 		
@@ -100,6 +102,10 @@ public class TopTitleView extends LinearLayout {
 		centerTitleTv = (TextView) mViewGroup.findViewById(R.id.center_title);
 		leftBtn = (TextView) mViewGroup.findViewById(R.id.left_b);
 		rightBtn = (TextView) mViewGroup.findViewById(R.id.right_b);
+		
+		if(menuBg!=null){
+			menuImg.setBackground(menuBg);
+		}
 		menuImg.setVisibility(menuBtnIsShow ? View.VISIBLE : View.GONE);
 		centerButtonsRl.setVisibility(centerButtonsIsShow ? View.VISIBLE : View.GONE);
 		centerTitleTv.setVisibility(centerTitleIsShow ? View.VISIBLE : View.GONE);

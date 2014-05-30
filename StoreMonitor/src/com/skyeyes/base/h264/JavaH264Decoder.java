@@ -293,7 +293,9 @@ public class JavaH264Decoder extends Thread{
 	public void setSkipNalu(boolean skipNalu){
 		this.skipNalu = skipNalu;
 	}
-	
+	public boolean getSkipNalu(){
+		return this.skipNalu;
+	}
     public interface DecodeSuccCallback{
     	public void onDecodeSucc(JavaH264Decoder decoder,Bitmap bitmap);
     }

@@ -129,10 +129,16 @@ public class H264VideoView extends View implements Runnable{
 			}
 			synchronized (this) {
 				tempData = dataBufferList.poll();
+
 				if(dataBufferList.size()>50){//缓冲数据太多，不进行解码
-					decoder.setSkipNalu(true);
-				}else
-					decoder.setSkipNalu(false);
+					if(!decoder.getSkipNalu()){
+						decoder.setSkipNalu(true);
+					}
+				}else{
+					if(decoder.getSkipNalu()&&dataBufferList.size()<10){
+						decoder.setSkipNalu(false);
+					}
+				}
 			}
 			
 			decoder.sendStream(tempData);

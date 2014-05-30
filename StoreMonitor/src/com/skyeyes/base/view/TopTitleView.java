@@ -104,7 +104,13 @@ public class TopTitleView extends LinearLayout {
 		rightBtn = (TextView) mViewGroup.findViewById(R.id.right_b);
 		
 		if(menuBg!=null){
-			menuImg.setBackground(menuBg);
+			
+	        int sdk = android.os.Build.VERSION.SDK_INT;
+	        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+	        	menuImg.setBackgroundDrawable(menuBg);
+	        }else{
+	        	menuImg.setBackground(menuBg);
+	        }
 		}
 		menuImg.setVisibility(menuBtnIsShow ? View.VISIBLE : View.GONE);
 		centerButtonsRl.setVisibility(centerButtonsIsShow ? View.VISIBLE : View.GONE);

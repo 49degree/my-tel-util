@@ -214,6 +214,7 @@ public class MainPageActivity extends BaseActivity{
 			if(receiveCmdBean.getCommandHeader().resultCode != 0){
 				showToast(receiveCmdBean.getCommandHeader().errorInfo);
 				StoreMonitorApplication.getInstance().setReceivLogin(null);
+				login_notify_tv.setText(receiveCmdBean.getCommandHeader().errorInfo);
 
 			}else{
 				showToast("登陆成功...............");

@@ -1,5 +1,7 @@
 package com.skyeyes.storemonitor.activity;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +44,7 @@ public class VideoPlayActivity extends BaseActivity {
 	short videoLong;
 	
 	String alarmId;//报警ID
+	int isPushAlarm;
 	
 	
 	
@@ -67,7 +70,14 @@ public class VideoPlayActivity extends BaseActivity {
 			videoLong = getIntent().getExtras().getShort("videoLong");
 		}else if(videoType==2){
 			alarmId = getIntent().getExtras().getString("alarmId");
+			isPushAlarm = getIntent().getExtras().getInt("isPushAlarm");
+			if(isPushAlarm==1){
+				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				// 取消的只是当前Context的Notification
+				mNotificationManager.cancel(DevicesService.NOTIFICATION_ID);
+			}
 		}
+
 		
 		Log.e(TAG, videoType+":"+chennalId+":"+startTime+":"+videoLong+":"+alarmId);
 		

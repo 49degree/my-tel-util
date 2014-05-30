@@ -129,7 +129,7 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 					.println("getManucount入参数：" + sendObjectParams.toString());
 			CountManuOfDayByMonth mCountManuCmdProcess = new CountManuOfDayByMonth(
 					REQUST.cmdReqAvgDayManuByMouse, (String) params[0]);
-
+			mCountManuCmdProcess.setTimeout(10*1000);//设置超时时间
 			DevicesService.sendCmd(sendObjectParams, mCountManuCmdProcess);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block

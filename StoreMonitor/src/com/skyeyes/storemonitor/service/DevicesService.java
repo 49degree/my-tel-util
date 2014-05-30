@@ -1,26 +1,36 @@
 package com.skyeyes.storemonitor.service;
 
+import java.io.File;
 import java.util.HashMap;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.SoundPool;
+import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
+import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceAlarm;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHeart;
 import com.skyeyes.base.cmd.bean.impl.ReceiveLoginOut;
 import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.util.PreferenceUtil;
+import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
+import com.skyeyes.storemonitor.activity.VideoPlayActivity;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceStatusChangeListener;
-import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.process.impl.DeviceProcess;
 
 public class DevicesService extends Service implements DeviceStatusChangeListener{
@@ -145,6 +155,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	public void registerConnectListener(String deviceCode){
 		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveLoginOut",new LoginOutProcess(deviceCode));
 		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveHeart",new ConnectHeart(deviceCode));
+		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveDeviceAlarm",new DeviceAlarmProcess(deviceCode));
 	}
 	
 	private void initDeviceProcess(String deviceCode){
@@ -252,6 +263,98 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 	}
 	
+	/**
+	 * 收到报警信息
+	 * @author Administrator
+	 *
+	 */
+	public static String DeviceAlarmBroadCast = "DeviceAlarmBroadCast";
+	public static int NOTIFICATION_ID = 123456;
+	public class DeviceAlarmProcess extends DeviceReceiveCmdProcess<ReceiveDeviceAlarm> implements  SoundPool.OnLoadCompleteListener{
+ 
+		String deviceCode;
+//		SoundPool sndPool;
+//		int id;
+		public DeviceAlarmProcess(String deviceCode){
+			this.deviceCode = deviceCode;
+//			sndPool = new SoundPool(1, AudioManager.STREAM_MUSIC,0 ) ;
+//	        sndPool.setOnLoadCompleteListener(this);
+//	        try {
+//	        	id = sndPool.load(DevicesService.this.getAssets().openFd("alarm.ogg"), 1);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+		}
+		public void onProcess(ReceiveDeviceAlarm receiveCmdBean) {
+//			sndPool.play(id, 1, 1, 1, 0, 1);
+			Intent in = new Intent(DeviceAlarmBroadCast);
+			DevicesService.this.sendBroadcast(in);
+			showNotification(receiveCmdBean.eventCode,receiveCmdBean.des);
+		}
+
+		@Override
+		public void onFailure(String errinfo) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		public void onLoadComplete(SoundPool soundPool, int sampleId, int status)  {
+
+		}
+		
+		
+		 // 显示一个通知   
+		public void showNotification(String eventcode,String des) {
+			// 创建一个通知
+			Notification mNotification = new Notification();
+
+			// 设置属性值
+			mNotification.icon = R.drawable.ic_launcher;
+			mNotification.tickerText = des;
+			mNotification.when = System.currentTimeMillis(); // 立即发生此通知
+
+			// 带参数的构造函数,属性值如上
+			// Notification mNotification = = new
+			// Notification(R.drawable.icon,"NotificationTest",
+			// System.currentTimeMillis()));
+
+			// 添加声音效果
+			//mNotification.defaults |= Notification.DEFAULT_SOUND;
+			mNotification.sound = Uri.parse("android.resource://"+DevicesService.this.getPackageName()+"/"+R.raw.alarm); ;
+			
+
+			// 添加震动,由于在我的真机上会App发生异常,估计是Android2.2里的错误,略去，不添加
+			// mNotification.defaults |= Notification.DEFAULT_VIBRATE ;
+
+			// 添加状态标志
+
+			// FLAG_AUTO_CANCEL 该通知能被状态栏的清除按钮给清除掉
+			// FLAG_NO_CLEAR 该通知能不被状态栏的清除按钮给清除掉
+			// FLAG_ONGOING_EVENT 通知放置在正在运行
+			// FLAG_INSISTENT 通知的音乐效果一直播放
+			mNotification.flags = Notification.FLAG_INSISTENT;
+			mNotification.flags |=Notification.FLAG_NO_CLEAR;
+			
+			Intent notificationIntent = new Intent(DevicesService.this, VideoPlayActivity.class);
+			notificationIntent.putExtra("alarmId",eventcode);
+			notificationIntent.putExtra("videoType",2);
+			notificationIntent.putExtra("isPushAlarm",1);
+			
+			
+	        PendingIntent contentIntent = PendingIntent.getActivity(DevicesService.this, 0,notificationIntent, 0);
+	       
+	        mNotification.setLatestEventInfo(DevicesService.this, "设备报警", des, contentIntent);  
+
+			// 设置setLatestEventInfo方法,如果不设置会App报错异常
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			// 注册此通知
+			// 如果该NOTIFICATION_ID的通知已存在，不会重复添加，只是播放相应的效果(声音等)
+
+			mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+
+		}  
+	}
 	
 }
 

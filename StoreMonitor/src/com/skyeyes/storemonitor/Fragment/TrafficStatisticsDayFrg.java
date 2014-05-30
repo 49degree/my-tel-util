@@ -129,7 +129,7 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 			System.out.println("getManucountByDay params ::: " + dayTime);
 			CountManuOfHourByDay mCountManuCmdProcess = new CountManuOfHourByDay(
 					REQUST.cmdReqAvgHourManuByDay, (String) params[0]);
-
+			mCountManuCmdProcess.setTimeout(10*1000);//设置超时时间
 			DevicesService.sendCmd(sendObjectParams, mCountManuCmdProcess);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block

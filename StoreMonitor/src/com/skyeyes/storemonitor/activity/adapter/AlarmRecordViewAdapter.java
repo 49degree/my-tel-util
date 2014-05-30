@@ -64,13 +64,27 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
         //Log.e("position", position+":"+list.size()+":"+cacheView.time);
         
         cacheView.time.setText(DateUtil.getTimeStringFormat(list.get(position).time, DateUtil.TIME_FORMAT_YMDHMS));
-        if(list.get(position).hasLook){
-        	cacheView.type.setText("已查看");
-        	cacheView.type.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_green));
 
-        }else{
-        	cacheView.type.setText("未查看");
-        	cacheView.type.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_red));
+        
+        int sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            if(list.get(position).hasLook){
+            	cacheView.type.setText("已查看");
+            	cacheView.type.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_green));
+
+            }else{
+            	cacheView.type.setText("未查看");
+            	cacheView.type.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_red));
+            }
+        } else {
+            if(list.get(position).hasLook){
+            	cacheView.type.setText("已查看");
+            	cacheView.type.setBackground(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_green));
+
+            }else{
+            	cacheView.type.setText("未查看");
+            	cacheView.type.setBackground(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_red));
+            }
         }
         
         cacheView.des.setText(list.get(position).des);

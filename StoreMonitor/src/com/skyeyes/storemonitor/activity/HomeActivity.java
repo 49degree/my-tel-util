@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import android.app.LocalActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -114,7 +115,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		mMenu.setMenuListener(this);
 		mSlidingMenu.setOnOpenedListener(this);
 	}
-
+	TabSpec tab4 = null;
 	/** 初始化底部标签栏 */
 	private void initTab() {
 		mTabHost = (TabHost) findViewById(R.id.home_tabhost);
@@ -143,7 +144,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 				.setContent(new Intent(this, TrafficStatisticsActivity.class));
 		mTabHost.addTab(tab3);
 
-		TabSpec tab4 = mTabHost
+		tab4 = mTabHost
 				.newTabSpec(TAB_NECESSARY)
 				.setIndicator(
 						createTabView(getApplicationContext(), getString(R.string.home_tab_necessary),
@@ -377,12 +378,24 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		}
 	}
 
-
-
-
-
 	@Override
 	public void onOpened() {
+		
+	}
+	
+	
+	public class DeviceStatusChangeBroadcast extends BroadcastReceiver{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(intent.getAction().equals(DevicesService.DeviceAlarmBroadCast)){
+//				tab4.setIndicator(createTabView(getApplicationContext(), getString(R.string.home_tab_necessary),
+//										R.drawable.home_tab_status_selector));
+//				tab4.setContent(new Intent(HomeActivity.this, DevicesStatusActivity.class));
+			}
+			
+		}
 		
 	}
 }

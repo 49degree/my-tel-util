@@ -80,11 +80,11 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 	protected void onDestroy() {
 		super.onDestroy();
 		// 清除所有API缓存
-		try{
-			stopService(new Intent(this,DevicesService.class));
-		}catch(Exception e){
-			
-		}
+//		try{
+//			stopService(new Intent(this,DevicesService.class));
+//		}catch(Exception e){
+//			
+//		}
 		
 	}
 

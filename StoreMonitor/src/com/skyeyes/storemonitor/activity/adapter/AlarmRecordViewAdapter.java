@@ -20,6 +20,7 @@ import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.activity.MainPageActivity;
 import com.skyeyes.storemonitor.activity.VideoPlayActivity;
+import com.skyeyes.storemonitor.service.DevicesService;
 
 public class AlarmRecordViewAdapter extends BaseAdapter {
 	ArrayList<AlarmInfoBean> list;
@@ -48,7 +49,7 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         CacheView cacheView;
         if(convertView==null){
         	cacheView=new CacheView();
@@ -94,6 +95,20 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
         		cacheView.imgBitmap.recycle();
         	cacheView.imgBitmap = BitmapFactory.decodeByteArray(list.get(position).pic,0,list.get(position).pic.length);
         	cacheView.img.setImageBitmap(cacheView.imgBitmap);
+        	
+        	cacheView.img.setOnClickListener(new OnClickListener(){
+            	
+    			@Override
+    			public void onClick(View arg0) {
+    				// TODO Auto-generated method stub
+    				Log.i("MainPageActivity", "iv.setOnClickListener(new OnClickListener()================");
+					Intent intent = new Intent(mContext, VideoPlayActivity.class);
+					intent.putExtra("alarmId",list.get(position).eventCode);
+					intent.putExtra("chennalId",list.get(position).chennalId);
+					intent.putExtra("videoType",2);
+    				mContext.startActivity(intent);
+    			}
+    		});
         }
         
         return convertView;

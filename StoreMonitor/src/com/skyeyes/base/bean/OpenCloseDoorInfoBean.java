@@ -3,6 +3,7 @@ package com.skyeyes.base.bean;
 public class OpenCloseDoorInfoBean {
 	public int _id;
 	public String eventCode;
+	public byte chennalId;
 	public int type;//1开门，2关门,3异常开门，4异常关门
 	public long time;
 	
@@ -29,6 +30,12 @@ public class OpenCloseDoorInfoBean {
 	}
 	public void setType(int type) {
 		this.type = type;
+	}
+	public byte getChennalId() {
+		return chennalId;
+	}
+	public void setChennalId(byte chennalId) {
+		this.chennalId = chennalId;
 	}
 
 	

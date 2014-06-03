@@ -4,7 +4,7 @@ public class AlarmInfoBean {
 	public int _id;
 	public String eventCode;
 	public int type;
-	
+	public byte chennalId;
 	public long time;
 	public byte[] pic;
 	public boolean hasLook;
@@ -51,6 +51,12 @@ public class AlarmInfoBean {
 	}
 	public void setDes(String des) {
 		this.des = des;
+	}
+	public byte getChennal() {
+		return chennalId;
+	}
+	public void setChennal(byte chennalId) {
+		this.chennalId = chennalId;
 	}
 
 	

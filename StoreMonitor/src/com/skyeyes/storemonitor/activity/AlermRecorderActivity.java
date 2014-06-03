@@ -161,6 +161,7 @@ public class AlermRecorderActivity extends Activity {
 				alarmInfoBean.eventCode = receiveCmdBean.eventCode;
 				alarmInfoBean.time = receiveCmdBean.time;
 				alarmInfoBean.type = receiveCmdBean.alarmType;
+				alarmInfoBean.chennalId = receiveCmdBean.chennalId;
 				alarmInfoBean.hasLook = false;
 				alarmInfoBean.des="没有描述信息";
 				if(receiveCmdBean.pic==null||receiveCmdBean.pic.length<4){

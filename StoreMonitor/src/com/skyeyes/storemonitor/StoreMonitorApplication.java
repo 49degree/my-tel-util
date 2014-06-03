@@ -2,10 +2,12 @@ package com.skyeyes.storemonitor;
 
 import com.skyeyes.base.BaseApplication;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
+import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 
 public class StoreMonitorApplication extends BaseApplication{
 	
 	private ReceivLogin mReceivLogin;
+	private ReceiveDeviceRegisterInfo mReceiveDeviceRegisterInfo;
 	
 	private static StoreMonitorApplication instance;
 	
@@ -35,6 +37,12 @@ public class StoreMonitorApplication extends BaseApplication{
 	public void setReceivLogin(ReceivLogin mReceivLogin) {
 		this.mReceivLogin = mReceivLogin;
 	}
-	
+	public ReceiveDeviceRegisterInfo getReceiveDeviceRegisterInfo() {
+		return mReceiveDeviceRegisterInfo;
+	}
+
+	public void setReceiveDeviceRegisterInfo(ReceiveDeviceRegisterInfo mReceiveDeviceRegisterInfo) {
+		this.mReceiveDeviceRegisterInfo = mReceiveDeviceRegisterInfo;
+	}
 	
 }

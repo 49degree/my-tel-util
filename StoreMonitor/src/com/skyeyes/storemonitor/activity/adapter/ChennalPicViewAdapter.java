@@ -88,12 +88,10 @@ public class ChennalPicViewAdapter extends BaseAdapter {
 				// TODO Auto-generated method stub
 				Log.i("MainPageActivity", "iv.setOnClickListener(new OnClickListener()================");
 				Intent it = new Intent(mContext,VideoPlayActivity.class);
+				it.putExtra("chennalId", chennalId);
 				if(mType==0){
-					
-					it.putExtra("chennalId", chennalId);
 					it.putExtra("videoType", 0);
 				}else{
-					it.putExtra("chennalId", (byte)0);
 					it.putExtra("videoType", 1);
 					try {
 						it.putExtra("startTime", DateUtil.getTimeStringFormat(MainPageActivity.format.parse(historyStartTime),DateUtil.TIME_FORMAT_YMDHMS));

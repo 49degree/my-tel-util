@@ -3,6 +3,7 @@ package com.skyeyes.base.bean;
 public class OpenCloseDoorIdBean {
 	public int _id;
 	public String eventCode;
+	
 	public int type;//1开门，2关门,3异常开门，4异常关门
 	public int get_id() {
 		return _id;

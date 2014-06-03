@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.skyeyes.base.bean.OpenCloseDoorIdBean;
 import com.skyeyes.base.bean.OpenCloseDoorInfoBean;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
+import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoor;
 import com.skyeyes.base.cmd.bean.impl.ReceiveOpenCloseDoorInfo;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
@@ -73,36 +74,68 @@ public class DoorRecordActivity extends Activity {
     	super.onResume();
 		if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
 			query_data_notify_tv.setText("未登陆设备");
+			final LoginReceive loginReceive = new LoginReceive();
+			DevicesService.getInstance().registerCmdProcess("ReceivLogin", loginReceive);
 		}else if(pageAdapter==null){
-			query_data_notify_tv.setText("正在查询开关门数据,请稍后...");
-			pageAdapter=new DoorRecordViewAdapter(this,openCloseDoorInfoBeans);
-			door_record_list.setAdapter(pageAdapter);
-			//查询通道图片
-			endTime = DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YMDHMS);
-			String lastTime = PreferenceUtil.getConfigString(PreferenceUtil.DEVICE_INFO, PreferenceUtil.device_door_query_last_time);
-			String startTime = DateUtil.getTimeStringFormat(new Date(0), DateUtil.TIME_FORMAT_YMDHMS);//DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YMDHMS);
-			if(!"".equals(lastTime)){
-				startTime = lastTime;
-			}
-			SendObjectParams sendObjectParams = new SendObjectParams();
-			Object[] params = new Object[] {
-					//DateUtil.getFrontMonthDateString()+" 00:00:00",
-					startTime,
-					endTime};
-			try {
-				sendObjectParams.setParams(REQUST.cmdReqOpenCloseDoorList, params);
-				System.out.println("cmdReqOpenCloseDoorList入参数：" + sendObjectParams.toString());
-				
-				DoorRecordReceive doorRecordReceive = new DoorRecordReceive();
-				doorRecordReceive.setTimeout(10*1000);
-				DevicesService.sendCmd(sendObjectParams, doorRecordReceive);
-			} catch (CommandParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			queryDoorRecord();
+		}
+    }
+    
+    public void onPause(){
+    	super.onPause();
+    	DevicesService.getInstance().unRegisterCmdProcess("ReceivLogin");
+    }
+    
+    private void queryDoorRecord(){
+		query_data_notify_tv.setText("正在查询开关门数据,请稍后...");
+		pageAdapter=new DoorRecordViewAdapter(this,openCloseDoorInfoBeans);
+		door_record_list.setAdapter(pageAdapter);
+		//查询通道图片
+		endTime = DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YMDHMS);
+		String lastTime = PreferenceUtil.getConfigString(PreferenceUtil.DEVICE_INFO, PreferenceUtil.device_door_query_last_time);
+		String startTime = DateUtil.getTimeStringFormat(new Date(0), DateUtil.TIME_FORMAT_YMDHMS);//DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YMDHMS);
+		if(!"".equals(lastTime)){
+			startTime = lastTime;
+		}
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		Object[] params = new Object[] {
+				//DateUtil.getFrontMonthDateString()+" 00:00:00",
+				startTime,
+				endTime};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqOpenCloseDoorList, params);
+			System.out.println("cmdReqOpenCloseDoorList入参数：" + sendObjectParams.toString());
+			
+			DoorRecordReceive doorRecordReceive = new DoorRecordReceive();
+			doorRecordReceive.setTimeout(10*1000);
+			DevicesService.sendCmd(sendObjectParams, doorRecordReceive);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
     }
 
+	private class LoginReceive extends DeviceReceiveCmdProcess<ReceivLogin>{
+
+		@Override
+		public void onProcess(ReceivLogin receiveCmdBean) {
+			// TODO Auto-generated method stub
+			if(receiveCmdBean.getCommandHeader().resultCode == 0){
+				queryDoorRecord();
+			}
+				
+		}
+
+		@Override
+		public void onFailure(String errinfo) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+    
+    
 	private class DoorRecordReceive extends DeviceReceiveCmdProcess<ReceiveOpenCloseDoor>{
 
 		@Override
@@ -119,6 +152,7 @@ public class DoorRecordActivity extends Activity {
 					OpenCloseDoorIdBean openCloseDoorIdBean = new OpenCloseDoorIdBean();
 					openCloseDoorIdBean.eventCode = receiveCmdBean.openCloseDoorBeans.get(i).des;
 					openCloseDoorIdBean.type = receiveCmdBean.openCloseDoorBeans.get(i).type;
+					
 					DBOperator.getInstance().insert(DBBean.TBOpenCloseDoorIdBean, openCloseDoorIdBean);
 				}
 			}
@@ -224,7 +258,7 @@ public class DoorRecordActivity extends Activity {
 				openCloseDoorInfoBean.eventCode = receiveCmdBean.eventCode;
 				openCloseDoorInfoBean.time = receiveCmdBean.time;
 				openCloseDoorInfoBean.type = queryOpenCloseDoorIdBean.type;
-				
+				openCloseDoorInfoBean.chennalId = receiveCmdBean.chennalId;
 				openCloseDoorInfoBeans.add(openCloseDoorInfoBean);
 				pageAdapter.notifyDataSetChanged();
 				

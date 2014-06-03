@@ -85,7 +85,6 @@ public class MainPageActivity extends BaseActivity{
 	
 	List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
 	ChennalPicViewAdapter historyAdapter;
-	protected static QueryDeviceList mDeviceLogin;
 	
 	
     @Override
@@ -170,7 +169,6 @@ public class MainPageActivity extends BaseActivity{
 		history_gallery = (Gallery) findViewById(R.id.history_chennal_pic_gallery);
 		
 
-		mDeviceLogin = new QueryDeviceList();
 		
 		startService();
 	}
@@ -180,8 +178,13 @@ public class MainPageActivity extends BaseActivity{
     public void onResume(){
     	super.onResume();
     	Log.i(TAG,"onResume--------------");
-    	if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
-    		mDeviceLogin.queryEquitListNoLogin();//查询设备
+		final LoginReceive loginReceive = new LoginReceive();
+		final DeviceRegisterInfoReceive deviceRegisterInfoReceive = new DeviceRegisterInfoReceive();
+		DevicesService.getInstance().registerCmdProcess("ReceivLogin", loginReceive);
+		DevicesService.getInstance().registerCmdProcess("ReceiveDeviceRegisterInfo",deviceRegisterInfoReceive);
+		Log.i(TAG,"onResume--------------"+(StoreMonitorApplication.getInstance().getReceiveDeviceRegisterInfo()!=null));
+    	if(StoreMonitorApplication.getInstance().getReceiveDeviceRegisterInfo()!=null){
+    		deviceRegisterInfoReceive.onProcess(StoreMonitorApplication.getInstance().getReceiveDeviceRegisterInfo());
     	}
     	Log.e(TAG,"onResume queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID)");
     	if(!isInView && !stopQueryManu && StoreMonitorApplication.getInstance().getReceivLogin()!=null){
@@ -215,6 +218,9 @@ public class MainPageActivity extends BaseActivity{
 				showToast(receiveCmdBean.getCommandHeader().errorInfo);
 				StoreMonitorApplication.getInstance().setReceivLogin(null);
 				login_notify_tv.setText(receiveCmdBean.getCommandHeader().errorInfo);
+				vp_history_ll.setVisibility(View.GONE);
+				vp_real_time_ll.setVisibility(View.GONE);
+				no_login_notify_ll.setVisibility(View.VISIBLE);
 
 			}else{
 				showToast("登陆成功...............");
@@ -647,103 +653,4 @@ public class MainPageActivity extends BaseActivity{
 		}
 	};
 	
-	public class QueryDeviceList {
-		// 查询设备列表
-		public void queryEquitListNoLogin() {
-
-			String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
-			String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
-			String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
-			String port = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_port);
-			
-			if(StringUtil.isNull(userName)||
-					StringUtil.isNull(userPsd)||
-					StringUtil.isNull(ip)||
-					StringUtil.isNull(port)){
-				login_notify_tv.setText("用户数据不完整，请前往设置用户数据...");
-				return ;
-			}
-			
-			login_notify_tv.setText("正在登陆设备，请稍后...");
-			try {
-				SkyeyeSocketClient skyeyeSocketClient = new SkyeyeSocketClient(
-						new SocketHandlerImpl().setTimeout(20*1000), true);
-				skyeyeSocketClient.setServerAddr(ip, Integer.parseInt(port));
-				SendObjectParams sendObjectParams = new SendObjectParams();
-				Object[] params = new Object[] { userName, userPsd };
-				sendObjectParams.setParams(REQUST.cmdUserEquitListNOLogin, params);
-				Log.i(TAG,"testEquitListNoLogin入参数："+ sendObjectParams.toString());
-				skyeyeSocketClient.sendCmd(sendObjectParams);
-			} catch (CommandParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NetworkException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		private class SocketHandlerImpl extends BaseSocketHandler {
-			public static final int TIMEOUT_WHAT = 1;
-			@Override
-			public void onReceiveCmdEx(final ReceiveCmdBean receiveCmdBean) {
-				// TODO Auto-generated method stub
-				mHandler.removeMessages(TIMEOUT_WHAT);
-				Log.i("MainPageActivity","解析报文成功:" + (receiveCmdBean!=null?receiveCmdBean.toString():"receiveCmdBean is null"));
-				if (receiveCmdBean instanceof ReceiveReadDeviceList) {
-					if(((ReceiveReadDeviceList) receiveCmdBean).getCommandHeader().resultCode == 0){
-						final ReceiveReadDeviceList receiveReadDeviceList = ((ReceiveReadDeviceList) receiveCmdBean);
-						PreferenceUtil.setSingleConfigInfo(PreferenceUtil.DEVICE_INFO,
-								PreferenceUtil.device_count, receiveReadDeviceList.deviceCodeList.size());
-						PreferenceUtil.setSingleConfigInfo(PreferenceUtil.DEVICE_INFO,
-								PreferenceUtil.device_code_list,  receiveReadDeviceList.deviceListString);
-						
-						final LoginReceive loginReceive = new LoginReceive();
-						final DeviceRegisterInfoReceive deviceRegisterInfoReceive = new DeviceRegisterInfoReceive();
-						DevicesService.getInstance().registerCmdProcess("ReceivLogin", loginReceive);
-						DevicesService.getInstance().registerCmdProcess("ReceiveDeviceRegisterInfo",deviceRegisterInfoReceive);
-
-						DevicesService.getInstance().initDevices();
-						DevicesService.getInstance().selectDevice(receiveReadDeviceList.deviceCodeList.get(0));
-					}
-				}
-			}
-
-			@Override
-			public void onCmdExceptionEx(CommandParseException ex) {
-				// TODO Auto-generated method stub
-				mHandler.removeMessages(TIMEOUT_WHAT);
-			}
-
-			@Override
-			public void onSocketExceptionEx(NetworkException ex) {
-				// TODO Auto-generated method stub
-				mHandler.removeMessages(TIMEOUT_WHAT);
-
-			}
-
-			@Override
-			public void onSocketClosedEx() {
-				// TODO Auto-generated method stub
-				mHandler.removeMessages(TIMEOUT_WHAT);
-
-			}
-			
-			/**
-			 * 设置响应超时
-			 * @param timeout Millis
-			 */
-			public synchronized SocketHandlerImpl setTimeout(long timeout){
-				mHandler.sendEmptyMessageDelayed(TIMEOUT_WHAT, timeout);
-				return this;
-			}
-
-			public void handleMessage(Message msg){
-				if(msg.what == TIMEOUT_WHAT){
-					login_notify_tv.setText("连接超时,请稍后再试...");
-				}
-			}
-
-		};
-	}
 }

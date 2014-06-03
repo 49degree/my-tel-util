@@ -3,9 +3,12 @@ package com.skyeyes.storemonitor.activity.adapter;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import com.skyeyes.base.bean.OpenCloseDoorInfoBean;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.activity.VideoPlayActivity;
 
 public class DoorRecordViewAdapter extends BaseAdapter {
 	ArrayList<OpenCloseDoorInfoBean> list;
@@ -41,7 +45,7 @@ public class DoorRecordViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         CacheView cacheView;
         if(convertView==null){
         	cacheView=new CacheView();
@@ -54,15 +58,34 @@ public class DoorRecordViewAdapter extends BaseAdapter {
         }else{
             cacheView=(CacheView) convertView.getTag();
         }
+        
+        LinearLayout ll = null;
         if(list.get(position).type==1){
             cacheView.open_ll.setVisibility(View.VISIBLE);
             cacheView.close_ll.setVisibility(View.GONE);
             cacheView.open_des.setText(DateUtil.getTimeStringFormat(list.get(position).time, DateUtil.TIME_FORMAT_YMDHMS));
+            ll = cacheView.open_ll;
         }else{
             cacheView.open_ll.setVisibility(View.GONE);
             cacheView.close_ll.setVisibility(View.VISIBLE);
             cacheView.close_des.setText(DateUtil.getTimeStringFormat(list.get(position).time, DateUtil.TIME_FORMAT_YMDHMS));
+            ll = cacheView.close_ll;
         }
+        
+        ll.setOnClickListener(new OnClickListener(){
+        	
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Log.i("MainPageActivity", "iv.setOnClickListener(new OnClickListener()================");
+				Intent intent = new Intent(mContext, VideoPlayActivity.class);
+				intent.putExtra("alarmId",list.get(position).eventCode);
+				intent.putExtra("chennalId",list.get(position).chennalId);
+				intent.putExtra("videoType",2);
+				mContext.startActivity(intent);
+			}
+		});
+        
         return convertView;
     }
 

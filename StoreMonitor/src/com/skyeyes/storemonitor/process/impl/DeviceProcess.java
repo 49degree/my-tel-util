@@ -13,6 +13,7 @@ import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
+import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
@@ -23,7 +24,7 @@ import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.process.ChannelProcessInterface;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface;
 
-public class DeviceProcess  extends Handler implements DeviceProcessInterface {
+public class DeviceProcess implements DeviceProcessInterface {
 	
 	
 	String TAG = "DeviceProcess";
@@ -33,7 +34,6 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 	protected final HashMap<Integer,ChannelProcessInterface> mChannelProcessMap= new HashMap<Integer,ChannelProcessInterface>();
 	
 	protected ReceivLogin mReceivLogin;
-	private ReceiveDeviceChannelListStatus mReceiveDeviceChannelListStatus = null;
 	protected String mDeviceCode;
 	protected SkyeyeNetworkClient mSkyeyeNetworkClient;
 	private DeviceStatusChangeListener mDeviceStatusChangeListener;
@@ -175,8 +175,7 @@ public class DeviceProcess  extends Handler implements DeviceProcessInterface {
 					queryDeviceRegInfo();
 				}
 
-			}else if(receiveCmdBean instanceof ReceiveDeviceChannelListStatus){
-				mReceiveDeviceChannelListStatus = (ReceiveDeviceChannelListStatus)receiveCmdBean;
+			}else if(receiveCmdBean instanceof ReceiveDeviceRegisterInfo){
 				if(mDeviceStatusChangeListener!=null){
 					mDeviceStatusChangeListener.onDeviceStatusChange(mDeviceCode, receiveCmdBean);
 				}

@@ -9,6 +9,7 @@ import com.skyeyes.base.util.TypeConversion;
 
 public class ReceiveOpenCloseDoorInfo  extends ReceiveCmdBean {
 	public String eventCode = null;
+	public byte chennalId;
 	public long time;
 
 	@Override
@@ -16,6 +17,7 @@ public class ReceiveOpenCloseDoorInfo  extends ReceiveCmdBean {
 		// TODO Auto-generated method stub
 		try{
 			eventCode = TypeConversion.asciiToString(body,0,36);
+			chennalId = body[54];
 			time = DateUtil.fileTime2Date(TypeConversion.bytesToLong(body, 56)).getTime();
 		}catch(Exception e){
 			

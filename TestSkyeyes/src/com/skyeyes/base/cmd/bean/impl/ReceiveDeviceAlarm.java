@@ -11,7 +11,7 @@ public class ReceiveDeviceAlarm  extends ReceiveCmdBean {
 	public String eventCode = null;
 	public byte alarmType;//报警类型，见备注
 	public int startType;//是否报警触发，0＝提示触发，1＝报警触发
-	public int channelId;
+	public byte channelId;
 	public long time;
 	public double localeX;
 	public double localeY;

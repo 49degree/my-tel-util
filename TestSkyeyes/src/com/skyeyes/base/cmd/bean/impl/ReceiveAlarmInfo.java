@@ -10,6 +10,7 @@ import com.skyeyes.base.util.TypeConversion;
 public class ReceiveAlarmInfo  extends ReceiveCmdBean {
 	public String eventCode = null;
 	public long time;
+	public byte chennalId;
 	public byte alarmType;
 	public byte[] pic;
 
@@ -19,6 +20,7 @@ public class ReceiveAlarmInfo  extends ReceiveCmdBean {
 		try{
 			eventCode = TypeConversion.asciiToString(body,0,36);
 			alarmType = body[53];
+			chennalId = body[54];
 			time = DateUtil.fileTime2Date(TypeConversion.bytesToLong(body, 56)).getTime();
 			pic = new byte[body.length-64];
 			System.arraycopy(body, 64, pic, 0, pic.length);
@@ -33,6 +35,8 @@ public class ReceiveAlarmInfo  extends ReceiveCmdBean {
 		try{
 			buffer.append("eventCode=").append(eventCode).append(";");
 			buffer.append("alarmType=").append(alarmType).append(";");
+			buffer.append("chennalId=").append(chennalId).append(";");
+			
 			buffer.append("pic len=").append(pic.length).append(";");
 			buffer.append("time=").append(new Date(time));
 		}catch(Exception e){

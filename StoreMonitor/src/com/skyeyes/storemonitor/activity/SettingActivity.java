@@ -1,5 +1,7 @@
 package com.skyeyes.storemonitor.activity;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -68,7 +70,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener{
 			
 		}
 		
-		
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// 取消的只是当前Context的Notification
+		mNotificationManager.cancel(DevicesService.ERROR_NOTIFICATION_ID);
 			
 		
 

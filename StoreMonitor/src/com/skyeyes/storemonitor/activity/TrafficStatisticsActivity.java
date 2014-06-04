@@ -1,12 +1,11 @@
 package com.skyeyes.storemonitor.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.view.MotionEvent;
 
+import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
@@ -15,7 +14,7 @@ import com.skyeyes.storemonitor.Fragment.TrafficStatisticsMonthFrg;
 
 @SuppressLint("NewApi")
 /** 人流统计 */
-public class TrafficStatisticsActivity extends Activity {
+public class TrafficStatisticsActivity extends BaseActivity {
 	private TopTitleView topTitleView;
 	private Fragment dayFrg;
 	private Fragment monthFrg;

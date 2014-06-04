@@ -52,12 +52,13 @@ public class AlarmInfoBean {
 	public void setDes(String des) {
 		this.des = des;
 	}
-	public byte getChennal() {
+	public byte getChennalId() {
 		return chennalId;
 	}
-	public void setChennal(byte chennalId) {
+	public void setChennalId(byte chennalId) {
 		this.chennalId = chennalId;
 	}
+
 
 	
 	

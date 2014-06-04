@@ -6,17 +6,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.bean.AlarmIdBean;
 import com.skyeyes.base.bean.AlarmInfoBean;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
@@ -38,7 +37,7 @@ import com.skyeyes.storemonitor.activity.adapter.AlarmRecordViewAdapter;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
-public class AlermRecorderActivity extends Activity {
+public class AlermRecorderActivity extends BaseActivity {
 
 	private ListView alarm_record_list;
 	private LinearLayout query_data_notify_ll;

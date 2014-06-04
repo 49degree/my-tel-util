@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.bean.OpenCloseDoorIdBean;
 import com.skyeyes.base.bean.OpenCloseDoorInfoBean;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
@@ -33,7 +33,7 @@ import com.skyeyes.storemonitor.activity.adapter.DoorRecordViewAdapter;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
-public class DoorRecordActivity extends Activity {
+public class DoorRecordActivity extends BaseActivity {
 
 	private TopTitleView topTitleView;
 	private ListView door_record_list;

@@ -91,6 +91,7 @@ public class MainPageActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.app_video_page);
+		Log.i(TAG,"onCreate--------------");
 		//store_login_id_tv = (TextView)findViewById(R.id.store_login_id_tv);
 		vp_real_time_ll = (LinearLayout)findViewById(R.id.vp_real_time_ll);
 		vp_history_ll = (LinearLayout)findViewById(R.id.vp_history_ll);
@@ -117,7 +118,7 @@ public class MainPageActivity extends BaseActivity{
 		vp_history_ll.setVisibility(View.GONE);
 		vp_real_time_ll.setVisibility(View.GONE);
 		no_login_notify_ll.setVisibility(View.VISIBLE);
-		
+		login_notify_tv.setText("正在登陆，请稍后...");
 		stopQueryManu = false;
 
 		topTitleView.setOnRightButtonClickListener(new OnClickListenerCallback() {
@@ -168,9 +169,6 @@ public class MainPageActivity extends BaseActivity{
 		gallery = (Gallery) findViewById(R.id.chennal_pic_gallery);
 		history_gallery = (Gallery) findViewById(R.id.history_chennal_pic_gallery);
 		
-
-		
-		startService();
 	}
     
     
@@ -182,11 +180,9 @@ public class MainPageActivity extends BaseActivity{
 		final DeviceRegisterInfoReceive deviceRegisterInfoReceive = new DeviceRegisterInfoReceive();
 		DevicesService.getInstance().registerCmdProcess("ReceivLogin", loginReceive);
 		DevicesService.getInstance().registerCmdProcess("ReceiveDeviceRegisterInfo",deviceRegisterInfoReceive);
-		Log.i(TAG,"onResume--------------"+(StoreMonitorApplication.getInstance().getReceiveDeviceRegisterInfo()!=null));
     	if(StoreMonitorApplication.getInstance().getReceiveDeviceRegisterInfo()!=null){
     		deviceRegisterInfoReceive.onProcess(StoreMonitorApplication.getInstance().getReceiveDeviceRegisterInfo());
     	}
-    	Log.e(TAG,"onResume queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID)");
     	if(!isInView && !stopQueryManu && StoreMonitorApplication.getInstance().getReceivLogin()!=null){
     		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
     	}
@@ -203,10 +199,7 @@ public class MainPageActivity extends BaseActivity{
     }
     
     
-    private void startService(){
-		startService(new Intent(MainPageActivity.this,DevicesService.class));
-
-    }
+ 
 
 	
 	private class LoginReceive extends DeviceReceiveCmdProcess<ReceivLogin>{
@@ -249,8 +242,6 @@ public class MainPageActivity extends BaseActivity{
 		@Override
 		public void onProcess(ReceiveDeviceRegisterInfo receiveCmdBean) {
 			// TODO Auto-generated method stub
-			Log.i(TAG, receiveCmdBean.toString());
-			//showToast("通道状态："+receiveCmdBean.toString());
 			chennalCount = receiveCmdBean.videoChannelCount;
 			if(chennalCount>0){
 				//查询通道图片

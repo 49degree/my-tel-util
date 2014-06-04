@@ -32,6 +32,7 @@
         <activity
             android:name=".activity.HomeActivity"
             android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,32 +43,38 @@
         <activity
             android:name=".activity.MainPageActivity"
             android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SampleTheme.Light" />
         <activity
             android:name=".activity.AlermRecorderActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activity.DevicesStatusActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" 
+            android:launchMode="singleTask"/>
         <activity android:name=".activity.SearchVideoActivity" />
         <activity
             android:name=".activity.TrafficStatisticsActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" />
         <activity
             android:name=".activity.SettingActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" />
         <activity
             android:name=".activity.DoorRecordActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" />
         <activity
             android:name=".activity.VideoPlayActivity"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape">
 
             <!--
             <intent-filter>

@@ -9,8 +9,11 @@ import android.app.LocalActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,18 +23,23 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
+import com.skyeyes.base.cmd.bean.impl.ReceiveUserInfo;
 import com.skyeyes.base.util.ViewUtils;
 import com.skyeyes.base.view.Menu;
 import com.skyeyes.base.view.Menu.MenuListener;
 import com.skyeyes.base.view.SlidingMenu;
 import com.skyeyes.base.view.SlidingMenu.OnOpenedListener;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.service.DevicesService;
 
 
 
 @SuppressWarnings("deprecation")
 public class HomeActivity extends SlidingActivity implements MenuListener,OnOpenedListener {
+	static String TAG = "HomeActivity";
+	DeviceStatusChangeBroadcast mDeviceStatusChangeBroadcast;
+	
 	private LocalActivityManager mManager;
 	
 	private static HomeActivity instance = null;
@@ -61,10 +69,22 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		startService();
+		
 		setContentView(R.layout.app_home_page);
 		mManager = getLocalActivityManager();
 		instance = this;
 		doInitView();
+		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(DevicesService.DeviceAlarmBroadCast);
+		filter.addAction(DevicesService.UserInfoBroadCast);
+		
+		mDeviceStatusChangeBroadcast = new DeviceStatusChangeBroadcast();
+		this.registerReceiver(mDeviceStatusChangeBroadcast, filter);
+		
+		updateUserinfo();
 	}
 	
 
@@ -72,19 +92,18 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 	protected void onResume() {
 		super.onResume();
 		
-		
-	}
 
+	}
+	private void startService(){
+		startService(new Intent(this,DevicesService.class));
+	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		// 清除所有API缓存
-//		try{
-//			stopService(new Intent(this,DevicesService.class));
-//		}catch(Exception e){
-//			
-//		}
+		if(mDeviceStatusChangeBroadcast!=null){
+			this.unregisterReceiver(mDeviceStatusChangeBroadcast);
+		}
 		
 	}
 
@@ -246,6 +265,8 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Log.i(TAG, "onKeyDown.........");
+		
 		if (keyCode == KeyEvent.KEYCODE_MENU) {
 			toggleMenu();
 			return true;
@@ -290,6 +311,13 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 			switchActivity(SettingActivity.class, null);
 			break;
 		case R.id.menu_exit:
+			// 清除所有API缓存
+			try{
+				stopService(new Intent(this,DevicesService.class));
+			}catch(Exception e){
+				
+			}
+			finish();
 			break;
 		}
 
@@ -393,9 +421,20 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 //				tab4.setIndicator(createTabView(getApplicationContext(), getString(R.string.home_tab_necessary),
 //										R.drawable.home_tab_status_selector));
 //				tab4.setContent(new Intent(HomeActivity.this, DevicesStatusActivity.class));
+			}else if(intent.getAction().equals(DevicesService.UserInfoBroadCast)){
+				updateUserinfo();
 			}
 			
 		}
-		
+	}
+	
+	private void updateUserinfo(){
+		if(StoreMonitorApplication.getInstance().getReceiveUserInfo()!=null){
+			ReceiveUserInfo receiveUserInfo = StoreMonitorApplication.getInstance().getReceiveUserInfo();
+			if(mMenu.user_name!=null)
+				mMenu.user_name.setText(receiveUserInfo.userName);
+			if(mMenu.photo!=null)
+				mMenu.photo.setImageBitmap(BitmapFactory.decodeByteArray(receiveUserInfo.pic, 0, receiveUserInfo.pic.length));
+		}
 	}
 }

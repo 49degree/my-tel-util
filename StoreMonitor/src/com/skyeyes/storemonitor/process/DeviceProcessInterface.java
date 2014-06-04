@@ -14,7 +14,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.exception.NetworkException;
 
 public interface DeviceProcessInterface {
-	public void loginDevice(String userName,String userPsd,byte config);
+	public void loginDevice(String userName,String userPsd,byte config,DeviceReceiveCmdProcess<ReceivLogin> loginProcess);
 	public void queryDeviceRegInfo();
 	public void sendCmd(SendCmdBean sendCmdBean,DeviceReceiveCmdProcess receiveCmdProcess);
 	public void setCmdProcessMaps(HashMap<String,DeviceReceiveCmdProcess> deviceReceiveCmdProcessMaps);

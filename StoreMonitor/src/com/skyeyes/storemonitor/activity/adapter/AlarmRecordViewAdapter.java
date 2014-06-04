@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.skyeyes.base.bean.AlarmInfoBean;
+import com.skyeyes.base.db.DBBean;
+import com.skyeyes.base.db.DBOperator;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.activity.MainPageActivity;
@@ -95,7 +97,7 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
         		cacheView.imgBitmap.recycle();
         	cacheView.imgBitmap = BitmapFactory.decodeByteArray(list.get(position).pic,0,list.get(position).pic.length);
         	cacheView.img.setImageBitmap(cacheView.imgBitmap);
-        	
+        	final CacheView finalTemp = cacheView;
         	cacheView.img.setOnClickListener(new OnClickListener(){
             	
     			@Override
@@ -107,6 +109,9 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
 					intent.putExtra("chennalId",list.get(position).chennalId);
 					intent.putExtra("videoType",2);
     				mContext.startActivity(intent);
+    				list.get(position).setHasLook(true);
+    				finalTemp.type.setText("已查看");
+    				DBOperator.getInstance().update(DBBean.TBAlarmInfoBean, list.get(position));
     			}
     		});
         }

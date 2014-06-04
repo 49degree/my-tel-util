@@ -246,6 +246,11 @@ public class SendObjectParams extends SendCmdBean{
 	        			2,"",
 	        			36,params[1]};	
 	        	break;
+	        case cmdReqUserInfo://请求用户详细信息
+	        	sendsParams=new Object[]{
+	        			36,"",
+	        			1,(byte)1};	
+	        	break;
 	        default:
 	        	sendsParams=new Object[]{};
 	        	break;

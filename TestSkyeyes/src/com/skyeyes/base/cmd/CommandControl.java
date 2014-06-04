@@ -28,6 +28,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveRealVideo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveSetEquitIO;
 import com.skyeyes.base.cmd.bean.impl.ReceiveStatusChange;
 import com.skyeyes.base.cmd.bean.impl.ReceiveStopVideo;
+import com.skyeyes.base.cmd.bean.impl.ReceiveUserInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoFinish;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByDay;
@@ -176,7 +177,12 @@ public class CommandControl {
 	        	break;	
 	        case cmdRevLoginOut:
 	        	receiveCmdBean = new ReceiveLoginOut();
-	        	break;      	
+	        	break;    
+	        	
+	        case cmdReqUserInfo:
+	        	receiveCmdBean = new ReceiveUserInfo();
+	        	break;  
+	        	
 	        default:
 	        	return null;
 	        } 
@@ -222,7 +228,7 @@ public class CommandControl {
 		cmdError((byte)-1,(byte)0,0),
 		
 		cmdLogin((byte)0x01,(byte)0x01,3),//登录 cmdLogin((byte)int state,String username,String userpwd)
-		cmdEquitLogin((byte)0x01,(byte)0x02,4),//登录 cmdLogin((byte)int state,String username,String userpwd,String Data)
+		cmdEquitLogin((byte)0x01,(byte)0x02,4),//登录 
 		
 		cmdGetActive((byte)0x1c,(byte)0x03,0),//获取布防状态 cmdGetActive((byte))
 		cmdSendActive((byte)0x1b,(byte)0x04,1),//设置布防状态 cmdSendActive((byte)int value)
@@ -280,7 +286,9 @@ public class CommandControl {
 		cmdReqOpenCloseDoorInfo((byte)0x24,(byte)0x32,1),//请求开关门详细信息
 		cmdReqAlarmInfo((byte)0x24,(byte)0x33,1),//请求报警详细信息
 		
-		cmdRecDeviceAlarm((byte)0x21,(byte)0,0);//设备主动报警信息
+		cmdRecDeviceAlarm((byte)0x21,(byte)0,0),//设备主动报警信息
+		
+		cmdReqUserInfo((byte)0x26,(byte)0x34,0);//请求用户详细信息
 		
 		private byte cmd ;
 		private byte cmdId;//返回ID

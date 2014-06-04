@@ -3,6 +3,7 @@ package com.skyeyes.storemonitor;
 import com.skyeyes.base.BaseApplication;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
+import com.skyeyes.base.cmd.bean.impl.ReceiveStatusChange;
 import com.skyeyes.base.cmd.bean.impl.ReceiveUserInfo;
 
 public class StoreMonitorApplication extends BaseApplication{
@@ -10,6 +11,8 @@ public class StoreMonitorApplication extends BaseApplication{
 	private ReceivLogin mReceivLogin;
 	private ReceiveDeviceRegisterInfo mReceiveDeviceRegisterInfo;
 	private ReceiveUserInfo mReceiveUserInfo;
+	private int deviceStatus = -1;
+	
 	
 	private static StoreMonitorApplication instance;
 	
@@ -54,5 +57,17 @@ public class StoreMonitorApplication extends BaseApplication{
 	public void setReceiveUserInfo(ReceiveUserInfo mReceiveUserInfo) {
 		this.mReceiveUserInfo = mReceiveUserInfo;
 	}
+
+	public int getDeviceStatus() {
+		return deviceStatus;
+	}
+
+	public void setDeviceStatus(int deviceStatus) {
+		this.deviceStatus = deviceStatus;
+	}
+
+
+	
+	
 	
 }

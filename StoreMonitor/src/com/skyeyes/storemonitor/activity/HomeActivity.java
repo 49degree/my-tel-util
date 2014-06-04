@@ -80,11 +80,13 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(DevicesService.DeviceAlarmBroadCast);
 		filter.addAction(DevicesService.UserInfoBroadCast);
+		filter.addAction(DevicesService.DeviceStatusChangeBroadCast);
 		
 		mDeviceStatusChangeBroadcast = new DeviceStatusChangeBroadcast();
 		this.registerReceiver(mDeviceStatusChangeBroadcast, filter);
 		
 		updateUserinfo();
+		updateDeviceStatus();
 	}
 	
 
@@ -134,7 +136,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		mMenu.setMenuListener(this);
 		mSlidingMenu.setOnOpenedListener(this);
 	}
-	TabSpec tab4 = null;
+	View tab4View = null;
 	/** 初始化底部标签栏 */
 	private void initTab() {
 		mTabHost = (TabHost) findViewById(R.id.home_tabhost);
@@ -163,11 +165,11 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 				.setContent(new Intent(this, TrafficStatisticsActivity.class));
 		mTabHost.addTab(tab3);
 
-		tab4 = mTabHost
+		tab4View = createTabView(getApplicationContext(), getString(R.string.home_tab_necessary),R.drawable.home_tab_status_selector);
+		
+		TabSpec tab4 = mTabHost
 				.newTabSpec(TAB_NECESSARY)
-				.setIndicator(
-						createTabView(getApplicationContext(), getString(R.string.home_tab_necessary),
-								R.drawable.home_tab_status_selector))
+				.setIndicator(tab4View)
 				.setContent(new Intent(this, DevicesStatusActivity.class));
 		mTabHost.addTab(tab4);
 		setCurrentTab(mPage);
@@ -418,23 +420,43 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			if(intent.getAction().equals(DevicesService.DeviceAlarmBroadCast)){
-//				tab4.setIndicator(createTabView(getApplicationContext(), getString(R.string.home_tab_necessary),
-//										R.drawable.home_tab_status_selector));
-//				tab4.setContent(new Intent(HomeActivity.this, DevicesStatusActivity.class));
+				
 			}else if(intent.getAction().equals(DevicesService.UserInfoBroadCast)){
 				updateUserinfo();
+			}else if(intent.getAction().equals(DevicesService.DeviceStatusChangeBroadCast)){
+				updateDeviceStatus();
 			}
-			
 		}
 	}
 	
 	private void updateUserinfo(){
-		if(StoreMonitorApplication.getInstance().getReceiveUserInfo()!=null){
-			ReceiveUserInfo receiveUserInfo = StoreMonitorApplication.getInstance().getReceiveUserInfo();
-			if(mMenu.user_name!=null)
-				mMenu.user_name.setText(receiveUserInfo.userName);
-			if(mMenu.photo!=null)
-				mMenu.photo.setImageBitmap(BitmapFactory.decodeByteArray(receiveUserInfo.pic, 0, receiveUserInfo.pic.length));
+		try{
+			if(StoreMonitorApplication.getInstance().getReceiveUserInfo()!=null){
+				ReceiveUserInfo receiveUserInfo = StoreMonitorApplication.getInstance().getReceiveUserInfo();
+				if(mMenu.user_name!=null)
+					mMenu.user_name.setText(receiveUserInfo.userName);
+				if(mMenu.photo!=null)
+					mMenu.photo.setImageBitmap(BitmapFactory.decodeByteArray(receiveUserInfo.pic, 0, receiveUserInfo.pic.length));
+			}
+		}catch(Exception e){
+			
 		}
+
 	}
+	
+	private void updateDeviceStatus(){
+		Log.i(TAG, "updateDeviceStatus:"+StoreMonitorApplication.getInstance().getDeviceStatus());
+		try{
+			if(StoreMonitorApplication.getInstance().getDeviceStatus()==5){
+				((TextView) tab4View.findViewById(R.id.tab_widget_content)).setText(getString(R.string.home_tab_necessary)+"(撤防)");
+			} else if(StoreMonitorApplication.getInstance().getDeviceStatus()==0){
+				((TextView) tab4View.findViewById(R.id.tab_widget_content)).setText(getString(R.string.home_tab_necessary)+"(布防)");
+			}
+			
+		}catch(Exception e){
+			
+		}
+
+	}
+
 }

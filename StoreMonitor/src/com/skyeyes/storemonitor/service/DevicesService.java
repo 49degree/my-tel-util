@@ -9,7 +9,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.SoundPool;
-import android.net.Uri;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
@@ -21,9 +20,11 @@ import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceAlarm;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
+import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHeart;
 import com.skyeyes.base.cmd.bean.impl.ReceiveLoginOut;
 import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
+import com.skyeyes.base.cmd.bean.impl.ReceiveStatusChange;
 import com.skyeyes.base.cmd.bean.impl.ReceiveUserInfo;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
@@ -45,6 +46,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	
 	public static String DeviceAlarmBroadCast = "DeviceAlarmBroadCast";
 	public static String UserInfoBroadCast = "UserInfoBroadCast";
+	public static String DeviceStatusChangeBroadCast = "DeviceStatusChangeBroadCast";
 	public static int NOTIFICATION_ID = 123456;
 	public static int ERROR_NOTIFICATION_ID = 123457;
 	
@@ -151,7 +153,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 				// 取消的只是当前Context的Notification
 				mNotificationManager.cancel(ERROR_NOTIFICATION_ID);
-				queryUserInfo();//查询用户信息
+
 			}else{
 				showErrorNotification( "登陆失败:"+receivLogin.getCommandHeader().errorInfo);
 				StoreMonitorApplication.getInstance().setReceivLogin(null);
@@ -197,6 +199,9 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		
 		if(receiveCmdBean instanceof ReceiveDeviceRegisterInfo){
 			StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo((ReceiveDeviceRegisterInfo)receiveCmdBean);
+			
+			queryUserInfo();//查询用户信息
+			getDeviceStatus();//查询设备状态
 		}
 		
 	}
@@ -222,6 +227,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveLoginOut",new LoginOutProcess(deviceCode));
 		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveHeart",new ConnectHeart(deviceCode));
 		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveDeviceAlarm",new DeviceAlarmProcess(deviceCode));
+		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveStatusChange",new StatusChangeProcess(deviceCode));
+		
 	}
 	
 	LoginReceive loginProcess = new LoginReceive();
@@ -238,7 +245,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		
 		loginProcess.setTimeout(30*1000);
 		//config 0,是否接收状态变化事件	1是否接收正报事件	3是否接收提示(出入)事件
-		deviceProcess.loginDevice(userName, userPsd, (byte)0x0B,loginProcess);
+		deviceProcess.loginDevice(userName, userPsd, (byte)0x0F,loginProcess);
 	}
 	
 	
@@ -339,6 +346,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 	}
 	
+	UserInfoQuery userInfoQuery = new UserInfoQuery();
 	private void queryUserInfo(){
 		//查询通道图片
 		SendObjectParams sendObjectParams = new SendObjectParams();
@@ -347,7 +355,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			sendObjectParams.setParams(REQUST.cmdReqUserInfo, params);
 			System.out.println("cmdReqUserInfo入参数：" + sendObjectParams.toString());
 			
-			DevicesService.sendCmd(sendObjectParams, new UserInfoQuery());
+			DevicesService.sendCmd(sendObjectParams, userInfoQuery);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -355,7 +363,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	}
 	
 	/**
-	 * 退出登录
+	 * 查询用户信息
 	 * @author Administrator
 	 *
 	 */
@@ -378,8 +386,68 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 	}
 	
+	DeviceStatusReceive deviceStatusReceive = new DeviceStatusReceive();
+	private void getDeviceStatus(){
+
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		Object[] params = new Object[] {};
+		try {
+			sendObjectParams.setParams(REQUST.cmdGetActive, params);
+			System.out.println("cmdGetActive入参数：" + sendObjectParams.toString());
+			DevicesService.sendCmd(sendObjectParams,deviceStatusReceive);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	/**
-	 * 收到报警信息
+	 * 查询设备状态
+	 * @author Administrator
+	 *
+	 */
+	private class DeviceStatusReceive extends DeviceReceiveCmdProcess<ReceiveDeviceStatus>{
+		public void onProcess(ReceiveDeviceStatus receiveCmdBean) {
+			// TODO Auto-generated method stub
+				if(receiveCmdBean.getCommandHeader().resultCode == 0){
+					StoreMonitorApplication.getInstance().setDeviceStatus(receiveCmdBean.deviceStatus);
+					Intent in = new Intent(DeviceStatusChangeBroadCast);
+					DevicesService.this.sendBroadcast(in);
+				}
+		}
+
+		@Override
+		public void onFailure(String errinfo) {
+			// TODO Auto-generated method stub
+		}
+		
+	}
+	
+	/**
+	 * 收到设备状态变化信息
+	 * @author Administrator
+	 *
+	 */
+	public class StatusChangeProcess extends DeviceReceiveCmdProcess<ReceiveStatusChange>{
+		String deviceCode;
+		public StatusChangeProcess(String deviceCode){
+			this.deviceCode = deviceCode;
+		}
+		public void onProcess(ReceiveStatusChange receiveCmdBean) {
+			if (receiveCmdBean.getCommandHeader().resultCode == 0) {
+				StoreMonitorApplication.getInstance().setDeviceStatus(receiveCmdBean.status);
+				Intent in = new Intent(DeviceStatusChangeBroadCast);
+				DevicesService.this.sendBroadcast(in);
+			}
+		}
+
+		@Override
+		public void onFailure(String errinfo) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+	/**
+	 * 收到报警及提示信息
 	 * @author Administrator
 	 *
 	 */
@@ -456,7 +524,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 
 			// 添加声音效果
 			//mNotification.defaults |= Notification.DEFAULT_SOUND;
-			mNotification.sound = Uri.parse("android.resource://"+DevicesService.this.getPackageName()+"/"+R.raw.alarm); ;
+			//mNotification.sound = Uri.parse("android.resource://"+DevicesService.this.getPackageName()+"/"+R.raw.alarm); ;
 			
 
 			// 添加震动,由于在我的真机上会App发生异常,估计是Android2.2里的错误,略去，不添加
@@ -534,7 +602,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			public void onReceiveCmdEx(final ReceiveCmdBean receiveCmdBean) {
 				// TODO Auto-generated method stub
 				mHandler.removeMessages(TIMEOUT_WHAT);
-				Log.i("MainPageActivity","解析报文成功:" + (receiveCmdBean!=null?receiveCmdBean.toString():"receiveCmdBean is null"));
+				Log.i("SocketHandlerImpl","解析报文成功:" + (receiveCmdBean!=null?receiveCmdBean.toString():"receiveCmdBean is null"));
 				if (receiveCmdBean instanceof ReceiveReadDeviceList) {
 					if(((ReceiveReadDeviceList) receiveCmdBean).getCommandHeader().resultCode == 0){
 						final ReceiveReadDeviceList receiveReadDeviceList = ((ReceiveReadDeviceList) receiveCmdBean);

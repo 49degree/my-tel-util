@@ -20,6 +20,7 @@ import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 /** 设备状态*/
@@ -133,7 +134,6 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
 	}
 	
 	@SuppressLint("HandlerLeak")
@@ -149,13 +149,23 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 				if(receiveCmdBean.getCommandHeader().resultCode == 0){
 					Toast.makeText(DevicesStatusActivity.this, isProtect?"布防成功":"撤防成功", Toast.LENGTH_SHORT).show();
 					currentStatus = (isProtect?0:5);
-					
+					if(currentStatus==5){
+						p_value.setText("撤防");
+					} else {
+						p_value.setText("布防");
+					}
 			        int sdk = android.os.Build.VERSION.SDK_INT;
 			        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
 			        	protectBtn.setBackgroundDrawable(getResources().getDrawable(isProtect?R.drawable.device_rm_protect:R.drawable.device_set_protect));
 			        } else {
 			        	protectBtn.setBackground(getResources().getDrawable(isProtect?R.drawable.device_rm_protect:R.drawable.device_set_protect));
 			        }
+			        
+					if (receiveCmdBean.getCommandHeader().resultCode == 0) {
+						StoreMonitorApplication.getInstance().setDeviceStatus(currentStatus);
+						Intent in = new Intent(DevicesService.DeviceStatusChangeBroadCast);
+						sendBroadcast(in);
+					}
 				}
 		}
 

@@ -284,7 +284,7 @@ public class DBOperator extends SQLiteOpenHelper {
 							setMethod.invoke(object, columnValue);
 						}else if(f.getType().equals(byte.class)){
 							setMethod = tableBean.getMethod(methodName.toString(),byte.class);
-							setMethod.invoke(object, columnValue);								
+							setMethod.invoke(object, Byte.parseByte(columnValue.toString()));								
 						}else{
 							setMethod = tableBean.getMethod(methodName.toString(),String.class);
 							setMethod.invoke(object, columnValue);

@@ -1,5 +1,6 @@
 package com.skyeyes.storemonitor.activity;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHistoryVideo;
@@ -32,7 +32,7 @@ import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdP
 import com.skyeyes.storemonitor.service.DevicesService;
 import com.skyeyes.storemonitor.view.H264VideoView;
 
-public class VideoPlayActivity extends BaseActivity {
+public class VideoPlayActivity extends Activity {
 	static String TAG = "VideoPlayActivity";
 	
 	boolean start = false;
@@ -208,9 +208,11 @@ public class VideoPlayActivity extends BaseActivity {
 		public void onProcess(ReceiveRealVideo receiveCmdBean) {
 			// TODO Auto-generated method stub
 			// 打开视频播放界面
-			Log.i("MainPageActivity",
-					"MainPageActivity.this.startActivity(it)================");
-			videoView.toStartPlay();
+			if(receiveCmdBean.getCommandHeader().resultCode==0){
+				videoView.toStartPlay();
+			}else{
+				notifyText.setText(receiveCmdBean.getCommandHeader().errorInfo);
+			}
 		}
 
 		@Override
@@ -232,10 +234,13 @@ public class VideoPlayActivity extends BaseActivity {
 		public void onProcess(ReceiveHistoryVideo receiveCmdBean) {
 			// TODO Auto-generated method stub
 			// 打开视频播放界面
-			Log.i("MainPageActivity",
-					"MainPageActivity.this.startActivity(it)================");
+			if(receiveCmdBean.getCommandHeader().resultCode==0){
+				videoView.toStartPlay();
+			}else{
+				notifyText.setText(receiveCmdBean.getCommandHeader().errorInfo);
+			}
 			
-			videoView.toStartPlay();
+			
 		}
 
 		@Override

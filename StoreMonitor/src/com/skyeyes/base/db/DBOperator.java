@@ -282,6 +282,9 @@ public class DBOperator extends SQLiteOpenHelper {
 						}else if(f.getType().equals(byte[].class)){
 							setMethod = tableBean.getMethod(methodName.toString(),byte[].class);
 							setMethod.invoke(object, columnValue);
+						}else if(f.getType().equals(byte.class)){
+							setMethod = tableBean.getMethod(methodName.toString(),byte.class);
+							setMethod.invoke(object, columnValue);								
 						}else{
 							setMethod = tableBean.getMethod(methodName.toString(),String.class);
 							setMethod.invoke(object, columnValue);
@@ -337,6 +340,8 @@ public class DBOperator extends SQLiteOpenHelper {
 					contentValues.put(f.getName(), ((Long)getMethod.invoke(value)).longValue());
 				}else if(f.getType().equals(byte[].class)){
 					contentValues.put(f.getName(), ((byte[])getMethod.invoke(value)));
+				}else if(f.getType().equals(byte.class)){
+					contentValues.put(f.getName(), ((Byte)getMethod.invoke(value)).byteValue());					
 				}else{
 					contentValues.put(f.getName(), ((String)getMethod.invoke(value)));
 				}
@@ -392,6 +397,8 @@ public class DBOperator extends SQLiteOpenHelper {
 					contentValues.put(f.getName(), ((Long)getMethod.invoke(value)).longValue());
 				}else if(f.getType().equals(byte[].class)){
 					contentValues.put(f.getName(), ((byte[])getMethod.invoke(value)));
+				}else if(f.getType().equals(byte.class)){
+					contentValues.put(f.getName(), ((Byte)getMethod.invoke(value)).byteValue());						
 				}else{
 					contentValues.put(f.getName(), ((String)getMethod.invoke(value)));
 				}

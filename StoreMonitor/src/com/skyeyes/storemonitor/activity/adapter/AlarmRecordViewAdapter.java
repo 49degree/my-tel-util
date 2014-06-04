@@ -6,11 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,9 +21,7 @@ import com.skyeyes.base.db.DBBean;
 import com.skyeyes.base.db.DBOperator;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
-import com.skyeyes.storemonitor.activity.MainPageActivity;
 import com.skyeyes.storemonitor.activity.VideoPlayActivity;
-import com.skyeyes.storemonitor.service.DevicesService;
 
 public class AlarmRecordViewAdapter extends BaseAdapter {
 	ArrayList<AlarmInfoBean> list;
@@ -67,27 +66,19 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
         //Log.e("position", position+":"+list.size()+":"+cacheView.time);
         
         cacheView.time.setText(DateUtil.getTimeStringFormat(list.get(position).time, DateUtil.TIME_FORMAT_YMDHMS));
-
-        
-        int sdk = android.os.Build.VERSION.SDK_INT;
+        Drawable draws = null;
+        if(list.get(position).hasLook){
+        	cacheView.type.setText("已查看");
+        	draws = mContext.getResources().getDrawable(R.drawable.alerm_textview_style_green);
+        }else{
+        	cacheView.type.setText("未查看");
+        	draws = mContext.getResources().getDrawable(R.drawable.alerm_textview_style_red);
+        }
+        final int sdk = android.os.Build.VERSION.SDK_INT;
         if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            if(list.get(position).hasLook){
-            	cacheView.type.setText("已查看");
-            	cacheView.type.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_green));
-
-            }else{
-            	cacheView.type.setText("未查看");
-            	cacheView.type.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_red));
-            }
+        	cacheView.type.setBackgroundDrawable(draws);
         } else {
-            if(list.get(position).hasLook){
-            	cacheView.type.setText("已查看");
-            	cacheView.type.setBackground(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_green));
-
-            }else{
-            	cacheView.type.setText("未查看");
-            	cacheView.type.setBackground(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_red));
-            }
+        	cacheView.type.setBackground(draws);
         }
         
         cacheView.des.setText(list.get(position).des);
@@ -111,6 +102,11 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
     				mContext.startActivity(intent);
     				list.get(position).setHasLook(true);
     				finalTemp.type.setText("已查看");
+    		        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+    		        	finalTemp.type.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_green));
+    		        } else {
+    		        	finalTemp.type.setBackground(mContext.getResources().getDrawable(R.drawable.alerm_textview_style_green));
+    		        }
     				DBOperator.getInstance().update(DBBean.TBAlarmInfoBean, list.get(position));
     			}
     		});

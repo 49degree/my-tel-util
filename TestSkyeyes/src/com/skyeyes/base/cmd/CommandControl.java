@@ -186,27 +186,33 @@ public class CommandControl {
 	        default:
 	        	return null;
 	        } 
-			if(receiveCmdBean!=null){
-				receiveCmdBean.setCommandHeader(cmdHeaderBean);
-			}
-			if(cmdHeaderBean.resultCode==0){//正常数据，解析业务数据
-				byte[] body = null;
-				if(cmdHeaderBean.cmdCode==0x00){//为请求相应数据
-					body = new byte[receiveBuffer.length-19];
-					System.arraycopy(receiveBuffer, 15, body, 0, body.length);
-				}else{//为请求数据
-					body = new byte[receiveBuffer.length-18];
-					System.arraycopy(receiveBuffer, 14, body, 0, body.length);
-				}
-				if(receiveCmdBean!=null){
-					receiveCmdBean.parseBody(body);
-				}
-				
-			}
-			if(receiveCmdBean!=null)
-				System.arraycopy(receiveBuffer, receiveBuffer.length-4, receiveCmdBean.getEnding(), 0, 4);
 			
-			System.out.println("收到对象："+(receiveCmdBean==null?cmdHeaderBean.toString():receiveCmdBean.toString()));
+			try{
+				if(receiveCmdBean!=null){
+					receiveCmdBean.setCommandHeader(cmdHeaderBean);
+				}
+				if(cmdHeaderBean.resultCode==0){//正常数据，解析业务数据
+					byte[] body = null;
+					if(cmdHeaderBean.cmdCode==0x00){//为请求相应数据
+						body = new byte[receiveBuffer.length-19];
+						System.arraycopy(receiveBuffer, 15, body, 0, body.length);
+					}else{//为请求数据
+						body = new byte[receiveBuffer.length-18];
+						System.arraycopy(receiveBuffer, 14, body, 0, body.length);
+					}
+					if(receiveCmdBean!=null){
+						receiveCmdBean.parseBody(body);
+					}
+					
+				}
+				if(receiveCmdBean!=null)
+					System.arraycopy(receiveBuffer, receiveBuffer.length-4, receiveCmdBean.getEnding(), 0, 4);
+				
+				System.out.println("收到对象："+(receiveCmdBean==null?cmdHeaderBean.toString():receiveCmdBean.toString()));
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+
 			
 			return receiveCmdBean;
 		}catch(CommandParseException e){//出现异常，服务器直接返回upErrorBean对象的ErrorReturnBuffer即可
@@ -232,7 +238,7 @@ public class CommandControl {
 		
 		cmdGetActive((byte)0x1c,(byte)0x03,0),//获取布防状态 cmdGetActive((byte))
 		cmdSendActive((byte)0x1b,(byte)0x04,1),//设置布防状态 cmdSendActive((byte)int value)
-		cmdPushActive((byte)0x17,(byte)0x05,0),//设置布防状态 cmdSendActive((byte)int value)
+		cmdPushActive((byte)0x17,(byte)0x05,0),//中心推送设备状态
 		cmdFlag((byte)0,(byte)0x06,2),//视频解码心跳 cmdFlag((byte)int flag,String meg)
 		
 

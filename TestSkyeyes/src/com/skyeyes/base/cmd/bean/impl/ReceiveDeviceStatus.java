@@ -11,5 +11,13 @@ public class ReceiveDeviceStatus extends ReceiveCmdBean {
 		deviceStatus= body[0];
 		System.out.println("deviceStatus :: "+deviceStatus);
 	}
-
+	public String toString(){
+		StringBuffer buffer = new StringBuffer().append(super.toString());
+		try{
+			buffer.append("deviceStatus=").append(deviceStatus).append(";");
+		}catch(Exception e){
+			
+		}
+		return buffer.toString();
+	}
 }

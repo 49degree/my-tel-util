@@ -15,6 +15,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.skyeyes.base.bean.AlarmIdBean;
 import com.skyeyes.base.bean.AlarmInfoBean;
@@ -144,9 +145,7 @@ public class AlermRecorderActivity extends Activity {
 		}
 		
 		public void onResponsTimeout(){
-//			query_data_notify_ll.setVisibility(View.VISIBLE);
-//			alarm_record_list.setVisibility(View.GONE);
-//			query_data_notify_tv.setText("查询数据超时");
+			Toast.makeText(AlermRecorderActivity.this,"查询数据超时",Toast.LENGTH_SHORT).show();
 			queryDataFromDB();
 		}
 

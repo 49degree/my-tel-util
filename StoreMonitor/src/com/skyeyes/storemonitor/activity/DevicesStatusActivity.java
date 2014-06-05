@@ -110,8 +110,8 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 				 setdeviceStatusReceive = new SetDeviceStatusReceive(true);
 			} else {
 				setdeviceStatusReceive = new SetDeviceStatusReceive(false);
-
 			}
+			setdeviceStatusReceive.setTimeout(10*1000);
 			DevicesService.sendCmd(sendObjectParams, setdeviceStatusReceive);
 			
 		} catch (CommandParseException e) {
@@ -128,7 +128,7 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 		try {
 			sendObjectParams.setParams(REQUST.cmdGetActive, params);
 			DeviceStatusReceive deviceStatusReceive = new DeviceStatusReceive();
-
+			deviceStatusReceive.setTimeout(10*1000);
 			DevicesService.sendCmd(sendObjectParams,deviceStatusReceive);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
@@ -169,6 +169,9 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 				}
 		}
 
+		public void onResponsTimeout(){
+			Toast.makeText(DevicesStatusActivity.this,"连接服务器超时",Toast.LENGTH_SHORT).show();
+		}
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
@@ -200,7 +203,9 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 			        }
 				}
 		}
-
+		public void onResponsTimeout(){
+			Toast.makeText(DevicesStatusActivity.this,"查询数据超时",Toast.LENGTH_SHORT).show();
+		}
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
@@ -214,7 +219,7 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 		try {
 			sendObjectParams.setParams(REQUST.cmdReadDeviceEnv, params);
 			DeviceEnvReceive deviceStatusReceive = new DeviceEnvReceive();
-
+			deviceStatusReceive.setTimeout(10*1000);
 			DevicesService.sendCmd(sendObjectParams,deviceStatusReceive);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
@@ -271,7 +276,9 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
 		}
-
+		public void onResponsTimeout(){
+			Toast.makeText(DevicesStatusActivity.this,"查询数据超时",Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 }

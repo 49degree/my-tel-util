@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu.CountManuResultBean;
@@ -29,6 +30,7 @@ import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgHourManuByDay;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.activity.DevicesStatusActivity;
 import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
@@ -159,7 +161,9 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 			message.what = MONTH_VIEW_REFLESH;
 			handler.sendMessage(message);
 		}
-
+		public void onResponsTimeout(){
+			Toast.makeText(TrafficStatisticsDayFrg.this.getActivity(),"查询数据超时",Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override

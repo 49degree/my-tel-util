@@ -76,7 +76,7 @@ public class DoorRecordActivity extends BaseActivity {
 			query_data_notify_tv.setText("未登陆设备");
 			final LoginReceive loginReceive = new LoginReceive();
 			DevicesService.getInstance().registerCmdProcess("ReceivLogin", loginReceive);
-		}else if(pageAdapter==null){
+		}else if(pageAdapter==null||openCloseDoorInfoBeans.size()==0){
 			queryDoorRecord();
 		}
     }

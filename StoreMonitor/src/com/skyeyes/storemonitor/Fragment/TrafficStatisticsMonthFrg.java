@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu.CountManuResultBean;
@@ -158,6 +159,9 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 			Message message = new Message();
 			message.what = MONTH_VIEW_REFLESH;
 			handler.sendMessage(message);
+		}
+		public void onResponsTimeout(){
+			Toast.makeText(TrafficStatisticsMonthFrg.this.getActivity(),"查询数据超时",Toast.LENGTH_SHORT).show();
 		}
 	}
 

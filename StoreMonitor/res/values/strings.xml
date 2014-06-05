@@ -31,6 +31,7 @@
     <string name="password">密码</string>
     <string name="ip_address">IP地址</string>
     <string name="port">端口</string>
+    <string name="version">版本信息</string>
     
 
 </resources>

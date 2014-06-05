@@ -91,7 +91,7 @@
             android:layout_weight="4"
             android:background="@drawable/setting_input_bg"
             android:ems="10"
-            android:text="389test" />
+            android:text="113.106.89.91" />
     </LinearLayout>
 
     <LinearLayout
@@ -117,7 +117,7 @@
             android:layout_weight="4"
             android:background="@drawable/setting_input_bg"
             android:ems="10"
-            android:text="389test" />
+            android:text="4015" />
     </LinearLayout>
 
     <Button

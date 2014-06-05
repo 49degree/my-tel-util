@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -115,5 +116,10 @@ public abstract class SuperFragment extends Fragment {
 		if (mPdDialog != null && mPdDialog.isShowing()) {
 			mPdDialog.dismiss();
 		}
+	}
+
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

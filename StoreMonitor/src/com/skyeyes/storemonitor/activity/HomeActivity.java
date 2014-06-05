@@ -144,20 +144,25 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 
 		TabSpec tab1 = mTabHost
 				.newTabSpec(TAB_CATEGORY)
-				.setIndicator(createTabView(getApplicationContext(), getString(R.string.home_tab_screen),R.drawable.home_tab_screen_selector))
-				.setContent(new Intent(this, MainPageActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+				.setIndicator(
+						createTabView(getApplicationContext(), getString(R.string.home_tab_screen),
+								R.drawable.home_tab_screen_selector))
+				.setContent(new Intent(this, MainPageActivity.class));
 		mTabHost.addTab(tab1);
 
 		TabSpec tab2 = mTabHost
 				.newTabSpec(TAB_PLAY)
-				.setIndicator(createTabView(getApplicationContext(), getString(R.string.home_tab_play),R.drawable.home_tab_recording_selector))
-				.setContent(new Intent(this, DoorRecordActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+				.setIndicator(
+						createTabView(getApplicationContext(), getString(R.string.home_tab_play),
+								R.drawable.home_tab_recording_selector)).setContent(new Intent(this, DoorRecordActivity.class));
 		mTabHost.addTab(tab2);
 
 		TabSpec tab3 = mTabHost
 				.newTabSpec(TAB_BOUTIQUE)
-				.setIndicator(createTabView(getApplicationContext(), getString(R.string.home_tab_traffic_statistic),R.drawable.home_tab_abortion_selector))
-				.setContent(new Intent(this, TrafficStatisticsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+				.setIndicator(
+						createTabView(getApplicationContext(), getString(R.string.home_tab_traffic_statistic),
+								R.drawable.home_tab_abortion_selector))
+				.setContent(new Intent(this, TrafficStatisticsActivity.class));
 		mTabHost.addTab(tab3);
 
 		tab4View = createTabView(getApplicationContext(), getString(R.string.home_tab_necessary),R.drawable.home_tab_status_selector);
@@ -165,7 +170,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		TabSpec tab4 = mTabHost
 				.newTabSpec(TAB_NECESSARY)
 				.setIndicator(tab4View)
-				.setContent(new Intent(this, DevicesStatusActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+				.setContent(new Intent(this, DevicesStatusActivity.class));
 		mTabHost.addTab(tab4);
 		setCurrentTab(mPage);
 	}
@@ -432,13 +437,16 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 
 	}
 	
+	
+	
 	private void updateDeviceStatus(){
 		Log.i(TAG, "updateDeviceStatus:"+StoreMonitorApplication.getInstance().getDeviceStatus());
 		try{
 			if(StoreMonitorApplication.getInstance().getDeviceStatus()==5){
-				((TextView) tab4View.findViewById(R.id.tab_widget_content)).setText(getString(R.string.home_tab_necessary)+"(撤防)");
+				
+				((ImageView) tab4View.findViewById(R.id.protect_stu)).setBackground(getResources().getDrawable(R.drawable.rm_protect_icon));
 			} else if(StoreMonitorApplication.getInstance().getDeviceStatus()==0){
-				((TextView) tab4View.findViewById(R.id.tab_widget_content)).setText(getString(R.string.home_tab_necessary)+"(布防)");
+				((ImageView) tab4View.findViewById(R.id.protect_stu)).setBackground(getResources().getDrawable(R.drawable.protect_icon));
 			}
 			
 		}catch(Exception e){

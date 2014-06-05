@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
@@ -524,11 +525,11 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 
 			// 添加声音效果
 			//mNotification.defaults |= Notification.DEFAULT_SOUND;
-			//mNotification.sound = Uri.parse("android.resource://"+DevicesService.this.getPackageName()+"/"+R.raw.alarm); ;
+			mNotification.sound = Uri.parse("android.resource://"+DevicesService.this.getPackageName()+"/"+R.raw.alarm); ;
 			
 
 			// 添加震动,由于在我的真机上会App发生异常,估计是Android2.2里的错误,略去，不添加
-			// mNotification.defaults |= Notification.DEFAULT_VIBRATE ;
+			//mNotification.defaults |= Notification.DEFAULT_VIBRATE ;
 
 			// 添加状态标志
 

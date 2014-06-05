@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.Fragment.TrafficStatisticsDayFrg;
 import com.skyeyes.storemonitor.Fragment.TrafficStatisticsMonthFrg;
 
@@ -73,6 +75,11 @@ public class TrafficStatisticsActivity extends BaseActivity {
 
 
 	private void setFragment(Fragment mFragment) {
+    	if(StoreMonitorApplication.getInstance().getReceiveUserInfo()==null){
+    		Toast.makeText(this, "未登陆", Toast.LENGTH_SHORT).show();
+    		return ;
+    	}
+		
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 		transaction.replace(R.id.content_frame, mFragment);

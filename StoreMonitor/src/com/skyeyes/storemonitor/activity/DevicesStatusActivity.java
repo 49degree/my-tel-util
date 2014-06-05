@@ -66,6 +66,12 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		
+    	if(StoreMonitorApplication.getInstance().getReceiveUserInfo()==null){
+    		Toast.makeText(this, "未登陆", Toast.LENGTH_SHORT).show();
+    		return ;
+    	}
+		
 		getDeviceStatus();
 		queryDeviceEnv();
 	}

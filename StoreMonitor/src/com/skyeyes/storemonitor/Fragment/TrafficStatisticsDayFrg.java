@@ -30,6 +30,7 @@ import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgHourManuByDay;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.activity.DevicesStatusActivity;
 import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
@@ -37,6 +38,7 @@ import com.skyeyes.storemonitor.service.DevicesService;
 @SuppressLint("NewApi")
 public class TrafficStatisticsDayFrg extends SuperFragment implements
 		OnClickListener {
+	static String TAG = "TrafficStatisticsDayFrg";
 	private View mItemView;
 	private TextView averageTime;
 	private TextView total;
@@ -162,7 +164,8 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 			handler.sendMessage(message);
 		}
 		public void onResponsTimeout(){
-			Toast.makeText(TrafficStatisticsDayFrg.this.getActivity(),"查询数据超时",Toast.LENGTH_SHORT).show();
+			Toast.makeText(StoreMonitorApplication.getInstance(),"查询数据超时",Toast.LENGTH_SHORT).show();
+			dismissMPdDialog();
 		}
 	}
 

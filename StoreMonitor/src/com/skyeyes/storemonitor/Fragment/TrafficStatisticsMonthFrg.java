@@ -32,13 +32,14 @@ import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgDayManuByMouse;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
+import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
 @SuppressLint("NewApi")
 public class TrafficStatisticsMonthFrg extends SuperFragment implements
 		OnClickListener {
-
+	static String TAG = "TrafficStatisticsMonthFrg";
 	private View mItemView;
 	private TextView averageTime;
 	private TextView total;
@@ -161,7 +162,8 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 			handler.sendMessage(message);
 		}
 		public void onResponsTimeout(){
-			Toast.makeText(TrafficStatisticsMonthFrg.this.getActivity(),"查询数据超时",Toast.LENGTH_SHORT).show();
+			Toast.makeText(StoreMonitorApplication.getInstance(),"查询数据超时",Toast.LENGTH_SHORT).show();
+			dismissMPdDialog();
 		}
 	}
 

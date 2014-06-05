@@ -250,8 +250,9 @@ public class MainPageActivity extends BaseActivity{
 				try {
 					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
 					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
-					
-					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
+					ChannelPicReceive pic = new ChannelPicReceive();
+					pic.setTimeout(10*1000);
+					DevicesService.sendCmd(sendObjectParams, pic);
 				} catch (CommandParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -353,8 +354,10 @@ public class MainPageActivity extends BaseActivity{
 				try {
 					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
 					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
+					ChannelPicReceive pic = new ChannelPicReceive();
+					pic.setTimeout(10*1000);
 					
-					DevicesService.sendCmd(sendObjectParams, new ChannelPicReceive());
+					DevicesService.sendCmd(sendObjectParams, pic);
 				} catch (CommandParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -379,7 +382,11 @@ public class MainPageActivity extends BaseActivity{
 			}
 			
 		}
-
+		
+		public void onResponsTimeout(){
+			login_notify_tv.setText("获取设备通道图片超时....");
+		}
+		
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub

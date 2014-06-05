@@ -301,19 +301,12 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 	public void onMenuClick(int id) {
 		switch (id) {
 		case R.id.menu_about:
-//			AboutDialog aboutDialog = new AboutDialog(this, R.style.dialog);
-//			aboutDialog.show();
-			break;
-		case R.id.menu_alerm:
-//			switchActivity(FeedBackActivity.class, null);
-			break;
-		case R.id.menu_help:
+			switchActivity(AboutActivity.class, null);
 			break;
 		case R.id.menu_setting:
 			switchActivity(SettingActivity.class, null);
 			break;
 		case R.id.menu_exit:
-			// 清除所有API缓存
 			try{
 				stopService(new Intent(this,DevicesService.class));
 			}catch(Exception e){

@@ -1,0 +1,16 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:top="http://schemas.android.com/apk/res/com.skyeyes.storemonitor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.skyeyes.base.view.TopTitleView
+        android:id="@+id/setting_topView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        top:menuButtonBackgound="@drawable/top_back_selector"
+        top:showCenterTitle="true"
+        top:showMenuBtn="true"
+        top:titleValue="@string/menu_about" />
+
+</LinearLayout>

@@ -31,6 +31,8 @@ import com.skyeyes.base.h264.JavaH264Decoder.DecodeSuccCallback;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.TypeConversion;
+import com.skyeyes.base.view.TopTitleView;
+import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.activity.adapter.AlarmRecordViewAdapter;
@@ -38,7 +40,7 @@ import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdP
 import com.skyeyes.storemonitor.service.DevicesService;
 
 public class AlermRecorderActivity extends Activity {
-
+	private TopTitleView topTitleView;
 	private ListView alarm_record_list;
 	private LinearLayout query_data_notify_ll;
 	private TextView query_data_notify_tv;
@@ -58,10 +60,19 @@ public class AlermRecorderActivity extends Activity {
 		query_data_notify_ll = (LinearLayout)findViewById(R.id.query_data_notify_ll);
 		query_data_notify_tv = (TextView)findViewById(R.id.query_data_notify_tv);
 		alarm_record_list = (ListView)findViewById(R.id.alarm_record_list);
+		topTitleView = (TopTitleView) findViewById(R.id.ar_topView);
+
 		query_data_notify_ll.setVisibility(View.VISIBLE);
 		alarm_record_list.setVisibility(View.GONE);
 
-		
+		topTitleView.setOnMenuButtonClickListener(new OnClickListenerCallback() {
+			
+			@Override
+			public void onClick() {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 
 		//testView();
 	}

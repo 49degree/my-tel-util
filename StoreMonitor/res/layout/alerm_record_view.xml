@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         top:showCenterTitle="true"
+        top:showMenuBtn="true"
+        top:menuButtonBackgound="@drawable/top_back_selector"
         top:titleValue="@string/alermRecord" />
 
     <FrameLayout

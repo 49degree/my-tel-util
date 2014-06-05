@@ -9,6 +9,7 @@
     <string name="menu_setting">设置</string>
     <string name="menu_about">关于</string>
     <string name="menu_help">帮助</string>
+    <string name="ok">确定</string>
     <!-- 首页TAB -->
     <string name="home_tab_screen">视屏查看</string>
     <string name="home_tab_amuse">炫娱乐</string>
@@ -26,5 +27,10 @@
     <string name="routing_status">网络路由状态:</string>
     <string name="visitors_count">人流总数:</string>
     <string name="average_time">平均驻留时间:</string>
+    <string name="user_name">用户名</string>
+    <string name="password">密码</string>
+    <string name="ip_address">IP地址</string>
+    <string name="port">端口</string>
     
+
 </resources>

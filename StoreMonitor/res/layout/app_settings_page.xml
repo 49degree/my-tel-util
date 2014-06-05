@@ -1,49 +1,135 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:top="http://schemas.android.com/apk/res/com.skyeyes.storemonitor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    tools:context=".activity.LoginActivity" >
+    android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/store_login_name_et"
-        android:layout_width="wrap_content"
+    <com.skyeyes.base.view.TopTitleView
+        android:id="@+id/setting_topView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="52dp"
-        android:ems="10"
-        android:text="389test">
+        top:menuButtonBackgound="@drawable/top_back_selector"
+        top:showCenterTitle="true"
+        top:showMenuBtn="true"
+        top:titleValue="@string/menu_setting" />
 
-        <requestFocus />
-    </EditText>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal" >
 
-    <EditText
-        android:id="@+id/store_login_psd_et"
-        android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="@string/user_name"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/store_login_name_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="4"
+            android:background="@drawable/setting_input_bg"
+            android:ems="10"
+            android:text="389test" >
+
+            <requestFocus />
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="52dp"
-        android:ems="10"
-        android:text="389test"/>
-    
-    <EditText
-        android:id="@+id/store_server_id_et"
-        android:layout_width="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="@string/password"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/store_login_psd_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="4"
+            android:background="@drawable/setting_input_bg"
+            android:ems="10"
+            android:text="389test" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="52dp"
-        android:ems="10"
-        android:text="113.106.89.91"/>
-    
-    <EditText
-        android:id="@+id/store_server_port_et"
-        android:layout_width="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="@string/ip_address"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/store_server_id_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="4"
+            android:background="@drawable/setting_input_bg"
+            android:ems="10"
+            android:text="389test" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="52dp"
-        android:ems="10"
-        android:text="4015"/>
+        android:layout_margin="10dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="@string/port"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/store_server_port_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="4"
+            android:background="@drawable/setting_input_bg"
+            android:ems="10"
+            android:text="389test" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/store_login_bt"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="52dp"
-        android:text="submit" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/setting_submit_selector"
+        android:text="@string/ok"
+        android:textSize="18sp" />
 
 </LinearLayout>

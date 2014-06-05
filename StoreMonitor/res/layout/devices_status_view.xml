@@ -20,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/alermRecord"
+            android:textColor="@color/white"
             android:background="@drawable/alerm_record_selector"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true" />

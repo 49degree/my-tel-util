@@ -72,6 +72,12 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:launchMode="singleTask" />
+          <activity
+            android:name=".activity.AboutActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" />
+        
         <activity
             android:name=".activity.VideoPlayActivity"
             android:screenOrientation="landscape">

@@ -190,7 +190,7 @@ public class MainTest {
 	// 登陆
 	public static void testEquitLogin(SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		Object[] params = new Object[] { 0x01, userName, userName,CommandControl.getDeviceId()};
+		Object[] params = new Object[] { 0x0F, userName, userName,CommandControl.getDeviceId()};
 		try {
 			sendObjectParams.setParams(REQUST.cmdEquitLogin, params);
 
@@ -540,6 +540,22 @@ public class MainTest {
 		}
 	}
 	
+	public static void requstUserInfo(SkyeyeSocketClient skyeyeSocketClient) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		Object[] params = new Object[] { "2014-05-25 12:00:00",(short)480};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqHistoryVideo, params);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			skyeyeSocketClient.sendCmd(sendObjectParams);
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	static SkyeyeSocketClient skyeyeSocketClient = null;
 	public static void main(String[] args) {

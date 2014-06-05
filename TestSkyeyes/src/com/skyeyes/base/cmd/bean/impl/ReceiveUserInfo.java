@@ -35,6 +35,10 @@ public class ReceiveUserInfo  extends ReceiveCmdBean {
 		}catch(Exception e){
 			
 		}
+		
+		if(userName==null||"".equals(userName)){
+			userName = "服务器没返回";
+		}
 
 	}
 

@@ -30,9 +30,9 @@ public class TrafficStatisticsActivity extends BaseActivity {
 					@Override
 					public void onClick() {
 						// TODO Auto-generated method stub
-						if (monthFrg == null) {
+						//if (monthFrg == null) {
 							monthFrg = new TrafficStatisticsMonthFrg();
-						}
+						//}
 						setFragment(monthFrg);
 
 					}
@@ -42,9 +42,9 @@ public class TrafficStatisticsActivity extends BaseActivity {
 					@Override
 					public void onClick() {
 						// TODO Auto-generated method stub
-						if (dayFrg == null) {
+						//if (dayFrg == null) {
 							dayFrg = new TrafficStatisticsDayFrg();
-						}
+						//}
 						setFragment(dayFrg);
 					}
 				});
@@ -64,10 +64,10 @@ public class TrafficStatisticsActivity extends BaseActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if (dayFrg == null) {
+		//if (dayFrg == null) {
 			dayFrg = new TrafficStatisticsDayFrg();
 
-		}
+		//}
 		setFragment(dayFrg);
 	}
 

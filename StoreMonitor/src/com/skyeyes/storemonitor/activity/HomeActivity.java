@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -126,7 +127,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		mActivities.setVisibility(View.GONE);
 		setBehindContentView(mMenu.getView());
 		mSlidingMenu = getSlidingMenu();
-		mSlidingMenu.setSlidingEnabled(true);
+		mSlidingMenu.setSlidingEnabled(false);
 		mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
 		mSlidingMenu.setBehindOffsetInterger(width);
 		mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
@@ -144,25 +145,20 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 
 		TabSpec tab1 = mTabHost
 				.newTabSpec(TAB_CATEGORY)
-				.setIndicator(
-						createTabView(getApplicationContext(), getString(R.string.home_tab_screen),
-								R.drawable.home_tab_screen_selector))
-				.setContent(new Intent(this, MainPageActivity.class));
+				.setIndicator(createTabView(getApplicationContext(), getString(R.string.home_tab_screen),R.drawable.home_tab_screen_selector))
+				.setContent(new Intent(this, MainPageActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		mTabHost.addTab(tab1);
 
 		TabSpec tab2 = mTabHost
 				.newTabSpec(TAB_PLAY)
-				.setIndicator(
-						createTabView(getApplicationContext(), getString(R.string.home_tab_play),
-								R.drawable.home_tab_recording_selector)).setContent(new Intent(this, DoorRecordActivity.class));
+				.setIndicator(createTabView(getApplicationContext(), getString(R.string.home_tab_play),R.drawable.home_tab_recording_selector))
+				.setContent(new Intent(this, DoorRecordActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		mTabHost.addTab(tab2);
 
 		TabSpec tab3 = mTabHost
 				.newTabSpec(TAB_BOUTIQUE)
-				.setIndicator(
-						createTabView(getApplicationContext(), getString(R.string.home_tab_traffic_statistic),
-								R.drawable.home_tab_abortion_selector))
-				.setContent(new Intent(this, TrafficStatisticsActivity.class));
+				.setIndicator(createTabView(getApplicationContext(), getString(R.string.home_tab_traffic_statistic),R.drawable.home_tab_abortion_selector))
+				.setContent(new Intent(this, TrafficStatisticsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		mTabHost.addTab(tab3);
 
 		tab4View = createTabView(getApplicationContext(), getString(R.string.home_tab_necessary),R.drawable.home_tab_status_selector);
@@ -170,7 +166,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		TabSpec tab4 = mTabHost
 				.newTabSpec(TAB_NECESSARY)
 				.setIndicator(tab4View)
-				.setContent(new Intent(this, DevicesStatusActivity.class));
+				.setContent(new Intent(this, DevicesStatusActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		mTabHost.addTab(tab4);
 		setCurrentTab(mPage);
 	}
@@ -197,7 +193,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 
 	/** 显示或关闭左侧菜单 */
 	public void toggleMenu() {
-		setSlidingEnabled(true);
+		//setSlidingEnabled(true);
 		mSlidingMenu.toggle();
 	}
 
@@ -442,13 +438,19 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 	private void updateDeviceStatus(){
 		Log.i(TAG, "updateDeviceStatus:"+StoreMonitorApplication.getInstance().getDeviceStatus());
 		try{
+	        Drawable draws = null;
+
 			if(StoreMonitorApplication.getInstance().getDeviceStatus()==5){
-				
-				((ImageView) tab4View.findViewById(R.id.protect_stu)).setBackground(getResources().getDrawable(R.drawable.rm_protect_icon));
+				draws = getResources().getDrawable(R.drawable.rm_protect_icon);
 			} else if(StoreMonitorApplication.getInstance().getDeviceStatus()==0){
-				((ImageView) tab4View.findViewById(R.id.protect_stu)).setBackground(getResources().getDrawable(R.drawable.protect_icon));
+				draws = getResources().getDrawable(R.drawable.protect_icon);
 			}
-			
+			final int sdk = android.os.Build.VERSION.SDK_INT;
+	        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+	        	((ImageView) tab4View.findViewById(R.id.protect_stu)).setBackgroundDrawable(draws);
+	        } else {
+	        	((ImageView) tab4View.findViewById(R.id.protect_stu)).setBackground(draws);
+	        }
 		}catch(Exception e){
 			
 		}

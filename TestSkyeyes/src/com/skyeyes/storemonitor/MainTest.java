@@ -542,9 +542,9 @@ public class MainTest {
 	
 	public static void requstUserInfo(SkyeyeSocketClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
-		Object[] params = new Object[] { "2014-05-25 12:00:00",(short)480};
+		Object[] params = new Object[] { };
 		try {
-			sendObjectParams.setParams(REQUST.cmdReqHistoryVideo, params);
+			sendObjectParams.setParams(REQUST.cmdReqUserInfo, params);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -589,6 +589,7 @@ public class MainTest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		requstUserInfo(skyeyeSocketClient);
 		/*
 		
 		getChannelPic(skyeyeSocketClient,(byte)0);

@@ -99,6 +99,11 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 		mDeviceDeviceProcesss.clear();
 		
+		for(DeviceProcessInterface deviceProcess:mTempDeviceDeviceProcesss.values()){
+			deviceProcess.stop();
+		}
+		mTempDeviceDeviceProcesss.clear();
+		
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		// 取消的只是当前Context的Notification
 		mNotificationManager.cancel(ERROR_NOTIFICATION_ID);

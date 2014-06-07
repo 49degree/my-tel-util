@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -87,7 +88,14 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
         	if(cacheView.imgBitmap!=null)
         		cacheView.imgBitmap.recycle();
         	cacheView.imgBitmap = BitmapFactory.decodeByteArray(list.get(position).pic,0,list.get(position).pic.length);
-        	cacheView.img.setImageBitmap(cacheView.imgBitmap);
+        	
+            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            	cacheView.img.setBackgroundDrawable(new BitmapDrawable(cacheView.imgBitmap));
+            } else {
+            	cacheView.img.setBackground(new BitmapDrawable(cacheView.imgBitmap));
+            }
+        	
+        	
         	final CacheView finalTemp = cacheView;
         	cacheView.img.setOnClickListener(new OnClickListener(){
             	

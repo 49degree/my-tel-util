@@ -222,7 +222,7 @@ public class MainPageActivity extends BaseActivity{
 		    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
 		    	}
 		    	
-		    	login_notify_tv.setText("正在查询设备通道信息，请稍后...");
+		    	//login_notify_tv.setText("正在查询设备通道信息，请稍后...");
 			}
 				
 		}
@@ -244,6 +244,13 @@ public class MainPageActivity extends BaseActivity{
 			// TODO Auto-generated method stub
 			chennalCount = receiveCmdBean.videoChannelCount;
 			if(chennalCount>0){
+				
+				if(gallery.getAdapter()!=null){
+					chennalPicBeanlist.clear();
+					((ChennalPicViewAdapter)gallery.getAdapter()).notifyDataSetChanged();
+				}
+
+				
 				//查询通道图片
 				SendObjectParams sendObjectParams = new SendObjectParams();
 				Object[] params = new Object[] {(byte)0x00};

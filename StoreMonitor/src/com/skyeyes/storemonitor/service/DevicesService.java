@@ -94,6 +94,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		Log.d("DevicesService", "onDestroy................");
 		instance = null;
 		StoreMonitorApplication.getInstance().setReceivLogin(null);
+		StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo(null);
+		StoreMonitorApplication.getInstance().setDeviceStatus(-1);
 		for(DeviceProcessInterface deviceProcess:mDeviceDeviceProcesss.values()){
 			deviceProcess.stop();
 		}
@@ -163,6 +165,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			}else{
 				showErrorNotification( "登陆失败:"+receivLogin.getCommandHeader().errorInfo);
 				StoreMonitorApplication.getInstance().setReceivLogin(null);
+				StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo(null);
+				StoreMonitorApplication.getInstance().setDeviceStatus(-1);
 				mTempDeviceDeviceProcesss.remove(deviceCode).stop();
 				new Thread(){
 					public void run(){
@@ -323,6 +327,9 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 
 		public void onProcess(ReceiveLoginOut receiveCmdBean) {
 			reLoginDevice();
+			StoreMonitorApplication.getInstance().setReceivLogin(null);
+			StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo(null);
+			StoreMonitorApplication.getInstance().setDeviceStatus(-1);
 		}
 
 

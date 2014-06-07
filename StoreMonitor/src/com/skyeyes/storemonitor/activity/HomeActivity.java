@@ -341,7 +341,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 			mActivities.setVisibility(View.GONE);
 			mTabHost.setCurrentTab(mCurPage);
 			mTabHost.setVisibility(View.VISIBLE);
-			mSlidingMenu.setSlidingEnabled(true);
+			//mSlidingMenu.setSlidingEnabled(true);
 			postDelayed(new Runnable() {
 				@Override
 				public void run() {
@@ -366,7 +366,7 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 		if (page > 0 && mTabHost.getCurrentTab() != page) {
 			mTabHost.setCurrentTab(page);
 		}
-		mSlidingMenu.setSlidingEnabled(true);
+		//mSlidingMenu.setSlidingEnabled(true);
 		postDelayed(new Runnable() {
 			@Override
 			public void run() {

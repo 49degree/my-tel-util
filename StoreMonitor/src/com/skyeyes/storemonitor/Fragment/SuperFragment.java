@@ -26,7 +26,9 @@ import com.skyeyes.base.view.CustomProgressDialog;
 
 public abstract class SuperFragment extends Fragment {
 	private int SERIES_NR = 1;
-
+	public static final int VIEW_REFLESH = 1;
+	public static final int AVG_TIME = 2;
+	public static final int ALL_COUNT = 3;
 	protected XYMultipleSeriesRenderer xyMultipleSeriesRenderer;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -26,11 +26,17 @@ import android.widget.Toast;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu.CountManuResultBean;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByDay;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByMouse;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgHourManuByDay;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByDay;
+import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByMouse;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
+import com.skyeyes.storemonitor.Fragment.TrafficStatisticsMonthFrg.CountAllManucountByMonth;
+import com.skyeyes.storemonitor.Fragment.TrafficStatisticsMonthFrg.CountStayTimeByMonth;
 import com.skyeyes.storemonitor.activity.DevicesStatusActivity;
 import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
@@ -50,7 +56,6 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 	private XYChart chart;
 	public Calendar mCurCalendar = Calendar.getInstance(); // 当前的时间
 
-	private final int MONTH_VIEW_REFLESH = 1;
 	// 测试数据
 	private ArrayList<CountManuResultBean> monthResultBeans;
 	Handler handler = new Handler() {
@@ -58,7 +63,7 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			switch (msg.what) {
-			case MONTH_VIEW_REFLESH:
+			case VIEW_REFLESH:
 				layout.removeAllViews();
 				xyMultipleSeriesRenderer.setYAxisMax(20.0);
 				xyMultipleSeriesRenderer.setPanLimits(new double[] { -1,
@@ -66,13 +71,20 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 				chart = new LineChart(getDemoDataset(monthResultBeans),
 						xyMultipleSeriesRenderer);
 				mView = new GraphicalView(getActivity(), chart);
+				layout.addView(mView);
+				getStayTimeByDay(DateUtil.getTimeStringFormat(mCurCalendar,
+						"yyyy-MM-dd HH:mm:ss"));
+				break;
+			case AVG_TIME:
 				averageTime
 						.setText(String.valueOf(monthResultBeans.get(0).avgTime));
+				getAllManucountByDay(DateUtil.getTimeStringFormat(mCurCalendar,
+						"yyyy-MM-dd HH:mm:ss"));
+				break;
+			case ALL_COUNT:
 				total.setText(String.valueOf(monthResultBeans.get(0).inManu));
-				layout.addView(mView);
 				dismissMPdDialog();
 				break;
-
 			default:
 				break;
 			}
@@ -99,11 +111,10 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 		lastDayIbtn.setOnClickListener(this);
 		nextDayIbtn.setOnClickListener(this);
 		timeBtn.setOnClickListener(this);
-		
-		
+
 		mYear = mCurCalendar.get(Calendar.YEAR);
-        mMonth = mCurCalendar.get(Calendar.MONTH);
-        mDay = mCurCalendar.get(Calendar.DAY_OF_MONTH);
+		mMonth = mCurCalendar.get(Calendar.MONTH);
+		mDay = mCurCalendar.get(Calendar.DAY_OF_MONTH);
 		return mItemView;
 	}
 
@@ -122,7 +133,11 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 	 *            如：2014-05-01 00:00:00
 	 */
 	private void getManucountByDay(String dayTime) {
-		
+
+		if (StoreMonitorApplication.getInstance().getReceiveUserInfo() == null) {
+			Toast.makeText(getActivity(), "未登陆", Toast.LENGTH_SHORT).show();
+			return;
+		}
 		showMPdDialog();
 
 		SendObjectParams sendObjectParams = new SendObjectParams();
@@ -133,7 +148,7 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 			System.out.println("getManucountByDay params ::: " + dayTime);
 			CountManuOfHourByDay mCountManuCmdProcess = new CountManuOfHourByDay(
 					REQUST.cmdReqAvgHourManuByDay, (String) params[0]);
-			mCountManuCmdProcess.setTimeout(10*1000);//设置超时时间
+			mCountManuCmdProcess.setTimeout(10 * 1000);// 设置超时时间
 			DevicesService.sendCmd(sendObjectParams, mCountManuCmdProcess);
 		} catch (CommandParseException e) {
 			// TODO Auto-generated catch block
@@ -160,13 +175,109 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 			super.onProcess(receiveCmdBean);
 			monthResultBeans = receiveCmdBean.countManuResultBeans;
 			Message message = new Message();
-			message.what = MONTH_VIEW_REFLESH;
+			message.what = VIEW_REFLESH;
 			handler.sendMessage(message);
 		}
-		public void onResponsTimeout(){
-			Toast.makeText(StoreMonitorApplication.getInstance(),"查询数据超时",Toast.LENGTH_SHORT).show();
+
+		public void onResponsTimeout() {
+			Toast.makeText(StoreMonitorApplication.getInstance(), "查询数据超时",
+					Toast.LENGTH_SHORT).show();
 			dismissMPdDialog();
 		}
+	}
+
+	private void getAllManucountByDay(String dayTime) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+
+		Object[] params = new Object[] { dayTime };
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqAllManuByDay, params);
+			System.out.println("getAllManucountByDay params ::: " + dayTime);
+			CountManuOfHourByDay mCountManuCmdProcess = new CountManuOfHourByDay(
+					REQUST.cmdReqAllManuByDay, (String) params[0]);
+			mCountManuCmdProcess.setTimeout(10 * 1000);// 设置超时时间
+			DevicesService.sendCmd(sendObjectParams, mCountManuCmdProcess);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 按日统计人流总数
+	 * 
+	 * @author Administrator
+	 * 
+	 */
+	public class CountAllManucountByDay extends
+			CountManuCmdProcess<ReceiveAllManuByDay> {
+
+		public CountAllManucountByDay(REQUST requst, String beginTime) {
+			super(requst, beginTime);
+			// TODO Auto-generated constructor stub
+		}
+
+		public void onProcess(ReceiveAllManuByDay receiveCmdBean) {
+			super.onProcess(receiveCmdBean);
+			Message message = new Message();
+			message.obj = receiveCmdBean.countManuResultBeans;
+			message.what = ALL_COUNT;
+			handler.sendMessage(message);
+		}
+
+		public void onResponsTimeout() {
+			Toast.makeText(StoreMonitorApplication.getInstance(), "查询数据超时",
+					Toast.LENGTH_SHORT).show();
+			dismissMPdDialog();
+		}
+	}
+
+	private void getStayTimeByDay(String dayTime) {
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		Object[] params = new Object[] { dayTime };
+		try {
+			sendObjectParams.setParams(REQUST.cmdReqAvgManuStayTimeByDay,
+					params);
+			System.out.println("getStayTimeByDay params ::: " + dayTime);
+			CountStayTimeByDay mCountManuCmdProcess = new CountStayTimeByDay(
+					REQUST.cmdReqAvgManuStayTimeByDay, (String) params[0]);
+			mCountManuCmdProcess.setTimeout(10 * 1000);// 设置超时时间
+			DevicesService.sendCmd(sendObjectParams, mCountManuCmdProcess);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 平均驻留时间
+	 * 
+	 * @author Administrator
+	 * 
+	 */
+	public class CountStayTimeByDay extends
+			CountManuCmdProcess<ReceiveAvgManuStayTimeByDay> {
+
+		public CountStayTimeByDay(REQUST requst, String beginTime) {
+			super(requst, beginTime);
+			// TODO Auto-generated constructor stub
+		}
+
+		public void onProcess(ReceiveAvgManuStayTimeByDay receiveCmdBean) {
+			super.onProcess(receiveCmdBean);
+			Message message = new Message();
+			message.obj = receiveCmdBean.countManuResultBeans;
+			message.what = AVG_TIME;
+			handler.sendMessage(message);
+		}
+
+		public void onResponsTimeout() {
+			Toast.makeText(StoreMonitorApplication.getInstance(), "查询数据超时",
+					Toast.LENGTH_SHORT).show();
+			dismissMPdDialog();
+
+		}
+
 	}
 
 	@Override
@@ -194,11 +305,10 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 			// mCurCalendar.get(Calendar.YEAR),
 			// mCurCalendar.get(Calendar.MONTH),
 			// mCurCalendar.get(Calendar.DAY_OF_MONTH)).show();
-			   new DatePickerDialog(getActivity(),
-                      mDateSetListener,
-                      mCurCalendar.get(Calendar.YEAR),
-                      mCurCalendar.get(Calendar.MONTH), 
-                      mCurCalendar.get(Calendar.DAY_OF_MONTH)).show();
+			new DatePickerDialog(getActivity(), mDateSetListener,
+					mCurCalendar.get(Calendar.YEAR),
+					mCurCalendar.get(Calendar.MONTH),
+					mCurCalendar.get(Calendar.DAY_OF_MONTH)).show();
 			break;
 		default:
 			break;
@@ -210,7 +320,7 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 	private int mMonth;
 	private int mDay;
 	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-		
+
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
 			mYear = year;
@@ -221,17 +331,18 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 	};
 
 	private void updateDisplay() {
-		mCurCalendar.set(Calendar.YEAR, mYear); 
-		mCurCalendar.set(Calendar.MONTH,mMonth); 
-		mCurCalendar.set(Calendar.DAY_OF_MONTH, mDay); 
-		
-		String month = String.valueOf(mMonth+1);
-		if(mMonth<9){
-			 month = "0"+(mMonth+1);
+		mCurCalendar.set(Calendar.YEAR, mYear);
+		mCurCalendar.set(Calendar.MONTH, mMonth);
+		mCurCalendar.set(Calendar.DAY_OF_MONTH, mDay);
+
+		String month = String.valueOf(mMonth + 1);
+		if (mMonth < 9) {
+			month = "0" + (mMonth + 1);
 		}
 		timeBtn.setText(new StringBuilder()
 				// Month is 0 based so add 1
-				.append(mYear).append("-").append(month).append("-").append(mDay));
+				.append(mYear).append("-").append(month).append("-")
+				.append(mDay));
 		getManucountByDay(DateUtil.getTimeStringFormat(mCurCalendar,
 				"yyyy-MM-dd HH:mm:ss"));
 	}

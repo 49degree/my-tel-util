@@ -1,17 +1,22 @@
 package com.skyeyes.storemonitor.service;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.skyeyes.base.BaseSocketHandler;
@@ -19,6 +24,7 @@ import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
+import com.skyeyes.base.cmd.bean.impl.ReceivReadDeviceNetInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceAlarm;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceStatus;
@@ -48,6 +54,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	public static String DeviceAlarmBroadCast = "DeviceAlarmBroadCast";
 	public static String UserInfoBroadCast = "UserInfoBroadCast";
 	public static String DeviceStatusChangeBroadCast = "DeviceStatusChangeBroadCast";
+	public static String SendHeartBroadCast = "SendHeartBroadCast";
+	
 	public static int NOTIFICATION_ID = 123456;
 	public static int ERROR_NOTIFICATION_ID = 123457;
 	
@@ -61,6 +69,10 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	
 	private HashMap<String,HashMap<String,DeviceReceiveCmdProcess>> mStaticDeviceReceiveCmdProcess = 
 			new HashMap<String,HashMap<String,DeviceReceiveCmdProcess>>();
+	
+	//private SendHeartReceiver sendHeartReceiver = new SendHeartReceiver();
+	
+	private PendingIntent sendHeartReceiverSender =null;
 	
 	private String mCurrentDeviceCode = null;
 	@Override
@@ -85,17 +97,31 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mQueryDeviceList = new QueryDeviceList();
 		
 		mQueryDeviceList.queryEquitListNoLogin();
+		
+		sendHeartReceiverSender= PendingIntent.getBroadcast(this, 0, new Intent(this, SendHeartReceiver.class), 0);
+//		IntentFilter filter = new IntentFilter();
+//		filter.addAction(DevicesService.SendHeartBroadCast);
+//		registerReceiver(sendHeartReceiver, filter);
 	}
 	
 
+	/**
+	 * 清除登陆信息
+	 */
+	private void clearLoginInfo(){
+		StoreMonitorApplication.getInstance().setReceivLogin(null);
+		StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo(null);
+		StoreMonitorApplication.getInstance().setDeviceStatus(-1);
+		
+		AlarmManager alarm=(AlarmManager)getSystemService(ALARM_SERVICE);
+		alarm.cancel(sendHeartReceiverSender);
+	}
 	
 	public void onDestroy(){
 		super.onDestroy();
 		Log.d("DevicesService", "onDestroy................");
 		instance = null;
-		StoreMonitorApplication.getInstance().setReceivLogin(null);
-		StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo(null);
-		StoreMonitorApplication.getInstance().setDeviceStatus(-1);
+		clearLoginInfo();
 		for(DeviceProcessInterface deviceProcess:mDeviceDeviceProcesss.values()){
 			deviceProcess.stop();
 		}
@@ -110,6 +136,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		// 取消的只是当前Context的Notification
 		mNotificationManager.cancel(ERROR_NOTIFICATION_ID);
 		mNotificationManager.cancel(NOTIFICATION_ID);
+		
+//		unregisterReceiver(sendHeartReceiver);
 	}
 	
 	public void onStart(Intent intent, int startId){
@@ -161,12 +189,18 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 				// 取消的只是当前Context的Notification
 				mNotificationManager.cancel(ERROR_NOTIFICATION_ID);
+				
+			    //设定一个五秒后的时间定时发送心跳
+			    AlarmManager alarm=(AlarmManager)getSystemService(ALARM_SERVICE);
+			    //alarm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, sender);
+			    alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, System.currentTimeMillis(), 30*1000, sendHeartReceiverSender);
 
 			}else{
 				showErrorNotification( "登陆失败:"+receivLogin.getCommandHeader().errorInfo);
-				StoreMonitorApplication.getInstance().setReceivLogin(null);
-				StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo(null);
-				StoreMonitorApplication.getInstance().setDeviceStatus(-1);
+
+				clearLoginInfo();
+				
+				
 				mTempDeviceDeviceProcesss.remove(deviceCode).stop();
 				new Thread(){
 					public void run(){
@@ -222,6 +256,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 		new Thread(){
 			public void run(){
+				showErrorNotification( "连接已经断开，正在重新连接...");
+				clearLoginInfo();
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
@@ -326,10 +362,9 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 
 		public void onProcess(ReceiveLoginOut receiveCmdBean) {
+			showErrorNotification( "被退出登陆，正在重新连接...");
+			clearLoginInfo();
 			reLoginDevice();
-			StoreMonitorApplication.getInstance().setReceivLogin(null);
-			StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo(null);
-			StoreMonitorApplication.getInstance().setDeviceStatus(-1);
 		}
 
 
@@ -340,7 +375,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 	}
 	/**
-	 * 退出登录
+	 * 接收心跳数据
 	 * @author Administrator
 	 *
 	 */
@@ -358,6 +393,66 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			
 		}
 	}
+	
+	ReadDeviceNetInfoProcess readDeviceNetInfoProcess = new ReadDeviceNetInfoProcess();
+	long lastConnectTime = 0;
+	private void testConnetStatus(){
+		//查询通道图片
+		SendObjectParams sendObjectParams = new SendObjectParams();
+		Object[] params = new Object[] {};
+		try {
+			sendObjectParams.setParams(REQUST.cmdReadDeviceIp, params);
+			System.out.println("cmdReadDeviceIp入参数：" + sendObjectParams.toString());
+			readDeviceNetInfoProcess.setTimeout(60*1000);
+			DevicesService.sendCmd(sendObjectParams, readDeviceNetInfoProcess);
+		} catch (CommandParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 查询设备IP信息，用于测试连接
+	 * @author Administrator
+	 *
+	 */
+	public class ReadDeviceNetInfoProcess extends DeviceReceiveCmdProcess<ReceivReadDeviceNetInfo>{
+
+		public void onProcess(ReceivReadDeviceNetInfo receiveCmdBean) {
+			try{
+				lastConnectTime = SystemClock.elapsedRealtime();
+			}catch(Exception e){
+				
+			}
+		}
+
+		@Override
+		public void onFailure(String errinfo) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+	
+	public class SendHeartReceiver extends BroadcastReceiver{
+		@Override
+		public void onReceive(Context arg0, Intent arg1) {
+			// TODO Auto-generated method stub
+			Log.i(TAG, "lastConnectTime:"+lastConnectTime+":SystemClock.elapsedRealtime():"+SystemClock.elapsedRealtime());
+			if(lastConnectTime!=0&&SystemClock.elapsedRealtime()-lastConnectTime>90*1000){
+				//超时
+				showErrorNotification( "无法连接服务器，正在重新连接...");
+				clearLoginInfo();
+				reLoginDevice();
+			}else{
+				testConnetStatus();
+			}
+			
+			if(lastConnectTime==0)
+				lastConnectTime = SystemClock.elapsedRealtime();
+		}
+
+	}
+	
 	
 	UserInfoQuery userInfoQuery = new UserInfoQuery();
 	private void queryUserInfo(){

@@ -1,11 +1,3 @@
-/**
-* Copyright(C)2012-2013 深圳市掌星立意科技有限公司版权所有
-* 创 建 人:	Gofeel
-* 修 改 人:
-* 创 建日期:	2013-7-22
-* 描	   述:	视图帮助类
-* 版 本 号:	1.0
-*/ 
 package com.skyeyes.base.util;
 
 import android.content.Context;
@@ -13,6 +5,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.skyeyes.base.BaseApplication;
 import com.skyeyes.storemonitor.R;
 
 /**
@@ -52,7 +45,15 @@ public class ViewUtils {
 		toast.show();
 	}
 	
-	
+	public static void showErrorInfo(String errorInfo){
+		show(BaseApplication.getInstance(),errorInfo);
+	}
     
-   
+	public static void showWrongInfo(String wrongInfo){
+		show(BaseApplication.getInstance(),wrongInfo);
+	}
+	
+	public static void showNoticeInfo(String noticeInfo){
+		show(BaseApplication.getInstance(),noticeInfo);
+	} 
 }

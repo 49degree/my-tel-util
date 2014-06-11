@@ -15,9 +15,9 @@ import com.skyeyes.base.exception.NetworkException;
 
 public interface DeviceProcessInterface {
 	public void loginDevice(String userName,String userPsd,byte config,DeviceReceiveCmdProcess<ReceivLogin> loginProcess);
-	public void queryDeviceRegInfo();
+	//public void queryDeviceRegInfo();
 	public void sendCmd(SendCmdBean sendCmdBean,DeviceReceiveCmdProcess receiveCmdProcess);
-	public void setCmdProcessMaps(HashMap<String,DeviceReceiveCmdProcess> deviceReceiveCmdProcessMaps);
+	public void setStaticCmdProcessMaps(HashMap<String,DeviceReceiveCmdProcess> deviceReceiveCmdProcessMaps);
 	public void stop();
 	
 	/**
@@ -57,7 +57,6 @@ public interface DeviceProcessInterface {
 				synchronized(this){
 					onResponsTimeout();
 				}
-				
 			}
 		}
 

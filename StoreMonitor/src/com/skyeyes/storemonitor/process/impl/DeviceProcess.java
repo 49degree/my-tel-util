@@ -2,13 +2,8 @@ package com.skyeyes.storemonitor.process.impl;
 
 import java.util.HashMap;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.skyeyes.base.BaseSocketHandler;
@@ -16,7 +11,6 @@ import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
-import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceChannelListStatus;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
@@ -24,22 +18,17 @@ import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.SkyeyeNetworkClient;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
 import com.skyeyes.base.util.PreferenceUtil;
-import com.skyeyes.storemonitor.R;
+import com.skyeyes.base.util.ViewUtils;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
-import com.skyeyes.storemonitor.process.ChannelProcessInterface;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface;
-import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
-import com.skyeyes.storemonitor.service.DevicesService;
 
 public class DeviceProcess implements DeviceProcessInterface {
 	
 	
 	String TAG = "DeviceProcess";
-	public HashMap<String,DeviceReceiveCmdProcess> mStaticCmdProcess;
+	public HashMap<String,DeviceReceiveCmdProcess> mStaticCmdProcess = null;
 	public HashMap<String,DeviceReceiveCmdProcess> mResponseCmdProcess = new HashMap<String,DeviceReceiveCmdProcess>();
-	public HashMap<Integer,ChannelProcessInterface> mChannelProcess = new HashMap<Integer,ChannelProcessInterface>();
-	protected final HashMap<Integer,ChannelProcessInterface> mChannelProcessMap= new HashMap<Integer,ChannelProcessInterface>();
-	
+
 	protected ReceivLogin mReceivLogin;
 	protected String mDeviceCode;
 	protected SkyeyeNetworkClient mSkyeyeNetworkClient;
@@ -77,8 +66,7 @@ public class DeviceProcess implements DeviceProcessInterface {
 	}
 	
 	// 设备通道列表及状态
-	@Override
-	public void queryDeviceRegInfo() {
+	private void queryDeviceRegInfo() {
 		// TODO Auto-generated method stub
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		if(mReceivLogin!=null){
@@ -126,7 +114,7 @@ public class DeviceProcess implements DeviceProcessInterface {
 	
 
 	@Override
-	public void setCmdProcessMaps(HashMap<String, DeviceReceiveCmdProcess> deviceReceiveCmdProcessMaps) {
+	public void setStaticCmdProcessMaps(HashMap<String, DeviceReceiveCmdProcess> deviceReceiveCmdProcessMaps) {
 		// TODO Auto-generated method stub
 		mStaticCmdProcess = deviceReceiveCmdProcessMaps;
 	}
@@ -137,7 +125,9 @@ public class DeviceProcess implements DeviceProcessInterface {
 		// TODO Auto-generated method stub
 		if(mSkyeyeNetworkClient!=null)
 			mSkyeyeNetworkClient.doClose();
-		
+		mReceivLogin = null;
+		mResponseCmdProcess.clear();
+		mStaticCmdProcess = null;
 		
 	}
 	
@@ -155,13 +145,8 @@ public class DeviceProcess implements DeviceProcessInterface {
 		@Override
 		public void onReceiveCmdEx(final ReceiveCmdBean receiveCmdBean) {
 			// TODO Auto-generated method stub
-			//System.out.println("解析报文成功:" + (receiveCmdBean!=null?receiveCmdBean.toString():"receiveCmdBean is null"));
 			if(receiveCmdBean == null)
 				return;
-			
-//			Log.e(TAG, mStaticCmdProcess.size()+":receiveCmdBean.getClass().getSimpleName():"+receiveCmdBean.getClass().getSimpleName()+":"
-//					+mStaticCmdProcess.containsKey(receiveCmdBean.getClass().getSimpleName()));
-			
 			if (receiveCmdBean instanceof ReceivLogin) {
 				//登陆
 				ReceivLogin receivLogin = (ReceivLogin)receiveCmdBean;
@@ -179,11 +164,14 @@ public class DeviceProcess implements DeviceProcessInterface {
 				}
 			}
 			
-			if(mResponseCmdProcess.containsKey(receiveCmdBean.getClass().getSimpleName())){
+			
+			if(mResponseCmdProcess!=null&&
+					mResponseCmdProcess.containsKey(receiveCmdBean.getClass().getSimpleName())){
 				mResponseCmdProcess.remove(receiveCmdBean.getClass().getSimpleName()).onReceiveCmdBean(receiveCmdBean);
 			}
 			
-			if(mStaticCmdProcess.containsKey(receiveCmdBean.getClass().getSimpleName())){
+			if(mStaticCmdProcess!=null&&
+					mStaticCmdProcess.containsKey(receiveCmdBean.getClass().getSimpleName())){
 				mStaticCmdProcess.get(receiveCmdBean.getClass().getSimpleName()).onReceiveCmdBean(receiveCmdBean);
 			}
 		}
@@ -191,13 +179,13 @@ public class DeviceProcess implements DeviceProcessInterface {
 		@Override
 		public void onCmdExceptionEx(CommandParseException ex) {
 			// TODO Auto-generated method stub
-			Toast.makeText(StoreMonitorApplication.getInstance(), ex.getMessage(), Toast.LENGTH_SHORT).show();
+			ViewUtils.showErrorInfo(ex.getMessage());
 		}
 
 		@Override
 		public void onSocketExceptionEx(NetworkException ex) {
 			// TODO Auto-generated method stub
-			Toast.makeText(StoreMonitorApplication.getInstance(), ex.getMessage(), Toast.LENGTH_SHORT).show();
+			ViewUtils.showErrorInfo(ex.getMessage());
 			if(mDeviceStatusChangeListener!=null){
 				mDeviceStatusChangeListener.onSkyeyeNetworkException(mDeviceCode, ex);
 			}
@@ -206,8 +194,7 @@ public class DeviceProcess implements DeviceProcessInterface {
 		@Override
 		public void onSocketClosedEx() {
 			// TODO Auto-generated method stub
-			System.out.println("测试连接关闭111111:onFailure");
-			//Toast.makeText(StoreMonitorApplication.getInstance(), "连接已关闭", Toast.LENGTH_SHORT).show();
+			ViewUtils.showWrongInfo("连接已关闭");
 		}
 		
 		@Override

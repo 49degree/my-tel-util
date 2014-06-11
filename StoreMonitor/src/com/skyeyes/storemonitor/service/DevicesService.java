@@ -39,6 +39,7 @@ import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
+import com.skyeyes.base.util.ViewUtils;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.activity.HomeActivity;
@@ -51,30 +52,35 @@ import com.skyeyes.storemonitor.process.impl.DeviceProcess;
 public class DevicesService extends Service implements DeviceStatusChangeListener{
 	static String TAG = "DevicesService";
 	
-	public static String DeviceAlarmBroadCast = "DeviceAlarmBroadCast";
-	public static String UserInfoBroadCast = "UserInfoBroadCast";
-	public static String DeviceStatusChangeBroadCast = "DeviceStatusChangeBroadCast";
-	public static String SendHeartBroadCast = "SendHeartBroadCast";
+	public final static String DeviceAlarmBroadCast = "DeviceAlarmBroadCast";
+	public final static String UserInfoBroadCast = "UserInfoBroadCast";
+	public final static String DeviceStatusChangeBroadCast = "DeviceStatusChangeBroadCast";
+	public final static String SendHeartBroadCast = "SendHeartBroadCast";
 	
-	public static int NOTIFICATION_ID = 123456;
-	public static int ERROR_NOTIFICATION_ID = 123457;
+	public final static int NOTIFICATION_ID = 123456;
+	public final static int ERROR_NOTIFICATION_ID = 123457;
+	
 	
 	private static DevicesService instance = null;
-	private HashMap<String,DeviceProcessInterface> mDeviceDeviceProcesss = new HashMap<String,DeviceProcessInterface>();
-	private HashMap<String,DeviceProcessInterface> mTempDeviceDeviceProcesss = new HashMap<String,DeviceProcessInterface>();
 	
-	public QueryDeviceList mQueryDeviceList;
+	private HashMap<String,DeviceProcessInterface> mTempDeviceDeviceProcesss = 
+			new HashMap<String,DeviceProcessInterface>();
+	private HashMap<String,DeviceProcessInterface> mDeviceDeviceProcesss = 
+			new HashMap<String,DeviceProcessInterface>();
+
 	
-	private static HashMap<String,DeviceReceiveCmdProcess> mStaticCmdProcess = new HashMap<String,DeviceReceiveCmdProcess>();
+	private static HashMap<String,DeviceReceiveCmdProcess> mStaticCmdProcess = 
+			new HashMap<String,DeviceReceiveCmdProcess>();
 	
 	private HashMap<String,HashMap<String,DeviceReceiveCmdProcess>> mStaticDeviceReceiveCmdProcess = 
 			new HashMap<String,HashMap<String,DeviceReceiveCmdProcess>>();
+
+	private QueryDeviceList mQueryDeviceList;
 	
-	//private SendHeartReceiver sendHeartReceiver = new SendHeartReceiver();
+	private String mCurrentDeviceCode = null;//当前展示设备CODE
 	
-	private PendingIntent sendHeartReceiverSender =null;
+	private PendingIntent sendHeartReceiverSender =null;//用于定时发送心跳数据
 	
-	private String mCurrentDeviceCode = null;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -85,26 +91,32 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		return instance;
 	}
 	
-	public String getCurrentDeviceCode(){
-		return mCurrentDeviceCode;
-	}
-	
 	public void onCreate(){
 		super.onCreate();
-		
-		Log.d(TAG, "onCreate................");
+		Log.i(TAG, "onCreate................");
 		instance = this;
 		mQueryDeviceList = new QueryDeviceList();
 		
-		mQueryDeviceList.queryEquitListNoLogin();
-		
 		sendHeartReceiverSender= PendingIntent.getBroadcast(this, 0, new Intent(this, SendHeartReceiver.class), 0);
-//		IntentFilter filter = new IntentFilter();
-//		filter.addAction(DevicesService.SendHeartBroadCast);
-//		registerReceiver(sendHeartReceiver, filter);
 	}
 	
-
+	public void onDestroy(){
+		super.onDestroy();
+		Log.i("DevicesService", "onDestroy................");
+		for(DeviceProcessInterface deviceProcess:mDeviceDeviceProcesss.values()){
+			deviceProcess.stop();
+		}
+		mDeviceDeviceProcesss.clear();
+		
+		for(DeviceProcessInterface deviceProcess:mTempDeviceDeviceProcesss.values()){
+			deviceProcess.stop();
+		}
+		mTempDeviceDeviceProcesss.clear();
+		instance = null;
+		clearLoginInfo();
+		clearNotificationInfo();
+	}
+	
 	/**
 	 * 清除登陆信息
 	 */
@@ -117,38 +129,20 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		alarm.cancel(sendHeartReceiverSender);
 	}
 	
-	public void onDestroy(){
-		super.onDestroy();
-		Log.d("DevicesService", "onDestroy................");
-		instance = null;
-		clearLoginInfo();
-		for(DeviceProcessInterface deviceProcess:mDeviceDeviceProcesss.values()){
-			deviceProcess.stop();
-		}
-		mDeviceDeviceProcesss.clear();
-		
-		for(DeviceProcessInterface deviceProcess:mTempDeviceDeviceProcesss.values()){
-			deviceProcess.stop();
-		}
-		mTempDeviceDeviceProcesss.clear();
-		
+	/**
+	 * 清除通知栏信息
+	 */
+	private void clearNotificationInfo(){
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		// 取消的只是当前Context的Notification
 		mNotificationManager.cancel(ERROR_NOTIFICATION_ID);
 		mNotificationManager.cancel(NOTIFICATION_ID);
-		
-//		unregisterReceiver(sendHeartReceiver);
 	}
-	
-	public void onStart(Intent intent, int startId){
-		super.onStart(intent, startId);
 
-	}
-	
-	public void initDevices(){
+	private void initDevices(){
 		String deviceListString = PreferenceUtil.getConfigString(PreferenceUtil.DEVICE_INFO,PreferenceUtil.device_code_list);
 		String[] deviceCodes = deviceListString.split(";");
-		Log.d("DeviceListConnectService", "start................"+deviceCodes.length+":"+deviceCodes[0]);
+		Log.i("DeviceListConnectService", "start................"+deviceCodes.length+":"+deviceCodes[0]);
 		for(String deviceCode:deviceCodes){
 			if(!mDeviceDeviceProcesss.containsKey(deviceCode)){
 				//初始化回调对象容器
@@ -161,6 +155,28 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 		mStaticCmdProcess.clear();
 	}
+	
+	private void initDeviceProcess(String deviceCode){
+		DeviceProcess deviceProcess = new DeviceProcess(deviceCode,this);
+		mTempDeviceDeviceProcesss.put(deviceCode, deviceProcess);
+		
+		mStaticDeviceReceiveCmdProcess.get(deviceCode).putAll(mStaticCmdProcess);
+		deviceProcess.setStaticCmdProcessMaps(mStaticDeviceReceiveCmdProcess.get(deviceCode));
+		//登陆
+		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
+		String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
+		LoginReceive loginProcess = new LoginReceive(deviceCode);
+		loginProcess.setTimeout(30*1000);
+		//config 0,是否接收状态变化事件	1是否接收正报事件	3是否接收提示(出入)事件
+		deviceProcess.loginDevice(userName, userPsd, (byte)0x0F,loginProcess);
+	}
+	
+	/**
+	 * 查询设备列表
+	 */
+	public void queryDeviceList(){
+		mQueryDeviceList.queryEquitListNoLogin();
+	}
 	/**
 	 * 选择设备
 	 * @param deviceCode
@@ -171,12 +187,19 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mCurrentDeviceCode = deviceCode;
 	}
 	
-	public void reLoginDevice(){
-		//初始化设备管理器,并登陆设备
-		initDeviceProcess(mCurrentDeviceCode);
+	public String getCurrentDeviceCode(){
+		return mCurrentDeviceCode;
 	}
+	
+	
+//	public void reLoginDevice(){
+//		//初始化设备管理器,并登陆设备
+//		initDevices();
+//	}
+	
+	
 	@Override
-	public void onDeviceLogin(String deviceCode, ReceivLogin receivLogin) {
+	public void onDeviceLogin(final String deviceCode, ReceivLogin receivLogin) {
 		// TODO Auto-generated method stub
 		Log.i("DevicesService","onDeviceLogin:"+receivLogin.deviceCode);
 		if(mTempDeviceDeviceProcesss.containsKey(deviceCode)){
@@ -197,10 +220,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 
 			}else{
 				showErrorNotification( "登陆失败:"+receivLogin.getCommandHeader().errorInfo);
-
 				clearLoginInfo();
-				
-				
 				mTempDeviceDeviceProcesss.remove(deviceCode).stop();
 				new Thread(){
 					public void run(){
@@ -210,7 +230,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						reLoginDevice();
+						initDeviceProcess(deviceCode);
 					}
 				}.start();
 				
@@ -218,38 +238,17 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 	}
 	
-	 // 显示一个通知   
-	public void showErrorNotification(String des) {
-		// 创建一个通知
-		Notification mNotification = new Notification();
 
-		// 设置属性值
-		mNotification.icon = R.drawable.ic_launcher;
-		mNotification.tickerText = des;
-		mNotification.when = System.currentTimeMillis(); // 立即发生此通知
-		// 设置setLatestEventInfo方法,如果不设置会App报错异常
-		Intent notificationIntent = new Intent(DevicesService.this, HomeActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(DevicesService.this, 0,notificationIntent, 0);
-		mNotification.setLatestEventInfo(DevicesService.this, "提示信息", des, contentIntent);  
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(ERROR_NOTIFICATION_ID, mNotification);
-
-	}  
-
-	
 	@Override
 	public void onDeviceStatusChange(String deviceCode,ReceiveCmdBean receiveCmdBean) {
 		// TODO Auto-generated method stub
-		
 		if(receiveCmdBean instanceof ReceiveDeviceRegisterInfo){
 			StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo((ReceiveDeviceRegisterInfo)receiveCmdBean);
-			
 			queryUserInfo();//查询用户信息
 			getDeviceStatus();//查询设备状态
 		}
-		
 	}
-	
+	@Override
 	public void onSkyeyeNetworkException(final String deviceCode,NetworkException ex){
 		if(mDeviceDeviceProcesss.containsKey(deviceCode)){
 			mDeviceDeviceProcesss.remove(deviceCode).stop();
@@ -269,6 +268,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}.start();
 	} 
 	
+	
 	public void registerConnectListener(String deviceCode){
 		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveLoginOut",new LoginOutProcess(deviceCode));
 		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveHeart",new ConnectHeart(deviceCode));
@@ -276,23 +276,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mStaticDeviceReceiveCmdProcess.get(deviceCode).put("ReceiveStatusChange",new StatusChangeProcess(deviceCode));
 		
 	}
-	
-	LoginReceive loginProcess = new LoginReceive();
-	
-	private void initDeviceProcess(String deviceCode){
-		DeviceProcess deviceProcess = new DeviceProcess(deviceCode,this);
-		mTempDeviceDeviceProcesss.put(deviceCode, deviceProcess);
-		
-		mStaticDeviceReceiveCmdProcess.get(deviceCode).putAll(mStaticCmdProcess);
-		deviceProcess.setCmdProcessMaps(mStaticDeviceReceiveCmdProcess.get(deviceCode));
-		//登陆
-		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
-		String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
-		
-		loginProcess.setTimeout(30*1000);
-		//config 0,是否接收状态变化事件	1是否接收正报事件	3是否接收提示(出入)事件
-		deviceProcess.loginDevice(userName, userPsd, (byte)0x0F,loginProcess);
-	}
+
 	
 	
 	public static void sendCmd(SendCmdBean sendCmdBean) {
@@ -350,6 +334,33 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		return mTempDeviceDeviceProcesss;
 	}
 
+	 // 显示一个通知   
+	private void showNotification(int type,String des) {
+		// 创建一个通知
+		Notification mNotification = new Notification();
+
+		// 设置属性值
+		mNotification.icon = R.drawable.ic_launcher;
+		mNotification.tickerText = des;
+		mNotification.when = System.currentTimeMillis(); // 立即发生此通知
+		// 设置setLatestEventInfo方法,如果不设置会App报错异常
+		Intent notificationIntent = new Intent(DevicesService.this, HomeActivity.class);
+     PendingIntent contentIntent = PendingIntent.getActivity(DevicesService.this, 0,notificationIntent, 0);
+		mNotification.setLatestEventInfo(DevicesService.this, "提示信息", des, contentIntent);  
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(ERROR_NOTIFICATION_ID, mNotification);
+	} 
+	
+	// 显示出错一个通知   
+	public void showErrorNotification(String msg) {
+		showNotification(0,msg);
+	} 
+	
+	 // 显示提示一个通知   
+	public void showNoticeNotification(String msg) {
+		showNotification(1,msg);
+	} 
+	
 	/**
 	 * 退出登录
 	 * @author Administrator
@@ -364,7 +375,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		public void onProcess(ReceiveLoginOut receiveCmdBean) {
 			showErrorNotification( "被退出登陆，正在重新连接...");
 			clearLoginInfo();
-			reLoginDevice();
+			initDeviceProcess(deviceCode);
 		}
 
 
@@ -385,6 +396,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			this.deviceCode = deviceCode;
 		}
 		public void onProcess(ReceiveHeart receiveCmdBean) {
+			
 		}
 
 		@Override
@@ -394,46 +406,22 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		}
 	}
 	
-	ReadDeviceNetInfoProcess readDeviceNetInfoProcess = new ReadDeviceNetInfoProcess();
-	long lastConnectTime = 0;
-	private void testConnetStatus(){
-		//查询通道图片
-		SendObjectParams sendObjectParams = new SendObjectParams();
-		Object[] params = new Object[] {};
-		try {
-			sendObjectParams.setParams(REQUST.cmdReadDeviceIp, params);
-			System.out.println("cmdReadDeviceIp入参数：" + sendObjectParams.toString());
-			readDeviceNetInfoProcess.setTimeout(60*1000);
-			DevicesService.sendCmd(sendObjectParams, readDeviceNetInfoProcess);
-		} catch (CommandParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 	
+
 	/**
-	 * 查询设备IP信息，用于测试连接
+	 * 发送心跳
 	 * @author Administrator
 	 *
 	 */
-	public class ReadDeviceNetInfoProcess extends DeviceReceiveCmdProcess<ReceivReadDeviceNetInfo>{
-
-		public void onProcess(ReceivReadDeviceNetInfo receiveCmdBean) {
-			try{
-				lastConnectTime = SystemClock.elapsedRealtime();
-			}catch(Exception e){
-				
-			}
-		}
-
-		@Override
-		public void onFailure(String errinfo) {
-			// TODO Auto-generated method stub
-			
-		}
-	}
-	
 	public class SendHeartReceiver extends BroadcastReceiver{
+		String mDeviceCode = null;
+		ReadDeviceNetInfoProcess readDeviceNetInfoProcess = null;
+		
+		public SendHeartReceiver(String deviceCode){
+			mDeviceCode = deviceCode;
+			readDeviceNetInfoProcess = new ReadDeviceNetInfoProcess();
+		}
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
 			// TODO Auto-generated method stub
@@ -442,13 +430,52 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 				//超时
 				showErrorNotification( "无法连接服务器，正在重新连接...");
 				clearLoginInfo();
-				reLoginDevice();
+				initDeviceProcess(mDeviceCode);
 			}else{
 				testConnetStatus();
 			}
 			
 			if(lastConnectTime==0)
 				lastConnectTime = SystemClock.elapsedRealtime();
+		}
+		
+		
+		long lastConnectTime = 0;
+		private void testConnetStatus(){
+			//查询通道图片
+			SendObjectParams sendObjectParams = new SendObjectParams();
+			Object[] params = new Object[] {};
+			try {
+				sendObjectParams.setParams(REQUST.cmdReadDeviceIp, params);
+				System.out.println("cmdReadDeviceIp入参数：" + sendObjectParams.toString());
+				readDeviceNetInfoProcess.setTimeout(60*1000);
+				DevicesService.sendCmd(sendObjectParams, readDeviceNetInfoProcess);
+			} catch (CommandParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		/**
+		 * 查询设备IP信息，用于测试连接
+		 * @author Administrator
+		 *
+		 */
+		public class ReadDeviceNetInfoProcess extends DeviceReceiveCmdProcess<ReceivReadDeviceNetInfo>{
+
+			public void onProcess(ReceivReadDeviceNetInfo receiveCmdBean) {
+				try{
+					lastConnectTime = SystemClock.elapsedRealtime();
+				}catch(Exception e){
+					
+				}
+			}
+
+			@Override
+			public void onFailure(String errinfo) {
+				// TODO Auto-generated method stub
+				
+			}
 		}
 
 	}
@@ -669,11 +696,10 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	}
 	
 	
-	public class QueryDeviceList {
-		SocketHandlerImpl socketHandlerImpl = new SocketHandlerImpl();
+	private class QueryDeviceList {
 		// 查询设备列表
 		public void queryEquitListNoLogin() {
-
+			SocketHandlerImpl socketHandlerImpl = new SocketHandlerImpl();
 			String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
 			String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
 			String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
@@ -721,12 +747,9 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 						initDevices();
 						selectDevice(receiveReadDeviceList.deviceCodeList.get(0));
 					}else{
-						showErrorNotification( "查询设备失败，从新查询");
-						new Thread(){
-							public void run(){
-								queryEquitListNoLogin();
-							}
-						}.start();
+						showErrorNotification( "查询设备失败，重新查询");
+						mHandler.removeMessages(TIMEOUT_WHAT);
+						handlerFailure();
 					}
 				}
 			}
@@ -734,18 +757,17 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			@Override
 			public void onCmdExceptionEx(CommandParseException ex) {
 				// TODO Auto-generated method stub
+				ViewUtils.showErrorInfo(ex.getMessage());
 				mHandler.removeMessages(TIMEOUT_WHAT);
+				handlerFailure();
 			}
 
 			@Override
 			public void onSocketExceptionEx(NetworkException ex) {
 				// TODO Auto-generated method stub
+				ViewUtils.showErrorInfo(ex.getMessage());
 				mHandler.removeMessages(TIMEOUT_WHAT);
-				new Thread(){
-					public void run(){
-						queryEquitListNoLogin();
-					}
-				}.start();
+				handlerFailure();
 
 			}
 
@@ -753,7 +775,6 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			public void onSocketClosedEx() {
 				// TODO Auto-generated method stub
 				mHandler.removeMessages(TIMEOUT_WHAT);
-
 			}
 			
 			/**
@@ -768,36 +789,42 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			public void handleMessage(Message msg){
 				if(msg.what == TIMEOUT_WHAT){
 					showErrorNotification( "查询设备列表超时");
-					new Thread(){
-						public void run(){
-							try {
-								Thread.sleep(5000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							queryEquitListNoLogin();
-						}
-					}.start();
-					
+					handlerFailure();
 				}
 			}
+			
+			private void handlerFailure(){
+				new Thread(){
+					public void run(){
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						queryDeviceList();
+					}
+				}.start();
+			}
 
-		};
+		}
 	}
 	
 	private class LoginReceive extends DeviceReceiveCmdProcess<ReceivLogin>{
-
+		String mDeviceCode = null;
+		public LoginReceive(String deviceCode){
+			mDeviceCode = deviceCode;
+		}
 		@Override
 		public void onProcess(ReceivLogin receiveCmdBean) {
 			// TODO Auto-generated method stub
 		}
 		
 		public void onResponsTimeout(){
-			showErrorNotification( "登陆超时");
+			showErrorNotification( "登陆超时,正在重新登录...");
 			new Thread(){
 				public void run(){
-					reLoginDevice();
+					initDeviceProcess(mDeviceCode);
 				}
 			}.start();
 		}

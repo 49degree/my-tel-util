@@ -98,8 +98,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 		Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
 
 		try {
-			DevicesService.getInstance().mQueryDeviceList
-					.queryEquitListNoLogin();
+			DevicesService.getInstance().queryDeviceList();
 		} catch (Exception e) {
 
 		}

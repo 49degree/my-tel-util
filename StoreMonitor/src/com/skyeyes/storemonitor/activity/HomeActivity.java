@@ -99,6 +99,18 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 	}
 	private void startService(){
 		startService(new Intent(this,DevicesService.class));
+		new Thread(){
+			public void run(){
+				while(DevicesService.getInstance()==null)
+					try {
+						sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				DevicesService.getInstance().queryDeviceList();
+			}
+		}.start();
 	}
 
 	@Override

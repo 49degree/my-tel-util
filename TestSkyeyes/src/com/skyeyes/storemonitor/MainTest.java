@@ -159,32 +159,37 @@ public class MainTest {
 	};
 	
 	// 回复视频数据
-	public static void testResponseVideoData(SkyeyeSocketClient skyeyeSocketClient,ReceiveCmdBean receiveCmdBean) {
-		byte cmdId = receiveCmdBean.getCommandHeader().cmdId;
-		SendObjectParams sendObjectParams = new SendObjectParams();
-		sendObjectParams.setCommandHeader(receiveCmdBean.getCommandHeader());
-		
-		
-		
-		Object[] params = new Object[] {};
-		try {
-			sendObjectParams.setParams(REQUST.cmdRevFrame, params);
-			sendObjectParams.getCommandHeader().cmdCode = 0 ;
-			sendObjectParams.getCommandHeader().cmdId = cmdId;
+	static long lastDataTime;
+	public static void testResponseVideoData(SkyeyeSocketClient skyeyeSocketClient,ReceiveCmdBean receiveCmdBean){
+		if (lastDataTime == 0)
+			lastDataTime = System.currentTimeMillis();
+		if (System.currentTimeMillis() - lastDataTime > 700) {
+			byte cmdId = receiveCmdBean.getCommandHeader().cmdId;
+			SendObjectParams sendObjectParams = new SendObjectParams();
+			sendObjectParams.setCommandHeader(receiveCmdBean
+					.getCommandHeader());
+			
+			Object[] params = new Object[] {};
+			try {
+				sendObjectParams.setParams(REQUST.cmdRevFrame, params);
+				sendObjectParams.getCommandHeader().cmdCode = 0 ;
+				sendObjectParams.getCommandHeader().cmdId = cmdId;
 
-			System.out.println("testResponseVideoData入参数："
-					+ sendObjectParams.toString());
-		} catch (CommandParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+				System.out.println("testResponseVideoData入参数："
+						+ sendObjectParams.toString());
+				skyeyeSocketClient.sendCmd(sendObjectParams);
+			} catch (CommandParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			
+			} catch (NetworkException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			lastDataTime = System.currentTimeMillis();
 		}
 
-		try {
-			skyeyeSocketClient.sendCmd(sendObjectParams);
-		} catch (NetworkException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	// 登陆
@@ -635,9 +640,9 @@ public class MainTest {
 		//getOpenCloseDoorInfo(skyeyeSocketClient,receiveOpenCloseDoor.openCloseDoorBeans.get(0).des);
 		
 		//getOpenCloseDoorInfo(skyeyeSocketClient,"123456789");
-		//requstRealTimeVideo(skyeyeSocketClient,(byte)0x00);
+		requstRealTimeVideo(skyeyeSocketClient,(byte)0x00);
 		//requstHistoryVideo(skyeyeSocketClient,(byte)0x00);
-		//new H264Player(new String[]{"testfile/video.data"});
+		//new H264PlayerStream(new String[]{"testfile/video.data"});
 
 //		requstStopVideo(skyeyeSocketClient);
 		

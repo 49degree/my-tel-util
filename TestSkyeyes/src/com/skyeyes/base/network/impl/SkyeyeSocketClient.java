@@ -78,7 +78,7 @@ public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
 			} catch (ClosedChannelException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				mSocketHandler.onSocketClosed();
+				mSocketHandler.onSocketException(new NetworkException(e.getMessage()));
 			}
 		}
 	}
@@ -198,7 +198,6 @@ public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
 								}
 							}
 						}else if(key.isWritable()){
-							System.out.println("遍历keys+++++++++++++++ isWritable:");
 							synchronized (this) {
 								if(mSendCmdBeanQueue.size()>0){
 									try {

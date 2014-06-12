@@ -193,7 +193,7 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 		try {
 			sendObjectParams.setParams(REQUST.cmdReqAllManuByDay, params);
 			System.out.println("getAllManucountByDay params ::: " + dayTime);
-			CountManuOfHourByDay mCountManuCmdProcess = new CountManuOfHourByDay(
+			CountAllManucountByDay mCountManuCmdProcess = new CountAllManucountByDay(
 					REQUST.cmdReqAllManuByDay, (String) params[0]);
 			mCountManuCmdProcess.setTimeout(10 * 1000);// 设置超时时间
 			DevicesService.sendCmd(sendObjectParams, mCountManuCmdProcess);

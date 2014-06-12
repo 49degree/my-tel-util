@@ -90,14 +90,8 @@ void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height)
 
 int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic)
 {
-	LOGE("avcodec_default_get_buffer pic=%p",pic);
+	//LOGE("avcodec_default_get_buffer pic=%p",pic);
 
-
-	uint8_t *block = (unsigned char *)av_mallocz(1);
-	memset(block, 128, 1);
-	uint8_t *pixels = (unsigned char *)av_mallocz(2);
-	memset(pixels, 128, 2);
-	memcpy((block  ), (pixels  ),100);
 
     int i;
     int w= s->width;
@@ -113,9 +107,6 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic)
     buf= &((InternalBuffer*)s->internal_buffer)[s->internal_buffer_count];
     picture_number= &(((InternalBuffer*)s->internal_buffer)[INTERNAL_BUFFER_SIZE-1]).last_pic_num; //FIXME ugly hack
     (*picture_number)++;
-
-    uint8_t *dataPoint[4];
-    int dataLen[4];
 
     if(buf->base[0])
 	{
@@ -145,28 +136,28 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic)
             if(buf->base[i]==NULL) return -1;
             memset(buf->base[i], 128, buf->linesize[i]*h>>v_shift);
 
-            LOGE("ALIGN(pixel_size*w>>h_shift, s_align<<(h_chroma_shift-h_shift))=%d",ALIGN(pixel_size*w>>h_shift, s_align<<(h_chroma_shift-h_shift)));
-            LOGE("(buf->linesize[i]*h>>v_shift)+16=%d",(buf->linesize[i]*h>>v_shift)+16);
+            //LOGE("ALIGN(pixel_size*w>>h_shift, s_align<<(h_chroma_shift-h_shift))=%d",ALIGN(pixel_size*w>>h_shift, s_align<<(h_chroma_shift-h_shift)));
+            //LOGE("(buf->linesize[i]*h>>v_shift)+16=%d",(buf->linesize[i]*h>>v_shift)+16);
 
 
             buf->data[i] = buf->base[i] + ALIGN((buf->linesize[i]*EDGE_WIDTH>>v_shift) + (EDGE_WIDTH>>h_shift), s_align);
 
-            dataPoint[i] = buf->data[i];
-            dataLen[i] = ((buf->linesize[i]*h>>v_shift)+16)-ALIGN((buf->linesize[i]*EDGE_WIDTH>>v_shift) + (EDGE_WIDTH>>h_shift), s_align);
-
+            if(dataIndexY<4 && i==0){
+                dataPointY[dataIndexY] = buf->data[i];
+                dataLenY[dataIndexY] = ((buf->linesize[i]*h>>v_shift)+16)-ALIGN((buf->linesize[i]*EDGE_WIDTH>>v_shift) + (EDGE_WIDTH>>h_shift), s_align);
+				dataIndexY++;
+			}
 
         }
     }
-
+	//LOGE("dataPointY[%d]=%p,dataLenY[%d]=%d",dataIndexY-1,dataPointY[dataIndexY-1],dataIndexY-1,dataLenY[dataIndexY-1]);
     for(i=0; i<4; i++)
 	{
         pic->base[i]= buf->base[i];
         pic->data[i]= buf->data[i];
         pic->linesize[i]= buf->linesize[i];
-        pic->dataPoint[i] = dataPoint[i];
-        pic->dataLen[i] = dataLen[i];
-        LOGE("buf->data[i]=%p",buf->data[i]);
-        LOGE("index=%d,buf->base[i]=%p,buf->data[i]=%p,pic->dataPoint[i]=%p,pic->dataLen[i]=%d",i,buf->base[i],buf->data[i],pic->dataPoint[i],pic->dataLen[i]);
+        
+        //LOGE("index=%d,buf->base[i]=%p,buf->data[i]=%p,",i,buf->base[i],buf->data[i]);
     }
 
     s->internal_buffer_count++;

@@ -21,6 +21,12 @@
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,"H264JNI",__VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,"H264JNI",__VA_ARGS__)
 
+#ifndef dataPointY_H
+#define dataPointY_H
+extern uint8_t *dataPointY[4];
+extern int dataLenY[4];
+extern int dataIndexY;
+#endif
 /*
 typedef signed char  int8_t;
 typedef signed short int16_t;

@@ -19,7 +19,7 @@ void put_pixels4_c(uint8_t *block, const uint8_t *pixels, int line_size, int h)
 void put_pixels8_c(uint8_t *block, const uint8_t *pixels, int line_size, int h)
 {
     int i;
-    LOGE("put_pixels8_c block=%d,pixels=%d,line_size=%d,h=%d",sizeof(block),sizeof(pixels),line_size,h);
+    //LOGE("put_pixels8_c block=%d,pixels=%d,line_size=%d,h=%d",sizeof(block),sizeof(pixels),line_size,h);
     for(i=0; i<h; i++)
 	{
     	//LOGE("put_pixels8_c block=%p,pixels=%p,sizeof(pixels)=%d",block,pixels,sizeof(*pixels));
@@ -304,7 +304,7 @@ static __inline void copy_block8(uint8_t *dst, uint8_t *src, int dstStride, int 
 static __inline void copy_block16(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h)
 {
     int i;
-    LOGE("copy_block16 dst=%d,src=%d,dstStride=%d,srcStride=%d,h=%d",sizeof(dst),sizeof(src),dstStride,srcStride,h);
+    //LOGE("copy_block16 dst=%d,src=%d,dstStride=%d,srcStride=%d,h=%d",sizeof(dst),sizeof(src),dstStride,srcStride,h);
     for(i=0; i<h; i++)
     {
 		memcpy(dst,src,sizeof(src));

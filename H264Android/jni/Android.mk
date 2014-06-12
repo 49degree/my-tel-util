@@ -21,6 +21,6 @@ APP_ABI := armeabi armeabi-v7a
 APP_STL := gnustl_static
 
 LOCAL_MODULE    := H264Android
-LOCAL_SRC_FILES := cabac.cpp common.cpp dsputil.cpp golomb.cpp h264.cpp h264utils.cpp mpegvideo.cpp H264Android.cpp
+LOCAL_SRC_FILES := onLoad.cpp cabac.cpp common.cpp dsputil.cpp golomb.cpp h264.cpp h264utils.cpp mpegvideo.cpp H264Android.cpp
 LOCAL_LDLIBS    := -llog
 include $(BUILD_SHARED_LIBRARY)

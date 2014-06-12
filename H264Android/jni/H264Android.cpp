@@ -23,6 +23,8 @@
 #include "common.h"
 #include "avcodec.h"
 
+#include "jniUtils.h"
+
 struct AVCodec *codec=NULL;			  // Codec
 struct AVCodecContext *c=NULL;		  // Codec Context
 struct AVFrame *picture=NULL;		  // Frame	
@@ -179,7 +181,7 @@ void DisplayYUV_16(unsigned int *pdst1, unsigned char *y, unsigned char *u, unsi
 }
 
 //====================================================
-
+/*
 #ifdef __cplusplus      
 extern "C"{     
 #endif   
@@ -191,13 +193,13 @@ jint Java_h264_com_VView_UninitDecoder(JNIEnv* env, jobject thiz);
 #ifdef   __cplusplus   
 }   
 #endif     
-    
+*/
 /*
  * Class:     h264_com_VView
  * Method:    InitDecoder
  * Signature: ()I
  */
-jint Java_h264_com_VView_InitDecoder(JNIEnv* env, jobject thiz, jint width, jint height)
+static jint InitDecoder(JNIEnv* env, jobject thiz, jint width, jint height)
 {
 	iWidth = width;
 	iHeight = height;
@@ -218,7 +220,7 @@ jint Java_h264_com_VView_InitDecoder(JNIEnv* env, jobject thiz, jint width, jint
  * Method:    UninitDecoder
  * Signature: ()I
  */
-jint Java_h264_com_VView_UninitDecoder(JNIEnv* env, jobject thiz)
+static jint UninitDecoder(JNIEnv* env, jobject thiz)
 {
 	if(c)
 	{
@@ -245,7 +247,7 @@ jint Java_h264_com_VView_UninitDecoder(JNIEnv* env, jobject thiz)
  * Method:    DecoderNal
  * Signature: ([B[I)I
  */
-jint Java_h264_com_VView_DecoderNal(JNIEnv* env, jobject thiz, jbyteArray in, jint nalLen, jbyteArray out)
+static jint DecoderNal(JNIEnv* env, jobject thiz, jbyteArray in, jint nalLen, jbyteArray out)
 {
 #if 1
 	int i;
@@ -282,4 +284,20 @@ jint Java_h264_com_VView_DecoderNal(JNIEnv* env, jobject thiz, jbyteArray in, ji
   return nalLen;
   
 #endif
+}
+
+/*
+* JNI registration.
+*/
+static JNINativeMethod methods[] = {
+	{ "InitDecoder", "(II)I",  (void*) InitDecoder },
+	{ "UninitDecoder",      "()I",  (void*) UninitDecoder },
+	{ "DecoderNal", "([BI[B)I", (void*) DecoderNal},
+};
+
+int register_JNI_function(JNIEnv *env) {
+	int res = jniRegisterNativeMethods(env, "h264/com/VView", methods, sizeof(methods) / sizeof(methods[0]));
+	LOGE("jniRegisterNativeMethods=%d",res);
+	return res;
+
 }

@@ -1631,14 +1631,29 @@ static  void mc_dir_part(H264Context *h, Picture *pic, int n, int square, int ch
     const int my= h->mv_cache[list][ scan8[n] ][1] + src_y_offset*8;
     const int luma_xy= (mx&3) + ((my&3)<<2);
 
-    LOGE("pic=%p,pic->data[0]=%p,pic->data[0] point=%p,len=%d,s->linesize=%d,pic->dataLen[0]-((mx>>2) + (my>>2)*s->linesize)=%d",pic,pic->data[0],pic->dataPoint[0],pic->dataLen[0],s->linesize,pic->dataLen[0]-((mx>>2) + (my>>2)*s->linesize));
-
-    uint8_t * src_y = pic->data[0] + (mx>>2) + (my>>2)*s->linesize;
+    //LOGE("pic=%p,pic->data[0]=%p,dataPointY[0]=%p,dataLenY[0]=%d,dataPointY[1]=%p,dataLenY[1]=%d,s->linesize=%d",pic,pic->data[0],dataPointY[0],dataLenY[0],dataPointY[1],dataLenY[1],s->linesize);
+	
+	int dataIndex = 0;
+	if(pic->data[0]==dataPointY[0]){
+		dataIndex = 0;
+	}else if(pic->data[0]==dataPointY[1]){
+		dataIndex = 1;
+	}
+	
+	uint8_t * src_y = pic->data[0] + (mx>>2) + (my>>2)*s->linesize;
+	int src_y_len = dataLenY[dataIndex] - ((mx>>2) + (my>>2)*s->linesize);
+	if(src_y_len < (s->linesize*32))
+		src_y -= ((s->linesize*32) - src_y_len);
+    
     uint8_t * src_cb= pic->data[1] + (mx>>3) + (my>>3)*s->uvlinesize;
     uint8_t * src_cr= pic->data[2] + (mx>>3) + (my>>3)*s->uvlinesize;
 	
     qpix_op[luma_xy](dest_y, src_y, s->linesize); //FIXME try variable height perhaps?
     if(!square){
+		int src_y_len = dataLenY[dataIndex] - ((mx>>2) + (my>>2)*s->linesize)-(s->linesize*32)-delta;
+		if(src_y_len < (s->linesize*32))
+			src_y -= ((s->linesize*32) - src_y_len);
+			
         qpix_op[luma_xy](dest_y + delta, src_y + delta, s->linesize);
     }
 	
@@ -5159,7 +5174,7 @@ static int decode_slice(H264Context *h)
 					return -1;
 			}
 		}
-		LOGE("h->pps.cabac2");
+		//LOGE("h->pps.cabac2");
 	}
 	
 	return -1;

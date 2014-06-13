@@ -65,6 +65,7 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 				chart = new LineChart(getDemoDataset(monthResultBeans),
 						xyMultipleSeriesRenderer);
 				if(getActivity()==null){
+					dismissMPdDialog();
 					return;
 				}
 				mView = new GraphicalView(getActivity(), chart);

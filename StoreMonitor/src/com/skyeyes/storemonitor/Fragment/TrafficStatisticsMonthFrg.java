@@ -77,6 +77,7 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 				chart = new LineChart(getDemoDataset(monthResultBeans),
 						xyMultipleSeriesRenderer);
 				if(getActivity()==null){
+					dismissMPdDialog();
 					return;
 				}
 				Log.e("chenlong", "getActivity() isDestroyed ::  "+getActivity().isDestroyed());

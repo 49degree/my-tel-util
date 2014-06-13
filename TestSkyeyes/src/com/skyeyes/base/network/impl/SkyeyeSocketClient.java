@@ -121,7 +121,7 @@ public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
 				mSocketChannel = SocketChannel.open(address);
 				mSocketChannel.configureBlocking(false);
 				mSocketChannel.register(selector, SelectionKey.OP_READ|SelectionKey.OP_WRITE);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				mSocketHandler.onSocketException(new NetworkException(e.getMessage()));

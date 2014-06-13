@@ -32,10 +32,8 @@ import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByMouse;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgDayManuByMouse;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByMouse;
 import com.skyeyes.base.exception.CommandParseException;
-import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
-import com.skyeyes.storemonitor.Fragment.TrafficStatisticsDayFrg.CountManuOfHourByDay;
 import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
@@ -78,6 +76,10 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 
 				chart = new LineChart(getDemoDataset(monthResultBeans),
 						xyMultipleSeriesRenderer);
+				if(getActivity()==null){
+					return;
+				}
+				Log.e("chenlong", "getActivity() isDestroyed ::  "+getActivity().isDestroyed());
 				mView = new GraphicalView(getActivity(), chart);
 				layout.addView(mView);
 				getStayTimeByMonth(getCurrentMonthDate(mCurCalendar));

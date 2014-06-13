@@ -34,7 +34,10 @@ public class TopTitleView extends LinearLayout {
 	private String leftBtnText;
 	private String rightBtnText;
 	private String titleValue;
+	public final int LEFT_BUTTON = 1;
+	public final int RIGHT_BUTTON = 2;
 
+	private int whichButton =-1;
 	private OnClickListenerCallback menuButtonClickListener,
 			leftButtonClickListener, rightButtonClickListener;
 
@@ -126,22 +129,31 @@ public class TopTitleView extends LinearLayout {
 		});
 		leftBtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				if(whichButton == LEFT_BUTTON){
+					return;
+				}
 				rightBtn.setBackgroundResource(R.drawable.textview_style);
 				rightBtn.setTextColor(getResources().getColor(R.color.white));
 				leftBtn.setBackgroundResource(R.drawable.textview_style_b);
 				leftBtn.setTextColor(getResources().getColor(R.color.black));
 				if(leftButtonClickListener!=null)
 					leftButtonClickListener.onClick();
+				whichButton = LEFT_BUTTON;
+
 			}
 		});
 		rightBtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				if(whichButton == RIGHT_BUTTON){
+					return;
+				}
 				leftBtn.setBackgroundResource(R.drawable.textview_style);
 				leftBtn.setTextColor(getResources().getColor(R.color.white));
 				rightBtn.setBackgroundResource(R.drawable.textview_style_b);
 				rightBtn.setTextColor(getResources().getColor(R.color.black));
 				if(rightButtonClickListener!=null)
 					rightButtonClickListener.onClick();
+				whichButton = RIGHT_BUTTON;
 			}
 		});
 	}

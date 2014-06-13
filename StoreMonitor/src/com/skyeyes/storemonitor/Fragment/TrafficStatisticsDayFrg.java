@@ -12,7 +12,6 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,17 +26,12 @@ import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.impl.ReceiveCountManu.CountManuResultBean;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByDay;
-import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByMouse;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgHourManuByDay;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByDay;
-import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByMouse;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
-import com.skyeyes.storemonitor.Fragment.TrafficStatisticsMonthFrg.CountAllManucountByMonth;
-import com.skyeyes.storemonitor.Fragment.TrafficStatisticsMonthFrg.CountStayTimeByMonth;
-import com.skyeyes.storemonitor.activity.DevicesStatusActivity;
 import com.skyeyes.storemonitor.process.impl.CountManuCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
@@ -70,6 +64,9 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 						monthResultBeans.size(), 0, 80 }); // 限制xy轴的长度
 				chart = new LineChart(getDemoDataset(monthResultBeans),
 						xyMultipleSeriesRenderer);
+				if(getActivity()==null){
+					return;
+				}
 				mView = new GraphicalView(getActivity(), chart);
 				layout.addView(mView);
 				getStayTimeByDay(DateUtil.getTimeStringFormat(mCurCalendar,

@@ -189,9 +189,9 @@ public class MainPageActivity extends BaseActivity{
 		}
     	
 		vp_history_ll.setVisibility(View.GONE);
-		vp_real_time_ll.setVisibility(View.GONE);
+		vp_real_time_ll.setVisibility(View.VISIBLE);
 		no_login_notify_ll.setVisibility(View.VISIBLE);
-		
+		login_notify_tv.setText("");
     	if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
 			String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
 			String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);

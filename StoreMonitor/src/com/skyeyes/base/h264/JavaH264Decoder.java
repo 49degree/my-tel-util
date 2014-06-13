@@ -9,12 +9,13 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.util.Log;
 
+import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
 import com.twilight.h264.decoder.AVFrame;
 import com.twilight.h264.decoder.AVPacket;
 import com.twilight.h264.decoder.H264Decoder;
 import com.twilight.h264.decoder.MpegEncContext;
 
-public class JavaH264Decoder extends Thread{
+public class JavaH264Decoder{
 	public static final int INBUF_SIZE = 65535;
 	private int[] buffer = null;
 	private Bitmap videoBitmap; 
@@ -296,7 +297,5 @@ public class JavaH264Decoder extends Thread{
 	public boolean getSkipNalu(){
 		return this.skipNalu;
 	}
-    public interface DecodeSuccCallback{
-    	public void onDecodeSucc(JavaH264Decoder decoder,Bitmap bitmap);
-    }
+
 }

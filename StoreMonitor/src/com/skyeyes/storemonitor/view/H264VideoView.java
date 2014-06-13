@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
@@ -15,9 +14,9 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 
+import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
 import com.skyeyes.base.h264.H264DecoderException;
 import com.skyeyes.base.h264.JavaH264Decoder;
-import com.skyeyes.base.h264.JavaH264Decoder.DecodeSuccCallback;
 
 public class H264VideoView extends View implements Runnable{
 	private int videoViewStartX = 0;

@@ -23,6 +23,7 @@
         android:divider="#F2F2F2" 
         android:dividerHeight="3px"
         android:id="@+id/door_record_list"/>
+		
 		<LinearLayout
 		    android:id="@+id/query_data_notify_ll" 
 		    android:layout_width="match_parent"
@@ -35,7 +36,8 @@
 		        android:layout_height="wrap_content"
 		        android:text="正在查询数据，请稍后...">
 		    </TextView>
-		</LinearLayout>       
+		</LinearLayout>   
+		   
      </FrameLayout>    
 
 </LinearLayout>

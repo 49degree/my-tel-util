@@ -13,7 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.skyeyes.base.h264.JavaH264Decoder.DecodeSuccCallback;
+import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
 
 public class TestH264 extends Activity {
 	H264View mH264View = null;

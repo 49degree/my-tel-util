@@ -9,6 +9,7 @@ import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient.SocketHandler;
+import com.skyeyes.base.util.Log;
 
 /**
  * 转换回调线程o
@@ -24,6 +25,7 @@ public abstract class BaseSocketHandler implements SocketHandler {
 		mLooper = looper;
 		mHandler = new Handler(mLooper){
 			public void handleMessage(Message msg){
+				Log.e("BaseSocketHandler",this.getClass().getName());
 				handleMessage(msg);
 			}
 		};

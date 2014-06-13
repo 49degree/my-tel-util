@@ -163,7 +163,7 @@ public class DeviceProcess implements DeviceProcessInterface {
 					mDeviceStatusChangeListener.onDeviceStatusChange(mDeviceCode, receiveCmdBean);
 				}
 			}
-			
+			Log.e("SocketHandlerImpl",receiveCmdBean.getClass().getSimpleName()+":"+(mStaticCmdProcess==null?"null":mStaticCmdProcess.containsKey(receiveCmdBean.getClass().getSimpleName())));
 			
 			if(mResponseCmdProcess!=null&&
 					mResponseCmdProcess.containsKey(receiveCmdBean.getClass().getSimpleName())){

@@ -8,7 +8,6 @@ import java.util.List;
 import net.simonvt.numberpicker.NumberPicker;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -30,23 +29,18 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.skyeyes.base.BaseSocketHandler;
 import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
-import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveChannelPic;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
-import com.skyeyes.base.cmd.bean.impl.ReceiveReadDeviceList;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByMouse;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByMouse;
 import com.skyeyes.base.exception.CommandParseException;
-import com.skyeyes.base.exception.NetworkException;
+import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
 import com.skyeyes.base.h264.H264DecoderException;
 import com.skyeyes.base.h264.JavaH264Decoder;
-import com.skyeyes.base.h264.JavaH264Decoder.DecodeSuccCallback;
-import com.skyeyes.base.network.impl.SkyeyeSocketClient;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
@@ -69,6 +63,7 @@ public class MainPageActivity extends BaseActivity{
 	public final static int SEND_QUERY_MANU_ID = 1;
 	private boolean stopQueryManu = true;
 	private boolean isInView = false;
+	private boolean hasInit = false;
 	
 	//TextView store_login_id_tv = null;
 	Gallery gallery = null;
@@ -85,12 +80,15 @@ public class MainPageActivity extends BaseActivity{
 	
 	List<ChennalPicBean> chennalPicBeanlist=new ArrayList<ChennalPicBean>();
 	ChennalPicViewAdapter historyAdapter;
+	LoginReceive loginReceive = new LoginReceive();
+	DeviceRegisterInfoReceive deviceRegisterInfoReceive = new DeviceRegisterInfoReceive();
 	
-	
+	public static MainPageActivity instance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.app_video_page);
+		instance = this;
 		Log.i(TAG,"onCreate--------------");
 		//store_login_id_tv = (TextView)findViewById(R.id.store_login_id_tv);
 		vp_real_time_ll = (LinearLayout)findViewById(R.id.vp_real_time_ll);
@@ -115,10 +113,7 @@ public class MainPageActivity extends BaseActivity{
 		video_history_query_long_rv.setOnClickListener(new NumberPick());
 		
 		
-		vp_history_ll.setVisibility(View.GONE);
-		vp_real_time_ll.setVisibility(View.GONE);
-		no_login_notify_ll.setVisibility(View.VISIBLE);
-		login_notify_tv.setText("正在登陆，请稍后...");
+
 		stopQueryManu = false;
 
 		topTitleView.setOnRightButtonClickListener(new OnClickListenerCallback() {
@@ -176,11 +171,47 @@ public class MainPageActivity extends BaseActivity{
     public void onResume(){
     	super.onResume();
     	Log.i(TAG,"onResume--------------");
-		final LoginReceive loginReceive = new LoginReceive();
-		final DeviceRegisterInfoReceive deviceRegisterInfoReceive = new DeviceRegisterInfoReceive();
-		DevicesService.getInstance().registerCmdProcess("ReceivLogin", loginReceive);
-		DevicesService.getInstance().registerCmdProcess("ReceiveDeviceRegisterInfo",deviceRegisterInfoReceive);
-    	if(StoreMonitorApplication.getInstance().getReceiveDeviceRegisterInfo()!=null){
+		if(!hasInit){
+			new Thread(){
+				public void run(){
+					while(DevicesService.getInstance()==null)
+						try {
+							sleep(50);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					DevicesService.getInstance().registerCmdProcess("ReceivLogin", loginReceive);
+					DevicesService.getInstance().registerCmdProcess("ReceiveDeviceRegisterInfo",deviceRegisterInfoReceive);
+					hasInit = true;
+				}
+			}.start();
+		}
+    	
+		vp_history_ll.setVisibility(View.GONE);
+		vp_real_time_ll.setVisibility(View.GONE);
+		no_login_notify_ll.setVisibility(View.VISIBLE);
+		
+    	if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
+			String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
+			String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
+			String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
+			String port = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_port);
+			
+			if(StringUtil.isNull(userName)||
+					StringUtil.isNull(userPsd)||
+					StringUtil.isNull(ip)||
+					StringUtil.isNull(port)){
+
+				login_notify_tv.setText("信息不完整，请前往设置页面进行设置");
+				return ;
+			}else{
+				login_notify_tv.setText("正在登陆,请稍后....");
+			}
+    	}
+    	
+
+    	if(StoreMonitorApplication.getInstance().getReceiveDeviceRegisterInfo()!=null&&chennalPicBeanlist.size()==0){
     		deviceRegisterInfoReceive.onProcess(StoreMonitorApplication.getInstance().getReceiveDeviceRegisterInfo());
     	}
     	if(!isInView && !stopQueryManu && StoreMonitorApplication.getInstance().getReceivLogin()!=null){
@@ -222,7 +253,7 @@ public class MainPageActivity extends BaseActivity{
 		    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
 		    	}
 		    	
-		    	//login_notify_tv.setText("正在查询设备通道信息，请稍后...");
+		    	login_notify_tv.setText("正在查询设备通道信息，请稍后...");
 			}
 				
 		}

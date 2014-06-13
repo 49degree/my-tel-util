@@ -175,6 +175,7 @@
                 android:background="#000000"
                 android:spacing="0dip" />
         </LinearLayout>
+
 		<LinearLayout
 		    android:id="@+id/no_login_notify_ll" 
 		    android:layout_width="match_parent"

@@ -1,6 +1,5 @@
 package com.skyeyes.storemonitor.service;
 
-import java.util.Calendar;
 import java.util.HashMap;
 
 import android.app.AlarmManager;
@@ -11,7 +10,6 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.IBinder;
@@ -150,12 +148,14 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 					instance.mStaticDeviceReceiveCmdProcess.put(deviceCode, new HashMap<String,DeviceReceiveCmdProcess>());
 				}
 				//初始化设备管理器,并登陆设备
+				mLoginReceiveMap.put(deviceCode, new LoginReceive(deviceCode));
 				initDeviceProcess(deviceCode);
 			}
 		}
 		mStaticCmdProcess.clear();
 	}
 	
+	private HashMap<String,LoginReceive> mLoginReceiveMap = new HashMap<String,LoginReceive>();
 	private void initDeviceProcess(String deviceCode){
 		DeviceProcess deviceProcess = new DeviceProcess(deviceCode,this);
 		mTempDeviceDeviceProcesss.put(deviceCode, deviceProcess);
@@ -165,10 +165,9 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		//登陆
 		String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
 		String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
-		LoginReceive loginProcess = new LoginReceive(deviceCode);
-		loginProcess.setTimeout(30*1000);
+		mLoginReceiveMap.get(deviceCode).setTimeout(30*1000);
 		//config 0,是否接收状态变化事件	1是否接收正报事件	3是否接收提示(出入)事件
-		deviceProcess.loginDevice(userName, userPsd, (byte)0x0F,loginProcess);
+		deviceProcess.loginDevice(userName, userPsd, (byte)0x0F,mLoginReceiveMap.get(deviceCode));
 	}
 	
 	/**
@@ -295,8 +294,10 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			return;
 		instance.mDeviceDeviceProcesss.get(deviceCode).sendCmd(sendCmdBean,receiveCmdProcess);
 	}
+
 	
 	public static void registerCmdProcess(String className,DeviceReceiveCmdProcess receiveCmdProcess){
+		Log.e(TAG, className+":"+receiveCmdProcess);
 		String deviceListString = PreferenceUtil.getConfigString(PreferenceUtil.DEVICE_INFO,PreferenceUtil.device_code_list);
 		if(instance==null||"".equals(deviceListString)){
 			mStaticCmdProcess.put(className, receiveCmdProcess);
@@ -794,6 +795,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			}
 			
 			private void handlerFailure(){
+				Log.e(TAG, "handlerFailure");
 				new Thread(){
 					public void run(){
 						try {

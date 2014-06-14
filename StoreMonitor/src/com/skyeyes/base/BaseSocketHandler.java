@@ -25,8 +25,7 @@ public abstract class BaseSocketHandler implements SocketHandler {
 		mLooper = looper;
 		mHandler = new Handler(mLooper){
 			public void handleMessage(Message msg){
-				Log.e("BaseSocketHandler",this.getClass().getName());
-				handleMessage(msg);
+				handleMessageEx(msg);
 			}
 		};
 		
@@ -46,7 +45,7 @@ public abstract class BaseSocketHandler implements SocketHandler {
 
 	public abstract void onSocketClosedEx();
 	
-	public abstract void handleMessage(Message msg);
+	public abstract void handleMessageEx(Message msg);
 	
 	
 	@Override

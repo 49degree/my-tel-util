@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.skyeyes.base.BaseApplication;
 import com.skyeyes.storemonitor.R;
@@ -20,7 +21,7 @@ public class ViewUtils {
 	 * @param charSequence
 	 */
 	public static void show(Context context, CharSequence charSequence) {
-		show(context, charSequence, 0);
+		show(context, charSequence, Toast.LENGTH_SHORT);
 	}
 
 	/**
@@ -30,7 +31,7 @@ public class ViewUtils {
 	 * @param charSequence
 	 */
 	public static void showLong(Context context, CharSequence charSequence) {
-		show(context, charSequence, 1);
+		show(context, charSequence, Toast.LENGTH_LONG);
 	}
 
 	private static void show(Context context, CharSequence charSequence,

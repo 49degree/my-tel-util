@@ -438,9 +438,12 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mNotification.when = System.currentTimeMillis(); // 立即发生此通知
 		// 设置setLatestEventInfo方法,如果不设置会App报错异常
 		Intent notificationIntent = new Intent(DevicesService.this, HomeActivity.class);
-     PendingIntent contentIntent = PendingIntent.getActivity(DevicesService.this, 0,notificationIntent, 0);
+		PendingIntent contentIntent = PendingIntent.getActivity(DevicesService.this, 0,notificationIntent, 0);
 		mNotification.setLatestEventInfo(DevicesService.this, "提示信息", des, contentIntent);  
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		
+		mNotificationManager.cancel(ERROR_NOTIFICATION_ID);
+		
 		mNotificationManager.notify(ERROR_NOTIFICATION_ID, mNotification);
 	} 
 	
@@ -790,7 +793,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			@Override
 			public void onSocketExceptionEx(NetworkException ex) {
 				// TODO Auto-generated method stub
-				ViewUtils.showErrorInfo(ex.getMessage());
+				//ViewUtils.showErrorInfo(ex.getMessage());
 				mHandler.removeMessages(TIMEOUT_WHAT);
 				handlerFailure();
 
@@ -810,8 +813,9 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 				mHandler.sendEmptyMessageDelayed(TIMEOUT_WHAT, timeout);
 				return this;
 			}
-
-			public void handleMessage(Message msg){
+			
+			@Override
+			public void handleMessageEx(Message msg){
 				if(msg.what == TIMEOUT_WHAT){
 					showErrorNotification( "查询设备列表超时");
 					handlerFailure();

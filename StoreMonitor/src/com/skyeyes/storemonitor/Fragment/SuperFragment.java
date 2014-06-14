@@ -95,9 +95,7 @@ public abstract class SuperFragment extends Fragment {
 				public boolean onKey(DialogInterface dialog, int keyCode,
 						KeyEvent event) {
 					if (KeyEvent.KEYCODE_BACK == keyCode) {
-						synchronized (getActivity()) {
-							cancell = true;
-						}
+						cancell = true;
 
 					}
 					return false;

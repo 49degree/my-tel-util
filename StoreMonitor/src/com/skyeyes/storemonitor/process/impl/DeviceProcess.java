@@ -215,7 +215,7 @@ public class DeviceProcess implements DeviceProcessInterface {
 		}
 		
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessageEx(Message msg) {
 			// TODO Auto-generated method stub
 			
 		}

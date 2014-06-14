@@ -227,6 +227,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			networkDisconnect();
 			return ;
 		}
+		clearLoginInfo();
 		if(MainPageActivity.instance!=null)
 			MainPageActivity.instance.setNotifyInfo("正在登录，请稍后...");
 		mQueryDeviceList.queryEquitListNoLogin();
@@ -300,6 +301,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			    AlarmManager alarm=(AlarmManager)getSystemService(ALARM_SERVICE);
 			    //alarm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, sender);
 			    Log.e("DevicesService","alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, System.currentTimeMillis(), 30*1000, sendHeartReceiverSender);");
+			    SendHeartReceiver.lastConnectTime = 0;
 			    alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 30*1000, sendHeartReceiverSender);
 
 			    

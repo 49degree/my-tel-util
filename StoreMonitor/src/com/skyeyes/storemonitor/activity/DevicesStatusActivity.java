@@ -130,9 +130,25 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			if(intent.getAction().equals(DevicesService.DeviceStatusChangeBroadCast)){
-				changeDeviceStatus(+StoreMonitorApplication.getInstance().getDeviceStatus());
+				//changeDeviceStatus(StoreMonitorApplication.getInstance().getDeviceStatus());
+				currentStatus = StoreMonitorApplication.getInstance().getDeviceStatus();
+				initViewText();
 			}
 		}
+	}
+	
+	private void initViewText(){
+		if(currentStatus==5){
+			p_value.setText("撤防");
+		} else {
+			p_value.setText("布防");
+		}
+        int sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+        	protectBtn.setBackgroundDrawable(getResources().getDrawable(currentStatus!=5?R.drawable.device_rm_protect:R.drawable.device_set_protect));
+        } else {
+        	protectBtn.setBackground(getResources().getDrawable(currentStatus!=5?R.drawable.device_rm_protect:R.drawable.device_set_protect));
+        }
 	}
 	
 	private void changeDeviceStatus(int status) {
@@ -187,17 +203,8 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 				if(receiveCmdBean.getCommandHeader().resultCode == 0){
 					Toast.makeText(DevicesStatusActivity.this, isProtect?"布防成功":"撤防成功", Toast.LENGTH_SHORT).show();
 					currentStatus = (isProtect?0:5);
-					if(currentStatus==5){
-						p_value.setText("撤防");
-					} else {
-						p_value.setText("布防");
-					}
-			        int sdk = android.os.Build.VERSION.SDK_INT;
-			        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-			        	protectBtn.setBackgroundDrawable(getResources().getDrawable(isProtect?R.drawable.device_rm_protect:R.drawable.device_set_protect));
-			        } else {
-			        	protectBtn.setBackground(getResources().getDrawable(isProtect?R.drawable.device_rm_protect:R.drawable.device_set_protect));
-			        }
+					
+					initViewText();
 			        
 					if (receiveCmdBean.getCommandHeader().resultCode == 0) {
 						StoreMonitorApplication.getInstance().setDeviceStatus(currentStatus);
@@ -224,21 +231,8 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 				if(receiveCmdBean.getCommandHeader().resultCode == 0){
 
 					currentStatus = (int)receiveCmdBean.deviceStatus;
-					Drawable res = null;
-					if(currentStatus==5){
-						res = getResources().getDrawable(R.drawable.device_set_protect);
-						p_value.setText("撤防");
-					} else {
-						res =getResources().getDrawable(R.drawable.device_rm_protect);
-						p_value.setText("布防");
-					}
 					
-			        int sdk = android.os.Build.VERSION.SDK_INT;
-			        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-			        	protectBtn.setBackgroundDrawable(res);
-			        } else {
-			        	protectBtn.setBackground(res);
-			        }
+					initViewText();
 				}
 		}
 		public void onResponsTimeout(){

@@ -42,7 +42,8 @@ public class DoorRecordActivity extends BaseActivity {
 	private ArrayList<OpenCloseDoorInfoBean> openCloseDoorInfoBeans = new ArrayList<OpenCloseDoorInfoBean>();
 	private DoorRecordViewAdapter pageAdapter;
 	private String endTime;
-	private OpenCloseDoorIdBean queryOpenCloseDoorIdBean; 
+	private OpenCloseDoorIdBean queryOpenCloseDoorIdBean;
+	private boolean endQuery = false;
 	Thread t;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,8 @@ public class DoorRecordActivity extends BaseActivity {
 			query_data_notify_tv.setText("未登陆设备");
 			final LoginReceive loginReceive = new LoginReceive();
 			DevicesService.getInstance().registerCmdProcess("ReceivLogin", loginReceive);
-		}else if(pageAdapter==null||openCloseDoorInfoBeans.size()==0){
+		}else {
+			endQuery = false;
 			queryDoorRecord();
 		}
     }
@@ -84,6 +86,8 @@ public class DoorRecordActivity extends BaseActivity {
     public void onPause(){
     	super.onPause();
     	DevicesService.getInstance().unRegisterCmdProcess("ReceivLogin");
+    	endQuery = true;
+    	
     }
     
     private void queryDoorRecord(){
@@ -168,6 +172,9 @@ public class DoorRecordActivity extends BaseActivity {
 						params.put("eventCode=", ((OpenCloseDoorIdBean)openCloseDoorIdBeans.get(i)).eventCode);
 						final List<Object> temp = DBOperator.getInstance().queryBeanList(DBBean.TBOpenCloseDoorInfoBean, params);
 						if(temp.size()==0){
+							if(endQuery){
+								continue;
+							}
 							//查询详细信息
 							if(queryOpenCloseDoorIdBean != null){
 								try {

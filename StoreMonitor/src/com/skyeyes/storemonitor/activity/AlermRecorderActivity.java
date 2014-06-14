@@ -50,6 +50,7 @@ public class AlermRecorderActivity extends Activity {
 	private String endTime;
 	
 	private boolean hasQuery = false;
+	private boolean endQuery = false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -268,6 +269,9 @@ public class AlermRecorderActivity extends Activity {
 					final List<Object> temp = DBOperator.getInstance().queryBeanList(DBBean.TBAlarmInfoBean, params);
 					Log.i("alarmIdBeans", "alarmIdBeans================temp:"+temp.size());
 					if(temp.size()==0){
+						if(endQuery){
+							continue;
+						}
 						//查询详细信息
 						if(alarmIdBean != null){
 							try {

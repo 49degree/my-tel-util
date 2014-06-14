@@ -105,7 +105,9 @@ public class DeviceProcess implements DeviceProcessInterface {
 		} catch (NetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			//receiveCmdProcess.removeMessages(DeviceReceiveCmdProcess.TIMEOUT_WHAT);
 			if(mDeviceStatusChangeListener!=null){
+				
 				mDeviceStatusChangeListener.onSkyeyeNetworkException(mDeviceCode, e);
 			}
 		}

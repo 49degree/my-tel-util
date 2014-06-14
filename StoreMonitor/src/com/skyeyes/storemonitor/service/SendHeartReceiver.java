@@ -14,7 +14,7 @@ import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdP
 
 public class SendHeartReceiver extends BroadcastReceiver{
 
-	static long lastConnectTime = 0;
+	public static long lastConnectTime = 0;
 	ReadDeviceNetInfoProcess readDeviceNetInfoProcess = new ReadDeviceNetInfoProcess();
 	@Override
 	public void onReceive(Context arg0, Intent arg1) {

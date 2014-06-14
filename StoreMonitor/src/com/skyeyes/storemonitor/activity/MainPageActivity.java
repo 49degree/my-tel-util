@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -330,11 +331,16 @@ public class MainPageActivity extends BaseActivity{
 				return;
 			}
 			
-			Bitmap tempPic = BitmapFactory.decodeResource(MainPageActivity.this.getResources(), R.drawable.photo);
+			//Bitmap tempPic = BitmapFactory.decodeResource(MainPageActivity.this.getResources(), R.drawable.photo);
+			
+			
+			
 	        WindowManager windowManager = getWindowManager();
 	        Display display = windowManager.getDefaultDisplay();
 			float zoom = 1.0f*display.getWidth()/384;
 			int imgHeight = (int)(322*zoom);
+			
+			Bitmap tempPic = Bitmap.createBitmap(display.getWidth(), imgHeight, Config.RGB_565);
 			
 			LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(
 					display.getWidth(),imgHeight-50);
@@ -475,8 +481,8 @@ public class MainPageActivity extends BaseActivity{
 				case SEND_QUERY_MANU_ID:
 					if(!isInView || stopQueryManu)
 						break ;
-//					removeMessages(SEND_QUERY_MANU_ID);
-//					getManucountByMonth();
+					removeMessages(SEND_QUERY_MANU_ID);
+					getManucountByMonth();
 					break;
 			}
 		}

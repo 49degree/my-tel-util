@@ -128,6 +128,7 @@ public class DeviceProcess implements DeviceProcessInterface {
 		mReceivLogin = null;
 		mResponseCmdProcess.clear();
 		mStaticCmdProcess = null;
+		mDeviceStatusChangeListener = null;
 		
 	}
 	

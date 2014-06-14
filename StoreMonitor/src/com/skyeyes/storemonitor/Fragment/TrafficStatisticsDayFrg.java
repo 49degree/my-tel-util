@@ -56,36 +56,41 @@ public class TrafficStatisticsDayFrg extends SuperFragment implements
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
-			switch (msg.what) {
-			case VIEW_REFLESH:
-				layout.removeAllViews();
-				xyMultipleSeriesRenderer.setYAxisMax(20.0);
-				xyMultipleSeriesRenderer.setPanLimits(new double[] { -1,
-						monthResultBeans.size(), 0, 80 }); // 限制xy轴的长度
-				chart = new LineChart(getDemoDataset(monthResultBeans),
-						xyMultipleSeriesRenderer);
-				if(getActivity()==null){
+			try{
+				switch (msg.what) {
+				case VIEW_REFLESH:
+					layout.removeAllViews();
+					xyMultipleSeriesRenderer.setYAxisMax(20.0);
+					xyMultipleSeriesRenderer.setPanLimits(new double[] { -1,
+							monthResultBeans.size(), 0, 80 }); // 限制xy轴的长度
+					chart = new LineChart(getDemoDataset(monthResultBeans),
+							xyMultipleSeriesRenderer);
+					if(getActivity()==null){
+						dismissMPdDialog();
+						return;
+					}
+					mView = new GraphicalView(getActivity(), chart);
+					layout.addView(mView);
+					getStayTimeByDay(DateUtil.getTimeStringFormat(mCurCalendar,
+							"yyyy-MM-dd HH:mm:ss"));
+					break;
+				case AVG_TIME:
+					averageTime
+							.setText(String.valueOf(monthResultBeans.get(0).avgTime));
+					getAllManucountByDay(DateUtil.getTimeStringFormat(mCurCalendar,
+							"yyyy-MM-dd HH:mm:ss"));
+					break;
+				case ALL_COUNT:
+					total.setText(String.valueOf(monthResultBeans.get(0).inManu));
 					dismissMPdDialog();
-					return;
+					break;
+				default:
+					break;
 				}
-				mView = new GraphicalView(getActivity(), chart);
-				layout.addView(mView);
-				getStayTimeByDay(DateUtil.getTimeStringFormat(mCurCalendar,
-						"yyyy-MM-dd HH:mm:ss"));
-				break;
-			case AVG_TIME:
-				averageTime
-						.setText(String.valueOf(monthResultBeans.get(0).avgTime));
-				getAllManucountByDay(DateUtil.getTimeStringFormat(mCurCalendar,
-						"yyyy-MM-dd HH:mm:ss"));
-				break;
-			case ALL_COUNT:
-				total.setText(String.valueOf(monthResultBeans.get(0).inManu));
-				dismissMPdDialog();
-				break;
-			default:
-				break;
+			}catch(Exception e){
+				
 			}
+
 
 		}
 	};

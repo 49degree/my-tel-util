@@ -66,36 +66,40 @@ public class TrafficStatisticsMonthFrg extends SuperFragment implements
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
-			monthResultBeans = ( ArrayList<CountManuResultBean>)msg.obj;
-			switch (msg.what) {
-			case VIEW_REFLESH:
-				layout.removeAllViews();
-				xyMultipleSeriesRenderer.setYAxisMax(80.0);
-				xyMultipleSeriesRenderer.setPanLimits(new double[] { -1,
-						monthResultBeans.size(), 0, 80 }); // 限制xy轴的长度
+			try{
+				monthResultBeans = ( ArrayList<CountManuResultBean>)msg.obj;
+				switch (msg.what) {
+				case VIEW_REFLESH:
+					layout.removeAllViews();
+					xyMultipleSeriesRenderer.setYAxisMax(80.0);
+					xyMultipleSeriesRenderer.setPanLimits(new double[] { -1,
+							monthResultBeans.size(), 0, 80 }); // 限制xy轴的长度
 
-				chart = new LineChart(getDemoDataset(monthResultBeans),
-						xyMultipleSeriesRenderer);
-				if(getActivity()==null){
+					chart = new LineChart(getDemoDataset(monthResultBeans),
+							xyMultipleSeriesRenderer);
+					if(getActivity()==null){
+						dismissMPdDialog();
+						return;
+					}
+					mView = new GraphicalView(getActivity(), chart);
+					layout.addView(mView);
+					getStayTimeByMonth(getCurrentMonthDate(mCurCalendar));
+					break;
+				case AVG_TIME:
+					averageTime.setText(String.valueOf(monthResultBeans.get(0).avgTime));
+					getAllManucountByMonth(getCurrentMonthDate(mCurCalendar));
+					break;
+				case ALL_COUNT:
+					total.setText(String.valueOf(monthResultBeans.get(0).inManu));
 					dismissMPdDialog();
-					return;
+					break;
+				default:
+					break;
 				}
-				Log.e("chenlong", "getActivity() isDestroyed ::  "+getActivity().isDestroyed());
-				mView = new GraphicalView(getActivity(), chart);
-				layout.addView(mView);
-				getStayTimeByMonth(getCurrentMonthDate(mCurCalendar));
-				break;
-			case AVG_TIME:
-				averageTime.setText(String.valueOf(monthResultBeans.get(0).avgTime));
-				getAllManucountByMonth(getCurrentMonthDate(mCurCalendar));
-				break;
-			case ALL_COUNT:
-				total.setText(String.valueOf(monthResultBeans.get(0).inManu));
-				dismissMPdDialog();
-				break;
-			default:
-				break;
+			}catch(Exception e){
+				
 			}
+
 
 		}
 	};

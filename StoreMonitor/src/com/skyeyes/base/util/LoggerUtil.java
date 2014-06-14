@@ -22,8 +22,8 @@ import com.skyeyes.base.BaseApplication;
 public class LoggerUtil {
 	private Class operateClass = null;
 	private static String logPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ File.separator + "nurse"+File.separator +"logs";
-	private static String logFile = "nurse.log";
+			+ File.separator + "skyeyes"+File.separator +"logs";
+	private static String logFile = "store.log";
 	private static SimpleDateFormat fileTimeFormat  = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat dataTimeFormat  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static int overallLevel = Level.DEBUG;//定义全局日志级别

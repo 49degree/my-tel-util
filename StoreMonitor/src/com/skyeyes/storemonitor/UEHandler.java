@@ -1,10 +1,14 @@
 package com.skyeyes.storemonitor;
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
-import com.skyeyes.storemonitor.service.DevicesService;
+import android.content.Context;
+
+import com.skyeyes.base.util.DateUtil;
+import com.skyeyes.base.util.LoggerUtil;
 
 /**
  * 全局异常处理类
@@ -14,7 +18,8 @@ import com.skyeyes.storemonitor.service.DevicesService;
  */
 public class UEHandler implements Thread.UncaughtExceptionHandler {
 	private Context context;
-	
+
+	LoggerUtil logger = new LoggerUtil(UEHandler.class);
 
 	public UEHandler(Context app) {
 		context = app;
@@ -23,14 +28,24 @@ public class UEHandler implements Thread.UncaughtExceptionHandler {
 	@Override
 	public void uncaughtException(Thread thread, Throwable ex) {
 		ex.printStackTrace();
-		Log.e("UEHandler",ex.getMessage());
 
-		try{
-			context.stopService(new Intent(context,DevicesService.class));
-		}catch(Exception e){
+		try {
+			// 将crash log写入文件
 			
+			FileOutputStream fileOutputStream = new FileOutputStream(
+					"/mnt/sdcard/skyeyes_store_crash_log.txt", true);
+			fileOutputStream.write((DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YMDHMS)+"\n").getBytes());
+			
+			PrintStream printStream = new PrintStream(fileOutputStream);
+			ex.printStackTrace(printStream);
+			printStream.flush();
+			printStream.close();
+			fileOutputStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
-		//System.exit(0);
 	}
 }

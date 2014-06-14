@@ -73,6 +73,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	
 	private HashMap<String,HashMap<String,DeviceReceiveCmdProcess>> mStaticDeviceReceiveCmdProcess = 
 			new HashMap<String,HashMap<String,DeviceReceiveCmdProcess>>();
+	
+	private HashMap<String,LoginReceive> mLoginReceiveMap = new HashMap<String,LoginReceive>();
 
 	private QueryDeviceList mQueryDeviceList;
 	
@@ -103,7 +105,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		
 		mNetWorkUtil = new NetWorkUtil(this, new Handler(){
 			public void handleMessage(Message msg){
-				if(connectNetwork!=(Boolean)msg.obj){
+				boolean connect = mNetWorkUtil.getNetWorkInfo() != NetWorkUtil.NET_TYPE_NONE;
+				if(connectNetwork!=connect){
 					if((Boolean)msg.obj){
 						mQueryDeviceList.queryEquitListNoLogin();
 						if(MainPageActivity.instance!=null)
@@ -113,10 +116,20 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 						clearLoginInfo();
 						networkDisconnect();
 					}
-					connectNetwork = (Boolean)msg.obj;
+					connectNetwork = connect;
+					
 				}
 			}
 		});
+		
+		if(mNetWorkUtil.getNetWorkInfo() == NetWorkUtil.NET_TYPE_NONE){
+			connectNetwork = false;
+		}else{
+			connectNetwork = true;
+		}
+		
+		queryDeviceList();
+			
 	}
 	
 	public void onDestroy(){
@@ -125,6 +138,9 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		clearDeviceInfo();
 		clearLoginInfo();
 		clearNotificationInfo();
+		if(mNetWorkUtil!=null){
+			mNetWorkUtil.cancelMmonitor();
+		}
 		instance = null;
 	}
 	
@@ -177,10 +193,13 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	}
 
 	private void initDevices(){
+		if(instance==null)
+			return;
 		if(!connectNetwork){
 			networkDisconnect();
 			return ;
 		}
+
 		String deviceListString = PreferenceUtil.getConfigString(PreferenceUtil.DEVICE_INFO,PreferenceUtil.device_code_list);
 		String[] deviceCodes = deviceListString.split(";");
 		Log.i("DeviceListConnectService", "start................"+deviceCodes.length+":"+deviceCodes[0]);
@@ -198,8 +217,25 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mStaticCmdProcess.clear();
 	}
 	
-	private HashMap<String,LoginReceive> mLoginReceiveMap = new HashMap<String,LoginReceive>();
+	/**
+	 * 查询设备列表
+	 */
+	public void queryDeviceList(){
+		if(instance==null)
+			return;
+		if(!connectNetwork){
+			networkDisconnect();
+			return ;
+		}
+		if(MainPageActivity.instance!=null)
+			MainPageActivity.instance.setNotifyInfo("正在登录，请稍后...");
+		mQueryDeviceList.queryEquitListNoLogin();
+	}
+	
+	
 	void initDeviceProcess(String deviceCode){
+		if(instance==null)
+			return;
 		if(!connectNetwork){
 			networkDisconnect();
 			return ;
@@ -223,16 +259,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		deviceProcess.loginDevice(userName, userPsd, (byte)0x0F,mLoginReceiveMap.get(deviceCode));
 	}
 	
-	/**
-	 * 查询设备列表
-	 */
-	public void queryDeviceList(){
-		if(!connectNetwork){
-			networkDisconnect();
-			return ;
-		}
-		mQueryDeviceList.queryEquitListNoLogin();
-	}
+
 	/**
 	 * 选择设备
 	 * @param deviceCode
@@ -320,7 +347,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 				showErrorNotification( "连接已经断开，正在重新连接...");
 				clearLoginInfo();
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(30000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -794,7 +821,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 				new Thread(){
 					public void run(){
 						try {
-							Thread.sleep(60000);
+							Thread.sleep(30000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -836,19 +863,19 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
-			showErrorNotification( "登陆失败,正在重新登录...");
-			Log.e("LoginReceive","登陆失败,正在重新登录");
-			new Thread(){
-				public void run(){
-					try {
-						Thread.sleep(20000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					initDeviceProcess(mDeviceCode);
-				}
-			}.start();
+//			showErrorNotification( "登陆失败,正在重新登录...");
+//			Log.e("LoginReceive","登陆失败,正在重新登录");
+//			new Thread(){
+//				public void run(){
+//					try {
+//						Thread.sleep(20000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					initDeviceProcess(mDeviceCode);
+//				}
+//			}.start();
 		}
 		
 	}

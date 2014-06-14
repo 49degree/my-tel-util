@@ -1,7 +1,10 @@
 package com.skyeyes.storemonitor.activity;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +24,7 @@ import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
+import com.skyeyes.storemonitor.activity.HomeActivity.DeviceStatusChangeBroadcast;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 /** 设备状态*/
@@ -34,6 +38,8 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 	private TextView p_value;
 	private TextView net_value;
 	private TextView routing_value;
+	
+	DeviceStatusChangeBroadcast mDeviceStatusChangeBroadcast;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,21 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 
 			}
 		});
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(DevicesService.DeviceStatusChangeBroadCast);
+		mDeviceStatusChangeBroadcast = new DeviceStatusChangeBroadcast();
+		this.registerReceiver(mDeviceStatusChangeBroadcast, filter);
+	}
+	
+	protected void onDestroy(){
+		try{
+			this.unregisterReceiver(mDeviceStatusChangeBroadcast);
+		}catch(Exception e){
+			
+		}
+		
+		super.onDestroy();
+		
 	}
 	
 	@Override
@@ -67,7 +88,7 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 		// TODO Auto-generated method stub
 		super.onResume();
 		
-    	if(StoreMonitorApplication.getInstance().getReceiveUserInfo()==null){
+    	if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
     		Toast.makeText(this, "未登陆", Toast.LENGTH_SHORT).show();
     		return ;
     	}
@@ -100,6 +121,17 @@ public class DevicesStatusActivity extends BaseActivity implements OnClickListen
 			break;
 		default:
 			break;
+		}
+	}
+	
+	public class DeviceStatusChangeBroadcast extends BroadcastReceiver{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(intent.getAction().equals(DevicesService.DeviceStatusChangeBroadCast)){
+				changeDeviceStatus(+StoreMonitorApplication.getInstance().getDeviceStatus());
+			}
 		}
 	}
 	

@@ -7,11 +7,11 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.SoundPool;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
@@ -22,7 +22,6 @@ import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
-import com.skyeyes.base.cmd.bean.impl.ReceivReadDeviceNetInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceAlarm;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceStatus;
@@ -35,12 +34,14 @@ import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
+import com.skyeyes.base.util.NetWorkUtil;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
 import com.skyeyes.base.util.ViewUtils;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.activity.HomeActivity;
+import com.skyeyes.storemonitor.activity.MainPageActivity;
 import com.skyeyes.storemonitor.activity.VideoPlayActivity;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
@@ -75,9 +76,12 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 
 	private QueryDeviceList mQueryDeviceList;
 	
-	private String mCurrentDeviceCode = null;//当前展示设备CODE
+	String mCurrentDeviceCode = null;//当前展示设备CODE
 	
 	private PendingIntent sendHeartReceiverSender =null;//用于定时发送心跳数据
+	
+	private NetWorkUtil mNetWorkUtil;
+	private boolean connectNetwork;
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -96,11 +100,35 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mQueryDeviceList = new QueryDeviceList();
 		
 		sendHeartReceiverSender= PendingIntent.getBroadcast(this, 0, new Intent(this, SendHeartReceiver.class), 0);
+		
+		mNetWorkUtil = new NetWorkUtil(this, new Handler(){
+			public void handleMessage(Message msg){
+				if(connectNetwork!=(Boolean)msg.obj){
+					if((Boolean)msg.obj){
+						mQueryDeviceList.queryEquitListNoLogin();
+						if(MainPageActivity.instance!=null)
+							MainPageActivity.instance.setNotifyInfo("正在登录，请稍后...");
+					}else{
+						clearDeviceInfo();
+						clearLoginInfo();
+						networkDisconnect();
+					}
+					connectNetwork = (Boolean)msg.obj;
+				}
+			}
+		});
 	}
 	
 	public void onDestroy(){
 		super.onDestroy();
 		Log.i("DevicesService", "onDestroy................");
+		clearDeviceInfo();
+		clearLoginInfo();
+		clearNotificationInfo();
+		instance = null;
+	}
+	
+	private void clearDeviceInfo(){
 		for(DeviceProcessInterface deviceProcess:mDeviceDeviceProcesss.values()){
 			deviceProcess.stop();
 		}
@@ -110,20 +138,31 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			deviceProcess.stop();
 		}
 		mTempDeviceDeviceProcesss.clear();
-		instance = null;
-		clearLoginInfo();
-		clearNotificationInfo();
+	}
+	
+	private void networkDisconnect(){
+		showErrorNotification( "网络未连接");
+		if(MainPageActivity.instance!=null)
+			MainPageActivity.instance.setNotifyInfo("网络未连接");
+	}
+	
+	public boolean getNetworkState(){
+		return connectNetwork;
 	}
 	
 	/**
 	 * 清除登陆信息
 	 */
-	private void clearLoginInfo(){
+	 void clearLoginInfo(){
 		StoreMonitorApplication.getInstance().setReceivLogin(null);
 		StoreMonitorApplication.getInstance().setReceiveDeviceRegisterInfo(null);
 		StoreMonitorApplication.getInstance().setDeviceStatus(-1);
 		
+		Intent in = new Intent(DeviceStatusChangeBroadCast);
+		DevicesService.this.sendBroadcast(in);
+		
 		AlarmManager alarm=(AlarmManager)getSystemService(ALARM_SERVICE);
+		Log.e("DevicesService","alarm.cancel(sendHeartReceiverSender);");
 		alarm.cancel(sendHeartReceiverSender);
 	}
 	
@@ -138,6 +177,10 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	}
 
 	private void initDevices(){
+		if(!connectNetwork){
+			networkDisconnect();
+			return ;
+		}
 		String deviceListString = PreferenceUtil.getConfigString(PreferenceUtil.DEVICE_INFO,PreferenceUtil.device_code_list);
 		String[] deviceCodes = deviceListString.split(";");
 		Log.i("DeviceListConnectService", "start................"+deviceCodes.length+":"+deviceCodes[0]);
@@ -156,7 +199,17 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	}
 	
 	private HashMap<String,LoginReceive> mLoginReceiveMap = new HashMap<String,LoginReceive>();
-	private void initDeviceProcess(String deviceCode){
+	void initDeviceProcess(String deviceCode){
+		if(!connectNetwork){
+			networkDisconnect();
+			return ;
+		}
+		try{
+			if(mDeviceDeviceProcesss.get(deviceCode)!=null)
+				mDeviceDeviceProcesss.get(deviceCode).stop();
+		}catch(Exception e){
+			
+		}
 		DeviceProcess deviceProcess = new DeviceProcess(deviceCode,this);
 		mTempDeviceDeviceProcesss.put(deviceCode, deviceProcess);
 		
@@ -174,6 +227,10 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	 * 查询设备列表
 	 */
 	public void queryDeviceList(){
+		if(!connectNetwork){
+			networkDisconnect();
+			return ;
+		}
 		mQueryDeviceList.queryEquitListNoLogin();
 	}
 	/**
@@ -215,8 +272,14 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			    //设定一个五秒后的时间定时发送心跳
 			    AlarmManager alarm=(AlarmManager)getSystemService(ALARM_SERVICE);
 			    //alarm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, sender);
-			    alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, System.currentTimeMillis(), 30*1000, sendHeartReceiverSender);
+			    Log.e("DevicesService","alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, System.currentTimeMillis(), 30*1000, sendHeartReceiverSender);");
+			    alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 30*1000, sendHeartReceiverSender);
 
+			    
+//				Intent intent=new Intent(this,SendHeartReceiver.class);  
+//				PendingIntent sender=PendingIntent.getBroadcast(this, 0, intent, 0);  
+//				AlarmManager alarm=(AlarmManager)getSystemService(ALARM_SERVICE);  
+//				alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 5*1000, sender);//每5秒执
 			}else{
 				showErrorNotification( "登陆失败:"+receivLogin.getCommandHeader().errorInfo);
 				clearLoginInfo();
@@ -410,77 +473,9 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 
 	
 
-	/**
-	 * 发送心跳
-	 * @author Administrator
-	 *
-	 */
-	public class SendHeartReceiver extends BroadcastReceiver{
-		String mDeviceCode = null;
-		ReadDeviceNetInfoProcess readDeviceNetInfoProcess = null;
-		
-		public SendHeartReceiver(String deviceCode){
-			mDeviceCode = deviceCode;
-			readDeviceNetInfoProcess = new ReadDeviceNetInfoProcess();
-		}
-		@Override
-		public void onReceive(Context arg0, Intent arg1) {
-			// TODO Auto-generated method stub
-			Log.i(TAG, "lastConnectTime:"+lastConnectTime+":SystemClock.elapsedRealtime():"+SystemClock.elapsedRealtime());
-			if(lastConnectTime!=0&&SystemClock.elapsedRealtime()-lastConnectTime>90*1000){
-				//超时
-				showErrorNotification( "无法连接服务器，正在重新连接...");
-				clearLoginInfo();
-				initDeviceProcess(mDeviceCode);
-			}else{
-				testConnetStatus();
-			}
-			
-			if(lastConnectTime==0)
-				lastConnectTime = SystemClock.elapsedRealtime();
-		}
-		
-		
-		long lastConnectTime = 0;
-		private void testConnetStatus(){
-			//查询通道图片
-			SendObjectParams sendObjectParams = new SendObjectParams();
-			Object[] params = new Object[] {};
-			try {
-				sendObjectParams.setParams(REQUST.cmdReadDeviceIp, params);
-				System.out.println("cmdReadDeviceIp入参数：" + sendObjectParams.toString());
-				readDeviceNetInfoProcess.setTimeout(60*1000);
-				DevicesService.sendCmd(sendObjectParams, readDeviceNetInfoProcess);
-			} catch (CommandParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		/**
-		 * 查询设备IP信息，用于测试连接
-		 * @author Administrator
-		 *
-		 */
-		public class ReadDeviceNetInfoProcess extends DeviceReceiveCmdProcess<ReceivReadDeviceNetInfo>{
 
-			public void onProcess(ReceivReadDeviceNetInfo receiveCmdBean) {
-				try{
-					lastConnectTime = SystemClock.elapsedRealtime();
-				}catch(Exception e){
-					
-				}
-			}
-
-			@Override
-			public void onFailure(String errinfo) {
-				// TODO Auto-generated method stub
-				
-			}
-		}
-
-	}
 	
+
 	
 	UserInfoQuery userInfoQuery = new UserInfoQuery();
 	private void queryUserInfo(){
@@ -799,7 +794,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 				new Thread(){
 					public void run(){
 						try {
-							Thread.sleep(5000);
+							Thread.sleep(60000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -824,8 +819,15 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		
 		public void onResponsTimeout(){
 			showErrorNotification( "登陆超时,正在重新登录...");
+			Log.e("LoginReceive","登陆超时,正在重新登录");
 			new Thread(){
 				public void run(){
+					try {
+						Thread.sleep(20000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					initDeviceProcess(mDeviceCode);
 				}
 			}.start();
@@ -834,7 +836,19 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
-			
+			showErrorNotification( "登陆失败,正在重新登录...");
+			Log.e("LoginReceive","登陆失败,正在重新登录");
+			new Thread(){
+				public void run(){
+					try {
+						Thread.sleep(20000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					initDeviceProcess(mDeviceCode);
+				}
+			}.start();
 		}
 		
 	}

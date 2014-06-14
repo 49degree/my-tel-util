@@ -43,6 +43,7 @@ public interface DeviceProcessInterface {
 		 * @param timeout Millis
 		 */
 		public synchronized void setTimeout(long timeout){
+			removeMessages(TIMEOUT_WHAT);
 			sendEmptyMessageDelayed(TIMEOUT_WHAT, timeout);
 		}
 

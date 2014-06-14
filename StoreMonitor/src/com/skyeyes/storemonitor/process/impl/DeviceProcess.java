@@ -189,12 +189,26 @@ public class DeviceProcess implements DeviceProcessInterface {
 			if(mDeviceStatusChangeListener!=null){
 				mDeviceStatusChangeListener.onSkyeyeNetworkException(mDeviceCode, ex);
 			}
+			
+			if(mResponseCmdProcess!=null){
+				for(DeviceReceiveCmdProcess temp:mResponseCmdProcess.values()){
+					temp.onFailure(ex.getMessage());
+				}
+			}
+			mResponseCmdProcess.clear();
+			
+			if(mStaticCmdProcess!=null){
+				for(DeviceReceiveCmdProcess temp:mStaticCmdProcess.values()){
+					temp.onFailure(ex.getMessage());
+				}
+			}
 		}
 
 		@Override
 		public void onSocketClosedEx() {
 			// TODO Auto-generated method stub
 			ViewUtils.showWrongInfo("连接已关闭");
+			
 		}
 		
 		@Override

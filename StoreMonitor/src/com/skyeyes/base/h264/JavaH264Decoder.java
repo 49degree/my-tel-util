@@ -194,7 +194,7 @@ public class JavaH264Decoder{
 			        while (avpkt.size > 0) {
 			            len = c.avcodec_decode_video2(picture, got_picture, avpkt);
 			            if (len < 0) {
-			                System.out.println("Error while decoding frame "+ frame);
+			                //System.out.println("Error while decoding frame "+ frame);
 			                // Discard current packet and proceed to next packet
 			                break;
 			            } // if
@@ -202,7 +202,7 @@ public class JavaH264Decoder{
 			            	picture = c.priv_data.displayPicture;
 		
 							int bufferSize = picture.imageWidth * picture.imageHeight;
-							Log.e("JavaH264Decoder","picture.imageWidth * picture.imageHeight:"+picture.imageWidth+"*"+picture.imageHeight);
+							//Log.e("JavaH264Decoder","picture.imageWidth * picture.imageHeight:"+picture.imageWidth+"*"+picture.imageHeight);
 							if(byteBuffer==null || byteBuffer.capacity()!=bufferSize*4){
 								byteBuffer = ByteBuffer.allocate(bufferSize*32);
 							}
@@ -220,7 +220,7 @@ public class JavaH264Decoder{
 										if(videoBitmap==null||videoBitmap.getWidth()<picture.imageWidth||
 												videoBitmap.getHeight()<picture.imageHeight)
 											videoBitmap=Bitmap.createBitmap(picture.imageWidth, picture.imageHeight, Config.ARGB_8888);
-										Log.e("JavaH264Decoder","videoBitmap.imageWidth * videoBitmap.imageHeight:"+videoBitmap.getWidth()+"*"+videoBitmap.getHeight());
+										//Log.e("JavaH264Decoder","videoBitmap.imageWidth * videoBitmap.imageHeight:"+videoBitmap.getWidth()+"*"+videoBitmap.getHeight());
 										synchronized (this) {
 											videoBitmap.copyPixelsFromBuffer(byteBuffer);//makeBuffer(data565, N));
 										}

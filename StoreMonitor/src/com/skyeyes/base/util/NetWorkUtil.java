@@ -331,6 +331,7 @@ public class NetWorkUtil {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			Log.e(TAG, "onReceive++++++++++");
 			// TODO Auto-generated method stub
 			String action = intent.getAction();
 			if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {

@@ -456,7 +456,8 @@ public class HomeActivity extends SlidingActivity implements MenuListener,OnOpen
 				draws = getResources().getDrawable(R.drawable.rm_protect_icon);
 			} else if(StoreMonitorApplication.getInstance().getDeviceStatus()==0){
 				draws = getResources().getDrawable(R.drawable.protect_icon);
-			}
+			}else
+				draws = null;
 			final int sdk = android.os.Build.VERSION.SDK_INT;
 	        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
 	        	((ImageView) tab4View.findViewById(R.id.protect_stu)).setBackgroundDrawable(draws);

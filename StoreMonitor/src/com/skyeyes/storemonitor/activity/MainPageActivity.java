@@ -27,7 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
@@ -44,6 +43,7 @@ import com.skyeyes.base.h264.JavaH264Decoder;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
+import com.skyeyes.base.util.ViewUtils;
 import com.skyeyes.base.view.TopTitleView;
 import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
@@ -166,6 +166,26 @@ public class MainPageActivity extends BaseActivity{
 		
 	}
     
+    public void setNotifyInfo(final String msg){
+    	this.runOnUiThread(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try{
+		    		vp_history_ll.setVisibility(View.GONE);
+		    		vp_real_time_ll.setVisibility(View.GONE);
+		    		no_login_notify_ll.setVisibility(View.VISIBLE);
+		    		login_notify_tv.setText(msg);
+				}catch(Exception e){
+					
+				}
+				
+			}
+    		
+    	});
+    }
+    
     
     
     public void onResume(){
@@ -188,11 +208,14 @@ public class MainPageActivity extends BaseActivity{
 			}.start();
 		}
     	
-		vp_history_ll.setVisibility(View.GONE);
-		vp_real_time_ll.setVisibility(View.VISIBLE);
-		no_login_notify_ll.setVisibility(View.VISIBLE);
-		login_notify_tv.setText("");
+
+		
     	if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
+    		
+    		vp_history_ll.setVisibility(View.GONE);
+    		vp_real_time_ll.setVisibility(View.GONE);
+    		no_login_notify_ll.setVisibility(View.VISIBLE);
+    		
 			String userName = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_name);
 			String userPsd = PreferenceUtil.getConfigString(PreferenceUtil.ACCOUNT_IFNO, PreferenceUtil.account_login_psd);
 			String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
@@ -206,7 +229,16 @@ public class MainPageActivity extends BaseActivity{
 				login_notify_tv.setText("信息不完整，请前往设置页面进行设置");
 				return ;
 			}else{
-				login_notify_tv.setText("正在登陆,请稍后....");
+				if(DevicesService.getInstance()==null){
+					login_notify_tv.setText("正在启动...");
+				}else{
+					if(!DevicesService.getInstance().getNetworkState()){
+						login_notify_tv.setText("网络未连接");
+					}else{
+						login_notify_tv.setText("正在登陆,请稍后....");
+					}
+				}
+				
 			}
     	}
     	
@@ -239,15 +271,16 @@ public class MainPageActivity extends BaseActivity{
 		public void onProcess(ReceivLogin receiveCmdBean) {
 			// TODO Auto-generated method stub
 			if(receiveCmdBean.getCommandHeader().resultCode != 0){
-				showToast(receiveCmdBean.getCommandHeader().errorInfo);
+				ViewUtils.showErrorInfo(receiveCmdBean.getCommandHeader().errorInfo);
 				StoreMonitorApplication.getInstance().setReceivLogin(null);
 				login_notify_tv.setText(receiveCmdBean.getCommandHeader().errorInfo);
 				vp_history_ll.setVisibility(View.GONE);
 				vp_real_time_ll.setVisibility(View.GONE);
 				no_login_notify_ll.setVisibility(View.VISIBLE);
+				login_notify_tv.setText("登录失败"+receiveCmdBean.getCommandHeader().errorInfo);
 
 			}else{
-				showToast("登陆成功...............");
+				ViewUtils.showNoticeInfo("登陆成功...............");
 		    	if(isInView && !stopQueryManu && 
 		    			StoreMonitorApplication.getInstance().getReceivLogin()!=null){
 		    		queryManuCountHandler.sendEmptyMessage(SEND_QUERY_MANU_ID);//统计人流
@@ -273,15 +306,12 @@ public class MainPageActivity extends BaseActivity{
 		@Override
 		public void onProcess(ReceiveDeviceRegisterInfo receiveCmdBean) {
 			// TODO Auto-generated method stub
+			if(receiveCmdBean.getCommandHeader().resultCode!=0){
+				ViewUtils.showNoticeInfo("查询设备通道信息失败:"+receiveCmdBean.getCommandHeader().errorInfo);
+			}
 			chennalCount = receiveCmdBean.videoChannelCount;
+			getPicCount = 0;
 			if(chennalCount>0){
-				
-				if(gallery.getAdapter()!=null){
-					chennalPicBeanlist.clear();
-					((ChennalPicViewAdapter)gallery.getAdapter()).notifyDataSetChanged();
-				}
-
-				
 				//查询通道图片
 				SendObjectParams sendObjectParams = new SendObjectParams();
 				Object[] params = new Object[] {(byte)0x00};
@@ -295,7 +325,9 @@ public class MainPageActivity extends BaseActivity{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				login_notify_tv.setText("正在获取设备通道图片，请稍后...");
+			}else{
+				ViewUtils.showNoticeInfo("无设备通道");
+				return;
 			}
 			
 			Bitmap tempPic = BitmapFactory.decodeResource(MainPageActivity.this.getResources(), R.drawable.photo);
@@ -306,6 +338,7 @@ public class MainPageActivity extends BaseActivity{
 			
 			LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(
 					display.getWidth(),imgHeight-50);
+			//历史图片通道
 			List<ChennalPicBean> historyPicBeanlist=new ArrayList<ChennalPicBean>();
 			for(int i=0;i<chennalCount;i++){
 	        	ChennalPicBean picBean=new ChennalPicBean();
@@ -321,6 +354,27 @@ public class MainPageActivity extends BaseActivity{
 			historyAdapter.setHistoryInfo(StringUtil.getTextViewValue(video_history_query_time_iv), StringUtil.getTextViewValue(video_history_query_long_iv));
 			history_gallery.setAdapter(historyAdapter);
 
+
+			//实时图片通道
+			if(gallery.getAdapter()!=null){
+				chennalPicBeanlist.clear();
+			}
+			for(int i=0;i<chennalCount;i++){
+	        	ChennalPicBean picBean=new ChennalPicBean();
+	        	picBean.des = "通道"+(i+1);
+	        	picBean.img = new BitmapDrawable(tempPic);
+	        	picBean.imgBitmap = tempPic;
+	        	picBean.ivLp = ivLp;
+	        	picBean.chennalId = (byte)(i);
+	        	chennalPicBeanlist.add(picBean);
+			}
+			ChennalPicViewAdapter realTimeAdapter = new ChennalPicViewAdapter(MainPageActivity.this,chennalPicBeanlist,0);
+			gallery.setAdapter(realTimeAdapter);
+			
+			vp_history_ll.setVisibility(View.GONE);
+			vp_real_time_ll.setVisibility(View.VISIBLE);
+			no_login_notify_ll.setVisibility(View.GONE);
+
 		}
 
 		@Override
@@ -330,18 +384,21 @@ public class MainPageActivity extends BaseActivity{
 		}
 	}
 	
-
-	
-	private Bitmap pic;
-	private Bitmap blackPic;
+	Bitmap pic;
 	private class ChannelPicReceive extends DeviceReceiveCmdProcess<ReceiveChannelPic>{
 
 		@Override
 		public void onProcess(ReceiveChannelPic receiveCmdBean) {
 			// TODO Auto-generated method stub
-			Log.i("MainPageActivity", "ChannelPicReceive================");
-			login_notify_tv.setText("正在解码通道图片，请稍后...");
-
+			Log.i("MainPageActivity", "ChannelPicReceive================"+getPicCount);
+			
+			getPicCount++;
+			if(receiveCmdBean.getCommandHeader().resultCode!=0){
+				ViewUtils.showNoticeInfo("获取通道"+(getPicCount)+"图片失败："+receiveCmdBean.getCommandHeader().errorInfo);
+				return;
+			}
+			ViewUtils.showNoticeInfo("正在解码通道图片，请稍后...");
+			
 		    try {
 				JavaH264Decoder decoder = new JavaH264Decoder(new DecodeSuccCallback(){
 					@Override
@@ -360,10 +417,8 @@ public class MainPageActivity extends BaseActivity{
 			}
 		    
 		    if(pic == null){
-		    	if(blackPic==null){
-		    		blackPic = BitmapFactory.decodeResource(MainPageActivity.this.getResources(), R.drawable.photo);
-		    	}
-		    	pic = blackPic;
+		    	ViewUtils.showNoticeInfo("解码通道"+(getPicCount)+"图片失败");
+		    	return;
 		    }
 		    
 			if(pic!=null){
@@ -373,18 +428,18 @@ public class MainPageActivity extends BaseActivity{
 				int imgHeight = (int)(pic.getHeight()*zoom);
 				LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(
 						display.getWidth(),imgHeight);
-	        	ChennalPicBean picBean=new ChennalPicBean();
-	        	picBean.des = "通道"+(getPicCount+1);
+	        	ChennalPicBean picBean = chennalPicBeanlist.get(getPicCount-1);
+	        	picBean.des = "通道"+(getPicCount);
 	        	picBean.img = new BitmapDrawable(MainPageActivity.this.getResources() ,pic);
 	        	picBean.imgBitmap = pic;
 	        	picBean.ivLp = ivLp;
-	        	picBean.chennalId = (byte)(getPicCount);
-	            chennalPicBeanlist.add(picBean);
-	            pic = null;
+	        	picBean.chennalId = (byte)(getPicCount-1);
+				ChennalPicViewAdapter realTimeAdapter = new ChennalPicViewAdapter(MainPageActivity.this,chennalPicBeanlist,0);
+				gallery.setAdapter(realTimeAdapter);
 			}
-			Log.i("MainPageActivity", "getPicCount================"+getPicCount);
 			
-			getPicCount++;
+			pic = null;
+			
 			if(getPicCount<chennalCount){
 				//查询通道图片
 				SendObjectParams sendObjectParams = new SendObjectParams();
@@ -392,37 +447,18 @@ public class MainPageActivity extends BaseActivity{
 				try {
 					sendObjectParams.setParams(REQUST.cmdReqVideoChannelPic, params);
 					System.out.println("getChannelPic入参数：" + sendObjectParams.toString());
-					ChannelPicReceive pic = new ChannelPicReceive();
-					pic.setTimeout(10*1000);
-					
-					DevicesService.sendCmd(sendObjectParams, pic);
+					ChannelPicReceive channelPicReceive = new ChannelPicReceive();
+					channelPicReceive.setTimeout(20*1000);
+					DevicesService.sendCmd(sendObjectParams, channelPicReceive);
 				} catch (CommandParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			
-			if(chennalPicBeanlist.size()>0){
-				Log.i("MainPageActivity", "chennalPicBeanlist================"+chennalPicBeanlist.size());
-				if(gallery.getAdapter()==null){
-					ChennalPicViewAdapter pageAdapter=new ChennalPicViewAdapter(MainPageActivity.this,chennalPicBeanlist,0);
-					gallery.setAdapter(pageAdapter);
-					
-					vp_real_time_ll.setVisibility(View.VISIBLE);
-					no_login_notify_ll.setVisibility(View.GONE);
-				}else{
-					((ChennalPicViewAdapter)gallery.getAdapter()).notifyDataSetChanged();
-				}
-			}
-			
-			if(getPicCount==chennalCount && chennalPicBeanlist.size()==0){
-				login_notify_tv.setText("获取设备通道图片失败...");
-			}
-			
 		}
 		
 		public void onResponsTimeout(){
-			login_notify_tv.setText("获取设备通道图片超时....");
+			ViewUtils.showNoticeInfo("获取通道"+(getPicCount++)+"图片超时...");
 		}
 		
 		@Override
@@ -432,14 +468,6 @@ public class MainPageActivity extends BaseActivity{
 		}
 		
 	}
-	
-
-	
-	private void showToast(String msg){
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-	}
-	
-	
 
 	Handler queryManuCountHandler = new Handler(){
 		public void handleMessage(Message msg){
@@ -447,8 +475,8 @@ public class MainPageActivity extends BaseActivity{
 				case SEND_QUERY_MANU_ID:
 					if(!isInView || stopQueryManu)
 						break ;
-					removeMessages(SEND_QUERY_MANU_ID);
-					getManucountByMonth();
+//					removeMessages(SEND_QUERY_MANU_ID);
+//					getManucountByMonth();
 					break;
 			}
 		}

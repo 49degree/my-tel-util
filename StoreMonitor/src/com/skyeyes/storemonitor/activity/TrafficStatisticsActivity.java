@@ -75,7 +75,7 @@ public class TrafficStatisticsActivity extends BaseActivity {
 
 
 	private void setFragment(Fragment mFragment) {
-    	if(StoreMonitorApplication.getInstance().getReceiveUserInfo()==null){
+    	if(StoreMonitorApplication.getInstance().getReceivLogin()==null){
     		Toast.makeText(this, "未登陆", Toast.LENGTH_SHORT).show();
     		return ;
     	}

@@ -114,7 +114,7 @@ public class VideoPlayActivity extends Activity {
 		setContentView(main);
 
 	}
-
+	VideoDataReceive mVideoDataReceive = new VideoDataReceive();
 	public void onResume() {
 		super.onResume();
 		notify.setVisibility(View.VISIBLE);
@@ -210,6 +210,7 @@ public class VideoPlayActivity extends Activity {
 			// 打开视频播放界面
 			if(receiveCmdBean.getCommandHeader().resultCode==0){
 				videoView.toStartPlay();
+				mVideoDataReceive.setTimeout(20*1000);
 			}else{
 				notifyText.setText(receiveCmdBean.getCommandHeader().errorInfo);
 			}
@@ -236,6 +237,7 @@ public class VideoPlayActivity extends Activity {
 			// 打开视频播放界面
 			if(receiveCmdBean.getCommandHeader().resultCode==0){
 				videoView.toStartPlay();
+				mVideoDataReceive.setTimeout(20*1000);
 			}else{
 				notifyText.setText(receiveCmdBean.getCommandHeader().errorInfo);
 			}
@@ -266,6 +268,7 @@ public class VideoPlayActivity extends Activity {
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
+			videoView.toStopPlay();
 		}
 	}
 	
@@ -281,6 +284,8 @@ public class VideoPlayActivity extends Activity {
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
+			
+			
 		}
 	}
 
@@ -299,8 +304,12 @@ public class VideoPlayActivity extends Activity {
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
+			notifyText.setText(errinfo);
 		}
 
+		public void onResponsTimeout(){
+			notifyText.setText("获取视频数据超时....");
+		}
 		// 回复视频数据
 		public void responseVideoData(ReceiveCmdBean receiveCmdBean) {
 			if (lastDataTime == 0)

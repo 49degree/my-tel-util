@@ -23,8 +23,8 @@ public class ReceiveDeviceAlarm  extends ReceiveCmdBean {
 		// TODO Auto-generated method stub
 		try{
 			eventCode = TypeConversion.asciiToString(body,0,36);
-			alarmType = (byte)(body[36]&0x7F);
-			startType = (byte)((body[36]&0x80)>>7);
+			alarmType = (byte)(body[36]>>1);
+			startType = (byte)(body[36]>>7);
 			channelId = body[37];
 			time = DateUtil.fileTime2Date(TypeConversion.bytesToLong(body, 37)).getTime();
 			if(alarmType==109||alarmType==110){

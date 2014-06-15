@@ -198,7 +198,7 @@ public class AlermRecorderActivity extends Activity {
 									decoder.toStop();
 								}
 								
-							});
+							},JavaH264Decoder.PIC_WIDTH,JavaH264Decoder.PIC_HEIGHT);
 							decoder.sendStream(receiveCmdBean.pic);
 							
 						} catch (H264DecoderException e1) {

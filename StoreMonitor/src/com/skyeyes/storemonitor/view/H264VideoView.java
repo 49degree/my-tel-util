@@ -70,7 +70,7 @@ public class H264VideoView extends View implements Runnable{
 					});
 				}
 				
-			});
+			},JavaH264Decoder.PIC_WIDTH,JavaH264Decoder.PIC_HEIGHT);
 		} catch (H264DecoderException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -129,7 +129,7 @@ public class H264VideoView extends View implements Runnable{
 			synchronized (this) {
 				tempData = dataBufferList.poll();
 
-				if(dataBufferList.size()>50){//缓冲数据太多，不进行解码
+				if(dataBufferList.size()>100){//缓冲数据太多，不进行解码
 					if(!decoder.getSkipNalu()){
 						decoder.setSkipNalu(true);
 					}

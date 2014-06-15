@@ -415,7 +415,7 @@ public class MainPageActivity extends BaseActivity{
 						decoder.toStop();
 					}
 					
-				});
+				},JavaH264Decoder.PIC_WIDTH,JavaH264Decoder.PIC_HEIGHT);
 				decoder.sendStream(receiveCmdBean.pic);
 			} catch (H264DecoderException e1) {
 				// TODO Auto-generated catch block

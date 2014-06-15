@@ -47,7 +47,7 @@ public class TestH264 extends Activity {
 						});
 					}
 				}
-			});
+			},JavaH264Decoder.PIC_WIDTH,JavaH264Decoder.PIC_HEIGHT);
 		} catch (H264DecoderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

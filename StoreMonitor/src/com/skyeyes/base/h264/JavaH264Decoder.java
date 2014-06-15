@@ -1,7 +1,6 @@
 package com.skyeyes.base.h264;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -10,28 +9,22 @@ import android.graphics.Bitmap.Config;
 import android.util.Log;
 
 import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
-import com.twilight.h264.decoder.AVFrame;
-import com.twilight.h264.decoder.AVPacket;
-import com.twilight.h264.decoder.H264Decoder;
-import com.twilight.h264.decoder.MpegEncContext;
 
 public class JavaH264Decoder{
+	public final static int PIC_WIDTH = 352;
+	public final static int PIC_HEIGHT = 288;
 	public static final int INBUF_SIZE = 65535;
 	private int[] buffer = null;
 	private Bitmap videoBitmap; 
 	private ByteBuffer byteBuffer;
-	H264Decoder codec;
-    MpegEncContext c= null;
-    /* the codec gives us the frame size, in samples */
-    int frame, len;
-    int[] got_picture = new int[1];
-    AVFrame picture;
+
     byte[] inbuf;
-    int[] inbuf_int;
+    //int[] inbuf_int;
     byte[] buf;
-    AVPacket avpkt;
+
     int dataPointer;
     int[] cacheRead = new int[3];
+    int[] picInfo = new int[2];
     boolean hasMoreNAL = true;
     int pauseStep = 0;
     boolean skipNalu;
@@ -39,48 +32,51 @@ public class JavaH264Decoder{
     
     ExecutorService mExecutorService = Executors.newFixedThreadPool(5);
     
-	public JavaH264Decoder(DecodeSuccCallback decodeSuccCallback) throws H264DecoderException{
-		mDecodeSuccCallback = decodeSuccCallback;
-		inbuf = new byte[INBUF_SIZE + MpegEncContext.FF_INPUT_BUFFER_PADDING_SIZE];
-		inbuf_int = new int[INBUF_SIZE + MpegEncContext.FF_INPUT_BUFFER_PADDING_SIZE];
-		buf = new byte[1024];
-		avpkt = new AVPacket();
-	    avpkt.av_init_packet();
-	    /* set end of buffer to 0 (this ensures that no overreading happens for damaged mpeg streams) */
-	    Arrays.fill(inbuf, INBUF_SIZE, MpegEncContext.FF_INPUT_BUFFER_PADDING_SIZE + INBUF_SIZE, (byte)0);
-	    /* find the mpeg1 video decoder */
-	    codec = new H264Decoder();
-	    if (codec == null) {
-	    	throw new H264DecoderException("codec not found\n");
-	    }
-	    c= MpegEncContext.avcodec_alloc_context();
-	    picture= AVFrame.avcodec_alloc_frame();
-	    
-	    if((codec.capabilities & H264Decoder.CODEC_CAP_TRUNCATED)!=0)
-	        c.flags |= MpegEncContext.CODEC_FLAG_TRUNCATED; /* we do not send complete frames */
+	private native int InitDecoder(int width, int height);
 
-	    /* For some codecs, such as msmpeg4 and mpeg4, width and height
-	       MUST be initialized there because this information is not
-	       available in the bitstream. */
-	    /* open it */
-	    if (c.avcodec_open(codec) < 0) {
-	    	throw new H264DecoderException("could not open codec\n");
-	    }
-	    
-		// 4 first bytes always indicate NAL header
-		inbuf_int[0]=inbuf_int[1]=inbuf_int[2]=0x00;
-		inbuf_int[3]=0x01;
+	private native int UninitDecoder(int ptr);
+
+	private native int DecoderNal(int ptr,byte[] in, int insize, byte[] out,int[] picInfo);
+
+	static {
+        System.loadLibrary("avutil-52");
+        System.loadLibrary("avcodec-55");
+        System.loadLibrary("swresample-0");
+        System.loadLibrary("avformat-55");
+        System.loadLibrary("swscale-2");
+        System.loadLibrary("avfilter-4");
+        System.loadLibrary("avdevice-55");
+        System.loadLibrary("TestFfmpegLib");
+	}
+	
+	int width = 1024;
+	int height = 768;
+	int mPtr;
+	public JavaH264Decoder(DecodeSuccCallback decodeSuccCallback,int width,int height) throws H264DecoderException{
+		mDecodeSuccCallback = decodeSuccCallback;
+		inbuf = new byte[INBUF_SIZE + 16];
+		this.width = width;
+		this.height = height;
+		buf = new byte[1024];
+		synchronized (this) {
+			mPtr = InitDecoder(width,height);
+		}
+		
+		
 	}
 	
 	public void toStop(){
 		try{
 			hasMoreNAL = false;
-		    c.avcodec_close();
-		    c = null;
-		    picture = null;
 		    if(videoBitmap!=null)
 		    	videoBitmap.recycle();
 		    videoBitmap = null;
+			synchronized (this) {
+			    if(mPtr>0)
+			    	UninitDecoder(mPtr);
+			    mPtr = 0;
+			}
+
 		}catch(Exception e){
 			
 		}
@@ -143,8 +139,8 @@ public class JavaH264Decoder{
 				return;
 			
 			// 4 first bytes always indicate NAL header
-			inbuf_int[0]=inbuf_int[1]=inbuf_int[2]=0x00;
-			inbuf_int[3]=0x01;
+			inbuf[0]=inbuf[1]=inbuf[2]=0x00;
+			inbuf[3]=0x01;
 			
 			pauseStep = 0;
 			hasBegin = true;
@@ -176,7 +172,7 @@ public class JavaH264Decoder{
 							cacheRead[2] == 0x01 
 							) && hasMoreNAL) {
 							switchByte = 0xFF&dataBuffer.get();
-							inbuf_int[dataPointer++] = cacheRead[0];
+							inbuf[dataPointer++] = (byte)cacheRead[0];
 							cacheRead[0] = cacheRead[1];
 							cacheRead[1] = cacheRead[2];
 							cacheRead[2] = switchByte;
@@ -186,59 +182,44 @@ public class JavaH264Decoder{
 				if(skipNalu)
 					continue;
 				
-
-				avpkt.size = dataPointer;
-		        avpkt.data_base = inbuf_int;
-		        avpkt.data_offset = 0;
 		        try {
-			        while (avpkt.size > 0) {
-			            len = c.avcodec_decode_video2(picture, got_picture, avpkt);
-			            if (len < 0) {
-			                //System.out.println("Error while decoding frame "+ frame);
-			                // Discard current packet and proceed to next packet
-			                break;
-			            } // if
-			            if (got_picture[0]!=0) {
-			            	picture = c.priv_data.displayPicture;
+		        	int bufferSize = width * height * 6;
+					//Log.e("JavaH264Decoder","picture.imageWidth * picture.imageHeight:"+picture.imageWidth+"*"+picture.imageHeight);
+					if(byteBuffer==null || byteBuffer.capacity()!=bufferSize){
+						byteBuffer = ByteBuffer.allocate(bufferSize);
+					}
+					
+					synchronized (this) {
+						int picNum = 0;
+						synchronized (this) {
+						    if(mPtr>0)
+						    	picNum = DecoderNal(mPtr,inbuf,dataPointer,byteBuffer.array(),picInfo);
+						}
 		
-							int bufferSize = picture.imageWidth * picture.imageHeight;
-							//Log.e("JavaH264Decoder","picture.imageWidth * picture.imageHeight:"+picture.imageWidth+"*"+picture.imageHeight);
-							if(byteBuffer==null || byteBuffer.capacity()!=bufferSize*4){
-								byteBuffer = ByteBuffer.allocate(bufferSize*32);
-							}
-							
-							synchronized (this) {
-								byteBuffer.position(0);
-								YUV2RGB(picture,byteBuffer);
-								//Log.e("JavaH264Decoder",byteBuffer.capacity()+":"+byteBuffer.position()+":"+byteBuffer.capacity()/byteBuffer.position());
-								byteBuffer.position(0);
-							}
+						
+						if(picNum>0){
+							//Log.e("JavaH264Decoder","videoBitmap.imageWidth * videoBitmap.imageHeight:"+picInfo[0]+"*"+picInfo[1]);
+							byteBuffer.position(0);
 							mExecutorService.execute(new Runnable(){
 								public void run(){
-
 									try{
-										if(videoBitmap==null||videoBitmap.getWidth()<picture.imageWidth||
-												videoBitmap.getHeight()<picture.imageHeight)
-											videoBitmap=Bitmap.createBitmap(picture.imageWidth, picture.imageHeight, Config.ARGB_8888);
+										if(videoBitmap==null||videoBitmap.getWidth()<width||
+												videoBitmap.getHeight()<height)
+											videoBitmap=Bitmap.createBitmap(width, height, Config.RGB_565);
 										//Log.e("JavaH264Decoder","videoBitmap.imageWidth * videoBitmap.imageHeight:"+videoBitmap.getWidth()+"*"+videoBitmap.getHeight());
 										synchronized (this) {
 											videoBitmap.copyPixelsFromBuffer(byteBuffer);//makeBuffer(data565, N));
 										}
 										if(mDecodeSuccCallback!=null)
 											mDecodeSuccCallback.onDecodeSucc(JavaH264Decoder.this,videoBitmap);
-
 									}catch(Exception e){
 										
 									}
 								}
 							});
+						}
 
-
-			            }
-			            avpkt.size -= len;
-			            avpkt.data_offset += len;
-			        }
-		        
+					}
 		        } catch(Exception ie) {
 		        	// Any exception, we should try to proceed reading next packet!
 		        	//ie.printStackTrace();
@@ -253,42 +234,6 @@ public class JavaH264Decoder{
 	    }
 
 
-	}
-	
-	public static void YUV2RGB(AVFrame f, ByteBuffer rgb) {
-		rgb.clear();
-		int[] luma = f.data_base[0];
-		int[] cb = f.data_base[1];
-		int[] cr = f.data_base[2];
-		int stride = f.linesize[0];
-		int strideChroma = f.linesize[1];
-
-		for (int y = 0; y < f.imageHeight; y++) {
-			int lineOffLuma = y * stride;
-			int lineOffChroma = (y >> 1) * strideChroma;
-
-			for (int x = 0; x < f.imageWidth; x++) {
-				int c = luma[lineOffLuma + x] - 16;
-				int d = cb[lineOffChroma + (x >> 1)] - 128;
-				int e = cr[lineOffChroma + (x >> 1)] - 128;
-
-				int red = (298 * c + 409 * e + 128) >> 8;
-				red = red < 0 ? 0 : (red > 255 ? 255 : red);
-				int green = (298 * c - 100 * d - 208 * e + 128) >> 8;
-				green = green < 0 ? 0 : (green > 255 ? 255 : green);
-				int blue = (298 * c + 516 * d + 128) >> 8;
-				blue = blue < 0 ? 0 : (blue > 255 ? 255 : blue);
-				int alpha = 255;
-				
-				
-				
-				rgb.put((byte)(red & 0xff));
-				rgb.put((byte)(green & 0xff));
-				rgb.put((byte)(blue & 0xff));
-				rgb.put((byte)255);
-				
-			}
-		}
 	}
 	
 	public void setSkipNalu(boolean skipNalu){

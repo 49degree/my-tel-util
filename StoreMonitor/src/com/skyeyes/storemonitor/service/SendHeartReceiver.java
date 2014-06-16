@@ -60,16 +60,20 @@ public class SendHeartReceiver extends BroadcastReceiver{
 	public class ReadDeviceNetInfoProcess extends DeviceReceiveCmdProcess<ReceivReadDeviceNetInfo>{
 
 		public void onProcess(ReceivReadDeviceNetInfo receiveCmdBean) {
-			try{
-				lastConnectTime = SystemClock.elapsedRealtime();
-			}catch(Exception e){
-				
-			}
+			updateLastconnectTime();
 		}
 
 		@Override
 		public void onFailure(String errinfo) {
 			// TODO Auto-generated method stub
+			
+		}
+	}
+	
+	public static void updateLastconnectTime(){
+		try{
+			lastConnectTime = SystemClock.elapsedRealtime();
+		}catch(Exception e){
 			
 		}
 	}

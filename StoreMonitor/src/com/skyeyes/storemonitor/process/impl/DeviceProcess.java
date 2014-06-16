@@ -21,6 +21,7 @@ import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.ViewUtils;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface;
+import com.skyeyes.storemonitor.service.SendHeartReceiver;
 
 public class DeviceProcess implements DeviceProcessInterface {
 	
@@ -150,6 +151,7 @@ public class DeviceProcess implements DeviceProcessInterface {
 			// TODO Auto-generated method stub
 			if(receiveCmdBean == null)
 				return;
+			SendHeartReceiver.updateLastconnectTime();
 			if (receiveCmdBean instanceof ReceivLogin) {
 				//登陆
 				ReceivLogin receivLogin = (ReceivLogin)receiveCmdBean;

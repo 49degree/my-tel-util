@@ -14,9 +14,11 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 
-import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
-import com.skyeyes.base.h264.H264DecoderException;
-import com.skyeyes.base.h264.JavaH264Decoder;
+import com.ffmpeg.lib.h264.H264Decoder;
+import com.ffmpeg.lib.h264.H264Decoder.DecodeSuccCallback;
+import com.ffmpeg.lib.h264.H264DecoderException;
+import com.ffmpeg.lib.h264.NativeH264Decoder;
+import com.skyeyes.storemonitor.StoreMonitorApplication;
 
 public class H264VideoView extends View implements Runnable{
 	private int videoViewStartX = 0;
@@ -24,7 +26,7 @@ public class H264VideoView extends View implements Runnable{
 	private int videoViewEndX = 0;
 	private int videoViewEndY = 0;
 	private Bitmap videoBitmap;  
-	private JavaH264Decoder decoder;
+	private H264Decoder decoder;
 	private LinkedList<byte[]> dataBufferList = new LinkedList<byte[]>();
 	
 	private Context mContext;
@@ -49,9 +51,9 @@ public class H264VideoView extends View implements Runnable{
 		mDecodeSuccCallback = decodeSuccCallback;
 		handler = new Handler(Looper.getMainLooper());
 	    try {
-			decoder = new JavaH264Decoder(new DecodeSuccCallback(){
+			decoder = new NativeH264Decoder(new DecodeSuccCallback(){
 				@Override
-				public void onDecodeSucc(final JavaH264Decoder decoder ,final Bitmap bitmap) {
+				public void onDecodeSucc(final H264Decoder decoder ,final Bitmap bitmap) {
 					// TODO Auto-generated method stub
 					//Log.i("DecoderCallback", "onDecodeSucc================");
 					if(videoBitmap == null){
@@ -70,7 +72,7 @@ public class H264VideoView extends View implements Runnable{
 					});
 				}
 				
-			},JavaH264Decoder.PIC_WIDTH,JavaH264Decoder.PIC_HEIGHT);
+			},StoreMonitorApplication.PIC_WIDTH,StoreMonitorApplication.PIC_HEIGHT);
 		} catch (H264DecoderException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

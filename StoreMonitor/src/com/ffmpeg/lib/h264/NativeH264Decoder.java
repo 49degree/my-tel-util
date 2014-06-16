@@ -1,4 +1,4 @@
-package com.skyeyes.base.h264;
+package com.ffmpeg.lib.h264;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutorService;
@@ -8,11 +8,10 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.util.Log;
 
-import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
+import com.ffmpeg.lib.h264.H264Decoder.DecodeSuccCallback;
 
-public class JavaH264Decoder{
-	public final static int PIC_WIDTH = 352;
-	public final static int PIC_HEIGHT = 288;
+public class NativeH264Decoder implements H264Decoder{
+	
 	public static final int INBUF_SIZE = 65535;
 	private int[] buffer = null;
 	private Bitmap videoBitmap; 
@@ -33,7 +32,9 @@ public class JavaH264Decoder{
     ExecutorService mExecutorService = Executors.newFixedThreadPool(5);
     
 	private native int InitDecoder(int width, int height);
-
+	
+	private native int SetImageParams(int ptr,int[] picInfo);
+	
 	private native int UninitDecoder(int ptr);
 
 	private native int DecoderNal(int ptr,byte[] in, int insize, byte[] out,int[] picInfo);
@@ -52,7 +53,7 @@ public class JavaH264Decoder{
 	int width = 1024;
 	int height = 768;
 	int mPtr;
-	public JavaH264Decoder(DecodeSuccCallback decodeSuccCallback,int width,int height) throws H264DecoderException{
+	public NativeH264Decoder(DecodeSuccCallback decodeSuccCallback,int width,int height) throws H264DecoderException{
 		mDecodeSuccCallback = decodeSuccCallback;
 		inbuf = new byte[INBUF_SIZE + 16];
 		this.width = width;
@@ -195,23 +196,30 @@ public class JavaH264Decoder{
 						    if(mPtr>0)
 						    	picNum = DecoderNal(mPtr,inbuf,dataPointer,byteBuffer.array(),picInfo);
 						}
-		
-						
 						if(picNum>0){
+							width = picInfo[0];
+							height = picInfo[1];
 							//Log.e("JavaH264Decoder","videoBitmap.imageWidth * videoBitmap.imageHeight:"+picInfo[0]+"*"+picInfo[1]);
 							byteBuffer.position(0);
 							mExecutorService.execute(new Runnable(){
 								public void run(){
 									try{
-										if(videoBitmap==null||videoBitmap.getWidth()<width||
-												videoBitmap.getHeight()<height)
+										if(videoBitmap==null||videoBitmap.getWidth()!=width||
+												videoBitmap.getHeight()!=height){
+											try{
+												if(videoBitmap!=null)
+													videoBitmap.recycle();
+											}catch(Exception e){
+												
+											}
 											videoBitmap=Bitmap.createBitmap(width, height, Config.RGB_565);
+										}
 										//Log.e("JavaH264Decoder","videoBitmap.imageWidth * videoBitmap.imageHeight:"+videoBitmap.getWidth()+"*"+videoBitmap.getHeight());
 										synchronized (this) {
 											videoBitmap.copyPixelsFromBuffer(byteBuffer);//makeBuffer(data565, N));
 										}
 										if(mDecodeSuccCallback!=null)
-											mDecodeSuccCallback.onDecodeSucc(JavaH264Decoder.this,videoBitmap);
+											mDecodeSuccCallback.onDecodeSucc(NativeH264Decoder.this,videoBitmap);
 									}catch(Exception e){
 										
 									}

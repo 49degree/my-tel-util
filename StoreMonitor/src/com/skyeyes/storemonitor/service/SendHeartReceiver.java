@@ -22,10 +22,13 @@ public class SendHeartReceiver extends BroadcastReceiver{
 		Log.e("SendHeartReceiver", "lastConnectTime:"+lastConnectTime+":SystemClock.elapsedRealtime():"+SystemClock.elapsedRealtime());
 		if(lastConnectTime!=0&&SystemClock.elapsedRealtime()-lastConnectTime>90*1000){
 			//超时
-			DevicesService.getInstance().showErrorNotification( "无法连接服务器，正在重新连接...");
-			DevicesService.getInstance().clearLoginInfo();
-			DevicesService.getInstance().initDeviceProcess(DevicesService.getInstance().mCurrentDeviceCode);
-		}else{
+			if(DevicesService.getInstance()!=null){
+				DevicesService.getInstance().showErrorNotification( "无法连接服务器，正在重新连接...");
+				DevicesService.getInstance().clearLoginInfo();
+				DevicesService.getInstance().initDeviceProcess(DevicesService.getInstance().mCurrentDeviceCode);
+
+			}
+					}else{
 			testConnetStatus();
 		}
 		

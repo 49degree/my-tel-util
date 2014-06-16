@@ -9,7 +9,6 @@ import net.simonvt.numberpicker.NumberPicker;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -29,6 +28,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.ffmpeg.lib.h264.H264Decoder;
+import com.ffmpeg.lib.h264.H264Decoder.DecodeSuccCallback;
+import com.ffmpeg.lib.h264.H264DecoderException;
+import com.ffmpeg.lib.h264.NativeH264Decoder;
 import com.skyeyes.base.activity.BaseActivity;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
@@ -38,9 +41,6 @@ import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAllManuByMouse;
 import com.skyeyes.base.cmd.bean.impl.manucount.ReceiveAvgManuStayTimeByMouse;
 import com.skyeyes.base.exception.CommandParseException;
-import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
-import com.skyeyes.base.h264.H264DecoderException;
-import com.skyeyes.base.h264.JavaH264Decoder;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
@@ -229,17 +229,16 @@ public class MainPageActivity extends BaseActivity{
 
 				login_notify_tv.setText("信息不完整，请前往设置页面进行设置");
 				return ;
+			}
+			
+			if(DevicesService.getInstance()==null){
+				login_notify_tv.setText("正在启动...");
 			}else{
-				if(DevicesService.getInstance()==null){
-					login_notify_tv.setText("正在启动...");
+				if(!DevicesService.getInstance().getNetworkState()){
+					login_notify_tv.setText("网络未连接");
 				}else{
-					if(!DevicesService.getInstance().getNetworkState()){
-						login_notify_tv.setText("网络未连接");
-					}else{
-						login_notify_tv.setText("正在登陆,请稍后....");
-					}
+					login_notify_tv.setText("正在登陆,请稍后....");
 				}
-				
 			}
     	}
     	
@@ -406,17 +405,17 @@ public class MainPageActivity extends BaseActivity{
 			ViewUtils.showNoticeInfo("正在解码通道图片，请稍后...");
 			
 		    try {
-				JavaH264Decoder decoder = new JavaH264Decoder(new DecodeSuccCallback(){
+				H264Decoder decoder = new NativeH264Decoder(new DecodeSuccCallback(){
 					@Override
-					public void onDecodeSucc(JavaH264Decoder decoder ,Bitmap bitmap) {
+					public void onDecodeSucc(H264Decoder decoder ,Bitmap bitmap) {
 						// TODO Auto-generated method stub
 						Log.i("DecoderCallback", "onDecodeSucc================");
 						pic = Bitmap.createBitmap(bitmap);
-						decoder.toStop();
 					}
 					
-				},JavaH264Decoder.PIC_WIDTH,JavaH264Decoder.PIC_HEIGHT);
+				},StoreMonitorApplication.PIC_WIDTH,StoreMonitorApplication.PIC_HEIGHT);
 				decoder.sendStream(receiveCmdBean.pic);
+				decoder.toStop();
 			} catch (H264DecoderException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

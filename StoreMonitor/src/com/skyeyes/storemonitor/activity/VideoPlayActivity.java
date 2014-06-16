@@ -16,6 +16,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ffmpeg.lib.h264.H264Decoder;
+import com.ffmpeg.lib.h264.H264Decoder.DecodeSuccCallback;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.impl.ReceiveHistoryVideo;
@@ -25,8 +27,6 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
 import com.skyeyes.base.cmd.bean.impl.ReceiveVideoFinish;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
-import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
-import com.skyeyes.base.h264.JavaH264Decoder;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
@@ -91,7 +91,7 @@ public class VideoPlayActivity extends Activity {
 
 		videoView =new H264VideoView(this,display,new DecodeSuccCallback(){
 			@Override
-			public void onDecodeSucc(JavaH264Decoder decoder ,Bitmap bitmap) {
+			public void onDecodeSucc(H264Decoder decoder ,Bitmap bitmap) {
 				// TODO Auto-generated method stub
 				//Log.i("DecoderCallback", "onDecodeSucc================"+(videoView.getVisibility() != View.VISIBLE));
 				if (videoView.getVisibility() != View.VISIBLE)

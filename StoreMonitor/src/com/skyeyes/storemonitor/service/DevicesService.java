@@ -108,9 +108,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 				boolean connect = mNetWorkUtil.getNetWorkInfo() != NetWorkUtil.NET_TYPE_NONE;
 				if(connectNetwork!=connect){
 					if((Boolean)msg.obj){
-						mQueryDeviceList.queryEquitListNoLogin();
-						if(MainPageActivity.instance!=null)
-							MainPageActivity.instance.setNotifyInfo("正在登录，请稍后...");
+						 queryDeviceList();
 					}else{
 						clearDeviceInfo();
 						clearLoginInfo();
@@ -135,12 +133,17 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	public void onDestroy(){
 		super.onDestroy();
 		Log.i("DevicesService", "onDestroy................");
-		clearDeviceInfo();
-		clearLoginInfo();
-		clearNotificationInfo();
-		if(mNetWorkUtil!=null){
-			mNetWorkUtil.cancelMmonitor();
+		try{
+			clearDeviceInfo();
+			clearLoginInfo();
+			clearNotificationInfo();
+			if(mNetWorkUtil!=null){
+				mNetWorkUtil.cancelMmonitor();
+			}
+		}catch(Exception e){
+			
 		}
+
 		instance = null;
 	}
 	
@@ -228,8 +231,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			return ;
 		}
 		clearLoginInfo();
-		if(MainPageActivity.instance!=null)
-			MainPageActivity.instance.setNotifyInfo("正在登录，请稍后...");
+
 		mQueryDeviceList.queryEquitListNoLogin();
 	}
 	
@@ -429,6 +431,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 
 	 // 显示一个通知   
 	private void showNotification(int type,String des) {
+		if(instance==null)
+			return;
 		// 创建一个通知
 		Notification mNotification = new Notification();
 
@@ -738,8 +742,13 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 					StringUtil.isNull(ip)||
 					StringUtil.isNull(port)){
 				showErrorNotification( "信息不完整，请前往设置页面进行设置");
+
 				return ;
 			}
+			
+			if(MainPageActivity.instance!=null)
+				MainPageActivity.instance.setNotifyInfo("正在登录，请稍后...");
+			
 			try {
 				SkyeyeSocketClient skyeyeSocketClient = new SkyeyeSocketClient(
 						socketHandlerImpl.setTimeout(20*1000), true);

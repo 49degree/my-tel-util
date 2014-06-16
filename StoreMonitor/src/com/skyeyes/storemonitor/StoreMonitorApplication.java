@@ -1,5 +1,6 @@
 package com.skyeyes.storemonitor;
 
+import com.ffmpeg.lib.h264.NativeH264Decoder;
 import com.skyeyes.base.BaseApplication;
 import com.skyeyes.base.cmd.bean.impl.ReceivLogin;
 import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
@@ -7,7 +8,7 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveStatusChange;
 import com.skyeyes.base.cmd.bean.impl.ReceiveUserInfo;
 
 public class StoreMonitorApplication extends BaseApplication{
-	
+	public static final int PIC_WIDTH = 322,PIC_HEIGHT=288;
 	private ReceivLogin mReceivLogin;
 	private ReceiveDeviceRegisterInfo mReceiveDeviceRegisterInfo;
 	private ReceiveUserInfo mReceiveUserInfo;

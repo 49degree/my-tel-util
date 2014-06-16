@@ -17,6 +17,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ffmpeg.lib.h264.H264Decoder;
+import com.ffmpeg.lib.h264.H264Decoder.DecodeSuccCallback;
+import com.ffmpeg.lib.h264.H264DecoderException;
+import com.ffmpeg.lib.h264.NativeH264Decoder;
 import com.skyeyes.base.bean.AlarmIdBean;
 import com.skyeyes.base.bean.AlarmInfoBean;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
@@ -26,9 +30,6 @@ import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.db.DBBean;
 import com.skyeyes.base.db.DBOperator;
 import com.skyeyes.base.exception.CommandParseException;
-import com.skyeyes.base.h264.H264Decoder.DecodeSuccCallback;
-import com.skyeyes.base.h264.H264DecoderException;
-import com.skyeyes.base.h264.JavaH264Decoder;
 import com.skyeyes.base.util.DateUtil;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.TypeConversion;
@@ -178,9 +179,9 @@ public class AlermRecorderActivity extends Activity {
 				}else{
 					if(TypeConversion.bytesToIntEx(receiveCmdBean.pic, 0)==1){//头4个字节为0x00000001的为hd264
 					    try {
-							JavaH264Decoder decoder = new JavaH264Decoder(new DecodeSuccCallback(){
+					    	H264Decoder decoder = new NativeH264Decoder(new DecodeSuccCallback(){
 								@Override
-								public void onDecodeSucc(JavaH264Decoder decoder ,Bitmap bitmap) {
+								public void onDecodeSucc(H264Decoder decoder ,Bitmap bitmap) {
 									// TODO Auto-generated method stub
 									Log.i("DecoderCallback", "onDecodeSucc================");
 									ByteArrayOutputStream os = new ByteArrayOutputStream();  
@@ -195,12 +196,11 @@ public class AlermRecorderActivity extends Activity {
 									*/  
 									bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);  
 									alarmInfoBean.pic = os.toByteArray();
-									decoder.toStop();
 								}
 								
-							},JavaH264Decoder.PIC_WIDTH,JavaH264Decoder.PIC_HEIGHT);
+							},StoreMonitorApplication.PIC_WIDTH,StoreMonitorApplication.PIC_HEIGHT);
 							decoder.sendStream(receiveCmdBean.pic);
-							
+							decoder.toStop();
 						} catch (H264DecoderException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();

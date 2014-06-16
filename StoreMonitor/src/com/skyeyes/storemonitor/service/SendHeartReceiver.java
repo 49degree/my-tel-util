@@ -28,8 +28,8 @@ public class SendHeartReceiver extends BroadcastReceiver{
 				DevicesService.getInstance().initDeviceProcess(DevicesService.getInstance().mCurrentDeviceCode);
 
 			}
-					}else{
-			testConnetStatus();
+			}else{
+				testConnetStatus();
 		}
 		
 		if(lastConnectTime==0)

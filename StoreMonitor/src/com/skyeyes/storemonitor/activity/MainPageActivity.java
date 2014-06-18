@@ -187,6 +187,13 @@ public class MainPageActivity extends BaseActivity{
     	});
     }
     
+    public String getNotifyText(){
+    	if(login_notify_tv!=null)
+    		return login_notify_tv.getText().toString();
+    	else
+    		return "";
+    }
+    
     
     
     public void onResume(){
@@ -237,7 +244,8 @@ public class MainPageActivity extends BaseActivity{
 				if(!DevicesService.getInstance().getNetworkState()){
 					login_notify_tv.setText("网络未连接");
 				}else{
-					login_notify_tv.setText("正在登陆,请稍后....");
+					if(getNotifyText().indexOf("登陆")==-1)
+						login_notify_tv.setText("正在登陆,请稍后....");
 				}
 			}
     	}
@@ -277,7 +285,7 @@ public class MainPageActivity extends BaseActivity{
 				vp_history_ll.setVisibility(View.GONE);
 				vp_real_time_ll.setVisibility(View.GONE);
 				no_login_notify_ll.setVisibility(View.VISIBLE);
-				login_notify_tv.setText("登录失败"+receiveCmdBean.getCommandHeader().errorInfo);
+				login_notify_tv.setText("登录失败"+receiveCmdBean.getCommandHeader().errorInfo+"，正在重新登陆...");
 
 			}else{
 				ViewUtils.showNoticeInfo("登陆成功...............");

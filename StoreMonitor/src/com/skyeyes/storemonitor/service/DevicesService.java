@@ -159,16 +159,6 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mTempDeviceDeviceProcesss.clear();
 	}
 	
-	private void networkDisconnect(){
-		showErrorNotification( "网络未连接");
-		if(MainPageActivity.instance!=null)
-			MainPageActivity.instance.setNotifyInfo("网络未连接");
-	}
-	
-	public boolean getNetworkState(){
-		return connectNetwork;
-	}
-	
 	/**
 	 * 清除登陆信息
 	 */
@@ -194,15 +184,41 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mNotificationManager.cancel(ERROR_NOTIFICATION_ID);
 		mNotificationManager.cancel(NOTIFICATION_ID);
 	}
+	
+	private void networkDisconnect(){
+		showErrorNotification( "网络未连接");
+		if(MainPageActivity.instance!=null)
+			MainPageActivity.instance.setNotifyInfo("网络未连接");
+	}
+	
+	public boolean getNetworkState(){
+		return connectNetwork;
+	}
 
-	private void initDevices(){
+	/**
+	 * 查询设备列表
+	 */
+	public void queryDeviceList(){
+		clearDeviceInfo();
+		clearLoginInfo();
 		if(instance==null)
 			return;
 		if(!connectNetwork){
 			networkDisconnect();
 			return ;
 		}
-
+		mQueryDeviceList.queryEquitListNoLogin();
+	}
+	
+	private void initDevices(){
+		clearDeviceInfo();
+		clearLoginInfo();
+		if(instance==null)
+			return;
+		if(!connectNetwork){
+			networkDisconnect();
+			return ;
+		}
 		String deviceListString = PreferenceUtil.getConfigString(PreferenceUtil.DEVICE_INFO,PreferenceUtil.device_code_list);
 		String[] deviceCodes = deviceListString.split(";");
 		Log.i("DeviceListConnectService", "start................"+deviceCodes.length+":"+deviceCodes[0]);
@@ -220,20 +236,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		mStaticCmdProcess.clear();
 	}
 	
-	/**
-	 * 查询设备列表
-	 */
-	public void queryDeviceList(){
-		if(instance==null)
-			return;
-		if(!connectNetwork){
-			networkDisconnect();
-			return ;
-		}
-		clearLoginInfo();
 
-		mQueryDeviceList.queryEquitListNoLogin();
-	}
 	
 	
 	void initDeviceProcess(String deviceCode){
@@ -246,6 +249,9 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 		try{
 			if(mDeviceDeviceProcesss.get(deviceCode)!=null)
 				mDeviceDeviceProcesss.get(deviceCode).stop();
+			if(mTempDeviceDeviceProcesss.get(deviceCode)!=null){
+				mTempDeviceDeviceProcesss.get(deviceCode).stop();
+			}
 		}catch(Exception e){
 			
 		}
@@ -312,7 +318,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 //				AlarmManager alarm=(AlarmManager)getSystemService(ALARM_SERVICE);  
 //				alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 5*1000, sender);//每5秒执
 			}else{
-				showErrorNotification( "登陆失败:"+receivLogin.getCommandHeader().errorInfo);
+				showErrorNotification( "登陆失败:"+receivLogin.getCommandHeader().errorInfo+"，正在重新登陆...");
 				clearLoginInfo();
 				mTempDeviceDeviceProcesss.remove(deviceCode).stop();
 				new Thread(){
@@ -454,6 +460,8 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 	// 显示出错一个通知   
 	public void showErrorNotification(String msg) {
 		showNotification(0,msg);
+		if(MainPageActivity.instance!=null)
+			MainPageActivity.instance.setNotifyInfo(msg);
 	} 
 	
 	 // 显示提示一个通知   
@@ -742,13 +750,11 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 					StringUtil.isNull(ip)||
 					StringUtil.isNull(port)){
 				showErrorNotification( "信息不完整，请前往设置页面进行设置");
-
 				return ;
 			}
-			
-			if(MainPageActivity.instance!=null)
-				MainPageActivity.instance.setNotifyInfo("正在登录，请稍后...");
-			
+			if(MainPageActivity.instance!=null&&
+					MainPageActivity.instance.getNotifyText().indexOf("登陆")==-1)
+				MainPageActivity.instance.setNotifyInfo("正在登陆,请稍后....");
 			try {
 				SkyeyeSocketClient skyeyeSocketClient = new SkyeyeSocketClient(
 						socketHandlerImpl.setTimeout(20*1000), true);
@@ -826,7 +832,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			@Override
 			public void handleMessageEx(Message msg){
 				if(msg.what == TIMEOUT_WHAT){
-					showErrorNotification( "查询设备列表超时");
+					showErrorNotification( "查询设备列表超时，重新查询");
 					handlerFailure();
 				}
 			}

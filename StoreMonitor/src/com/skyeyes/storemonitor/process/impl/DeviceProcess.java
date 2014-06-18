@@ -212,7 +212,7 @@ public class DeviceProcess implements DeviceProcessInterface {
 		@Override
 		public void onSocketClosedEx() {
 			// TODO Auto-generated method stub
-			ViewUtils.showWrongInfo("连接已关闭");
+			//ViewUtils.showWrongInfo("连接已关闭");
 			
 		}
 		

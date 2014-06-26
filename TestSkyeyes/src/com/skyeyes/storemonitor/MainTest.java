@@ -23,13 +23,14 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveVideoData;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
-import com.skyeyes.base.network.impl.SkyeyeSocketClient;
-import com.skyeyes.base.network.impl.SkyeyeSocketClient.SocketHandler;
+import com.skyeyes.base.network.NetWorkFactory;
+import com.skyeyes.base.network.SkyeyeNetworkClient;
+import com.skyeyes.base.network.SocketHandler;
 import com.skyeyes.base.util.DateUtil;
 
 public class MainTest {
 	//static String userName ="389test";
-	static String userName ="389test";
+	static String userName ="hjtest";
 	static HashMap<Integer,ChannelStatus> mChannelListStatus = null;
 	static int fileId = 0;
 	static int channelCount = -1;
@@ -151,16 +152,15 @@ public class MainTest {
 		}
 
 		@Override
-		public void setSkyeyeSocketClient(SkyeyeSocketClient skyeyeSocketClient) {
+		public void setSkyeyeSocketClient(SkyeyeNetworkClient skyeyeSocketClient) {
 			// TODO Auto-generated method stub
 			
 		}
-
 	};
 	
 	// 回复视频数据
 	static long lastDataTime;
-	public static void testResponseVideoData(SkyeyeSocketClient skyeyeSocketClient,ReceiveCmdBean receiveCmdBean){
+	public static void testResponseVideoData(SkyeyeNetworkClient skyeyeSocketClient,ReceiveCmdBean receiveCmdBean){
 		if (lastDataTime == 0)
 			lastDataTime = System.currentTimeMillis();
 		if (System.currentTimeMillis() - lastDataTime > 700) {
@@ -193,7 +193,7 @@ public class MainTest {
 	}
 
 	// 登陆
-	public static void testEquitLogin(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void testEquitLogin(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] { 0x0F, userName, userName,CommandControl.getDeviceId()};
 		try {
@@ -218,7 +218,7 @@ public class MainTest {
 	
 	// 读取设备IP
 	public static void testEquitListNoLogin(
-			SkyeyeSocketClient skyeyeSocketClient) {
+			SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] {userName , userName };
 		//params = new Object[]{};
@@ -242,7 +242,7 @@ public class MainTest {
 	}
 
 	// 读取设备IP
-	public static void testDeviceIp(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void testDeviceIp(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] {};
 		try {
@@ -263,7 +263,7 @@ public class MainTest {
 	}
 
 	// 读设备工作布防状态
-	public static void readDeviceStatus(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void readDeviceStatus(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] {};
 		try {
@@ -281,7 +281,7 @@ public class MainTest {
 	}
 
 	// 读设备运行环境状态
-	public static void readDeviceEnv(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void readDeviceEnv(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] {};
 		try {
@@ -298,7 +298,7 @@ public class MainTest {
 		}
 	}
 
-	public static void requstRealTimeVideo(SkyeyeSocketClient skyeyeSocketClient,byte channelId) {
+	public static void requstRealTimeVideo(SkyeyeNetworkClient skyeyeSocketClient,byte channelId) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] { channelId };
 		try {
@@ -315,7 +315,7 @@ public class MainTest {
 		}
 	}
 	
-	public static void requstStopVideo(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void requstStopVideo(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] {  };
 		try {
@@ -333,7 +333,7 @@ public class MainTest {
 	}
 
 	// 获取当前设备IO口状态
-	public static void getEquitIO(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void getEquitIO(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] { 1 };
 		try {
@@ -351,7 +351,7 @@ public class MainTest {
 	}
 
 	// 设置当前设备IO口状态  结果返回数据为空。。。。。。
-	public static void setEquitIO(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void setEquitIO(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] { 1, 1 };
 		try {
@@ -369,7 +369,7 @@ public class MainTest {
 	}
 
 	// 设备状态变更事件	未调通
-	public static void changeDeviceStatus(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void changeDeviceStatus(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] {};
 		try {
@@ -387,7 +387,7 @@ public class MainTest {
 	}
 
 	// 设备通道列表及状态
-	public static void getcmdEquitRegInfo(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void getcmdEquitRegInfo(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] {};
 		try {
@@ -406,7 +406,7 @@ public class MainTest {
 	}
 	
 	// 设备通道列表及状态
-	public static void getChannelPic(SkyeyeSocketClient skyeyeSocketClient,byte channelId) {
+	public static void getChannelPic(SkyeyeNetworkClient skyeyeSocketClient,byte channelId) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		System.out.println("channelId:"+channelId);
 		Object[] params = new Object[] {channelId};
@@ -427,7 +427,7 @@ public class MainTest {
 	
 	static CountManuCmdProcess mCountManuCmdProcess = null;
 	// 人流统计
-	public static void getManucount(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void getManucount(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
@@ -448,7 +448,7 @@ public class MainTest {
 		}
 	}
 	
-	public static void getOpenCloseDoor(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void getOpenCloseDoor(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
@@ -468,7 +468,7 @@ public class MainTest {
 		}
 	}
 	
-	public static void getOpenCloseDoorInfo(SkyeyeSocketClient skyeyeSocketClient,String eventCode) {
+	public static void getOpenCloseDoorInfo(SkyeyeNetworkClient skyeyeSocketClient,String eventCode) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
@@ -488,7 +488,7 @@ public class MainTest {
 		}
 	}
 	
-	public static void getAlarmList(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void getAlarmList(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
@@ -508,7 +508,7 @@ public class MainTest {
 		}
 	}
 	
-	public static void getAlarmInfo(SkyeyeSocketClient skyeyeSocketClient,String eventCode) {
+	public static void getAlarmInfo(SkyeyeNetworkClient skyeyeSocketClient,String eventCode) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		
 		String dateTime = DateUtil.getTimeStringFormat(new Date(), DateUtil.TIME_FORMAT_YMD);
@@ -528,7 +528,7 @@ public class MainTest {
 		}
 	}
 	
-	public static void requstHistoryVideo(SkyeyeSocketClient skyeyeSocketClient,byte channelId) {
+	public static void requstHistoryVideo(SkyeyeNetworkClient skyeyeSocketClient,byte channelId) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] { channelId,"2014-05-25 12:00:00",(short)480};
 		try {
@@ -545,7 +545,7 @@ public class MainTest {
 		}
 	}
 	
-	public static void requstUserInfo(SkyeyeSocketClient skyeyeSocketClient) {
+	public static void requstUserInfo(SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] { };
 		try {
@@ -562,11 +562,11 @@ public class MainTest {
 		}
 	}
 	
-	static SkyeyeSocketClient skyeyeSocketClient = null;
+	static SkyeyeNetworkClient skyeyeSocketClient = null;
 	public static void main(String[] args) {
 		
 		try {
-			skyeyeSocketClient = new SkyeyeSocketClient(
+			skyeyeSocketClient = NetWorkFactory.getSkyeyeNetworkClient(
 					new SocketHandlerImpl(), false);
 			skyeyeSocketClient.setServerAddr("113.106.89.91",4015);
 		} catch (NetworkException e1) {

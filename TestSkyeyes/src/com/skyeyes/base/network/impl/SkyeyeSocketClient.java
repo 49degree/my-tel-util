@@ -18,6 +18,7 @@ import com.skyeyes.base.cmd.bean.SendCmdBean;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
 import com.skyeyes.base.network.SkyeyeNetworkClient;
+import com.skyeyes.base.network.SocketHandler;
 import com.skyeyes.base.util.TypeConversion;
 
 public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
@@ -115,7 +116,6 @@ public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
 	public void run(){
 		if(mSocketChannel == null){
 			InetSocketAddress address = new InetSocketAddress(mHost, mPort) ;
-			
 			try {
 				selector = Selector.open();
 				mSocketChannel = SocketChannel.open(address);
@@ -255,12 +255,5 @@ public class SkyeyeSocketClient implements SkyeyeNetworkClient,Runnable{
 
 	public boolean isShort() {
 		return mIsShort;
-	}
-	public interface SocketHandler{ 
-		public void setSkyeyeSocketClient(SkyeyeSocketClient skyeyeSocketClient);
-		public void onReceiveCmd(ReceiveCmdBean receiveCmdBean);
-		public void onCmdException(CommandParseException ex);
-		public void onSocketException(NetworkException ex);
-		public void onSocketClosed();
 	}
 }

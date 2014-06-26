@@ -33,7 +33,8 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveUserInfo;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
-import com.skyeyes.base.network.impl.SkyeyeSocketClient;
+import com.skyeyes.base.network.NetWorkFactory;
+import com.skyeyes.base.network.SkyeyeNetworkClient;
 import com.skyeyes.base.util.NetWorkUtil;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.StringUtil;
@@ -756,7 +757,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 					MainPageActivity.instance.getNotifyText().indexOf("登陆")==-1)
 				MainPageActivity.instance.setNotifyInfo("正在登陆,请稍后....");
 			try {
-				SkyeyeSocketClient skyeyeSocketClient = new SkyeyeSocketClient(
+				SkyeyeNetworkClient skyeyeSocketClient = NetWorkFactory.getSkyeyeNetworkClient(
 						socketHandlerImpl.setTimeout(20*1000), true);
 				skyeyeSocketClient.setServerAddr(ip, Integer.parseInt(port));
 				SendObjectParams sendObjectParams = new SendObjectParams();
@@ -839,6 +840,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			
 			private void handlerFailure(){
 				Log.e(TAG, "handlerFailure");
+				mSkyeyeSocketClient.doClose();
 				new Thread(){
 					public void run(){
 						try {

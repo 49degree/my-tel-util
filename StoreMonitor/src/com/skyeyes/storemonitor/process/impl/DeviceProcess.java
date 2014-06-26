@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.skyeyes.base.BaseSocketHandler;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
@@ -15,11 +14,10 @@ import com.skyeyes.base.cmd.bean.impl.ReceiveDeviceRegisterInfo;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
+import com.skyeyes.base.network.NetWorkFactory;
 import com.skyeyes.base.network.SkyeyeNetworkClient;
-import com.skyeyes.base.network.impl.SkyeyeSocketClient;
 import com.skyeyes.base.util.PreferenceUtil;
 import com.skyeyes.base.util.ViewUtils;
-import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface;
 import com.skyeyes.storemonitor.service.SendHeartReceiver;
 
@@ -41,7 +39,7 @@ public class DeviceProcess implements DeviceProcessInterface {
 		try {
     		String ip = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_ip);
     		String port = PreferenceUtil.getConfigString(PreferenceUtil.SYSCONFIG, PreferenceUtil.sysconfig_server_port);
-			mSkyeyeNetworkClient = new SkyeyeSocketClient(new SocketHandlerImpl(deviceCode),false);
+			mSkyeyeNetworkClient = NetWorkFactory.getSkyeyeNetworkClient(new SocketHandlerImpl(deviceCode),false);
 			mSkyeyeNetworkClient.setServerAddr(ip, Integer.parseInt(port));
 		} catch (NetworkException e) {
 			// TODO Auto-generated catch block

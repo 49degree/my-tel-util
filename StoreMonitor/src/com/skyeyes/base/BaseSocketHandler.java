@@ -7,9 +7,9 @@ import android.os.Message;
 import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
+import com.skyeyes.base.network.SkyeyeNetworkClient;
+import com.skyeyes.base.network.SocketHandler;
 import com.skyeyes.base.network.impl.SkyeyeSocketClient;
-import com.skyeyes.base.network.impl.SkyeyeSocketClient.SocketHandler;
-import com.skyeyes.base.util.Log;
 
 /**
  * 转换回调线程o
@@ -19,7 +19,7 @@ import com.skyeyes.base.util.Log;
 public abstract class BaseSocketHandler implements SocketHandler {
 	private Looper mLooper = null;
 	protected Handler mHandler = null;
-	protected SkyeyeSocketClient mSkyeyeSocketClient = null;
+	protected SkyeyeNetworkClient mSkyeyeSocketClient = null;
 	public BaseSocketHandler(Looper looper){
 		// TODO Auto-generated constructor stub
 		mLooper = looper;
@@ -49,7 +49,7 @@ public abstract class BaseSocketHandler implements SocketHandler {
 	
 	
 	@Override
-	public void setSkyeyeSocketClient(SkyeyeSocketClient skyeyeSocketClient){
+	public void setSkyeyeSocketClient(SkyeyeNetworkClient skyeyeSocketClient){
 		mSkyeyeSocketClient = skyeyeSocketClient;
 	}
 	

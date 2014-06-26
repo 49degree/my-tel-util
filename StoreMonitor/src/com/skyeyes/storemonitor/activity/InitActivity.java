@@ -13,7 +13,7 @@ import com.skyeyes.base.cmd.bean.ReceiveCmdBean;
 import com.skyeyes.base.cmd.bean.impl.SendObjectParams;
 import com.skyeyes.base.exception.CommandParseException;
 import com.skyeyes.base.exception.NetworkException;
-import com.skyeyes.base.network.impl.SkyeyeSocketClient;
+import com.skyeyes.base.network.SkyeyeNetworkClient;
 import com.skyeyes.storemonitor.R;
 
 public class InitActivity extends BaseActivity{
@@ -35,7 +35,7 @@ public class InitActivity extends BaseActivity{
     
 	// 查询设备列表
 	public void queryEquitListNoLogin(
-			SkyeyeSocketClient skyeyeSocketClient) {
+			SkyeyeNetworkClient skyeyeSocketClient) {
 		SendObjectParams sendObjectParams = new SendObjectParams();
 		Object[] params = new Object[] { "adminhri", "adminhri" };
 		//params = new Object[]{};

@@ -18,11 +18,11 @@ public class ApplicationCenter extends BroadcastReceiver{
 	public static NetWorkUtil mNetWorkUtil;
 	public static boolean connectNetwork;
 	
-	final static int splitTime = 10*1000;//30min
+	final static int splitTime = 30*60*1000;//30min
 	@Override 
 	public void onReceive(Context arg0, Intent arg1) {
 		// TODO Auto-generated method stub
-		Log.e(this.getClass().getSimpleName(), (sendHeartReceiverSender!=null)+"onReceive+++++++++"+hashCode()+":"+arg1.getAction());
+		//Log.e(this.getClass().getSimpleName(), (sendHeartReceiverSender!=null)+"onReceive+++++++++"+hashCode()+":"+arg1.getAction());
 		
 		if(sendHeartReceiverSender!=null)
 			return;
@@ -43,7 +43,7 @@ public class ApplicationCenter extends BroadcastReceiver{
 			mNetWorkUtil = new NetWorkUtil(arg0.getApplicationContext(), new Handler(){
 				public void handleMessage(Message msg){
 					boolean connect = mNetWorkUtil.getNetWorkInfo() != NetWorkUtil.NET_TYPE_NONE;
-					Log.e(this.getClass().getSimpleName(), "connect+++++++++"+connect);
+					//Log.e(this.getClass().getSimpleName(), "connect+++++++++"+connect);
 					if(connectNetwork!=connect){
 						connectNetwork = connect;
 					}

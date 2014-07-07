@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				PendingIntent sendHeartReceiverSender= PendingIntent.getBroadcast(MainActivity.this, 0, new Intent(MainActivity.this, ApplicationCenter.class), 0);
+				PendingIntent sendHeartReceiverSender= PendingIntent.getBroadcast(MainActivity.this, 0, new Intent(MainActivity.this, BootedReceiver.class), 0);
 			    
 			    AlarmManager alarm=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
 			    

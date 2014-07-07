@@ -21,9 +21,18 @@
 	    <!-- 分发界面  配置android:theme="@android:style/Theme.NoDisplay" 标示该activity无需UI-->
 	    <activity android:name="com.yangxp.wapsad.IndexActivity" 
 	        android:theme="@android:style/Theme.NoDisplay"/>
-        <receiver android:name="com.yangxp.wapsad.ApplicationCenter" >
-            <intent-filter>
+	    <service android:name="com.yangxp.wapsad.ApplicationCenter" />
+        <receiver android:name="com.yangxp.wapsad.BootedReceiver" >
+            <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter >
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
+                <data android:scheme="file" >
+                </data>
+            </intent-filter>            
+            <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>	 

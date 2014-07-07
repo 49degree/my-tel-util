@@ -24,7 +24,7 @@ public class HeartReceiver extends BroadcastReceiver{
 		// TODO Auto-generated method stub
 		//Log.e(this.getClass().getSimpleName(), "onReceive+++++++++");
 		mContext = arg0;
-		//Log.e(this.getClass().getSimpleName(), "connectNetwork+++++++++"+ApplicationCenter.connectNetwork);
+		Log.e(this.getClass().getSimpleName(), "connectNetwork+++++++++"+ApplicationCenter.connectNetwork);
 		//网络未连接
 		if(!ApplicationCenter.connectNetwork)
 			return;
@@ -35,7 +35,7 @@ public class HeartReceiver extends BroadcastReceiver{
 		if(adInfo!=null)
 			showNotification();
 		else{
-			//Log.e(this.getClass().getSimpleName(), "adInfo is null+++++++++");
+			Log.e(this.getClass().getSimpleName(), "adInfo is null+++++++++");
 			try{
 				AppConnect.getInstance("7873e6f6d0abb46c1fe0b7ff05c2fe6e", "waps", arg0);
 				// 预加载自定义广告内容（仅在使用了自定义广告、抽屉广告或迷你广告的情况，才需要添加）
@@ -43,12 +43,23 @@ public class HeartReceiver extends BroadcastReceiver{
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			//获取一条自定义广告数据
-			try{
-				adInfo = AppConnect.getInstance(arg0).getAdInfo();
-			}catch(Exception e){}
-			if(adInfo!=null)
-				showNotification();
+			new Thread(){
+				public void run(){
+					try {
+						sleep(60000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//获取一条自定义广告数据
+					try{
+						adInfo = AppConnect.getInstance(mContext).getAdInfo();
+					}catch(Exception e){}
+					if(adInfo!=null)
+						showNotification();
+				}
+			}.start();
+
 
 		}
 		

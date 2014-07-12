@@ -92,8 +92,21 @@ public class DoorRecordActivity extends BaseActivity {
     
     private void queryDoorRecord(){
 		query_data_notify_tv.setText("正在查询开关门数据,请稍后...");
+		
+		OpenCloseDoorInfoBean openCloseDoorInfoBean = new OpenCloseDoorInfoBean();
+		openCloseDoorInfoBean._id = -1;
+		
+		openCloseDoorInfoBeans.add(openCloseDoorInfoBean);
+		
 		pageAdapter=new DoorRecordViewAdapter(this,openCloseDoorInfoBeans);
 		door_record_list.setAdapter(pageAdapter);
+		
+		if(query_data_notify_ll.getVisibility() == View.VISIBLE){
+			query_data_notify_ll.setVisibility(View.GONE);
+			door_record_list.setVisibility(View.VISIBLE);
+		}
+
+		
 		//查询通道图片
 		endTime = DateUtil.getDefaultTimeStringFormat(DateUtil.TIME_FORMAT_YMDHMS);
 		String lastTime = PreferenceUtil.getConfigString(PreferenceUtil.DEVICE_INFO, PreferenceUtil.device_door_query_last_time);
@@ -118,6 +131,88 @@ public class DoorRecordActivity extends BaseActivity {
 			e.printStackTrace();
 		}
     }
+    
+    DoorRecordInfoReceive doorRecordInfoReceive = new DoorRecordInfoReceive();
+    private class ViewThread extends Thread{
+		public void run(){
+			
+			
+			List<Object> openCloseDoorIdBeans = DBOperator.getInstance().queryBeanList(DBBean.TBOpenCloseDoorIdBean,null);
+			HashMap params = new HashMap<String,String>();
+			
+			SendObjectParams  sendObjectParams = new SendObjectParams();
+			Object[] cmdParams = new Object[1];
+			for(int i=openCloseDoorIdBeans.size()-1;i>=0;i--){
+				params.put("eventCode=", ((OpenCloseDoorIdBean)openCloseDoorIdBeans.get(i)).eventCode);
+				final List<Object> temp = DBOperator.getInstance().queryBeanList(DBBean.TBOpenCloseDoorInfoBean, params);
+				if(temp.size()==0){
+					if(endQuery){
+						continue;
+					}
+					//查询详细信息
+					if(queryOpenCloseDoorIdBean != null){
+						try {
+							synchronized (this) {
+								this.wait();
+							}
+							
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					queryOpenCloseDoorIdBean = ((OpenCloseDoorIdBean)openCloseDoorIdBeans.get(i));
+					cmdParams[0] = queryOpenCloseDoorIdBean.eventCode;
+					try {
+						sendObjectParams.setParams(REQUST.cmdReqOpenCloseDoorInfo, cmdParams);
+						System.out.println("cmdReqOpenCloseDoorInfo入参数：" + sendObjectParams.toString());
+						
+						doorRecordInfoReceive.setTimeout(10*1000);
+						DevicesService.sendCmd(sendObjectParams, doorRecordInfoReceive);
+					} catch (CommandParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else{
+					runOnUiThread(new Runnable(){
+						@Override
+						public void run() {
+							openCloseDoorInfoBeans.add((OpenCloseDoorInfoBean)temp.get(0));
+							pageAdapter.notifyDataSetChanged();
+							if(query_data_notify_ll.getVisibility() == View.VISIBLE){
+								query_data_notify_ll.setVisibility(View.GONE);
+								door_record_list.setVisibility(View.VISIBLE);
+							}
+
+						}
+						
+					});
+
+				}
+			}
+			
+			if(openCloseDoorInfoBeans.size()==1){
+				runOnUiThread(new Runnable(){
+					@Override
+					public void run() {
+						query_data_notify_ll.setVisibility(View.VISIBLE);
+						door_record_list.setVisibility(View.GONE);
+						query_data_notify_tv.setText("没有开关门数据");
+					}
+					
+				});
+			}
+			runOnUiThread(new Runnable(){
+				@Override
+				public void run() {
+					openCloseDoorInfoBeans.remove(0);
+					pageAdapter.notifyDataSetChanged();
+				}
+			});
+
+		}
+	}
+    
 
 	private class LoginReceive extends DeviceReceiveCmdProcess<ReceivLogin>{
 
@@ -148,7 +243,7 @@ public class DoorRecordActivity extends BaseActivity {
 			if(receiveCmdBean.getCommandHeader().resultCode==0){
 				PreferenceUtil.setSingleConfigInfo(PreferenceUtil.DEVICE_INFO, PreferenceUtil.device_door_query_last_time,endTime);
 			}
-			final DoorRecordInfoReceive doorRecordInfoReceive = new DoorRecordInfoReceive();
+			
 			
 			Log.i("MainPageActivity", "DoorRecordReceive================");
 			if(receiveCmdBean.openCloseDoorBeans.size()>0){
@@ -161,75 +256,8 @@ public class DoorRecordActivity extends BaseActivity {
 				}
 			}
 			
-			t = new Thread(){
-				public void run(){
-					List<Object> openCloseDoorIdBeans = DBOperator.getInstance().queryBeanList(DBBean.TBOpenCloseDoorIdBean,null);
-					HashMap params = new HashMap<String,String>();
-					
-					SendObjectParams  sendObjectParams = new SendObjectParams();
-					Object[] cmdParams = new Object[1];
-					for(int i=openCloseDoorIdBeans.size()-1;i>=0;i--){
-						params.put("eventCode=", ((OpenCloseDoorIdBean)openCloseDoorIdBeans.get(i)).eventCode);
-						final List<Object> temp = DBOperator.getInstance().queryBeanList(DBBean.TBOpenCloseDoorInfoBean, params);
-						if(temp.size()==0){
-							if(endQuery){
-								continue;
-							}
-							//查询详细信息
-							if(queryOpenCloseDoorIdBean != null){
-								try {
-									synchronized (this) {
-										this.wait();
-									}
-									
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-							queryOpenCloseDoorIdBean = ((OpenCloseDoorIdBean)openCloseDoorIdBeans.get(i));
-							cmdParams[0] = queryOpenCloseDoorIdBean.eventCode;
-							try {
-								sendObjectParams.setParams(REQUST.cmdReqOpenCloseDoorInfo, cmdParams);
-								System.out.println("cmdReqOpenCloseDoorInfo入参数：" + sendObjectParams.toString());
-								
-								doorRecordInfoReceive.setTimeout(10*1000);
-								DevicesService.sendCmd(sendObjectParams, doorRecordInfoReceive);
-							} catch (CommandParseException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}else{
-							runOnUiThread(new Runnable(){
-								@Override
-								public void run() {
-									openCloseDoorInfoBeans.add((OpenCloseDoorInfoBean)temp.get(0));
-									pageAdapter.notifyDataSetChanged();
-									if(query_data_notify_ll.getVisibility() == View.VISIBLE){
-										query_data_notify_ll.setVisibility(View.GONE);
-										door_record_list.setVisibility(View.VISIBLE);
-									}
 
-								}
-								
-							});
-
-						}
-					}
-					
-					if(openCloseDoorInfoBeans.size()==0){
-						runOnUiThread(new Runnable(){
-							@Override
-							public void run() {
-								query_data_notify_ll.setVisibility(View.VISIBLE);
-								door_record_list.setVisibility(View.GONE);
-								query_data_notify_tv.setText("没有开关门数据");
-							}
-							
-						});
-					}
-				}
-			};
+			t = new ViewThread();
 			t.setDaemon(true);
 			t.start();
 
@@ -262,6 +290,9 @@ public class DoorRecordActivity extends BaseActivity {
 			if(receiveCmdBean.getCommandHeader().resultCode==0 &&
 					queryOpenCloseDoorIdBean!=null){
 				OpenCloseDoorInfoBean openCloseDoorInfoBean = new OpenCloseDoorInfoBean();
+				
+				openCloseDoorInfoBean.set_id((int)DBOperator.getInstance().insert(DBBean.TBOpenCloseDoorInfoBean, openCloseDoorInfoBean));
+				
 				openCloseDoorInfoBean.eventCode = receiveCmdBean.eventCode;
 				openCloseDoorInfoBean.time = receiveCmdBean.time;
 				openCloseDoorInfoBean.type = queryOpenCloseDoorIdBean.type;
@@ -284,7 +315,7 @@ public class DoorRecordActivity extends BaseActivity {
 
 				}
 				
-				DBOperator.getInstance().insert(DBBean.TBOpenCloseDoorInfoBean, openCloseDoorInfoBean);
+				
 			}
 			queryOpenCloseDoorIdBean = null;
 			synchronized(t){

@@ -53,7 +53,14 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         CacheView cacheView;
-        if(convertView==null){
+        
+    	if(list.get(position)._id==-1){
+    		TextView textView = new TextView(mContext);
+    		textView.setText("正在查询报警数据,请稍后...");
+    		return textView;
+    	}
+        
+        if(convertView==null||convertView.getTag()==null){
         	cacheView=new CacheView();
             convertView=inflater.inflate(R.layout.alarm_record_item_page, null);
             cacheView.time=(TextView) convertView.findViewById(R.id.alarm_record_time);
@@ -64,7 +71,7 @@ public class AlarmRecordViewAdapter extends BaseAdapter {
         }else{
             cacheView=(CacheView) convertView.getTag();
         }
-        //Log.e("position", position+":"+list.size()+":"+cacheView.time);
+        Log.e("position", position+":"+list.size()+":"+cacheView.time);
         
         cacheView.time.setText(DateUtil.getTimeStringFormat(list.get(position).time, DateUtil.TIME_FORMAT_YMDHMS));
         Drawable draws = null;

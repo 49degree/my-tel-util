@@ -46,6 +46,12 @@ public class DoorRecordViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+    	if(list.get(position)._id==-1){
+    		TextView textView = new TextView(mContext);
+    		textView.setText("正在查询开关门数据,请稍后...");
+    		return textView;
+    	}
+    	
         CacheView cacheView;
         if(convertView==null){
         	cacheView=new CacheView();

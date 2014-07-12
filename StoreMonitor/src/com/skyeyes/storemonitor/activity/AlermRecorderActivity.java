@@ -23,6 +23,7 @@ import com.ffmpeg.lib.h264.H264DecoderException;
 import com.ffmpeg.lib.h264.NativeH264Decoder;
 import com.skyeyes.base.bean.AlarmIdBean;
 import com.skyeyes.base.bean.AlarmInfoBean;
+import com.skyeyes.base.bean.OpenCloseDoorInfoBean;
 import com.skyeyes.base.cmd.CommandControl.REQUST;
 import com.skyeyes.base.cmd.bean.impl.ReceiveAlarmInfo;
 import com.skyeyes.base.cmd.bean.impl.ReceiveAlarmList;
@@ -38,6 +39,7 @@ import com.skyeyes.base.view.TopTitleView.OnClickListenerCallback;
 import com.skyeyes.storemonitor.R;
 import com.skyeyes.storemonitor.StoreMonitorApplication;
 import com.skyeyes.storemonitor.activity.adapter.AlarmRecordViewAdapter;
+import com.skyeyes.storemonitor.activity.adapter.DoorRecordViewAdapter;
 import com.skyeyes.storemonitor.process.DeviceProcessInterface.DeviceReceiveCmdProcess;
 import com.skyeyes.storemonitor.service.DevicesService;
 
@@ -89,6 +91,16 @@ public class AlermRecorderActivity extends Activity {
 		}else{
 			hasQuery = true;
 			query_data_notify_tv.setText("正在查询报警数据,请稍后...");
+			
+			AlarmInfoBean alarmInfoBean = new AlarmInfoBean();
+			alarmInfoBean._id = -1;
+			alarmInfoBeans.add(alarmInfoBean);
+
+			if(query_data_notify_ll.getVisibility() == View.VISIBLE){
+				query_data_notify_ll.setVisibility(View.GONE);
+				alarm_record_list.setVisibility(View.VISIBLE);
+			}
+			
 			pageAdapter=new AlarmRecordViewAdapter(this,alarmInfoBeans);
 			alarm_record_list.setAdapter(pageAdapter);
 			//查询通道图片
@@ -220,7 +232,7 @@ public class AlermRecorderActivity extends Activity {
 					}
 				}
 
-				
+				alarmInfoBean.set_id((int)DBOperator.getInstance().insert(DBBean.TBAlarmInfoBean, alarmInfoBean));
 				alarmInfoBeans.add(alarmInfoBean);
 				pageAdapter.notifyDataSetChanged();
 				
@@ -239,7 +251,7 @@ public class AlermRecorderActivity extends Activity {
 
 				}
 				
-				alarmInfoBean.set_id((int)DBOperator.getInstance().insert(DBBean.TBAlarmInfoBean, alarmInfoBean));
+				
 			}
 			alarmIdBean = null;
 			synchronized(t){
@@ -313,7 +325,7 @@ public class AlermRecorderActivity extends Activity {
 				}
 				
 
-				if(alarmInfoBeans.size()==0){
+				if(alarmInfoBeans.size()==1){
 					runOnUiThread(new Runnable(){
 						@Override
 						public void run() {
@@ -326,6 +338,13 @@ public class AlermRecorderActivity extends Activity {
 						
 					});
 				}
+				runOnUiThread(new Runnable(){
+					@Override
+					public void run() {
+						alarmInfoBeans.remove(0);
+						pageAdapter.notifyDataSetChanged();
+					}
+				});
 			}
 		};
 		t.setDaemon(true);

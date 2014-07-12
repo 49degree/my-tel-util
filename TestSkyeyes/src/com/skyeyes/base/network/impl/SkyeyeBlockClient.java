@@ -172,7 +172,7 @@ public class SkyeyeBlockClient implements SkyeyeNetworkClient{
 						}
 					}
 				}catch(SocketTimeoutException e){
-					e.printStackTrace();
+					//e.printStackTrace();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

@@ -37,7 +37,7 @@ public class VideoClarity {
 	 */
 	
 	private static int getVideoClarityId(){
-		return -1;//未实现，先固定
+		return 2;//未实现，先固定
 	}
 	
 	public static VideoClarity instance()
@@ -62,6 +62,12 @@ public class VideoClarity {
 				obj.with=704;
 				obj.height=576;
 				break;
+			case 3:
+				obj.id=3;
+				obj.bootFile="head1280.720";
+				obj.with=1280;
+				obj.height=720;
+				break;				
 				
 			default:
 				obj.id=1;

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@id/menu_move" android:title="modify" />
+    <group android:id="@id/stick" android:visible="true" android:menuCategory="container" android:checkableBehavior="single">
+        <item android:id="@id/menu_normal_stick" android:title="@string/normal_stick" />
+        <item android:id="@id/menu_look_stick" android:title="@string/look_stick" />
+    </group>
+</menu>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@id/linearLayout_title_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="150.0dip"
+            android:layout_marginRight="150.0dip"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@id/text_view_appname"
+                android:layout_width="300dp"
+                android:layout_height="30.0dip"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:textColor="#ffffffff" />
+		      <!--
+            <EditText
+                android:id="@id/edit_text_pagename"
+                android:layout_width="120.0dip"
+                android:layout_height="40.0dip"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@id/text_view_appname"
+                android:gravity="center"
+                android:maxWidth="120.0dip"
+                android:text="@string/default_page_name"
+                android:textColor="#ffffffff" />
+              
+            <ImageView
+                android:id="@id/title_menu"
+                android:layout_width="40.0dip"
+                android:layout_height="40.0dip"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/pages_03_overflowmenu" />
+           
+            <ImageView
+                android:id="@id/pages_right"
+                android:layout_width="40.0dip"
+                android:layout_height="40.0dip"
+                android:layout_toLeftOf="@id/title_menu"
+                android:src="@drawable/pages_02_rightarrow_disabled" />
+
+            <ImageView
+                android:id="@id/pages_left"
+                android:layout_width="40.0dip"
+                android:layout_height="40.0dip"
+                android:layout_toLeftOf="@id/pages_right"
+                android:src="@drawable/pages_01_leftarrow_disabled" />
+                 -->
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@id/linearLayout1"
+            android:layout_width="330dp"
+            android:layout_height="140dp"
+            android:layout_below="@id/linearLayout_title_bar"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/tools_00_background"
+            android:gravity="center"
+            android:orientation="horizontal" >
+            <ImageView
+                android:id="@id/ivRecord"
+                style="@style/button_theme"
+                android:src="@drawable/tools_06_gesture_100p" />
+            <ImageView
+                android:id="@id/ivRemove"
+                style="@style/line_first_button_theme"
+                android:layout_toRightOf="@id/ivRecord"
+                android:src="@drawable/tools_07_eraser_100p"/>
+            <ImageView
+                android:id="@id/ivDelete"
+                style="@style/line_first_button_theme"
+                android:layout_toRightOf="@id/ivRemove"
+                android:src="@drawable/tools_10_del_normal" />
+            <ImageView
+                android:id="@id/ivSearch"
+                style="@style/line_first_button_theme"
+                android:layout_toRightOf="@id/ivDelete"
+                android:src="@drawable/nv_cloud_btn" />
+            
+           <ImageView
+                android:id="@id/ivSave"
+                style="@style/line_first_button_theme"
+                android:layout_toRightOf="@id/ivSearch"
+                android:src="@drawable/tools_09_save_normal" />
+           
+           <ImageView
+                android:id="@id/ivSensor"
+                style="@style/line_secend_button_theme"
+                android:layout_below="@id/ivRecord"        
+                android:src="@drawable/tools_08_sensor" />
+          <ImageView
+                android:id="@id/ivLeftStick"
+                style="@style/line_secend_button_theme"
+                android:layout_below="@id/ivRemove"  
+                android:layout_toRightOf="@id/ivSensor"
+                android:src="@drawable/tools_02_leftstick_100p" />  
+                
+           <ImageView
+                android:id="@id/ivRightStick"
+                style="@style/line_secend_button_theme"
+                android:layout_below="@id/ivDelete"  
+                android:layout_toRightOf="@id/ivLeftStick"           
+                android:src="@drawable/tools_03_rightstick_100p" />  
+            <ImageView
+                android:id="@id/ivButton"
+                style="@style/line_secend_button_theme"
+                android:layout_below="@id/ivSearch"  
+                android:layout_toRightOf="@id/ivRightStick"           
+                android:src="@drawable/tools_04_button_100p"/>  
+                
+              <ImageView
+                android:id="@id/ivCursor"
+                style="@style/line_secend_button_theme"
+                android:layout_below="@id/ivSave"  
+                android:layout_toRightOf="@id/ivButton"             
+                android:src="@drawable/tools_05_pointer_100p" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <AbsoluteLayout
+        android:id="@+id/button_group"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    </AbsoluteLayout>
+   
+</FrameLayout>

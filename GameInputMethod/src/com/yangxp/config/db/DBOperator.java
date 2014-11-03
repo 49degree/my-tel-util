@@ -1,0 +1,564 @@
+package com.yangxp.config.db;
+
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.yangxp.config.MainApplication;
+
+/**
+ * 数据库管理类
+ * 
+ * @author 杨雪平
+ * 
+ */
+public class DBOperator extends SQLiteOpenHelper {
+	public static String TAG = "DBOperator";
+	private static HashMap<String,DBOperator> instanceMapper = null;
+	private SQLiteDatabase sqlDb = null;
+	public String dbName;
+	public int dbVersion;
+	private Context context = null;
+	
+	
+	
+	static{
+		instanceMapper = new HashMap<String,DBOperator>();
+	}
+	
+	public static synchronized DBOperator getInstance(String dbName){
+		
+		if(!instanceMapper.containsKey(dbName)){
+			instanceMapper.put(dbName, new DBOperator(dbName,DBBean.DB_VERSION.get(dbName)));
+		}
+		return instanceMapper.get(dbName);
+	}
+	
+	private DBOperator(String dbName,int dbVersion) {
+		super(MainApplication.getInstance(), dbName, null, dbVersion);
+		this.dbName = dbName;
+		this.dbVersion = dbVersion;
+		context = MainApplication.getInstance();
+		sqlDb = getReadableDatabase();
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		// 遍历需要初始化的数据表
+		Log.i(TAG,"初始化的数据表 ***********************************************************");
+		try {
+			StringBuffer createSql = null;
+			//得到一个键值，即是表的名字
+			for (String tableName : DBBean.DB_CONFIG.get(dbName).keySet()) {
+				//获取表对应的实体类（把表实例化）
+				Class newoneClass = Class.forName(DBBean.DB_CONFIG.get(dbName).get(tableName));
+				//得到表的属性值
+				Field[] fs = newoneClass.getDeclaredFields(); 
+				//根据实体类的成员变量构造创建表语句
+				StringBuffer tableField = new StringBuffer("");
+				createSql = new StringBuffer("create table ");
+				for (Field f : fs) {
+					//判断该属性是否定义为主键，如果不是根据属性的类型分配不通的列类型
+					//判断Key是否有对应的Value值，若有，则返回TRUE，无，则返回false
+					if(DBBean.primaryKey.containsKey(tableName)&&DBBean.primaryKey.get(tableName).equals(f.getName())){
+						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" integer PRIMARY KEY");
+					}else if(f.getType().equals(int.class)){
+						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" integer");
+					}else if(f.getType().equals(long.class)){
+						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" INT8");						
+					}else if(f.getType().equals(float.class)){
+						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" float");
+					}else if(f.getType().equals(boolean.class)){
+						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" boolean");
+					}else if(f.getType().equals(byte[].class)){
+						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" blob");
+					}else{
+						tableField.append(tableField.length() > 0 ? ",": "").append(f.getName()).append(" text");
+					}
+				}
+				createSql.append(tableName).append("(").append(tableField).append(");");//合并语句
+				Log.i(TAG,"创建表"+ tableName +"***********************************************************");
+				db.execSQL(createSql.toString());//创建表
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+	}
+
+	@Override
+	public void onOpen(SQLiteDatabase db) {
+		Log.i(TAG,"onOpen***********************************************************");
+		File fdir = new File("/data/data/"+context.getPackageName()+"/databases/");
+		File fdb = new File("/data/data/"+context.getPackageName()+"/databases/"+dbName);
+		File fdb_journal = new File("/data/data/"+context.getPackageName()+"/databases/"+dbName+"-journal");
+		Log.e(TAG, fdb.toString());
+		try{
+			if(fdb.exists()){
+				
+				Log.e(TAG, "fdb.exists()");
+				fdir.setReadable(true, false);
+				fdir.setWritable(true, false);
+				fdir.setExecutable(true, false);
+				
+				fdb.setReadable(true, false);
+				fdb.setWritable(true, false);
+				fdb.setExecutable(true, false);
+				
+				fdb_journal.setReadable(true, false);
+				fdb_journal.setWritable(true, false);
+				fdb_journal.setExecutable(true, false);
+				
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}	
+
+	}
+
+	/**
+	 * 查询
+	 * @param tableName 表名
+	 * @param returnColumn 需要返回数据的列名称
+	 * @param params key表示条件，value表示条件的值，如：key="id>",value=1
+	 * @return
+	 */
+	private Cursor queryCursor(String tableName, String[] returnColumn,
+			Map<String, String> params) {
+		try {
+			// params转换成可执行查询条件
+			String queryParm = null;
+			String[] queryParmValue = null;
+			String limit = null;
+			String groupBy = null;
+			String having = null;
+			String orderBy = null;
+			
+			if (params != null && params.size() > 0) {
+				StringBuffer queryKey = new StringBuffer("");
+				ArrayList<String> queryParmList = new ArrayList<String>();
+				for (String key : params.keySet()) {
+					Log.i(TAG,"query:"+key+":"+params.get(key));
+					if(key.equals("LIMIT")){
+						limit = params.get(key);
+					}else if(key.equals("GROUPBY")){
+						groupBy = params.get(key);
+					}else if(key.equals("HAVING")){	
+						having = params.get(key);
+					}else if(key.equals("ORDERBY")){
+						orderBy = params.get(key);
+					}else{
+						queryKey.append(queryKey.length() > 0 ? " and " : "").append(key).append("?");
+						queryParmList.add(params.get(key));
+					}
+				}
+				queryParm = queryKey.toString();
+				if(queryParmList.size()>0){
+					queryParmValue = new String[queryParmList.size()];
+					queryParmList.toArray(queryParmValue);
+				}
+			}
+			
+			Cursor cursor = sqlDb.query(tableName, returnColumn, queryParm,
+					queryParmValue, groupBy, having, orderBy,limit);
+			Log.i(TAG,"count:"+cursor.getCount());
+			return cursor;
+		} catch (Exception ce) {
+			ce.printStackTrace();
+			return null;
+		}finally{
+			release();
+		}
+	}
+
+	/**
+	 * 判断当前数据在表中是否存在
+	 * 
+	 * @param tableName 表名
+	 * @param returnColumn 需要返回数据的列名称
+	 * @param params key表示条件，value表示条件的值，如：key="id>",value=1
+	 * @return
+	 */
+	public int queryRowNum(String tableName, Map<String, String> params){
+		Cursor cursor = queryCursor(tableName, new String[] { "*" }, params);
+		int rowNum = cursor.getCount();
+		cursor.close();
+		release();
+		return rowNum;
+	}
+
+	/**
+	 * 查询记录，返回数组列表
+	 * 
+	 * @param tableName 表名
+	 * @param returnColumn 需要返回数据的列名称
+	 * @param params key表示条件，value表示条件的值，如：key="id>",value=1
+	 * @return
+	 */
+	public List<String[]> queryArrayList(String tableName,
+			String[] returnColumn, Map<String, String> params){
+		List<String[]> returnList = new ArrayList<String[]>();
+		Cursor cursor = queryCursor(tableName, returnColumn, params);
+		if(cursor!=null){
+			cursor.moveToFirst();
+			String[] columValue = null;
+			while (!cursor.isAfterLast()) {
+				//遍历返回数据到列表中
+				columValue = new String[cursor.getColumnCount()];
+				for (int i = 0; i < cursor.getColumnCount();) {
+					columValue[i] = cursor.getString(i++);
+				}
+				returnList.add(columValue);
+				cursor.moveToNext();
+			}
+			cursor.close();
+		}
+		release();
+		return returnList;
+	}
+
+	/**
+	 * 查询记录到MAP中
+	 * @param tableName 表名
+	 * @param returnColumn 需要返回数据的列名称
+	 * @param params key表示条件，value表示条件的值，如：key="id>",value=1
+	 * @return
+	 */
+	public List<Map<String, String>> queryMapList(String tableName,
+			String[] returnColumn, Map<String, String> params){
+		List<Map<String, String>> returnList = new ArrayList<Map<String, String>>();
+		Cursor cursor = queryCursor(tableName, returnColumn, params);
+		if(cursor!=null){
+			cursor.moveToFirst();
+			Map<String, String> columValue = null;
+			while (!cursor.isAfterLast()) {
+				//遍历返回数据到列表中
+				columValue = new HashMap<String, String>();
+				for (int i = 0; i < cursor.getColumnCount();) {
+					columValue.put(returnColumn[i], cursor.getString(i++));
+				}
+				returnList.add(columValue);
+				cursor.moveToNext();
+			}
+			cursor.close();
+		}
+		release();
+		return returnList;
+	}
+	
+	/**
+	 * 查询记录到实体类列表中
+	 * @param tableName 表名
+	 * @param params key表示条件，value表示条件的值，如：key="id>",value=1
+	 * @return
+	 */
+	public List<Object> queryBeanList(String tableName,Map<String, String> params){
+		List<Object> returnList = new ArrayList<Object>();
+		Cursor cursor = queryCursor(tableName, new String[]{"*"}, params);//查询全部数据
+		if(cursor!=null){
+			try{
+				//获取表对应的实体类
+				Class tableBean = Class.forName(DBBean.needInitTables.get(tableName));
+				//获取表对应的实体类构造函数
+				Constructor construtor =  tableBean.getConstructor();
+				Field[] fs = tableBean.getDeclaredFields(); 
+				cursor.moveToFirst();
+				StringBuffer methodName = null;
+				Method setMethod = null;
+				Object object = null;
+				while (!cursor.isAfterLast()) {
+					//遍历返回数据，构造实体对象
+					object = construtor.newInstance();
+					for (int i = 0; i < cursor.getColumnCount();i++) {
+						//给实体对象的成员变量赋值
+						methodName = new StringBuffer("set");
+						String columnName = cursor.getColumnName(i);
+						
+						Field f = tableBean.getField(columnName);
+						Object columnValue= null;
+						if(f.getType().equals(byte[].class)){
+							columnValue = cursor.getBlob(i);
+						}else{
+							columnValue = cursor.getString(i);
+						}
+						
+						methodName.append(columnName.substring(0, 1).toUpperCase()).append(columnName.substring(1));
+						
+						if(f.getType().equals(float.class)){
+							setMethod = tableBean.getMethod(methodName.toString(),float.class);
+							setMethod.invoke(object, Float.parseFloat(columnValue.toString()));
+						}else if(f.getType().equals(boolean.class)){
+							setMethod = tableBean.getMethod(methodName.toString(),boolean.class);
+							if(columnValue.equals("0")){
+								setMethod.invoke(object, false);
+							}else{
+								setMethod.invoke(object, true);
+							}
+							
+						}else if(f.getType().equals(int.class)){
+							setMethod = tableBean.getMethod(methodName.toString(),int.class);
+							setMethod.invoke(object, Integer.parseInt(columnValue.toString()));
+						}else if(f.getType().equals(long.class)){
+							setMethod = tableBean.getMethod(methodName.toString(),long.class);
+							setMethod.invoke(object, Long.parseLong(columnValue.toString()));
+						}else if(f.getType().equals(byte[].class)){
+							setMethod = tableBean.getMethod(methodName.toString(),byte[].class);
+							setMethod.invoke(object, columnValue);
+						}else if(f.getType().equals(byte.class)){
+							setMethod = tableBean.getMethod(methodName.toString(),byte.class);
+							setMethod.invoke(object, Byte.parseByte(columnValue.toString()));								
+						}else{
+							setMethod = tableBean.getMethod(methodName.toString(),String.class);
+							setMethod.invoke(object, columnValue);
+						}
+					}
+					Log.i(TAG, object.toString());
+					returnList.add(object);
+					cursor.moveToNext();
+				}
+			}catch(Exception ine){
+				ine.printStackTrace();
+				
+			}finally{
+				cursor.close();
+			}
+		}
+		release();
+		return returnList;
+	}
+	
+	/**
+	 * 插入记录到当前表
+	 * @param tableName 表名
+	 * @param value 表对应实体类对象
+	 * @return
+	 */
+	public synchronized long insert(String tableName,Object value){
+		
+		long insertRow = 0;
+		//SQLiteDatabase insertDB = null;
+		try {
+			Field[] fs = value.getClass().getDeclaredFields();
+			ContentValues contentValues = new ContentValues();
+			StringBuffer methodName = null;
+			Method getMethod = null;
+			Class clazz = value.getClass();
+			for(Field f:fs){
+				//取实体对象的成员变量值
+				if(DBBean.primaryKey.containsKey(tableName)&&DBBean.primaryKey.get(tableName).equals(f.getName()))//如果是主键则不需要插入
+					continue;
+				
+				methodName = new StringBuffer("get");
+				//methodName.append(f.getName());
+				methodName.append(f.getName().substring(0, 1).toUpperCase()).append(f.getName().substring(1));
+				getMethod = clazz.getMethod(methodName.toString());
+				if(f.getType().equals(float.class)){
+					contentValues.put(f.getName(), ((Float)getMethod.invoke(value)).floatValue());
+				}else if(f.getType().equals(boolean.class)){
+					contentValues.put(f.getName(), ((Boolean)getMethod.invoke(value)).booleanValue());
+				}else if(f.getType().equals(int.class)){
+					contentValues.put(f.getName(), ((Integer)getMethod.invoke(value)).intValue());
+				}else if(f.getType().equals(long.class)){
+					contentValues.put(f.getName(), ((Long)getMethod.invoke(value)).longValue());
+				}else if(f.getType().equals(byte[].class)){
+					contentValues.put(f.getName(), ((byte[])getMethod.invoke(value)));
+				}else if(f.getType().equals(byte.class)){
+					contentValues.put(f.getName(), ((Byte)getMethod.invoke(value)).byteValue());					
+				}else{
+					contentValues.put(f.getName(), ((String)getMethod.invoke(value)));
+				}
+			}
+			Log.e(TAG, "insert:"+tableName);
+			insertRow = sqlDb.insert(tableName, null, contentValues);
+		} catch (Exception ce) {
+			ce.printStackTrace();
+		}
+		release();
+		return insertRow;
+	}
+
+	/**
+	 * 插入记录到当前表
+	 * @param tableName 表名
+	 * @param value 表对应实体类对象
+	 * @return
+	 */
+	public synchronized long update(String tableName,Object value){
+		
+		long insertRow = 0;
+		//SQLiteDatabase insertDB = null;
+		try {
+			String queryParm = null;
+			String[] queryParmValue = null;
+			
+			Field[] fs = value.getClass().getDeclaredFields();
+			ContentValues contentValues = new ContentValues();
+			StringBuffer methodName = null;
+			Method getMethod = null;
+			Class clazz = value.getClass();
+			for(Field f:fs){
+				methodName = new StringBuffer("get");
+				methodName.append(f.getName().substring(0, 1).toUpperCase()).append(f.getName().substring(1));
+				getMethod = clazz.getMethod(methodName.toString());
+				
+				//取实体对象的成员变量值
+				if(DBBean.primaryKey.containsKey(tableName)&&DBBean.primaryKey.get(tableName).equals(f.getName())){
+					//如果是主键则作为条件
+					queryParm = DBBean.primaryKey.get(tableName)+"=?";
+					queryParmValue = new String[]{String.valueOf(((Integer)getMethod.invoke(value)).intValue())};
+					
+				}
+				
+
+				if(f.getType().equals(float.class)){
+					contentValues.put(f.getName(), ((Float)getMethod.invoke(value)).floatValue());
+				}else if(f.getType().equals(boolean.class)){
+					contentValues.put(f.getName(), ((Boolean)getMethod.invoke(value)).booleanValue());
+				}else if(f.getType().equals(int.class)){
+					contentValues.put(f.getName(), ((Integer)getMethod.invoke(value)).intValue());
+				}else if(f.getType().equals(long.class)){
+					contentValues.put(f.getName(), ((Long)getMethod.invoke(value)).longValue());
+				}else if(f.getType().equals(byte[].class)){
+					contentValues.put(f.getName(), ((byte[])getMethod.invoke(value)));
+				}else if(f.getType().equals(byte.class)){
+					contentValues.put(f.getName(), ((Byte)getMethod.invoke(value)).byteValue());						
+				}else{
+					contentValues.put(f.getName(), ((String)getMethod.invoke(value)));
+				}
+			}
+			
+			insertRow = sqlDb.update(tableName, contentValues, queryParm, queryParmValue);
+		} catch (Exception ce) {
+			ce.printStackTrace();
+		}
+		release();
+		return insertRow;
+	}	
+	
+	
+	/**
+	 * 修改记录
+	 * @param tableName 表名
+	 * @param values 修改后的值
+	 * @param params key表示条件，value表示条件的值，如：key="id>",value=1
+	 * @return
+	 */
+	public synchronized long update(String tableName, ContentValues values,Map<String, String> params){
+		
+		long insertRow = 0;
+		try {
+			// params转换成可修改限定条件
+			String queryParm = null;
+			String[] queryParmValue = null;
+			if (params != null && params.size() > 0) {
+				StringBuffer queryKey = new StringBuffer("");
+				queryParmValue = new String[params.size()];
+				int i = 0;
+				for (String key : params.keySet()) {
+					queryKey.append(queryKey.length() > 0 ? " and " : "").append(key).append("?");
+					queryParmValue[i++] = params.get(key);
+				}
+				queryParm = queryKey.toString();
+			}
+			insertRow = sqlDb.update(tableName, values, queryParm, queryParmValue);
+		} catch (Exception ce) {
+			ce.printStackTrace();
+		}
+		release();
+		return insertRow;
+	}
+	
+	/**
+	 * 数据删除
+	 * @param tableName
+	 * @param params
+	 */
+	public synchronized int del(String tableName,Map<String, String> params){
+		String queryParm = null;
+		String[] queryParmValue = null;
+		if (params != null && params.size() > 0) {
+			StringBuffer queryKey = new StringBuffer("");
+			queryParmValue = new String[params.size()];
+			int i = 0;
+			for (String key : params.keySet()) {
+				queryKey.append(queryKey.length() > 0 ? " and " : "").append(key).append("?");
+				queryParmValue[i++] = params.get(key);
+				
+			}
+			queryParm = queryKey.toString();
+		}
+		int res = sqlDb.delete(tableName, queryParm, queryParmValue);
+		release();
+		return res;
+	}
+	
+	
+	/**
+	 * 数据删除
+	 * @param tableName
+	 * @param params
+	 */
+	public synchronized int del(String tableName,Object value){
+		try{
+			Class clazz = value.getClass();
+			String keyParaName = DBBean.primaryKey.get(tableName);
+			StringBuffer methodName = new StringBuffer("get");
+			methodName.append(keyParaName.substring(0, 1).toUpperCase()).append(keyParaName.substring(1));
+			Method getMethod = clazz.getMethod(methodName.toString());
+			
+			String queryParm = null;
+			String[] queryParmValue = null;
+			
+			//主键则作为条件
+			queryParm = DBBean.primaryKey.get(tableName)+"=?";
+			queryParmValue = new String[]{String.valueOf(((Integer)getMethod.invoke(value)).intValue())};
+			
+			return sqlDb.delete(tableName, queryParm, queryParmValue);
+		}catch(Exception e){
+			return 0;
+		}finally{
+			release();
+		}
+	}
+	/**
+	 * 释放资源
+	 */
+	public synchronized void release(){
+		return;
+		/*
+    	if(sqlDb!=null){
+        	try{
+        		sqlDb.close();
+        	}catch(Exception e){}
+    		sqlDb = null;
+    	}
+    	
+    	try{
+    		close();
+    	}catch(Exception e){}
+    	
+    	try{
+    		instanceMapper.remove(dbName);
+    	}catch(Exception e){}
+    	*/
+    	
+	}
+
+
+}

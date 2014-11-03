@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  	<item android:id="@id/menu_move" android:title="modify" />
+    <group android:id="@id/cursor" android:visible="true" android:menuCategory="container" android:checkableBehavior="single">
+        <item android:id="@id/menu_absolute_cursor" android:title="@string/absolute_stick" />
+        <item android:id="@id/menu_accelerated_cursor" android:title="@string/accelerated_stick" />
+    </group>
+</menu>

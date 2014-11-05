@@ -312,7 +312,7 @@ public class DevicesService extends Service implements DeviceStatusChangeListene
 			    Log.e("DevicesService","alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, System.currentTimeMillis(), 30*1000, sendHeartReceiverSender);");
 			    SendHeartReceiver.lastConnectTime = 0;
 			    alarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 30*1000, sendHeartReceiverSender);
-
+			    
 			    
 //				Intent intent=new Intent(this,SendHeartReceiver.class);  
 //				PendingIntent sender=PendingIntent.getBroadcast(this, 0, intent, 0);  

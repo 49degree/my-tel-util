@@ -13,7 +13,7 @@ public class AttributeString extends AttributeBase<String>{
 	}
 
 	@Override
-	public void intValue(String value) {
+	public void initValue(String value) {
 		// TODO Auto-generated method stub
 		this.value = value;
 	}

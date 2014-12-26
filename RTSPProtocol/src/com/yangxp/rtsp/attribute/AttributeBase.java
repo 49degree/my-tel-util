@@ -26,7 +26,7 @@ public abstract class AttributeBase<T> implements Attribute<T> {
 			name = attribute;
 		else {
 			name = attribute.substring(0, colon);
-			intValue(attribute.substring(++colon).trim());
+			initValue(attribute.substring(++colon).trim());
 		}
 	}
 	public AttributeBase(String name, T value) {
@@ -40,7 +40,7 @@ public abstract class AttributeBase<T> implements Attribute<T> {
 	}
 
 	
-	public abstract void intValue(String value);
+	public abstract void initValue(String value);
 	
 	@Override
 	public void setValue(T value){

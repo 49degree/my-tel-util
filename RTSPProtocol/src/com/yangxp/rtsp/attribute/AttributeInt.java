@@ -13,7 +13,7 @@ public class AttributeInt extends AttributeBase<Integer>{
 	}
 
 	@Override
-	public void intValue(String value) {
+	public void initValue(String value) {
 		// TODO Auto-generated method stub
 		this.value = Integer.parseInt(value);
 	}

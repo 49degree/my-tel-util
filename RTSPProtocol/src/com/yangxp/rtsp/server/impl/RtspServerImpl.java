@@ -9,6 +9,7 @@ import com.yangxp.net.tcp.ClientConnectedListener;
 import com.yangxp.net.tcp.SocketClient;
 import com.yangxp.net.tcp.SocketServer;
 import com.yangxp.rtsp.client.RtspClient;
+import com.yangxp.rtsp.client.impl.ResponseClient;
 import com.yangxp.rtsp.client.impl.RtspClientImpl;
 import com.yangxp.rtsp.server.RtspServer;
 import com.yangxp.rtsp.utils.MyStreamHandlerFactory;
@@ -35,7 +36,7 @@ public class RtspServerImpl implements RtspServer{
 			@Override
 			public void onClientConnected(SocketClient socketClient) {
 				// TODO Auto-generated method stub
-				RtspClientImpl rtspClientImpl = new RtspClientImpl(socketClient);
+				RtspClientImpl rtspClientImpl = new ResponseClient(socketClient);
 				onRtspClientConnected(rtspClientImpl);
 			}
 		});
@@ -48,6 +49,5 @@ public class RtspServerImpl implements RtspServer{
 		// TODO Auto-generated method stub
 		clientMap.put(client.hashCode(), client);
 	}
-	
-	
+
 }

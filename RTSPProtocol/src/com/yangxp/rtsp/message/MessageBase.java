@@ -62,7 +62,7 @@ public abstract class MessageBase implements Message{
 			String headerLine = null;
 			do{
 				headerLine = reader.readLine();
-				logger.debug("headerLine:"+headerLine);
+				//logger.debug("headerLine:"+headerLine);
 			}while(headerLine!=null&&headerLine.trim().equals(""));
 			
 			if(headerLine==null)
@@ -87,7 +87,7 @@ public abstract class MessageBase implements Message{
 		char lastChar = messageStr.charAt(messageStr.length()-1);
 		if(lastChar!='\r'&&lastChar!='\n')
 			return;
-		logger.debug("messageStr:"+messageStr);
+		//logger.debug("messageStr:"+messageStr);
 		mComplete = false;
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(messageStr.toString().getBytes())));
@@ -120,7 +120,7 @@ public abstract class MessageBase implements Message{
 		// Parsing request method & uri
 		do{
 			line = input.readLine();
-			logger.debug("headerLine:"+line);
+			//logger.debug("headerLine:"+line);
 		}while(line==null||line.trim().equals(""));
 		paresHeader(line);
 	
@@ -196,16 +196,18 @@ public abstract class MessageBase implements Message{
 		}else{
 			messageString.append("\r\n");
 		}
-		String contentStr = "";
-		if(content!=null){
-			contentStr = content.getContent();
-		}
+
 
 		for(Attribute attribute:attributes.values()){
 			messageString.append(attribute.getAttributeString()).append("\r\n");
 		}
 		messageString.append("\r\n");
-		messageString.append(contentStr).append("\r\n");
+		String contentStr = "";
+		if(content!=null){
+			contentStr = content.getContent();
+			messageString.append(contentStr).append("\r\n");
+		}
+		
 		return messageString.toString();
 	}
 	

@@ -11,9 +11,9 @@ import com.yangxp.rtsp.message.ResponseMessage;
 public interface RtspClient{
 	public void request(RequestMessage request);
 	
-	public void response(ResponseMessage response);
-	
 	public void onResponse(ResponseMessage response);
+	
+	public void response(ResponseMessage response);
 	
 	public void onRequest(RequestMessage request);
 }

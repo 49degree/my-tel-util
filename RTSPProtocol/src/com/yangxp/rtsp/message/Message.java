@@ -37,7 +37,7 @@ public interface Message {
 	public static final Pattern rexegTransport = Pattern.compile("client_port=(\\d+)-(\\d+).+server_port=(\\d+)-(\\d+)",Pattern.CASE_INSENSITIVE);
 	
 	public enum Method {
-		OPTIONS("OPTIONS"), DESCRIBE("OPTIONS"), SETUP("OPTIONS"), PLAY("OPTIONS"),PAUSE("PAUSE"), RECORD("RECORD"), TEARDOWN("TEARDOWN"),NULL("");
+		OPTIONS("OPTIONS"), DESCRIBE("DESCRIBE"), SETUP("SETUP"), PLAY("PLAY"),PAUSE("PAUSE"), RECORD("RECORD"), TEARDOWN("TEARDOWN"),NULL("");
 	    private final String name;
 	    private Method(String name){
 	        this.name = name;

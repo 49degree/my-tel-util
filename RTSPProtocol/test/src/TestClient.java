@@ -7,7 +7,7 @@ import java.util.Arrays;
 import org.apache.log4j.Logger;
 
 import com.yangxp.rtsp.client.RtspClient;
-import com.yangxp.rtsp.client.impl.RtspClientImpl;
+import com.yangxp.rtsp.client.impl.RequestClient;
 import com.yangxp.rtsp.message.ContentBase;
 import com.yangxp.rtsp.message.Message;
 import com.yangxp.rtsp.message.RequestMessage;
@@ -37,25 +37,16 @@ public class TestClient {
 
 	public static void main(String[] args){
 		
-		RtspClient client = new RtspClientImpl("rtsp://172.0.0.200:8086/spydroid.sdp");
+		RequestClient client = new RequestClient("rtsp://172.0.0.160:8086",Message.RTSP_PROTOCOL_VERSION1);
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		RequestMessage inta = new RequestMessage();
-		inta.setMethod(Message.Method.OPTIONS);
-		inta.setPVersion("RTSP/1.0");
-		inta.setCseq(1);
-		inta.setServer("my test server");
-		inta.setContent(ContentBase.Factory.getDefault().setContent("v=0\r\n  o=MediaBox 127992 137813 IN IP4 0.0.0.0\r\n  s=RTSP Session\r\n  i=Starv Box Live Cast\r\n  c=IN IP4 218.207.101.236\r\n  t=0 0"));
-		
-		
-		
-		client.request(inta);
-		client.request(inta); 
+
+		client.option();
+		client.describe();
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {

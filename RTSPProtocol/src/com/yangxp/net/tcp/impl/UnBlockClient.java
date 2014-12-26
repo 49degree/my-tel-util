@@ -90,7 +90,7 @@ public class UnBlockClient extends ClientBase implements Runnable{
 		int readLen;
 		while(status == SocketStatus.CONNECTED){
 			try {
-				logger.warn("selector.select============");
+				
 				if(selector.select(0)>0){
 					keys = selector.selectedKeys().iterator();
 					while(keys.hasNext()){
@@ -100,7 +100,7 @@ public class UnBlockClient extends ClientBase implements Runnable{
 						if(key.isReadable()){
 							//read msg
 							try {
-								logger.debug("start cmdReadBuffer position:"+cmdReadBuffer.position()+":limit:"+cmdReadBuffer.limit());
+								//logger.debug("start cmdReadBuffer position:"+cmdReadBuffer.position()+":limit:"+cmdReadBuffer.limit());
 								cmdReadBuffer.limit(cmdReadBuffer.capacity());
 								int startPosition = cmdReadBuffer.position();
 								if((readLen=mSocketChannel.read(cmdReadBuffer))>0){
@@ -110,7 +110,7 @@ public class UnBlockClient extends ClientBase implements Runnable{
 									mSocketHandler.onReceiveCmd(cmdReadBuffer);
 									//logger.debug("onReceiveCmd end cmdReadBuffer position:"+cmdReadBuffer.position()+":limit:"+cmdReadBuffer.limit());
 								}
-								logger.debug("end cmdReadBuffer position:"+cmdReadBuffer.position()+":limit:"+cmdReadBuffer.limit());
+								//logger.debug("end cmdReadBuffer position:"+cmdReadBuffer.position()+":limit:"+cmdReadBuffer.limit());
 							}catch(SocketTimeoutException e){
 								
 								//e.printStackTrace();
@@ -122,10 +122,10 @@ public class UnBlockClient extends ClientBase implements Runnable{
 							}
 						}else if(key.isWritable()){
 							synchronized (this) {
-								logger.debug("mSendCmdBeanQueue.size()="+mSendCmdBeanQueue.size());
+								//logger.debug("mSendCmdBeanQueue.size()="+mSendCmdBeanQueue.size());
 								if(mSendCmdBeanQueue.size()>0){
 									ByteBuffer tmep = mSendCmdBeanQueue.poll();
-									logger.debug("send msg="+new String(tmep.array()));
+									//logger.debug("send msg="+new String(tmep.array()));
 									mSocketChannel.write(tmep);
 									if(mSendCmdBeanQueue.size()==0){
 										//如果已经没有待发数据，则置成只能读取
@@ -174,7 +174,7 @@ public class UnBlockClient extends ClientBase implements Runnable{
 
 	@Override
 	public synchronized void sendBuffer(ByteBuffer buffer) {
-		logger.warn("sendBuffer============");
+		
 		// TODO Auto-generated method stub
 		if(status == SocketStatus.CLOSED){
 			throw new IllegalArgumentException("socket is closed");
@@ -190,6 +190,5 @@ public class UnBlockClient extends ClientBase implements Runnable{
 		}
 		mSendCmdBeanQueue.offer(buffer);
 		selector.wakeup();
-		logger.warn("sendBuffer============end");
 	}
 }
